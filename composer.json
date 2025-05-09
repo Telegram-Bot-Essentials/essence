@@ -1,0 +1,35 @@
+{
+    "name": "elyar/telegram-bot-essentials",
+    "description": "This is the how i like to develop my bots and handle different incoming requests",
+    "version": "0.1.01",
+    "type": "library",
+    "require": {
+        "php": "^8.2",
+        "irazasyed/telegram-bot-sdk": "^3.15",
+        "laravel/framework": "^12",
+        "spatie/laravel-multitenancy": "^4.0"
+    },
+    "license": "GPL-3.0",
+    "autoload": {
+        "psr-4": {
+            "Elyar\\TelegramBotEssentials\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "Elyar",
+            "email": "elyar.ranjbar0@gmail.com"
+        }
+    ],
+    "minimum-stability": "alpha",
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Elyar\\TelegramBotEssentials\\TelegramBotServiceProvider"
+            ]
+        }
+    }
+}

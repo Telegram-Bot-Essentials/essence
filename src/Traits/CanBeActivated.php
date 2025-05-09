@@ -1,0 +1,39 @@
+<?php
+
+namespace Elyar\TelegramBotEssentials\Traits;
+
+
+use Elyar\TelegramBotEssentials\Exceptions\CannotSetItActive;
+
+trait CanBeActivated
+{
+    public function scopeActive($query)
+    {
+        $model = $query->getModel();
+
+        $query->where('bot_id', wHook()->bot()->id);
+        $query->where('active', true);
+
+        foreach ($model->requiredAttributes ?? [] as $attribute) {
+            $query->whereNotNull($attribute);
+        }
+
+        return $query;
+    }
+
+    /**
+     * @throws CannotSetItActive
+     */
+    public function setActiveAttribute($value): void
+    {
+        if ($value) {
+            foreach ($this->requiredAttributes ?? [] as $attribute) {
+                if (empty($this->attributes[$attribute])) {
+                    throw new CannotSetItActive("Unable to activate, required attribute '{$attribute}' is missing or empty.");
+                }
+            }
+        }
+
+        $this->attributes['active'] = $value;
+    }
+}

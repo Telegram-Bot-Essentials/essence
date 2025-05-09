@@ -1,0 +1,35 @@
+<?php
+
+namespace DummyNamespace;
+
+use App\Exceptions\LogicException;
+use App\Telegram\ReplyKeys\ReplyKey;
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Telegram\Bot\Exceptions\TelegramSDKException;
+
+class DummyClass extends ReplyKey
+{
+    protected string $text = 'Cancel Process';
+    protected int $perm = 0;
+    protected string $response = 'Process Cancelled successfully';
+
+    public function __construct()
+    {
+        $this->text = __('reply_keys.cancelProcess');
+        $this->response = __('reply_keys.cancelProcessResponse');
+    }
+
+    /**
+     * @throws LogicException
+     * @throws TelegramSDKException
+     * @throws BindingResolutionException
+     */
+    public function handle(): void
+    {
+        wHook()->api()->sendMessage([
+            'chat_id' => wHook()->user()->telegramUser->peer_id,
+            'text' => $this->response,
+            'reply_markup' => wHook()->user()->getKeyboard()
+        ]);
+    }
+}
