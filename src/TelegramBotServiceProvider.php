@@ -5,6 +5,10 @@ namespace Elyar\TelegramBotEssentials;
 use Elyar\TelegramBotEssentials\Console\Commands\MakeReplyKey;
 use Elyar\TelegramBotEssentials\Exceptions\LogicException;
 use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQueryBus;
+use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Admin\AdminPanelKey;
+use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Admin\BotSettingsKey;
+use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Member\CancelProcessKey;
+use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Member\MainMenuKey;
 use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\ReplyKey;
 use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\ReplyKeyBus;
 use Elyar\TelegramBotEssentials\Telegram\StateAnswers\StateAnswerBus;
@@ -44,13 +48,19 @@ class TelegramBotServiceProvider extends ServiceProvider
             __DIR__ . '/../config/telegram-bot-essentials.php' => config_path('telegram-bot-essentials.php'),
         ], 'telegram-bot-essentials');
 
-        $this->loadTranslationsFrom(__DIR__.'/../lang', 'telegram-bot-essentials');
+        $this->loadTranslationsFrom(__DIR__ . '/../lang', 'telegram-bot-essentials');
         $this->publishes([
-            __DIR__.'/../lang' => resource_path('lang/vendor/telegram-bot-essentials'),
+            __DIR__ . '/../lang' => resource_path('lang/vendor/telegram-bot-essentials'),
         ], 'telegram-bot-essentials-translations');
 
         $this->registerReplyKeys(config('telegram-bot-essentials.keyboard.admin'));
         $this->registerReplyKeys(config('telegram-bot-essentials.keyboard.member'));
+        replyKeyBus()->addReplyKeys([
+            CancelProcessKey::class,
+            BotSettingsKey::class,
+            AdminPanelKey::class,
+            MainMenuKey::class
+        ]);
     }
 
     /**
