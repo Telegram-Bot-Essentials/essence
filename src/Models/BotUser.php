@@ -2,6 +2,10 @@
 
 namespace Elyar\TelegramBotEssentials\Models;
 
+use Elyar\TelegramBotEssentials\Exceptions\LogicException;
+use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Admin\AdminPanelKey;
+use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Member\CancelProcessKey;
+use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Member\MainMenuKey;
 use Elyar\TelegramBotEssentials\Traits\CanResolveReplyKey;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Model;
@@ -38,9 +42,13 @@ class BotUser extends Model
     {
         $rows = [];
         if ($this->state) {
+            $rows[] = [CancelProcessKey::class];
         } else if ($this->menu == 'main') {
-
+            $rows = array_merge($rows, config('telegram-bot-essentials.keyboard.member'));
+            $rows[] = [AdminPanelKey::class];
         } elseif ($this->menu == 'admin') {
+            $rows = array_merge($rows, config('telegram-bot-essentials.keyboard.admin'));
+            $rows[] = [MainMenuKey::class];
         }
         return $this->keyboardGenerator($rows);
     }
