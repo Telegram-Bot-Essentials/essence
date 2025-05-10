@@ -1,7 +1,6 @@
 <?php
 
-use App\Models\Payment;
-use App\Models\PaymentAttempt;
+use Elyar\TelegramBotEssentials\Models\PaymentAttempt;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

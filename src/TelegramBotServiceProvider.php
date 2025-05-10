@@ -16,6 +16,7 @@ class TelegramBotServiceProvider extends ServiceProvider
 
     public function boot()
     {
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         // Optional: load routes, migrations, translations, etc.
     }
 }

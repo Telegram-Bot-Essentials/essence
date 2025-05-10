@@ -4,7 +4,6 @@ namespace Elyar\TelegramBotEssentials\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Multitenancy\Contracts\IsTenant;
 use Spatie\Multitenancy\Models\Concerns\ImplementsTenant;
@@ -28,10 +27,5 @@ class Bot extends Model implements IsTenant
     public function botUsers(): HasMany
     {
         return $this->hasMany(BotUser::class);
-    }
-
-    public function setting(): HasOne
-    {
-        return $this->hasOne(BotSetting::class)->withDefault();
     }
 }

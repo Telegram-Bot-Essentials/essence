@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Bot;
-use App\Models\TelegramUser;
+use Elyar\TelegramBotEssentials\Models\Bot;
+use Elyar\TelegramBotEssentials\Models\TelegramUser;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
