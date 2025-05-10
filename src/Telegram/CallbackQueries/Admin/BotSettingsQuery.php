@@ -39,24 +39,16 @@ class BotSettingsQuery extends CallbackQuery
 
     private function botStatus(): void
     {
-        BotSettings::forCurrentBot()->first()->bot_status = $this->params[1];
-        BotSettings::forCurrentBot()->first()->bot_status->save();
+        wHook()->bot()->settings->bot_status = $this->params[1];
+        wHook()->bot()->settings->save();
         BotSettingsFeature::menuEdit();
         $this->answer("Bot Status " . ($this->params[1] ? 'enabled' : 'disabled'));
     }
 
-    private function buyServiceStatus(): void
-    {
-        BotSettings::forCurrentBot()->first()->buy_service = $this->params[1];
-        BotSettings::forCurrentBot()->first()->save();
-        BotSettingsFeature::menuEdit();
-        $this->answer("Buy Service " . ($this->params[1] ? 'enabled' : 'disabled'));
-    }
-
     private function payWithCardStatus(): void
     {
-        BotSettings::forCurrentBot()->first()->pay_with_card = $this->params[1];
-        BotSettings::forCurrentBot()->first()->save();
+        wHook()->bot()->settings->pay_with_card = $this->params[1];
+        wHook()->bot()->settings->save();
         BotSettingsFeature::menuEdit();
         $this->answer("Pay with Card " . ($this->params[1] ? 'enabled' : 'disabled'));
     }
@@ -112,23 +104,5 @@ class BotSettingsQuery extends CallbackQuery
             'message_id' => wHook()->update()->callbackQuery->message->messageId
         ]);
         $this->answer("Updating transactions chat id...");
-    }
-
-    private function changeConnectionGuideChanngelId(): void
-    {
-        $text = __('telegram-bot-essentials::bot_settings.connectionGuideChannelIdMessage');
-
-        wHook()->user()->changeState(encodeAnswerState($this->type, "change_connection_guide_channel_id"));
-
-        wHook()->api()->sendMessage([
-            'chat_id' => wHook()->user()->telegramUser->peer_id,
-            'text' => $text,
-            'reply_markup' => wHook()->user()->getKeyboard()
-        ]);
-        wHook()->api()->deleteMessage([
-            'chat_id' => wHook()->user()->telegramUser->peer_id,
-            'message_id' => wHook()->update()->callbackQuery->message->messageId
-        ]);
-        $this->answer("Updating connection guide channel id...");
     }
 }
