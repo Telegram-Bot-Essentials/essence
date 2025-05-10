@@ -6,7 +6,7 @@ use Illuminate\Console\GeneratorCommand;
 
 class MakeReplyKey extends GeneratorCommand
 {
-    protected $name = 'make:reply-key';
+    protected $name = 'telegram-bot-essentials:reply-key';
     protected $description = 'Create a new ReplyKey class';
     protected $type = 'ReplyKey';
 

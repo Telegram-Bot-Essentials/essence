@@ -3,6 +3,7 @@
 namespace Elyar\TelegramBotEssentials;
 
 use Elyar\TelegramBotEssentials\Console\Commands\MakeReplyKey;
+use Elyar\TelegramBotEssentials\Console\Commands\setWebhook;
 use Elyar\TelegramBotEssentials\Exceptions\LogicException;
 use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQuery;
 use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQueryBus;
@@ -18,10 +19,6 @@ class TelegramBotServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->commands([
-            MakeReplyKey::class,
-        ]);
-
         $this->app->singleton(ReplyKeyBus::class, function ($app) {
             return new ReplyKeyBus();
         });
@@ -41,6 +38,11 @@ class TelegramBotServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->commands([
+            MakeReplyKey::class,
+            setWebhook::class,
+        ]);
+
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         $this->publishes([
             __DIR__ . '/../config/telegram-bot-essentials.php' => config_path('telegram-bot-essentials.php'),
@@ -52,18 +54,24 @@ class TelegramBotServiceProvider extends ServiceProvider
         ], 'telegram-bot-essentials-translations');
 
 
-        $this->autoLoadCallbackQueries(base_path('app/Telegram/CallbackQueries/Member'));
-        $this->autoLoadCallbackQueries(base_path('app/Telegram/CallbackQueries/Admin'));
+        $adminQueries = base_path('app/Telegram/CallbackQueries/Admin');
+        $memberQueries = base_path('app/Telegram/CallbackQueries/Member');
+        $adminStateAnswers = base_path('app/Telegram/StateAnswers/Admin');
+        $memberStateAnswers = base_path('app/Telegram/StateAnswers/Member');
+//        $adminReplyKeys = base_path('app/Telegram/ReplyKeys/Admin');
+//        $memberReplyKeys = base_path('app/Telegram/ReplyKeys/Member');
+        if (is_dir($adminQueries)) $this->autoLoadCallbackQueries($adminQueries);
+        if (is_dir($memberQueries)) $this->autoLoadCallbackQueries($memberQueries);
         $this->autoLoadCallbackQueries(__DIR__ . '/Telegram/CallbackQueries/Member');
         $this->autoLoadCallbackQueries(__DIR__ . '/Telegram/CallbackQueries/Admin');
 
-        $this->autoLoadStateAnswers(base_path('app/Telegram/StateAnswers/Admin'));
-        $this->autoLoadStateAnswers(base_path('app/Telegram/StateAnswers/Member'));
+        if (is_dir($adminStateAnswers)) $this->autoLoadStateAnswers($adminStateAnswers);
+        if (is_dir($memberStateAnswers)) $this->autoLoadStateAnswers($memberStateAnswers);
         $this->autoLoadStateAnswers(__DIR__ . '/Telegram/StateAnswers/Member');
         $this->autoLoadStateAnswers(__DIR__ . '/Telegram/StateAnswers/Admin');
 
-        $this->addUserReplyKeys(config('telegram-bot-essentials.keyboard.admin'));
-        $this->addUserReplyKeys(config('telegram-bot-essentials.keyboard.member'));
+        $this->addUserReplyKeys(config('telegram-bot-essentials.keyboard.admin') ?? []);
+        $this->addUserReplyKeys(config('telegram-bot-essentials.keyboard.member') ?? []);
         $this->autoLoadReplyKeys(__DIR__ . '/Telegram/ReplyKeys/Member');
         $this->autoLoadReplyKeys(__DIR__ . '/Telegram/ReplyKeys/Admin');
     }
