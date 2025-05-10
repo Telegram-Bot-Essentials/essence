@@ -13,8 +13,8 @@ class AdminPanelKey extends ReplyKey
 
     public function __construct()
     {
-        $this->text = __('reply_keys.adminPanel');
-        $this->response = __('reply_keys.adminPanelResponse');
+        $this->text = __('telegram-bot-essentials::admin_panel.reply_key');
+        $this->response = __('telegram-bot-essentials::admin_panel.main.text.menu_changed');
     }
 
     /**
