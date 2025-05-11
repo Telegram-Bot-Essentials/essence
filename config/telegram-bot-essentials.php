@@ -1,5 +1,7 @@
 <?php
 
+use Telegram\Bot\Commands\HelpCommand;
+
 return [
     'keyboard' => [
         'admin' => [
@@ -10,6 +12,9 @@ return [
         ]
     ],
 
+    'commands' => [
+        HelpCommand::class,
+    ],
 
     'develop' => [
         'DEVELOP_UNIQUE_ID' => env('DEVELOP_UNIQUE_ID'),

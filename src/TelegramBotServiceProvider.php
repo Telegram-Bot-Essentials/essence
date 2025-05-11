@@ -43,6 +43,8 @@ class TelegramBotServiceProvider extends ServiceProvider
             setWebhook::class,
         ]);
 
+        $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
+
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         $this->publishes([
             __DIR__ . '/../config/telegram-bot-essentials.php' => config_path('telegram-bot-essentials.php'),
