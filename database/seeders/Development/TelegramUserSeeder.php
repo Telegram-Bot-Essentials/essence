@@ -1,5 +1,6 @@
 <?php
 
+namespace Elyar\TelegramBotEssentials\Database\Seeders\Development;
 
 use Elyar\TelegramBotEssentials\Models\Bot;
 use Elyar\TelegramBotEssentials\Models\BotUser;
