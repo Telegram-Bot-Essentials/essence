@@ -53,6 +53,9 @@ class TelegramBotServiceProvider extends ServiceProvider
             __DIR__ . '/../lang' => resource_path('lang/vendor/telegram-bot-essentials'),
         ], 'telegram-bot-essentials-translations');
 
+        $this->publishes([
+            __DIR__.'/../database/seeders' => database_path('seeders'),
+        ], 'seeders');
 
         $adminQueries = base_path('app/Telegram/CallbackQueries/Admin');
         $memberQueries = base_path('app/Telegram/CallbackQueries/Member');
