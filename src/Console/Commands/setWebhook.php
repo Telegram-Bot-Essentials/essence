@@ -29,15 +29,16 @@ class setWebhook extends Command
      */
     public function handle()
     {
-        $uniqueID = $this->option('unique-id') ?? config('develop.DEVELOP_UNIQUE_ID');
+        $uniqueID = $this->option('unique-id') ?? config('telegram-bot-essentials.develop.DEVELOP_UNIQUE_ID');
         if ($uniqueID) {
             $bot = Bot::where('unique_id', $uniqueID)->first();
             $telegram = new Api($bot->bot_token);
-            $telegram->setWebhook([
+            $result = $telegram->setWebhook([
                 'url' => config('app.url') . '/api/telegram/bot/' . $uniqueID . '/webhook',
                 'drop_pending_updates' => true,
                 'secret_token' => $bot->secret_token,
             ]);
+            $this->info('Telegram webhook is set');
         }
     }
 }
