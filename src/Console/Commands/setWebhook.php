@@ -34,7 +34,7 @@ class setWebhook extends Command
             $bot = Bot::where('unique_id', $uniqueID)->first();
             $telegram = new Api($bot->bot_token);
             $telegram->setWebhook([
-                'url' => config('app.url') . '/api/v1/telegram/bot/' . $uniqueID . '/webhook',
+                'url' => config('app.url') . '/api/telegram/bot/' . $uniqueID . '/webhook',
                 'drop_pending_updates' => true,
                 'secret_token' => $bot->secret_token,
             ]);
