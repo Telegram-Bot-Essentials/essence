@@ -13,6 +13,7 @@ use Elyar\TelegramBotEssentials\Telegram\StateAnswers\StateAnswer;
 use Elyar\TelegramBotEssentials\Telegram\StateAnswers\StateAnswerBus;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class TelegramBotServiceProvider extends ServiceProvider
@@ -43,7 +44,8 @@ class TelegramBotServiceProvider extends ServiceProvider
             setWebhook::class,
         ]);
 
-        $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
+        Route::prefix('api/')
+            ->group(__DIR__ . '/../routes/api.php');
 
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         $this->publishes([
