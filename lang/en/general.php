@@ -1,6 +1,13 @@
 <?php
 
 return [
+    'status' => [
+        'enabled' => 'Enabled',
+        'disabled' => 'Disabled',
+        'enabledEmoji' => '✅',
+        'disabledEmoji' => '🛑',
+    ],
+
     'back' => 'Back',
 
     'enabled' => ' ✅ ',
