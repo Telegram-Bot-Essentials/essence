@@ -7,17 +7,22 @@ use Elyar\TelegramBotEssentials\Exceptions\CannotSetItActive;
 use Elyar\TelegramBotEssentials\Exceptions\CannotSetItAsDone;
 use Elyar\TelegramBotEssentials\Exceptions\FeatureIsDisabled;
 use Elyar\TelegramBotEssentials\Exceptions\LogicException;
+use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQuery;
+use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\ReplyKey;
+use Elyar\TelegramBotEssentials\Telegram\StateAnswers\StateAnswer;
 use Elyar\TelegramBotEssentials\Traits\CanCancelOldProcess;
 use Exception;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Telegram\Bot\Commands\Command;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Illuminate\Routing\Controller;
+
 class TelegramWebhookController extends Controller
 {
     use CanCancelOldProcess;
@@ -52,6 +57,7 @@ class TelegramWebhookController extends Controller
     /**
      * @throws LogicException
      * @throws TelegramSDKException
+     * @throws BindingResolutionException
      */
     private function initializeOptions()
     {
@@ -62,6 +68,27 @@ class TelegramWebhookController extends Controller
                 throw new LogicException("ReplyKey {$command} is not a subclass of namespace Telegram\Bot\Commands\Command");
             wHook()->api()->addCommand($command);
         }
+
+        $adminQueries = base_path('app/Telegram/CallbackQueries/Admin');
+        $memberQueries = base_path('app/Telegram/CallbackQueries/Member');
+        $adminStateAnswers = base_path('app/Telegram/StateAnswers/Admin');
+        $memberStateAnswers = base_path('app/Telegram/StateAnswers/Member');
+//        $adminReplyKeys = base_path('app/Telegram/ReplyKeys/Admin');
+//        $memberReplyKeys = base_path('app/Telegram/ReplyKeys/Member');
+        if (is_dir($adminQueries)) $this->autoLoadCallbackQueries($adminQueries);
+        if (is_dir($memberQueries)) $this->autoLoadCallbackQueries($memberQueries);
+        $this->autoLoadCallbackQueries(__DIR__ . '/Telegram/CallbackQueries/Member');
+        $this->autoLoadCallbackQueries(__DIR__ . '/Telegram/CallbackQueries/Admin');
+
+        if (is_dir($adminStateAnswers)) $this->autoLoadStateAnswers($adminStateAnswers);
+        if (is_dir($memberStateAnswers)) $this->autoLoadStateAnswers($memberStateAnswers);
+        $this->autoLoadStateAnswers(__DIR__ . '/Telegram/StateAnswers/Member');
+        $this->autoLoadStateAnswers(__DIR__ . '/Telegram/StateAnswers/Admin');
+
+        $this->addUserReplyKeys(config('telegram-bot-essentials.keyboard.admin') ?? []);
+        $this->addUserReplyKeys(config('telegram-bot-essentials.keyboard.member') ?? []);
+        $this->autoLoadReplyKeys(__DIR__ . '/Telegram/ReplyKeys/Member');
+        $this->autoLoadReplyKeys(__DIR__ . '/Telegram/ReplyKeys/Admin');
     }
 
     /**
@@ -189,6 +216,111 @@ class TelegramWebhookController extends Controller
                 'show_alert' => true,
                 'cache_time' => 5,
             ]);
+        }
+    }
+
+
+    /**
+     * @throws BindingResolutionException
+     * @throws LogicException
+     */
+    private function addUserReplyKeys(array $replyKeys): void
+    {
+        foreach ($replyKeys as $replyKeyRow) {
+            foreach ($replyKeyRow as $replyKey) {
+                if (!is_subclass_of($replyKey, ReplyKey::class))
+                    throw new LogicException("ReplyKey {$replyKey} is not a subclass of Elyar\TelegramBotEssentials\Telegram\ReplyKeys\ReplyKey");
+                replyKeyBus()->addReplyKey($replyKey);
+            }
+        }
+    }
+
+    /**
+     * @throws BindingResolutionException
+     * @throws LogicException
+     */
+    private function autoLoadCallbackQueries(string $path): void
+    {
+        $files = File::allFiles($path);
+
+        if (str_starts_with($path, base_path('app'))) {
+            $basePath = base_path('app');
+            $baseNamespace = app()->getNamespace();
+        } else {
+            $basePath = realpath(__DIR__);
+            $baseNamespace = 'Elyar\\TelegramBotEssentials';
+        }
+
+        $relativePath = str_replace($basePath . DIRECTORY_SEPARATOR, '', $path);
+        $relativeNamespace = str_replace('/', '\\', $relativePath);
+        $fullNamespace = rtrim($baseNamespace, '\\') . '\\' . $relativeNamespace;
+
+        foreach ($files as $file) {
+            $className = $file->getFilenameWithoutExtension();
+            $fqcn = $fullNamespace . '\\' . $className;
+
+            if (class_exists($fqcn) && is_subclass_of($fqcn, CallbackQuery::class)) {
+                callbackQueryBus()->addCallbackQuery($fqcn);
+            }
+        }
+    }
+
+    /**
+     * @throws BindingResolutionException
+     */
+    private function autoLoadStateAnswers(string $path): void
+    {
+        $files = File::allFiles($path);
+
+        if (str_starts_with($path, base_path('app'))) {
+            $basePath = base_path('app');
+            $baseNamespace = app()->getNamespace();
+        } else {
+            $basePath = realpath(__DIR__);
+            $baseNamespace = 'Elyar\\TelegramBotEssentials';
+        }
+
+        $relativePath = str_replace($basePath . DIRECTORY_SEPARATOR, '', $path);
+        $relativeNamespace = str_replace('/', '\\', $relativePath);
+        $fullNamespace = rtrim($baseNamespace, '\\') . '\\' . $relativeNamespace;
+
+        foreach ($files as $file) {
+            $className = $file->getFilenameWithoutExtension();
+            $fqcn = $fullNamespace . '\\' . $className;
+
+            if (class_exists($fqcn) && is_subclass_of($fqcn, StateAnswer::class)) {
+                stateAnswerBus()->addStateAnswer($fqcn);
+            }
+        }
+    }
+
+    /**
+     * @throws BindingResolutionException
+     * @throws LogicException
+     */
+    private function autoLoadReplyKeys(string $path): void
+    {
+        $files = File::allFiles($path);
+
+        if (str_starts_with($path, base_path('app'))) {
+            $basePath = base_path('app');
+            $baseNamespace = app()->getNamespace();
+        } else {
+            $basePath = realpath(__DIR__);
+            $baseNamespace = 'Elyar\\TelegramBotEssentials';
+        }
+
+        $relativePath = str_replace($basePath . DIRECTORY_SEPARATOR, '', $path);
+        $relativeNamespace = str_replace('/', '\\', $relativePath);
+        $fullNamespace = rtrim($baseNamespace, '\\') . '\\' . $relativeNamespace;
+
+        foreach ($files as $file) {
+            $className = $file->getFilenameWithoutExtension();
+            $fqcn = $fullNamespace . '\\' . $className;
+
+            if (class_exists($fqcn) && is_subclass_of($fqcn, ReplyKey::class)) {
+                replyKeyBus()->addReplyKey($fqcn);
+            }
         }
     }
 }
