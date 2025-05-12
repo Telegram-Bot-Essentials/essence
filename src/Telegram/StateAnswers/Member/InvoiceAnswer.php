@@ -4,6 +4,7 @@ namespace Elyar\TelegramBotEssentials\Telegram\StateAnswers\Member;
 
 use Elyar\TelegramBotEssentials\Enums\AllowableFields;
 use Elyar\TelegramBotEssentials\Enums\Roles;
+use Elyar\TelegramBotEssentials\Exceptions\LogicException;
 use Elyar\TelegramBotEssentials\Models\Invoice;
 use Elyar\TelegramBotEssentials\Telegram\StateAnswers\StateAnswer;
 use Illuminate\Contracts\Container\BindingResolutionException;
@@ -22,6 +23,7 @@ class InvoiceAnswer extends StateAnswer
      * @param array $params
      * @throws BindingResolutionException
      * @throws TelegramSDKException
+     * @throws LogicException
      */
     public function handle(string $method, array $params): void
     {
@@ -37,8 +39,9 @@ class InvoiceAnswer extends StateAnswer
     }
 
     /**
-     * @throws TelegramSDKException
      * @throws BindingResolutionException
+     * @throws TelegramSDKException
+     * @throws LogicException
      */
     private function payToCard(): void
     {

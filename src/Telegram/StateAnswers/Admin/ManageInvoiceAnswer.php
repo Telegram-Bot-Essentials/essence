@@ -3,8 +3,10 @@
 namespace Elyar\TelegramBotEssentials\Telegram\StateAnswers\Admin;
 
 use Elyar\TelegramBotEssentials\Enums\Roles;
+use Elyar\TelegramBotEssentials\Exceptions\LogicException;
 use Elyar\TelegramBotEssentials\Models\ToCardAttempt;
 use Elyar\TelegramBotEssentials\Telegram\StateAnswers\StateAnswer;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 
 class ManageInvoiceAnswer extends StateAnswer
@@ -15,6 +17,8 @@ class ManageInvoiceAnswer extends StateAnswer
     /**
      * @param string $method
      * @param array $params
+     * @throws BindingResolutionException
+     * @throws LogicException
      * @throws TelegramSDKException
      */
     public function handle(string $method, array $params): void
@@ -30,6 +34,11 @@ class ManageInvoiceAnswer extends StateAnswer
         }
     }
 
+    /**
+     * @throws BindingResolutionException
+     * @throws TelegramSDKException
+     * @throws LogicException
+     */
     private function rejectReason(): void
     {
         $toCardAttempt = ToCardAttempt::findOrFail($this->params['to_card_attempt_id']);

@@ -27,10 +27,10 @@ class InvoiceQuery extends CallbackQuery
         $this->params = $params;
         switch (strtolower($params[0])) {
             case "to_card":
-                dependsOn(wHook()->bot()->setting->pay_with_card);
-                dependsOn(isset(wHook()->bot()->setting->pay_to_card_number));
-                dependsOn(isset(wHook()->bot()->setting->pay_to_card_name));
-                dependsOn(isset(wHook()->bot()->setting->transactions_chat_id));
+                dependsOn(wHook()->bot()->settings->pay_with_card);
+                dependsOn(isset(wHook()->bot()->settings->pay_to_card_number));
+                dependsOn(isset(wHook()->bot()->settings->pay_to_card_name));
+                dependsOn(isset(wHook()->bot()->settings->transactions_chat_id));
                 $this->toCard();
                 break;
         }
@@ -47,14 +47,14 @@ class InvoiceQuery extends CallbackQuery
 
         $paymentAttempt = $invoice->paymentAttempt()->create();
         $paymentAttempt->toCardAttempt()->create([
-            'card_number' => wHook()->bot()->setting->pay_to_card_number,
+            'card_number' => wHook()->bot()->settings->pay_to_card_number,
             'amount' => $invoice->price
         ]);
         $invoice->paymentAttempt()->whereNot('id', $paymentAttempt->id)->delete();
 
         $text = __('invoice.to_card.text.user-pay_message', [
-            'cardNumber' => wHook()->bot()->setting->pay_to_card_number,
-            'cardName' => wHook()->bot()->setting->pay_to_card_name
+            'cardNumber' => wHook()->bot()->settings->pay_to_card_number,
+            'cardName' => wHook()->bot()->settings->pay_to_card_name
         ]);
 
         wHook()->user()->changeState(encodeAnswerState($this->type, "pay_to_card", ["invoice_id" => $invoice->id]));
