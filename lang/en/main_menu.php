@@ -3,8 +3,8 @@
 return [
     'main' => [
         'text' => [
-            'menu_changed' => 'You are in the Main Menu'
+            'menu_changed' => '❕ Main Menu loaded.'
         ],
     ],
-    'reply_key' => 'Main Menu',
+    'reply_key' => 'Main Menu 🔰',
 ];

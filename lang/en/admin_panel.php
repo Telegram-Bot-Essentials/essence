@@ -3,8 +3,8 @@
 return [
     'main' => [
         'text' => [
-            'menu_changed' => 'You are in the admin panel'
+            'menu_changed' => '❕ Admin panel loaded.'
         ],
     ],
-    'reply_key' => 'Admin Panel',
+    'reply_key' => 'Admin Panel 🔰',
 ];
