@@ -11,25 +11,28 @@ return [
                 . "\r\n❔ <b>شماره کارت پرداخت:</b> <i>:paymentCardNumber</i>"
                 . "\r\n❔ <b>نام کارت پرداخت:</b> <i>:paymentCardName</i>"
                 . "\r\n"
-                . "\r\n❔ <b>شناسه چت تراکنش‌ها:</b> <i>:transactionsChatId</i>",
+                . "\r\n❔ <b>شناسه چت تراکنشها:</b> <i>:transactionsChatId</i>",
             'changePaymentCardNumber' => '❓ شماره کارت جدید را وارد کنید: ',
             'changePaymentCardName' => '❓ نام کارت جدید را وارد کنید: ',
-            'transactionsChatId' => '❓ شناسه چت جدید تراکنش‌ها را وارد کنید: ',
+            'transactionsChatId' => '❓ شناسه چت جدید تراکنشها را وارد کنید: ',
         ],
         'answers' => [
-            'paymentCardNumber' => '⏳ در حال به‌روزرسانی شماره کارت پرداخت...',
-            'paymentCardName' => '⏳ در حال به‌روزرسانی نام کارت پرداخت...',
-            'transactionsChatId' => '⏳ در حال به‌روزرسانی شناسه چت تراکنش‌ها...',
+            'paymentCardNumber' => '⏳ در حال بهروزرسانی شماره کارت پرداخت...',
+            'paymentCardName' => '⏳ در حال بهروزرسانی نام کارت پرداخت...',
+            'transactionsChatId' => '⏳ در حال بهروزرسانی شناسه چت تراکنشها...',
 
             'botStatusUpdated' => 'وضعیت ربات :newStatus',
-            'payWithCardStatusUpdated' => 'وضعیت پرداخت با کارت :newStatus'
+            'payWithCardStatusUpdated' => 'وضعیت پرداخت با کارت :newStatus',
+
+            'botLanguage' => 'زبان ربات به :language تغییر یافت',
         ],
         'keys' => [
+            'botLanguage' => '🌍 زبان: :language',
             'botStatus' => 'وضعیت ربات :status',
             'payWithCardStatus' => 'پرداخت با کارت :status',
             'paymentCardNumber' => '✏️ شماره کارت پرداخت',
             'paymentCardName' => '✏️ نام کارت پرداخت',
-            'transactionsChatId' => '✏️ شناسه چت تراکنش‌ها',
+            'transactionsChatId' => '✏️ شناسه چت تراکنشها',
         ]
     ],
     'reply_key' => 'تنظیمات ربات ⚙️',
