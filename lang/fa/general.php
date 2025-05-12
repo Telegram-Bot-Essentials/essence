@@ -1,13 +1,30 @@
 <?php
 
 return [
-    'back' => '🔙 بازگشت',
+    'status' => [
+        'enabled' => 'فعال شد',
+        'disabled' => 'غیرفعال شد',
+        'notSet' => 'تنظیم نشده است ❕',
+        'enabledEmoji' => '✅',
+        'disabledEmoji' => '🛑',
+    ],
 
-    'enabled' => ' ✅ ',
-    'disabled' => ' 🛑 ',
+    'callbackQuery' => [
+        'willBeAddedInTheFuture' => '❕ در آینده اضافه خواهد شد.',
+    ],
 
-    'disabledFeatureAlert' => 'این ویژگی (:feature) در حال حاضر غیرفعال است.',
+    'alerts' => [
+        'botIsOff' => '❗️ ربات در حال حاضر غیرفعال است.',
+        'disabledFeature' => '❗️ این قابلیت (:feature) در حال حاضر غیرفعال است.',
+        'notFound' => '❗️ :resource مورد نظر پیدا نشد.',
+        'requestIsInvalid' => '❗️ درخواست نامعتبر است، لطفاً از کیبورد پاسخ استفاده کنید.',
+    ],
 
-    'notSetString' => 'تنظیم نشده',
-    'lockedForAction' => '🔒 قفل شده برای انجام عملیات',
+    'messages' => [
+        'valueUpdatedSuccessfully' => '❕ مقدار با موفقیت به‌روزرسانی شد ✅',
+    ],
+
+    'keys' => [
+        'back' => 'بازگشت 🔙',
+    ]
 ];
