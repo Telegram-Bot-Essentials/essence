@@ -25,7 +25,10 @@ class StateAnswerBus
     }
 
     /**
+     * @param iterable $stateAnswers
+     * @return StateAnswerBus
      * @throws BindingResolutionException
+     * @throws LogicException
      */
     public function addStateAnswers(iterable $stateAnswers): self
     {
@@ -37,7 +40,9 @@ class StateAnswerBus
     }
 
     /**
+     * @param StateAnswerInterface|string $stateAnswer
      * @throws BindingResolutionException
+     * @throws LogicException
      */
     public function addStateAnswer(StateAnswerInterface|string $stateAnswer): void
     {

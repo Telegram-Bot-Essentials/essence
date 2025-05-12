@@ -48,9 +48,8 @@ class TelegramWebhookController extends Controller
     }
 
     /**
-     * @throws BindingResolutionException
-     * @throws TelegramSDKException
      * @throws LogicException
+     * @throws TelegramSDKException
      */
     private function initializeOptions()
     {
@@ -89,7 +88,7 @@ class TelegramWebhookController extends Controller
             if ($requestIsInvalid) {
                 wHook()->api()->sendMessage([
                     'chat_id' => wHook()->user()->telegramUser->peer_id,
-                    'text' => 'Request is invalid, please use reply keyboard',
+                    'text' => __('telegram-bot-essentials::general.alerts.requestIsInvalid'),
                     'reply_markup' => wHook()->user()->getKeyboard(),
                 ]);
             }
@@ -154,13 +153,13 @@ class TelegramWebhookController extends Controller
         if (wHook()->update()->message) {
             wHook()->api()->sendMessage([
                 'chat_id' => wHook()->update()->message->from->id,
-                'text' => 'Requested ' . end($parts) . ' not found',
+                'text' => __('telegram-bot-essentials::general.alerts.notFound', ['resource' => end($parts)]),
                 'reply_markup' => wHook()->user()->getKeyboard(),
             ]);
         } elseif (wHook()->update()->callbackQuery) {
             wHook()->api()->answerCallbackQuery([
                 'callback_query_id' => wHook()->update()->callbackQuery->id,
-                'text' => 'Requested ' . end($parts) . ' not found',
+                'text' => __('telegram-bot-essentials::general.alerts.notFound', ['resource' => end($parts)]),
                 'show_alert' => true,
                 'cache_time' => 5,
             ]);
@@ -175,12 +174,12 @@ class TelegramWebhookController extends Controller
         if (wHook()->update()->message) {
             wHook()->api()->sendMessage([
                 'chat_id' => wHook()->update()->message->from->id,
-                'text' => $e->getMessage() == "" ? __('general.disabledFeatureAlert', ['feature' => wHook()->update()->message->text]) : $e->getMessage(),
+                'text' => $e->getMessage() == "" ? __('telegram-bot-essentials::general.alerts.disabledFeatureAlert', ['feature' => wHook()->update()->message->text]) : $e->getMessage(),
             ]);
         } elseif (wHook()->update()->callbackQuery) {
             wHook()->api()->answerCallbackQuery([
                 'callback_query_id' => wHook()->update()->callbackQuery->id,
-                'text' => $e->getMessage() == "" ? __('general.disabledFeatureAlert', ['feature' => getInputInlineKeyText()]) : $e->getMessage(),
+                'text' => $e->getMessage() == "" ? __('telegram-bot-essentials::general.alerts.disabledFeatureAlert', ['feature' => getInputInlineKeyText()]) : $e->getMessage(),
                 'show_alert' => true,
                 'cache_time' => 5,
             ]);
