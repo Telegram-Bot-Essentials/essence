@@ -219,7 +219,6 @@ class TelegramWebhookController extends Controller
         }
     }
 
-
     /**
      * @throws BindingResolutionException
      * @throws LogicException
@@ -236,13 +235,11 @@ class TelegramWebhookController extends Controller
     }
 
     /**
-     * @throws BindingResolutionException
-     * @throws LogicException
+     * @param string $path
+     * @return string
      */
-    private function autoLoadCallbackQueries(string $path): void
+    private function resolveNamespace(string $path): string
     {
-        $files = File::allFiles($path);
-
         if (str_starts_with($path, base_path('app'))) {
             $basePath = base_path('app');
             $baseNamespace = app()->getNamespace();
@@ -253,11 +250,22 @@ class TelegramWebhookController extends Controller
 
         $relativePath = str_replace($basePath . DIRECTORY_SEPARATOR, '', $path);
         $relativeNamespace = str_replace('/', '\\', $relativePath);
-        $fullNamespace = rtrim($baseNamespace, '\\') . '\\' . $relativeNamespace;
 
-        foreach ($files as $file) {
-            $className = $file->getFilenameWithoutExtension();
-            $fqcn = $fullNamespace . '\\' . $className;
+        return trim(rtrim($baseNamespace, '\\') . '\\' . $relativeNamespace, '\\');
+    }
+
+    /**
+     * @param string $path
+     * @return void
+     * @throws BindingResolutionException
+     * @throws LogicException
+     */
+    private function autoLoadCallbackQueries(string $path): void
+    {
+        $namespace = $this->resolveNamespace($path);
+
+        foreach (File::allFiles($path) as $file) {
+            $fqcn = $namespace . '\\' . $file->getFilenameWithoutExtension();
 
             if (class_exists($fqcn) && is_subclass_of($fqcn, CallbackQuery::class)) {
                 callbackQueryBus()->addCallbackQuery($fqcn);
@@ -266,27 +274,16 @@ class TelegramWebhookController extends Controller
     }
 
     /**
+     * @param string $path
      * @throws BindingResolutionException
+     * @throws LogicException
      */
     private function autoLoadStateAnswers(string $path): void
     {
-        $files = File::allFiles($path);
+        $namespace = $this->resolveNamespace($path);
 
-        if (str_starts_with($path, base_path('app'))) {
-            $basePath = base_path('app');
-            $baseNamespace = app()->getNamespace();
-        } else {
-            $basePath = realpath(__DIR__ . '/../../');
-            $baseNamespace = 'Elyar\\TelegramBotEssentials';
-        }
-
-        $relativePath = str_replace($basePath . DIRECTORY_SEPARATOR, '', $path);
-        $relativeNamespace = str_replace('/', '\\', $relativePath);
-        $fullNamespace = rtrim($baseNamespace, '\\') . '\\' . $relativeNamespace;
-
-        foreach ($files as $file) {
-            $className = $file->getFilenameWithoutExtension();
-            $fqcn = $fullNamespace . '\\' . $className;
+        foreach (File::allFiles($path) as $file) {
+            $fqcn = $namespace . '\\' . $file->getFilenameWithoutExtension();
 
             if (class_exists($fqcn) && is_subclass_of($fqcn, StateAnswer::class)) {
                 stateAnswerBus()->addStateAnswer($fqcn);
@@ -300,23 +297,10 @@ class TelegramWebhookController extends Controller
      */
     private function autoLoadReplyKeys(string $path): void
     {
-        $files = File::allFiles($path);
+        $namespace = $this->resolveNamespace($path);
 
-        if (str_starts_with($path, base_path('app'))) {
-            $basePath = base_path('app');
-            $baseNamespace = app()->getNamespace();
-        } else {
-            $basePath = realpath(__DIR__ . '/../../');
-            $baseNamespace = 'Elyar\\TelegramBotEssentials';
-        }
-
-        $relativePath = str_replace($basePath . DIRECTORY_SEPARATOR, '', $path);
-        $relativeNamespace = str_replace('/', '\\', $relativePath);
-        $fullNamespace = rtrim($baseNamespace, '\\') . '\\' . $relativeNamespace;
-
-        foreach ($files as $file) {
-            $className = $file->getFilenameWithoutExtension();
-            $fqcn = $fullNamespace . '\\' . $className;
+        foreach (File::allFiles($path) as $file) {
+            $fqcn = $namespace . '\\' . $file->getFilenameWithoutExtension();
 
             if (class_exists($fqcn) && is_subclass_of($fqcn, ReplyKey::class)) {
                 replyKeyBus()->addReplyKey($fqcn);
