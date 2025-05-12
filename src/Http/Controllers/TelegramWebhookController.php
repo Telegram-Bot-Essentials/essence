@@ -77,18 +77,18 @@ class TelegramWebhookController extends Controller
 //        $memberReplyKeys = base_path('app/Telegram/ReplyKeys/Member');
         if (is_dir($adminQueries)) $this->autoLoadCallbackQueries($adminQueries);
         if (is_dir($memberQueries)) $this->autoLoadCallbackQueries($memberQueries);
-        $this->autoLoadCallbackQueries(__DIR__ . '/../Telegram/CallbackQueries/Member');
-        $this->autoLoadCallbackQueries(__DIR__ . '/../Telegram/CallbackQueries/Admin');
+        $this->autoLoadCallbackQueries(__DIR__ . '/../../Telegram/CallbackQueries/Member');
+        $this->autoLoadCallbackQueries(__DIR__ . '/../../Telegram/CallbackQueries/Admin');
 
         if (is_dir($adminStateAnswers)) $this->autoLoadStateAnswers($adminStateAnswers);
         if (is_dir($memberStateAnswers)) $this->autoLoadStateAnswers($memberStateAnswers);
-        $this->autoLoadStateAnswers(__DIR__ . '/../Telegram/StateAnswers/Member');
-        $this->autoLoadStateAnswers(__DIR__ . '/../Telegram/StateAnswers/Admin');
+        $this->autoLoadStateAnswers(__DIR__ . '/../../Telegram/StateAnswers/Member');
+        $this->autoLoadStateAnswers(__DIR__ . '/../../Telegram/StateAnswers/Admin');
 
         $this->addUserReplyKeys(config('telegram-bot-essentials.keyboard.admin') ?? []);
         $this->addUserReplyKeys(config('telegram-bot-essentials.keyboard.member') ?? []);
-        $this->autoLoadReplyKeys(__DIR__ . '/../Telegram/ReplyKeys/Member');
-        $this->autoLoadReplyKeys(__DIR__ . '/../Telegram/ReplyKeys/Admin');
+        $this->autoLoadReplyKeys(__DIR__ . '/../../Telegram/ReplyKeys/Member');
+        $this->autoLoadReplyKeys(__DIR__ . '/../../Telegram/ReplyKeys/Admin');
     }
 
     /**
