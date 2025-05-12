@@ -4,7 +4,7 @@ return [
     'status' => [
         'enabled' => 'فعال شد',
         'disabled' => 'غیرفعال شد',
-        'notSet' => 'تنظیم نشده است ❕',
+        'notSet' => 'تنظیم نشده است',
         'enabledEmoji' => '✅',
         'disabledEmoji' => '🛑',
     ],
@@ -21,7 +21,7 @@ return [
     ],
 
     'messages' => [
-        'valueUpdatedSuccessfully' => '❕ مقدار با موفقیت به‌روزرسانی شد ✅',
+        'valueUpdatedSuccessfully' => '❕ مقدار با موفقیت بهروزرسانی شد ✅',
     ],
 
     'keys' => [
