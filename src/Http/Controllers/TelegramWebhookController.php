@@ -26,7 +26,7 @@ class TelegramWebhookController extends Controller
         $request->headers->set('Accept', 'application/json');
         try {
             try {
-                if (wHook()->user()->power < Roles::ADMIN->value) dependsOn(wHook()->bot()->settings->bot_status, __('telegram-bot-essentials::bot_settings.botIsOffAlertMessage'));
+                if (wHook()->user()->power < Roles::ADMIN->value) dependsOn(wHook()->bot()->settings->bot_status, __('telegram-bot-essentials::general.alerts.botIsOff'));
                 $this->initializeOptions();
                 $this->processUpdate();
             } catch (ValidationException $e) {
@@ -174,12 +174,12 @@ class TelegramWebhookController extends Controller
         if (wHook()->update()->message) {
             wHook()->api()->sendMessage([
                 'chat_id' => wHook()->update()->message->from->id,
-                'text' => $e->getMessage() == "" ? __('telegram-bot-essentials::general.alerts.disabledFeatureAlert', ['feature' => wHook()->update()->message->text]) : $e->getMessage(),
+                'text' => $e->getMessage() == "" ? __('telegram-bot-essentials::general.alerts.disabledFeature', ['feature' => wHook()->update()->message->text]) : $e->getMessage(),
             ]);
         } elseif (wHook()->update()->callbackQuery) {
             wHook()->api()->answerCallbackQuery([
                 'callback_query_id' => wHook()->update()->callbackQuery->id,
-                'text' => $e->getMessage() == "" ? __('telegram-bot-essentials::general.alerts.disabledFeatureAlert', ['feature' => getInputInlineKeyText()]) : $e->getMessage(),
+                'text' => $e->getMessage() == "" ? __('telegram-bot-essentials::general.alerts.disabledFeature', ['feature' => getInputInlineKeyText()]) : $e->getMessage(),
                 'show_alert' => true,
                 'cache_time' => 5,
             ]);

@@ -10,20 +10,21 @@ return [
     ],
 
     'callbackQuery' => [
-        'willBeAddedInTheFuture' => 'Will be added in the future.',
+        'willBeAddedInTheFuture' => '❕ Will be added in the future.',
     ],
 
     'alerts' => [
-        'disabledFeatureAlert' => 'This feature (:feature) is currently Disabled.',
-        'notFound' => 'Requested :resource not found',
-        'requestIsInvalid' => 'Request is invalid, please use reply keyboard',
+        'botIsOff' => '❗️ Bot is currently out of service.',
+        'disabledFeature' => '❗️ This feature (:feature) is currently Disabled.',
+        'notFound' => '❗️ Requested :resource not found.',
+        'requestIsInvalid' => '❗️ Request is invalid, please use reply keyboard.',
     ],
 
     'messages' => [
-        'valueUpdatedSuccessfully' => 'Value updated successfully ✅',
+        'valueUpdatedSuccessfully' => '❕ Value updated successfully ✅',
     ],
 
     'keys' => [
-        'back' => 'Back',
+        'back' => 'Back 🔙',
     ]
 ];

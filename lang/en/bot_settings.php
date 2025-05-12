@@ -12,7 +12,6 @@ return [
                 . "\r\n❔ <b>Payments Card Name:</b> <i>:paymentCardName</i>"
                 . "\r\n"
                 . "\r\n❔ <b>Transactions chat ID:</b> <i>:transactionsChatId</i>",
-            'botIsOffAlert' => '❗️ Bot is currently out of service.',
             'changePaymentCardNumber' => '❓ Enter new payment card number: ',
             'changePaymentCardName' => '❓ Enter new payment card name: ',
             'transactionsChatId' => '❓ Enter new transactions chat ID: ',
