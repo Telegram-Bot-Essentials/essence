@@ -19,6 +19,10 @@ return [
         'requestIsInvalid' => 'Request is invalid, please use reply keyboard',
     ],
 
+    'messages' => [
+        'valueUpdatedSuccessfully' => 'Value updated successfully ✅',
+    ],
+
     'keys' => [
         'back' => 'Back',
     ]

@@ -22,6 +22,7 @@ class BotSettingsFeature
             'chat_id' => wHook()->user()->telegramUser->peer_id,
             'text' => $data['text'],
             'reply_markup' => $data['reply_markup'],
+            'parse_mode' => 'HTML',
         ]);
 
     }
@@ -44,17 +45,19 @@ class BotSettingsFeature
 
         $replyMarkup->row([
             Keyboard::inlineButton([
-                'text' => __('telegram-bot-essentials::bot_settings.main.keys.botStatus') . (wHook()->bot()->settings->bot_status ? __('telegram-bot-essentials::general.status.enabledEmoji') : __('telegram-bot-essentials::general.status.disabledEmoji')),
+                'text' => __('telegram-bot-essentials::bot_settings.main.keys.botStatus', [
+                    'status' => (wHook()->bot()->settings->bot_status ? __('telegram-bot-essentials::general.status.enabledEmoji') : __('telegram-bot-essentials::general.status.disabledEmoji'))
+                    ]),
                 'callback_data' => encodeCallback(self::$type, ['bot_status', intval(!wHook()->bot()->settings->bot_status)])
-            ])
-        ]);
-
-        $replyMarkup->row([
+            ]),
             Keyboard::inlineButton([
-                'text' => __('telegram-bot-essentials::bot_settings.main.keys.payWithCardStatus') . (wHook()->bot()->settings->pay_with_card ? __('telegram-bot-essentials::general.status.enabledEmoji') : __('telegram-bot-essentials::general.status.disabledEmoji')),
+                'text' => __('telegram-bot-essentials::bot_settings.main.keys.payWithCardStatus', [
+                    'status' => (wHook()->bot()->settings->pay_with_card ? __('telegram-bot-essentials::general.status.enabledEmoji') : __('telegram-bot-essentials::general.status.disabledEmoji'))
+                ]),
                 'callback_data' => encodeCallback(self::$type, ['pay_with_card_status', intval(!wHook()->bot()->settings->pay_with_card)])
             ])
         ]);
+
 
 //        $replyMarkup->row([
 //            Keyboard::inlineButton([
@@ -99,6 +102,7 @@ class BotSettingsFeature
             'chat_id' => wHook()->user()->telegramUser->peer_id,
             'message_id' => wHook()->update()->callbackQuery->message->messageId,
             'text' => $data['text'],
+            'parse_mode' => 'HTML',
             'reply_markup' => $data['reply_markup']
         ]);
     }

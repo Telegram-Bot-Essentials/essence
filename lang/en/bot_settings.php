@@ -3,37 +3,35 @@
 return [
     'main' => [
         'text' => [
-            'information' => 'Settings'
+            'information' => '⚙️ <b><i>Settings</i></b>'
                 . "\r\n"
-                . "\r\nBot Status :botStatus"
-                . "\r\nPay With Card :payWithCardStatus"
+                . "\r\n❔ <b>Bot Status</b> :botStatus"
+                . "\r\n❔ <b>Pay With Card</b> :payWithCardStatus"
                 . "\r\n"
-                . "\r\nPayments Card Number: :paymentCardNumber"
-                . "\r\nPayments Card Name: :paymentCardName"
+                . "\r\n❔ <b>Payments Card Number:</b> <i>:paymentCardNumber</i>"
+                . "\r\n❔ <b>Payments Card Name:</b> <i>:paymentCardName</i>"
                 . "\r\n"
-                . "\r\nTransactions chat ID: :transactionsChatId",
-            'botIsOffAlert' => 'Bot is currently out of service.',
-            'changePaymentCardNumber' => 'Enter new payment card number: ',
-            'changePaymentCardName' => 'Enter new payment card name: ',
-            'transactionsChatId' => 'Enter new transactions chat ID: ',
-
-            'valueUpdatedSuccessfully' => 'Value updated successfully',
+                . "\r\n❔ <b>Transactions chat ID:</b> <i>:transactionsChatId</i>",
+            'botIsOffAlert' => '❗️ Bot is currently out of service.',
+            'changePaymentCardNumber' => '❓ Enter new payment card number: ',
+            'changePaymentCardName' => '❓ Enter new payment card name: ',
+            'transactionsChatId' => '❓ Enter new transactions chat ID: ',
         ],
         'answers' => [
-            'paymentCardNumber' => 'Updating payment card number...',
-            'paymentCardName' => 'Updating payment card name...',
-            'transactionsChatId' => 'Updating transactions chat ID...',
+            'paymentCardNumber' => '⏳ Updating payment card number...',
+            'paymentCardName' => '⏳ Updating payment card name...',
+            'transactionsChatId' => '⏳ Updating transactions chat ID...',
 
             'botStatusUpdated' => 'Bot Status :newStatus',
             'payWithCardStatusUpdated' => 'Pay with card Status :newStatus'
         ],
         'keys' => [
-            'botStatus' => 'Bot Status',
-            'payWithCardStatus' => 'Pay with Card',
-            'paymentCardNumber' => 'Payment Card Number',
-            'paymentCardName' => 'Payment Card Name',
-            'transactionsChatId' => 'Transactions Chat ID',
+            'botStatus' => 'Bot Status :status',
+            'payWithCardStatus' => 'Pay with Card :status',
+            'paymentCardNumber' => '✏️ Payment Card Number',
+            'paymentCardName' => '✏️ Payment Card Name',
+            'transactionsChatId' => '✏️ Transactions Chat ID',
         ]
     ],
-    'reply_key' => 'Bot Settings',
+    'reply_key' => 'Bot Settings ⚙️',
 ];
