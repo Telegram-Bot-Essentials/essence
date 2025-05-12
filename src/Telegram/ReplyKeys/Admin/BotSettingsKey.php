@@ -12,7 +12,7 @@ class BotSettingsKey extends ReplyKey
 
     public function __construct()
     {
-        $this->text = __('telegram-bot-essentials::bot_settings.reply_key');
+        $this->text = __('tbe::bot_settings.reply_key');
     }
 
     /**

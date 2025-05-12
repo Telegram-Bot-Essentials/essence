@@ -14,8 +14,8 @@ class CancelProcessKey extends ReplyKey
 
     public function __construct()
     {
-        $this->text = __('telegram-bot-essentials::cancel_process.reply_key');
-        $this->response = __('telegram-bot-essentials::cancel_process.main.text.response');
+        $this->text = __('tbe::cancel_process.reply_key');
+        $this->response = __('tbe::cancel_process.main.text.response');
     }
 
     /**

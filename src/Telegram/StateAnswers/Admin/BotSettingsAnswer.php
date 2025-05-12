@@ -64,7 +64,7 @@ class BotSettingsAnswer extends StateAnswer
     {
         wHook()->api()->sendMessage([
             'chat_id' => wHook()->user()->telegramUser->peer_id,
-            'text' => __('telegram-bot-essentials::general.messages.valueUpdatedSuccessfully'),
+            'text' => __('tbe::general.messages.valueUpdatedSuccessfully'),
             'reply_markup' => wHook()->user()->getKeyboard()
         ]);
     }

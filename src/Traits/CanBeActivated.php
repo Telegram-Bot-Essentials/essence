@@ -29,7 +29,7 @@ trait CanBeActivated
         if ($value) {
             foreach ($this->requiredAttributes ?? [] as $attribute) {
                 if (empty($this->attributes[$attribute])) {
-                    throw new CannotSetItActive("Unable to activate, required attribute '{$attribute}' is missing or empty.");
+                    throw new CannotSetItActive(__('tbe::general.alerts.unableToActivateAttributeMissing', ['attribute' => $attribute]));
                 }
             }
         }

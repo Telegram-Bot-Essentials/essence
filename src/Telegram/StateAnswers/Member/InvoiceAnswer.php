@@ -51,15 +51,15 @@ class InvoiceAnswer extends StateAnswer
         $invoice->paymentAttempt->toCardAttempt->received_at = now();
         $invoice->paymentAttempt->toCardAttempt->save();
 
-        $invoice->messageMeta->lockAction(__('invoice.to_card.lock-keys.user-wait_for_payment_processing'));
+        $invoice->messageMeta->lockAction(__('tbe::invoice.to_card.lock-keys.user-wait_for_payment_processing'));
         wHook()->user()->changeState();
         wHook()->api()->sendMessage([
             'chat_id' => wHook()->update()->message->from->id,
-            'text' => __('invoice.to_card.text.user-payment_result'),
+            'text' => __('tbe::invoice.to_card.text.user-payment_result'),
             'reply_markup' => wHook()->user()->getKeyboard(),
         ]);
 
-        $text = __('invoice.to_card.text.admin-payment_result', [
+        $text = __('tbe::invoice.to_card.text.admin-payment_result', [
             'invoiceId' => $invoice->id,
             'invoiceDescription' => $invoice->payable->description ?? null,
             'paymentDescription' => wHook()->update()->message?->photo ? wHook()->update()->message->caption : wHook()->update()->message->text,
@@ -68,10 +68,10 @@ class InvoiceAnswer extends StateAnswer
         $replyMarkup = Keyboard::make()->inline();
 
         $replyMarkup->row([Keyboard::inlineButton([
-            'text' => __('invoice.to_card.keys.admin-accept_payment'),
+            'text' => __('tbe::invoice.to_card.keys.admin-accept_payment'),
             'callback_data' => encodeCallback('MANAGE_INVOICE', ['accept_card_payment', $invoice->paymentAttempt->toCardAttempt->id])
         ]), Keyboard::inlineButton([
-            'text' => __('invoice.to_card.keys.admin-reject_payment'),
+            'text' => __('tbe::invoice.to_card.keys.admin-reject_payment'),
             'callback_data' => encodeCallback('MANAGE_INVOICE', ['reject_card_payment', $invoice->paymentAttempt->toCardAttempt->id])
         ])]);
 

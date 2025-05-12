@@ -82,7 +82,7 @@ class CallbackQueryBus
             try {
                 wHook()->api()->answerCallbackQuery([
                     'callback_query_id' => $update->callbackQuery->id,
-                    'text' => __('telegram-bot-essentials::general.callbackQuery.willBeAddedInTheFuture'),
+                    'text' => __('tbe::general.callbackQuery.willBeAddedInTheFuture'),
                     'show_alert' => true,
                     'cache_time' => 5,
                 ]);

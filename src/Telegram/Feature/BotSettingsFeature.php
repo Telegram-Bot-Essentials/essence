@@ -32,12 +32,12 @@ class BotSettingsFeature
      */
     private static function menuRaw(): array
     {
-        $text = __('telegram-bot-essentials::bot_settings.main.text.information', [
-            'botStatus' => (wHook()->bot()->settings->bot_status ? __('telegram-bot-essentials::general.status.enabledEmoji') : __('telegram-bot-essentials::general.status.disabledEmoji')),
-            'payWithCardStatus' => (wHook()->bot()->settings->pay_with_card ? __('telegram-bot-essentials::general.status.enabledEmoji') : __('telegram-bot-essentials::general.status.disabledEmoji')),
-            'transactionsChatId' => wHook()->bot()->settings->transactions_chat_id ?? __('telegram-bot-essentials::general.status.notSet'),
-            'paymentCardNumber' => wHook()->bot()->settings->pay_to_card_number ?? __('telegram-bot-essentials::general.status.notSet'),
-            'paymentCardName' => wHook()->bot()->settings->pay_to_card_name ?? __('telegram-bot-essentials::general.status.notSet'),
+        $text = __('tbe::bot_settings.main.text.information', [
+            'botStatus' => (wHook()->bot()->settings->bot_status ? __('tbe::general.status.enabledEmoji') : __('tbe::general.status.disabledEmoji')),
+            'payWithCardStatus' => (wHook()->bot()->settings->pay_with_card ? __('tbe::general.status.enabledEmoji') : __('tbe::general.status.disabledEmoji')),
+            'transactionsChatId' => wHook()->bot()->settings->transactions_chat_id ?? __('tbe::general.status.notSet'),
+            'paymentCardNumber' => wHook()->bot()->settings->pay_to_card_number ?? __('tbe::general.status.notSet'),
+            'paymentCardName' => wHook()->bot()->settings->pay_to_card_name ?? __('tbe::general.status.notSet'),
         ]);
 
         $replyMarkup = Keyboard::make()
@@ -45,14 +45,14 @@ class BotSettingsFeature
 
         $replyMarkup->row([
             Keyboard::inlineButton([
-                'text' => __('telegram-bot-essentials::bot_settings.main.keys.botStatus', [
-                    'status' => (wHook()->bot()->settings->bot_status ? __('telegram-bot-essentials::general.status.enabledEmoji') : __('telegram-bot-essentials::general.status.disabledEmoji'))
+                'text' => __('tbe::bot_settings.main.keys.botStatus', [
+                    'status' => (wHook()->bot()->settings->bot_status ? __('tbe::general.status.enabledEmoji') : __('tbe::general.status.disabledEmoji'))
                     ]),
                 'callback_data' => encodeCallback(self::$type, ['bot_status', intval(!wHook()->bot()->settings->bot_status)])
             ]),
             Keyboard::inlineButton([
-                'text' => __('telegram-bot-essentials::bot_settings.main.keys.payWithCardStatus', [
-                    'status' => (wHook()->bot()->settings->pay_with_card ? __('telegram-bot-essentials::general.status.enabledEmoji') : __('telegram-bot-essentials::general.status.disabledEmoji'))
+                'text' => __('tbe::bot_settings.main.keys.payWithCardStatus', [
+                    'status' => (wHook()->bot()->settings->pay_with_card ? __('tbe::general.status.enabledEmoji') : __('tbe::general.status.disabledEmoji'))
                 ]),
                 'callback_data' => encodeCallback(self::$type, ['pay_with_card_status', intval(!wHook()->bot()->settings->pay_with_card)])
             ])
@@ -61,28 +61,28 @@ class BotSettingsFeature
 
 //        $replyMarkup->row([
 //            Keyboard::inlineButton([
-//                'text' => __('telegram-bot-essentials::bot_settings.keysSeparatorPlaceHolder'),
+//                'text' => __('tbe::bot_settings.keysSeparatorPlaceHolder'),
 //                'callback_data' => encodeCallback('place_holder')
 //            ])
 //        ]);
 
         $replyMarkup->row([
             Keyboard::inlineButton([
-                'text' => __('telegram-bot-essentials::bot_settings.main.keys.transactionsChatId'),
+                'text' => __('tbe::bot_settings.main.keys.transactionsChatId'),
                 'callback_data' => encodeCallback(self::$type, ['change_transactions_chat_id'])
             ])
         ]);
 
         $replyMarkup->row([
             Keyboard::inlineButton([
-                'text' => __('telegram-bot-essentials::bot_settings.main.keys.paymentCardNumber'),
+                'text' => __('tbe::bot_settings.main.keys.paymentCardNumber'),
                 'callback_data' => encodeCallback(self::$type, ['change_payment_card_number'])
             ])
         ]);
 
         $replyMarkup->row([
             Keyboard::inlineButton([
-                'text' => __('telegram-bot-essentials::bot_settings.main.keys.paymentCardName'),
+                'text' => __('tbe::bot_settings.main.keys.paymentCardName'),
                 'callback_data' => encodeCallback(self::$type, ['change_payment_card_name'])
             ])
         ]);

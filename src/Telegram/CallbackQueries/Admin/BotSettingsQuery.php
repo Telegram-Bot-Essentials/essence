@@ -53,8 +53,8 @@ class BotSettingsQuery extends CallbackQuery
         wHook()->bot()->settings->bot_status = $this->params[1];
         wHook()->bot()->settings->save();
         BotSettingsFeature::menuEdit();
-        $this->answer(__('telegram-bot-essentials::bot_settings.main.answers.payWithCardStatusUpdated', [
-            'newStatus' => $this->params[1] ? __('telegram-bot-essentials::general.status.enabled') : __('telegram-bot-essentials::general.status.disabled')
+        $this->answer(__('tbe::bot_settings.main.answers.payWithCardStatusUpdated', [
+            'newStatus' => $this->params[1] ? __('tbe::general.status.enabled') : __('tbe::general.status.disabled')
         ]));
     }
 
@@ -68,8 +68,8 @@ class BotSettingsQuery extends CallbackQuery
         wHook()->bot()->settings->save();
         BotSettingsFeature::menuEdit();
         $this->answer("Pay with Card " . ($this->params[1] ? 'enabled' : 'disabled'));
-        $this->answer(__('telegram-bot-essentials::bot_settings.main.answers.botStatusUpdated', [
-            'newStatus' => $this->params[1] ? __('telegram-bot-essentials::general.status.enabled') : __('telegram-bot-essentials::general.status.disabled')
+        $this->answer(__('tbe::bot_settings.main.answers.botStatusUpdated', [
+            'newStatus' => $this->params[1] ? __('tbe::general.status.enabled') : __('tbe::general.status.disabled')
         ]));
     }
 
@@ -81,7 +81,7 @@ class BotSettingsQuery extends CallbackQuery
      */
     private function changePaymentCardNumber(): void
     {
-        $text = __('telegram-bot-essentials::bot_settings.main.text.changePaymentCardNumber');
+        $text = __('tbe::bot_settings.main.text.changePaymentCardNumber');
 
         wHook()->user()->changeState(encodeAnswerState($this->type, "change_payment_card_number"));
 
@@ -94,7 +94,7 @@ class BotSettingsQuery extends CallbackQuery
             'chat_id' => wHook()->user()->telegramUser->peer_id,
             'message_id' => wHook()->update()->callbackQuery->message->messageId
         ]);
-        $this->answer(__('telegram-bot-essentials::bot_settings.main.answers.paymentCardNumber'));
+        $this->answer(__('tbe::bot_settings.main.answers.paymentCardNumber'));
     }
 
     /**
@@ -105,7 +105,7 @@ class BotSettingsQuery extends CallbackQuery
      */
     private function changePaymentCardName(): void
     {
-        $text = __('telegram-bot-essentials::bot_settings.main.text.changePaymentCardName');
+        $text = __('tbe::bot_settings.main.text.changePaymentCardName');
 
         wHook()->user()->changeState(encodeAnswerState($this->type, "change_payment_card_name"));
 
@@ -118,7 +118,7 @@ class BotSettingsQuery extends CallbackQuery
             'chat_id' => wHook()->user()->telegramUser->peer_id,
             'message_id' => wHook()->update()->callbackQuery->message->messageId
         ]);
-        $this->answer(__('telegram-bot-essentials::bot_settings.main.answers.paymentCardName'));
+        $this->answer(__('tbe::bot_settings.main.answers.paymentCardName'));
     }
 
     /**
@@ -129,7 +129,7 @@ class BotSettingsQuery extends CallbackQuery
      */
     private function changeTransactionsChatId(): void
     {
-        $text = __('telegram-bot-essentials::bot_settings.main.text.transactionsChatId');
+        $text = __('tbe::bot_settings.main.text.transactionsChatId');
 
         wHook()->user()->changeState(encodeAnswerState($this->type, "change_transactions_chat_id"));
 
@@ -142,6 +142,6 @@ class BotSettingsQuery extends CallbackQuery
             'chat_id' => wHook()->user()->telegramUser->peer_id,
             'message_id' => wHook()->update()->callbackQuery->message->messageId
         ]);
-        $this->answer(__('telegram-bot-essentials::bot_settings.main.answers.transactionsChatId'));
+        $this->answer(__('tbe::bot_settings.main.answers.transactionsChatId'));
     }
 }

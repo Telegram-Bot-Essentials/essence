@@ -23,7 +23,7 @@ trait DoneLimited
     {
         foreach ($this->requiredAttributes ?? [] as $attribute) {
             if (empty($this->getAttribute($attribute))) {
-                throw new CannotSetItAsDone("Required attribute '{$attribute}' is missing or empty.");
+                throw new CannotSetItAsDone(__('tbe::general.alerts.unableToSetDoneAttributeMissing', ['attribute' => $attribute]));
             }
         }
 

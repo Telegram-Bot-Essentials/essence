@@ -14,6 +14,8 @@ return [
     ],
 
     'alerts' => [
+        'unableToActivateAttributeMissing' => 'Unable to activate, required attribute :attribute is missing or empty.',
+        'unableToSetDoneAttributeMissing' => 'Required attribute \':attribute\' is missing or empty.',
         'botIsOff' => '❗️ Bot is currently out of service.',
         'disabledFeature' => '❗️ This feature (:feature) is currently Disabled.',
         'notFound' => '❗️ Requested :resource not found.',

@@ -23,7 +23,7 @@ trait CanCancelOldProcess
             if(wHook()->update()?->message?->text !== $CancelProcessKey->getText()){
                 wHook()->api()->sendMessage([
                     'chat_id' => wHook()->user()->telegramUser->peer_id,
-                    'text' => __('telegram-bot-essentials::cancel_process.main.text.cancelDueToNewProcess'),
+                    'text' => __('tbe::cancel_process.main.text.cancelDueToNewProcess'),
                     'reply_markup' => wHook()->user()->getKeyboard()
                 ]);
             }

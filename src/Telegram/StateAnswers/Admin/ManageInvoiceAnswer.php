@@ -49,12 +49,12 @@ class ManageInvoiceAnswer extends StateAnswer
 
         wHook()->api()->sendMessage([
             'chat_id' => wHook()->update()->message->chat->id,
-            'text' => __('invoice.to_card.text.admin-payment_rejected'),
+            'text' => __('tbe::invoice.to_card.text.admin-payment_rejected'),
             'reply_to_message_id' => $toCardAttempt->messageMeta->message_id,
             'reply_markup' => wHook()->user()->getKeyboard(),
         ]);
 
-        $text = __('invoice.to_card.text.user-payment_rejected', [
+        $text = __('tbe::invoice.to_card.text.user-payment_rejected', [
             'rejectionReason' => $toCardAttempt->reject_reason
         ]);
 
@@ -63,9 +63,9 @@ class ManageInvoiceAnswer extends StateAnswer
             'text' => $text,
         ]);
 
-        $toCardAttempt->messageMeta->lockAction(__('invoice.to_card.lock-keys.admin-payment_rejected_by', [
+        $toCardAttempt->messageMeta->lockAction(__('tbe::invoice.to_card.lock-keys.admin-payment_rejected_by', [
             'adminName' => wHook()->user()->telegramUser->full_name]), customEmoji: "❌");
-        $toCardAttempt->paymentAttempt->invoice->messageMeta->lockAction(__('invoice.to_card.lock-keys.user-payment_rejected'), '❌');
+        $toCardAttempt->paymentAttempt->invoice->messageMeta->lockAction(__('tbe::invoice.to_card.lock-keys.user-payment_rejected'), '❌');
     }
 
     /**

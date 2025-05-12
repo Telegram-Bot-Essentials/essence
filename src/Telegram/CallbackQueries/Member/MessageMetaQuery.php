@@ -43,7 +43,7 @@ class MessageMetaQuery extends CallbackQuery
     {
         wHook()->api()->answerCallbackQuery([
             'callback_query_id' => wHook()->update()->callbackQuery->id,
-            'text' => __('telegram-bot-essentials::message_meta.main.answers.lockedForAction')
+            'text' => __('tbe::message_meta.main.answers.lockedForAction')
         ]);
     }
 

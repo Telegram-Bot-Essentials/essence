@@ -52,20 +52,20 @@ class InvoiceQuery extends CallbackQuery
         ]);
         $invoice->paymentAttempt()->whereNot('id', $paymentAttempt->id)->delete();
 
-        $text = __('invoice.to_card.text.user-pay_message', [
+        $text = __('tbe::invoice.to_card.text.user-pay_message', [
             'cardNumber' => wHook()->bot()->settings->pay_to_card_number,
             'cardName' => wHook()->bot()->settings->pay_to_card_name
         ]);
 
         wHook()->user()->changeState(encodeAnswerState($this->type, "pay_to_card", ["invoice_id" => $invoice->id]));
 
-        $invoice->messageMeta->lockAction(__('invoice.to_card.lock-keys.user-waiting_for_payment'));
+        $invoice->messageMeta->lockAction(__('tbe::invoice.to_card.lock-keys.user-waiting_for_payment'));
 
         wHook()->api()->sendMessage([
             'chat_id' => wHook()->user()->telegramUser->peer_id,
             'text' => $text,
             'reply_markup' => wHook()->user()->getKeyboard()
         ]);
-        $this->answer(__('invoice.to_card.answers.attempting'));
+        $this->answer(__('tbe::invoice.to_card.answers.attempting'));
     }
 }

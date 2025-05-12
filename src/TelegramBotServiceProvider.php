@@ -52,7 +52,7 @@ class TelegramBotServiceProvider extends ServiceProvider
             __DIR__ . '/../config/telegram-bot-essentials.php' => config_path('telegram-bot-essentials.php'),
         ], 'telegram-bot-essentials');
 
-        $this->loadTranslationsFrom(__DIR__ . '/../lang', 'telegram-bot-essentials');
+        $this->loadTranslationsFrom(__DIR__ . '/../lang', 'tbe');
         $this->publishes([
             __DIR__ . '/../lang' => resource_path('lang/vendor/telegram-bot-essentials'),
         ], 'telegram-bot-essentials-translations');

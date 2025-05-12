@@ -13,8 +13,8 @@ class MainMenuKey extends ReplyKey
 
     public function __construct()
     {
-        $this->text = __('telegram-bot-essentials::main_menu.reply_key');
-        $this->response = __('telegram-bot-essentials::main_menu.main.text.menu_changed');
+        $this->text = __('tbe::main_menu.reply_key');
+        $this->response = __('tbe::main_menu.main.text.menu_changed');
     }
 
     /**
