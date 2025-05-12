@@ -8,6 +8,7 @@ use Elyar\TelegramBotEssentials\Models\BotSettings;
 use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQuery;
 use Elyar\TelegramBotEssentials\Telegram\Feature\BotSettingsFeature;
 use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Support\Facades\App;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 
 class BotSettingsQuery extends CallbackQuery
@@ -153,6 +154,7 @@ class BotSettingsQuery extends CallbackQuery
         $newLanguage = wHook()->bot()->settings->language == 'en' ? 'fa' : 'en';
         wHook()->bot()->settings->language = $newLanguage;
         wHook()->bot()->settings->save();
+        App::setLocale(wHook()->bot()->settings->language);
         BotSettingsFeature::menuEdit();
         $this->answer(__('tbe::bot_settings.main.answers.botLanguage', [
             'language' => $newLanguage
