@@ -32,6 +32,10 @@ class BotSettingsQuery extends CallbackQuery
                 $this->payWithCardStatus();
                 break;
 
+            case "bot_language":
+                $this->botLanguage();
+                break;
+
             case "change_payment_card_number":
                 $this->changePaymentCardNumber();
                 break;
@@ -53,7 +57,7 @@ class BotSettingsQuery extends CallbackQuery
         wHook()->bot()->settings->bot_status = $this->params[1];
         wHook()->bot()->settings->save();
         BotSettingsFeature::menuEdit();
-        $this->answer(__('tbe::bot_settings.main.answers.payWithCardStatusUpdated', [
+        $this->answer(__('tbe::bot_settings.main.answers.botStatusUpdated', [
             'newStatus' => $this->params[1] ? __('tbe::general.status.enabled') : __('tbe::general.status.disabled')
         ]));
     }
@@ -67,8 +71,7 @@ class BotSettingsQuery extends CallbackQuery
         wHook()->bot()->settings->pay_with_card = $this->params[1];
         wHook()->bot()->settings->save();
         BotSettingsFeature::menuEdit();
-        $this->answer("Pay with Card " . ($this->params[1] ? 'enabled' : 'disabled'));
-        $this->answer(__('tbe::bot_settings.main.answers.botStatusUpdated', [
+        $this->answer(__('tbe::bot_settings.main.answers.payWithCardStatusUpdated', [
             'newStatus' => $this->params[1] ? __('tbe::general.status.enabled') : __('tbe::general.status.disabled')
         ]));
     }
@@ -143,5 +146,16 @@ class BotSettingsQuery extends CallbackQuery
             'message_id' => wHook()->update()->callbackQuery->message->messageId
         ]);
         $this->answer(__('tbe::bot_settings.main.answers.transactionsChatId'));
+    }
+
+    private function botLanguage()
+    {
+        $newLanguage = wHook()->bot()->settings->language == 'en' ? 'fa' : 'en';
+        wHook()->bot()->settings->language = $newLanguage;
+        wHook()->bot()->settings->save();
+        BotSettingsFeature::menuEdit();
+        $this->answer(__('tbe::bot_settings.main.answers.botLanguage', [
+            'language' => $newLanguage
+        ]));
     }
 }

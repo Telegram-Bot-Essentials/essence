@@ -51,6 +51,15 @@ class BotSettingsFeature
                 'callback_data' => encodeCallback(self::$type, ['bot_status', intval(!wHook()->bot()->settings->bot_status)])
             ]),
             Keyboard::inlineButton([
+                'text' => __('tbe::bot_settings.main.keys.botLanguage', [
+                    'language' => wHook()->bot()->settings->language
+                ]),
+                'callback_data' => encodeCallback(self::$type, ['bot_language'])
+            ])
+        ]);
+
+        $replyMarkup->row([
+            Keyboard::inlineButton([
                 'text' => __('tbe::bot_settings.main.keys.payWithCardStatus', [
                     'status' => (wHook()->bot()->settings->pay_with_card ? __('tbe::general.status.enabledEmoji') : __('tbe::general.status.disabledEmoji'))
                 ]),

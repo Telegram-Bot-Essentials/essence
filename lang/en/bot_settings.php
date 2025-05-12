@@ -22,9 +22,12 @@ return [
             'transactionsChatId' => '⏳ Updating transactions chat ID...',
 
             'botStatusUpdated' => 'Bot Status :newStatus',
-            'payWithCardStatusUpdated' => 'Pay with card Status :newStatus'
+            'payWithCardStatusUpdated' => 'Pay with card Status :newStatus',
+
+            'botLanguage' => 'Bot language changed to :language',
         ],
         'keys' => [
+            'botLanguage' => '🌍 Language: :language',
             'botStatus' => 'Bot Status :status',
             'payWithCardStatus' => 'Pay with Card :status',
             'paymentCardNumber' => '✏️ Payment Card Number',

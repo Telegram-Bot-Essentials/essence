@@ -12,6 +12,7 @@ use Exception;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Telegram\Bot\Commands\Command;
@@ -24,6 +25,7 @@ class TelegramWebhookController extends Controller
     public function __invoke(Request $request, string $unique_id)
     {
         $request->headers->set('Accept', 'application/json');
+        App::setLocale(wHook()->bot()->settings->language);
         try {
             try {
                 if (wHook()->user()->power < Roles::ADMIN->value) dependsOn(wHook()->bot()->settings->bot_status, __('tbe::general.alerts.botIsOff'));
