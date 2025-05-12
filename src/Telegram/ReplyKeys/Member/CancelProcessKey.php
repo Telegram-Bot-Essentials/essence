@@ -14,8 +14,8 @@ class CancelProcessKey extends ReplyKey
 
     public function __construct()
     {
-        $this->text = __('cancel_process.reply_key');
-        $this->response = __('cancel_process.main.text.response');
+        $this->text = __('telegram-bot-essentials::cancel_process.reply_key');
+        $this->response = __('telegram-bot-essentials::cancel_process.main.text.response');
     }
 
     /**
@@ -25,7 +25,6 @@ class CancelProcessKey extends ReplyKey
      */
     public function handle(): void
     {
-//        wHook()->user()->changeState();
         wHook()->api()->sendMessage([
             'chat_id' => wHook()->user()->telegramUser->peer_id,
             'text' => $this->response,
