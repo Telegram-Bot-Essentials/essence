@@ -3,12 +3,17 @@
 namespace Elyar\TelegramBotEssentials\Telegram\Feature;
 
 use Elyar\TelegramBotEssentials\Models\BotSettings;
+use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\Keyboard\Keyboard;
 
 class BotSettingsFeature
 {
     static string $type = 'BTSTNG';
 
+    /**
+     * @return void
+     * @throws TelegramSDKException
+     */
     public static function menuSend(): void
     {
         $data = self::menuRaw();
@@ -21,9 +26,12 @@ class BotSettingsFeature
 
     }
 
+    /**
+     * @return array
+     */
     private static function menuRaw(): array
     {
-        $text = __('telegram-bot-essentials::bot_settings.settingsText', [
+        $text = __('telegram-bot-essentials::bot_settings.main.text.information', [
             'botStatus' => (wHook()->bot()->settings->bot_status ? __('telegram-bot-essentials::general.enabled') : __('telegram-bot-essentials::general.disabled')),
             'payWithCardStatus' => (wHook()->bot()->settings->pay_with_card ? __('telegram-bot-essentials::general.enabled') : __('telegram-bot-essentials::general.disabled')),
             'transactionsChatId' => wHook()->bot()->settings->transactions_chat_id ?? __('telegram-bot-essentials::general.notSetString'),
@@ -36,42 +44,42 @@ class BotSettingsFeature
 
         $replyMarkup->row([
             Keyboard::inlineButton([
-                'text' => __('telegram-bot-essentials::bot_settings.botStatusSwitch') . (wHook()->bot()->settings->bot_status ? __('telegram-bot-essentials::general.enabled') : __('telegram-bot-essentials::general.disabled')),
+                'text' => __('telegram-bot-essentials::bot_settings.main.keys.botStatus') . (wHook()->bot()->settings->bot_status ? __('telegram-bot-essentials::general.enabled') : __('telegram-bot-essentials::general.disabled')),
                 'callback_data' => encodeCallback(self::$type, ['bot_status', intval(!wHook()->bot()->settings->bot_status)])
             ])
         ]);
 
         $replyMarkup->row([
             Keyboard::inlineButton([
-                'text' => __('telegram-bot-essentials::bot_settings.payWithCardSwitch') . (wHook()->bot()->settings->pay_with_card ? __('telegram-bot-essentials::general.enabled') : __('telegram-bot-essentials::general.disabled')),
+                'text' => __('telegram-bot-essentials::bot_settings.main.keys.payWithCardStatus') . (wHook()->bot()->settings->pay_with_card ? __('telegram-bot-essentials::general.enabled') : __('telegram-bot-essentials::general.disabled')),
                 'callback_data' => encodeCallback(self::$type, ['pay_with_card_status', intval(!wHook()->bot()->settings->pay_with_card)])
             ])
         ]);
 
-        $replyMarkup->row([
-            Keyboard::inlineButton([
-                'text' => __('telegram-bot-essentials::bot_settings.keysSeparatorPlaceHolder'),
-                'callback_data' => encodeCallback('place_holder')
-            ])
-        ]);
+//        $replyMarkup->row([
+//            Keyboard::inlineButton([
+//                'text' => __('telegram-bot-essentials::bot_settings.keysSeparatorPlaceHolder'),
+//                'callback_data' => encodeCallback('place_holder')
+//            ])
+//        ]);
 
         $replyMarkup->row([
             Keyboard::inlineButton([
-                'text' => __('telegram-bot-essentials::bot_settings.transactionsChat'),
+                'text' => __('telegram-bot-essentials::bot_settings.main.keys.transactionsChatId'),
                 'callback_data' => encodeCallback(self::$type, ['change_transactions_chat_id'])
             ])
         ]);
 
         $replyMarkup->row([
             Keyboard::inlineButton([
-                'text' => __('telegram-bot-essentials::bot_settings.paymentCardNumber'),
+                'text' => __('telegram-bot-essentials::bot_settings.main.keys.paymentCardNumber'),
                 'callback_data' => encodeCallback(self::$type, ['change_payment_card_number'])
             ])
         ]);
 
         $replyMarkup->row([
             Keyboard::inlineButton([
-                'text' => __('telegram-bot-essentials::bot_settings.paymentCardName'),
+                'text' => __('telegram-bot-essentials::bot_settings.main.keys.paymentCardName'),
                 'callback_data' => encodeCallback(self::$type, ['change_payment_card_name'])
             ])
         ]);
@@ -79,6 +87,10 @@ class BotSettingsFeature
         return ['reply_markup' => $replyMarkup, 'text' => $text];
     }
 
+    /**
+     * @return void
+     * @throws TelegramSDKException
+     */
     public static function menuEdit(): void
     {
         $data = self::menuRaw();

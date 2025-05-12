@@ -2,17 +2,24 @@
 
 namespace Elyar\TelegramBotEssentials\Telegram\CallbackQueries\Admin;
 
+use Elyar\TelegramBotEssentials\Enums\Roles;
+use Elyar\TelegramBotEssentials\Exceptions\LogicException;
 use Elyar\TelegramBotEssentials\Models\BotSettings;
 use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQuery;
 use Elyar\TelegramBotEssentials\Telegram\Feature\BotSettingsFeature;
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Telegram\Bot\Exceptions\TelegramSDKException;
 
 class BotSettingsQuery extends CallbackQuery
 {
     protected string $type = 'BTSTNG';
-    protected int $perm = 100;
+    protected int $perm = Roles::ADMIN->value;
 
     /**
      * @param array $params
+     * @throws BindingResolutionException
+     * @throws LogicException
+     * @throws TelegramSDKException
      */
     public function handle(array $params): void
     {
@@ -37,25 +44,44 @@ class BotSettingsQuery extends CallbackQuery
         }
     }
 
+    /**
+     * @return void
+     * @throws TelegramSDKException
+     */
     private function botStatus(): void
     {
         wHook()->bot()->settings->bot_status = $this->params[1];
         wHook()->bot()->settings->save();
         BotSettingsFeature::menuEdit();
-        $this->answer("Bot Status " . ($this->params[1] ? 'enabled' : 'disabled'));
+        $this->answer(__('telegram-bot-essentials::bot_settings.main.answers.payWithCardStatusUpdated', [
+            'newStatus' => $this->params[1] ? __('telegram-bot-essentials::general.status.enabled') : __('telegram-bot-essentials::general.status.disabled')
+        ]));
     }
 
+    /**
+     * @return void
+     * @throws TelegramSDKException
+     */
     private function payWithCardStatus(): void
     {
         wHook()->bot()->settings->pay_with_card = $this->params[1];
         wHook()->bot()->settings->save();
         BotSettingsFeature::menuEdit();
         $this->answer("Pay with Card " . ($this->params[1] ? 'enabled' : 'disabled'));
+        $this->answer(__('telegram-bot-essentials::bot_settings.main.answers.botStatusUpdated', [
+            'newStatus' => $this->params[1] ? __('telegram-bot-essentials::general.status.enabled') : __('telegram-bot-essentials::general.status.disabled')
+        ]));
     }
 
+    /**
+     * @return void
+     * @throws TelegramSDKException
+     * @throws LogicException
+     * @throws BindingResolutionException
+     */
     private function changePaymentCardNumber(): void
     {
-        $text = __('telegram-bot-essentials::bot_settings.changePaymentCardNumberMessage');
+        $text = __('telegram-bot-essentials::bot_settings.main.text.changePaymentCardNumber');
 
         wHook()->user()->changeState(encodeAnswerState($this->type, "change_payment_card_number"));
 
@@ -68,11 +94,18 @@ class BotSettingsQuery extends CallbackQuery
             'chat_id' => wHook()->user()->telegramUser->peer_id,
             'message_id' => wHook()->update()->callbackQuery->message->messageId
         ]);
+        $this->answer(__('telegram-bot-essentials::bot_settings.main.answers.paymentCardNumber'));
     }
 
+    /**
+     * @return void
+     * @throws BindingResolutionException
+     * @throws LogicException
+     * @throws TelegramSDKException
+     */
     private function changePaymentCardName(): void
     {
-        $text = __('telegram-bot-essentials::bot_settings.changePaymentCardNameMessage');
+        $text = __('telegram-bot-essentials::bot_settings.main.text.changePaymentCardName');
 
         wHook()->user()->changeState(encodeAnswerState($this->type, "change_payment_card_name"));
 
@@ -85,12 +118,18 @@ class BotSettingsQuery extends CallbackQuery
             'chat_id' => wHook()->user()->telegramUser->peer_id,
             'message_id' => wHook()->update()->callbackQuery->message->messageId
         ]);
-        $this->answer("Updating payment card number...");
+        $this->answer(__('telegram-bot-essentials::bot_settings.main.answers.paymentCardName'));
     }
 
+    /**
+     * @return void
+     * @throws BindingResolutionException
+     * @throws LogicException
+     * @throws TelegramSDKException
+     */
     private function changeTransactionsChatId(): void
     {
-        $text = __('telegram-bot-essentials::bot_settings.transactionsChatIdMessage');
+        $text = __('telegram-bot-essentials::bot_settings.main.text.transactionsChatId');
 
         wHook()->user()->changeState(encodeAnswerState($this->type, "change_transactions_chat_id"));
 
@@ -103,6 +142,6 @@ class BotSettingsQuery extends CallbackQuery
             'chat_id' => wHook()->user()->telegramUser->peer_id,
             'message_id' => wHook()->update()->callbackQuery->message->messageId
         ]);
-        $this->answer("Updating transactions chat id...");
+        $this->answer(__('telegram-bot-essentials::bot_settings.main.answers.transactionsChatId'));
     }
 }

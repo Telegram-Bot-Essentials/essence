@@ -3,9 +3,12 @@
 namespace Elyar\TelegramBotEssentials\Telegram\StateAnswers\Admin;
 
 use Elyar\TelegramBotEssentials\Enums\Roles;
+use Elyar\TelegramBotEssentials\Exceptions\LogicException;
 use Elyar\TelegramBotEssentials\Models\BotSettings;
 use Elyar\TelegramBotEssentials\Telegram\Feature\BotSettingsFeature;
 use Elyar\TelegramBotEssentials\Telegram\StateAnswers\StateAnswer;
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Telegram\Bot\Exceptions\TelegramSDKException;
 
 class BotSettingsAnswer extends StateAnswer
 {
@@ -15,6 +18,10 @@ class BotSettingsAnswer extends StateAnswer
     /**
      * @param string $method
      * @param array $params
+     * @return void
+     * @throws BindingResolutionException
+     * @throws LogicException
+     * @throws TelegramSDKException
      */
     public function handle(string $method, array $params): void
     {
@@ -32,6 +39,12 @@ class BotSettingsAnswer extends StateAnswer
         }
     }
 
+    /**
+     * @return void
+     * @throws BindingResolutionException
+     * @throws LogicException
+     * @throws TelegramSDKException
+     */
     private function changePaymentCardNumber(): void
     {
         BotSettings::forCurrentBot()->first()->pay_to_card_number = wHook()->update()->message->text;
@@ -42,6 +55,25 @@ class BotSettingsAnswer extends StateAnswer
         BotSettingsFeature::menuSend();
     }
 
+    /**
+     * @throws TelegramSDKException
+     * @throws BindingResolutionException
+     * @throws LogicException
+     */
+    private function sendValueUpdatedMessage(): void
+    {
+        wHook()->api()->sendMessage([
+            'chat_id' => wHook()->user()->telegramUser->peer_id,
+            'text' => __('telegram-bot-essentials::bot_settings.main.text.valueUpdatedSuccessfully'),
+            'reply_markup' => wHook()->user()->getKeyboard()
+        ]);
+    }
+
+    /**
+     * @throws BindingResolutionException
+     * @throws TelegramSDKException
+     * @throws LogicException
+     */
     private function changePaymentCardName(): void
     {
         BotSettings::forCurrentBot()->first()->pay_to_card_name = wHook()->update()->message->text;
@@ -52,6 +84,12 @@ class BotSettingsAnswer extends StateAnswer
         BotSettingsFeature::menuSend();
     }
 
+    /**
+     * @return void
+     * @throws BindingResolutionException
+     * @throws LogicException
+     * @throws TelegramSDKException
+     */
     private function changeTransactionsChatId(): void
     {
         BotSettings::forCurrentBot()->first()->transactions_chat_id = wHook()->update()->message->text;
@@ -65,14 +103,5 @@ class BotSettingsAnswer extends StateAnswer
     function cancel(): void
     {
         // TODO: Implement cancel() method.
-    }
-
-    private function sendValueUpdatedMessage(): void
-    {
-        wHook()->api()->sendMessage([
-            'chat_id' => wHook()->user()->telegramUser->peer_id,
-            'text' => "Value updated successfully",
-            'reply_markup' => wHook()->user()->getKeyboard()
-        ]);
     }
 }
