@@ -3,7 +3,7 @@
 return [
     'main' => [
         'answers' => [
-            'lockedForAction' => 'Locked For Action',
+            'lockedForAction' => '❗️ Locked For Action',
         ]
     ],
 ];
