@@ -98,6 +98,9 @@ class TelegramWebhookController extends Controller
     }
 
     /**
+     * @param ValidationException $e
+     * @throws BindingResolutionException
+     * @throws LogicException
      * @throws TelegramSDKException
      */
     private function validationExceptionUserAlert(ValidationException $e)
@@ -108,6 +111,7 @@ class TelegramWebhookController extends Controller
         wHook()->api()->sendMessage([
             'chat_id' => wHook()->user()->telegramUser->peer_id,
             'text' => $e->getMessage(),
+            'reply_markup' => wHook()->user()->getKeyboard()
         ]);
     }
 
