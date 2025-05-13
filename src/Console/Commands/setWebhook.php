@@ -14,7 +14,7 @@ class setWebhook extends Command
      *
      * @var string
      */
-    protected $signature = 'telegram-bot-essentials:set-webhook     {--unique-id= : Enter the target bots unique id}';
+    protected $signature = 'tbe:set-webhook     {--unique-id= : Enter the target bots unique id}';
 
     /**
      * The console command description.
