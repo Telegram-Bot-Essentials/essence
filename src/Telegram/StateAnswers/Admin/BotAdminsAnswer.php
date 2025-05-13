@@ -4,11 +4,9 @@ namespace Elyar\TelegramBotEssentials\Telegram\StateAnswers\Admin;
 
 use Elyar\TelegramBotEssentials\Enums\Roles;
 use Elyar\TelegramBotEssentials\Exceptions\LogicException;
-use Elyar\TelegramBotEssentials\Models\BotSettings;
 use Elyar\TelegramBotEssentials\Models\MessageMeta;
 use Elyar\TelegramBotEssentials\Models\TelegramUser;
 use Elyar\TelegramBotEssentials\Telegram\Feature\BotAdminsFeature;
-use Elyar\TelegramBotEssentials\Telegram\Feature\BotSettingsFeature;
 use Elyar\TelegramBotEssentials\Telegram\StateAnswers\StateAnswer;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Telegram\Bot\Exceptions\TelegramSDKException;
@@ -36,11 +34,6 @@ class BotAdminsAnswer extends StateAnswer
         }
     }
 
-    function cancel(): void
-    {
-        // TODO: Implement cancel() method.
-    }
-
     /**
      * @throws TelegramSDKException
      * @throws BindingResolutionException
@@ -57,10 +50,15 @@ class BotAdminsAnswer extends StateAnswer
         wHook()->user()->changeState();
         wHook()->api()->sendMessage([
             'chat_id' => wHook()->user()->telegramUser->peer_id,
-            'text' => "success",
+            'text' => __('tbe::bot_admins.main.text.adminAddedSuccessfully'),
             'reply_markup' => wHook()->user()->getKeyboard(),
         ]);
         $data = BotAdminsFeature::menuRaw();
         $messageMeta->updateAndContinueAction($data);
+    }
+
+    function cancel(): void
+    {
+        // TODO: Implement cancel() method.
     }
 }

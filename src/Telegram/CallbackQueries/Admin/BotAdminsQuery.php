@@ -17,8 +17,6 @@ class BotAdminsQuery extends CallbackQuery
 
     /**
      * @param array $params
-     * @throws BindingResolutionException
-     * @throws LogicException
      * @throws TelegramSDKException
      */
     public function handle(array $params): void
@@ -37,23 +35,28 @@ class BotAdminsQuery extends CallbackQuery
         }
     }
 
-    private function addAdmin()
+    private function addAdmin(): void
     {
         $messageMeta = MessageMeta::makeWithCurrentMessage();
-        $messageMeta->lockAction("Adding new admin");
+        $messageMeta->lockAction(__('tbe::bot_admins.main.lock-keys.addingNewAdmin'));
         wHook()->user()->changeState(encodeAnswerState($this->type, "add_admin", ['message_meta_id' => $messageMeta->id]));
         wHook()->api()->sendMessage([
             'chat_id' => wHook()->user()->telegramUser->peer_id,
-            'text' => "Enter the new Admin's Telegram Username:",
+            'text' => __('tbe::bot_admins.main.text.enterNewAdminId'),
             'reply_markup' => wHook()->user()->getKeyboard(),
         ]);
-        $this->answer("Adding new admin...");
+        $this->answer(__('tbe::bot_admins.main.answers.addingNewAdmin'));
     }
 
-    private function ownerInfo()
+    /**
+     * @throws TelegramSDKException
+     */
+    private function ownerInfo(): void
     {
-        $text = wHook()->bot()->botOwner->full_name
-            . " is owner of this bot from date " . max(wHook()->bot()->created_at, wHook()->bot()->botOwner->created_at);
+        $text = __('tbe::bot_admins.main.answers.ownerInfo', [
+            'ownerName' => wHook()->bot()->botOwner->full_name,
+            'fromDate' => max(wHook()->bot()->created_at, wHook()->bot()->botOwner->created_at),
+        ]);
 
         wHook()->api()->answerCallbackQuery([
             'callback_query_id' => wHook()->update()->callbackQuery->id,
@@ -72,6 +75,8 @@ class BotAdminsQuery extends CallbackQuery
         $botUserAsAdmin->power = 0;
         $botUserAsAdmin->save();
         BotAdminsFeature::menuEdit();
-        $this->answer("Admin \"" . $botUserAsAdmin->telegramUser->full_name . "\" removed");
+        $this->answer(__('tbe::bot_admins.main.answers.adminRemoved', [
+            'adminName' => $botUserAsAdmin->telegramUser->full_name
+        ]));
     }
 }
