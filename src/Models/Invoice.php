@@ -2,6 +2,7 @@
 
 namespace Elyar\TelegramBotEssentials\Models;
 
+use Elyar\TelegramBotEssentials\Jobs\FinalizeInvoicePaymentAction;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
