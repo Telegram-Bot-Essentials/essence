@@ -156,6 +156,24 @@ class MessageMeta extends Model
             'message_id' => $this->message_id,
             'text' => $data['text'],
             'reply_markup' => $data['reply_markup'],
+            'parse_mode' => $data['parse_mode'] ?? null,
         ]);
+    }
+
+    public function updateAndContinueAction(array $data): void
+    {
+        wHook()->api()->deleteMessage([
+            'chat_id' => $this->chat_id,
+            'message_id' => $this->message_id,
+        ]);
+
+        $message = wHook()->api()->sendMessage([
+            'chat_id' => $this->chat_id,
+            'text' => $data['text'],
+            'reply_markup' => $data['reply_markup'],
+            'parse_mode' => $data['parse_mode'] ?? null,
+        ]);
+
+        $this->initializeModel($message->chat->id, $message->messageId, $message->text, $message->replyMarkup);
     }
 }
