@@ -45,5 +45,9 @@ return [
 
     'lock-keys' => [
         "Waiting for :field change",
-    ]
+    ],
+
+    'answers' => [
+        'updatedResourceField' => 'Updating ":resource"s :field...',
+    ],
 ];
