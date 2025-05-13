@@ -92,7 +92,7 @@ if (!function_exists('decodeCallback')) {
 }
 
 if(!function_exists('inlineSorter')){
-    function inlineSorter(array $array, int $step = null): array
+    function inlineSorter(array $array, ?int $step = null): array
     {
         if(empty($step)){
             if(count($array) < 6) $step = 1;
@@ -117,7 +117,7 @@ if(!function_exists('addInlineKeysSorted')){
      * @param int|null $step
      * @return void
      */
-    function addInlineKeysSorted(Keyboard $keyboard, array $keys, int $step = null): void
+    function addInlineKeysSorted(Keyboard $keyboard, array $keys, ?int $step = null): void
     {
         $rows = inlineSorter($keys, $step);
         foreach ($rows as $row) {
@@ -150,7 +150,7 @@ if(!function_exists('dependsOn')){
     /**
      * @throws FeatureIsDisabled
      */
-    function dependsOn(?bool $condition, string $message = null): void
+    function dependsOn(?bool $condition, ?string $message = null): void
     {
         if (!$condition)
             throw new FeatureIsDisabled($message);
