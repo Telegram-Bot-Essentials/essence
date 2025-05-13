@@ -2,7 +2,7 @@
 
 return [
     'text' => [
-        "Enter the :resourceName's new :field:"
+        "enterResourcesNewField" => "Enter the :resourceName's new :field:",
     ],
 
     'status' => [
