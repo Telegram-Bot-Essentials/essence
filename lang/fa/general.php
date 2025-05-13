@@ -3,7 +3,7 @@
 return [
     'text' => [
         "enterResourcesNewField" => "مقدار جدید :field برای :resourceName را وارد کنید:",
-        "resourceFieldUpdated" => 'فیلد :field برای ":categoryName" با موفقیت بهروزرسانی شد ✅.',
+        "resourceFieldUpdated" => 'فیلد :field برای ":categoryName" با موفقیت به روزرسانی شد ✅.',
     ],
 
     'status' => [
@@ -34,12 +34,12 @@ return [
     ],
 
     'messages' => [
-        'valueUpdatedSuccessfully' => '❕ مقدار با موفقیت بهروزرسانی شد ✅',
+        'valueUpdatedSuccessfully' => '❕ مقدار با موفقیت به روزرسانی شد ✅',
     ],
 
     'keys' => [
-        'bunchDeletion' => "حذف دستهای 🗑",
-        'bunchActivation' => "فعالسازی دستهای 🔥",
+        'bunchDeletion' => "حذف دسته ای 🗑",
+        'bunchActivation' => "فعالسازی دسته ای 🔥",
         'delete' => 'حذف 🗑',
         'back' => 'بازگشت 🔙',
     ],
@@ -49,6 +49,6 @@ return [
     ],
 
     'answers' => [
-        'updatedResourceField' => 'در حال بهروزرسانی فیلد :field برای ":resource"...',
+        'updatedResourceField' => 'در حال به روزرسانی فیلد :field برای ":resource"...',
     ],
 ];
