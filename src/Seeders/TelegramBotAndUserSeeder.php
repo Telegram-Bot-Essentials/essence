@@ -7,21 +7,22 @@ use Elyar\TelegramBotEssentials\Models\BotUser;
 use Elyar\TelegramBotEssentials\Models\TelegramUser;
 use Illuminate\Database\Seeder;
 
-class TelegramUserSeeder extends Seeder
+class TelegramBotAndUserSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
+        $telegramUser = TelegramUser::firstOrCreate([
+            'peer_id' => config('telegram-bot-essentials.develop.DEVELOPER_CHAT_ID'),
+        ]);
+
         $bot = Bot::firstOrCreate([
             'unique_id' => config('telegram-bot-essentials.develop.DEVELOP_UNIQUE_ID'),
             'bot_token' => config('telegram-bot-essentials.develop.DEVELOP_TELEGRAM_BOT_TOKEN'),
-            'secret_token' => config('telegram-bot-essentials.develop.DEVELOP_SECRET_TOKEN')
-        ]);
-
-        $telegramUser = TelegramUser::firstOrCreate([
-            'peer_id' => config('telegram-bot-essentials.develop.DEVELOPER_CHAT_ID'),
+            'secret_token' => config('telegram-bot-essentials.develop.DEVELOP_SECRET_TOKEN'),
+            'bot_owner_peer_id' => $telegramUser->peer_id,
         ]);
 
         BotUser::firstOrCreate([
@@ -34,8 +35,9 @@ class TelegramUserSeeder extends Seeder
 
         if(config('telegram-bot-essentials.develop.TEST_USER_CHAT_ID') == null)
             return;
-        
+
         $telegramTestUser = TelegramUser::firstOrCreate([
+            'first_name' => 'test_user',
             'peer_id' => config('telegram-bot-essentials.develop.TEST_USER_CHAT_ID'),
         ]);
 
