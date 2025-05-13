@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7bd73fff0599e2b9d350e7015169c2c8",
+    "content-hash": "ed75d653eaf0841b942d70fafea19941",
     "packages": [
         {
             "name": "brick/math",
@@ -3227,16 +3227,16 @@
         },
         {
             "name": "spatie/laravel-multitenancy",
-            "version": "4.0.4",
+            "version": "4.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-multitenancy.git",
-                "reference": "d89f7f2842a0ed1370d16b60c6c4c92b73e734c8"
+                "reference": "7b43b33a4e4194157949470a04effc64b8bac2a3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-multitenancy/zipball/d89f7f2842a0ed1370d16b60c6c4c92b73e734c8",
-                "reference": "d89f7f2842a0ed1370d16b60c6c4c92b73e734c8",
+                "url": "https://api.github.com/repos/spatie/laravel-multitenancy/zipball/7b43b33a4e4194157949470a04effc64b8bac2a3",
+                "reference": "7b43b33a4e4194157949470a04effc64b8bac2a3",
                 "shasum": ""
             },
             "require": {
@@ -3290,7 +3290,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-multitenancy/issues",
-                "source": "https://github.com/spatie/laravel-multitenancy/tree/4.0.4"
+                "source": "https://github.com/spatie/laravel-multitenancy/tree/4.0.5"
             },
             "funding": [
                 {
@@ -3302,7 +3302,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-02-20T14:48:22+00:00"
+            "time": "2025-05-12T09:56:03+00:00"
         },
         {
             "name": "spatie/laravel-package-tools",
