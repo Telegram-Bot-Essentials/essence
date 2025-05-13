@@ -45,7 +45,7 @@ return [
     ],
 
     'lock-keys' => [
-        "در انتظار تغییر :field",
+        'waitingForFieldUpdate' => "در انتظار تغییر :field",
     ],
 
     'answers' => [
