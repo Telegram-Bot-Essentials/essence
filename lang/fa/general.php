@@ -3,7 +3,7 @@
 return [
     'text' => [
         "enterResourcesNewField" => "مقدار جدید :field برای :resourceName را وارد کنید:",
-        "resourceFieldUpdated" => 'فیلد :field برای ":categoryName" با موفقیت به روزرسانی شد ✅.',
+        "resourceFieldUpdated" => 'فیلد :field برای ":resource" با موفقیت به روزرسانی شد ✅.',
     ],
 
     'status' => [
