@@ -41,7 +41,9 @@ class BotAdminsAnswer extends StateAnswer
      */
     private function addAdmin(): void
     {
-        $telegramUser = TelegramUser::where('peer_id', wHook()->update()->message->text)->firstOrFail();
+        $telegramUser = str_starts_with(wHook()->update()->message->text, '@') ?
+            TelegramUser::where('username', str_replace('@', '', wHook()->update()->message->text))->firstOrFail():
+            TelegramUser::where('peer_id', wHook()->update()->message->text)->firstOrFail();
         $botUser = wHook()->bot()->botUsers()->where('telegram_user_id', $telegramUser->id)->firstOrFail();
         $botUser->power = Roles::ADMIN->value;
         $botUser->save();

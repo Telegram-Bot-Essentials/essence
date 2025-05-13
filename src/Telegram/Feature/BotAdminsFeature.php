@@ -34,7 +34,6 @@ class BotAdminsFeature
     public static function menuRaw(): array
     {
         $admins = wHook()->bot()->botUsers()->where('power', '>=', Roles::ADMIN->value)->get();
-        Log::debug(json_encode($admins, JSON_PRETTY_PRINT));
         $text = __('tbe::bot_admins.main.text.information', [
             'botOwner' => wHook()->bot()->botOwner->full_name,
             'adminCount' => $admins->count(),
