@@ -107,7 +107,7 @@ class StateAnswerBus
 
     protected function handler(StateAnswerInterface $resolvedStateAnswer, string $method, array $params): void
     {
-        if (wHook()->user()->power < $resolvedStateAnswer->getPerm()) return;
+        if (!hasAccess($resolvedStateAnswer->getPerm())) return;
         $resolvedStateAnswer->handle($method, $params);
     }
 

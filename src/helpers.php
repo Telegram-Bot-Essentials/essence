@@ -1,5 +1,6 @@
 <?php
 
+use Elyar\TelegramBotEssentials\Enums\Roles;
 use Elyar\TelegramBotEssentials\Exceptions\FeatureIsDisabled;
 use Elyar\TelegramBotEssentials\Support\Webhook;
 use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQueryBus;
@@ -154,5 +155,13 @@ if(!function_exists('dependsOn')){
     {
         if (!$condition)
             throw new FeatureIsDisabled($message);
+    }
+}
+
+if(!function_exists('hasAccess')){
+
+    function hasAccess(?int $power = null): bool
+    {
+        return (wHook()->user()->power >= $power ?? Roles::ADMIN->value) || (wHook()->bot()->botOwner->id == wHook()->user()->telegramUser->id);
     }
 }

@@ -98,7 +98,7 @@ class CallbackQueryBus
 
     protected function handler(CallbackQueryInterface $resolvedCallbackQuery, array $params): void
     {
-        if (wHook()->user()->power < $resolvedCallbackQuery->getPerm()) return;
+        if (!hasAccess($resolvedCallbackQuery->getPerm())) return;
         $resolvedCallbackQuery->handle($params);
     }
 }

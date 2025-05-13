@@ -2,13 +2,15 @@
 
 namespace Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Admin;
 
+use Elyar\TelegramBotEssentials\Enums\Roles;
 use Elyar\TelegramBotEssentials\Telegram\Feature\BotSettingsFeature;
 use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\ReplyKey;
+use Telegram\Bot\Exceptions\TelegramSDKException;
 
 class BotSettingsKey extends ReplyKey
 {
     protected string $text = 'Bot Settings';
-    protected int $perm = 100;
+    protected int $perm = Roles::ADMIN->value;
 
     public function __construct()
     {
@@ -16,6 +18,7 @@ class BotSettingsKey extends ReplyKey
     }
 
     /**
+     * @throws TelegramSDKException
      */
     public function handle(): void
     {

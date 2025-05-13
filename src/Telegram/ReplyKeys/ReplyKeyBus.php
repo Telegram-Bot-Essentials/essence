@@ -96,7 +96,7 @@ class ReplyKeyBus
      */
     protected function handler(ReplyKeyInterface $resolvedKey): void
     {
-        if (wHook()->user()->power < $resolvedKey->getPerm()) return;
+        if (!hasAccess($resolvedKey->getPerm())) return;
         $currentState = wHook()->user()->state;
         $this->cancelOldProcess();
         $resolvedKey->handle();

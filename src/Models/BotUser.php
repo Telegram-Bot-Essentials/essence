@@ -82,7 +82,7 @@ class BotUser extends Model
             $processedRow = [];
             foreach ($keys as $key) {
                 $resolvedKey = $this->resolveReplyKey($key);
-                if ($resolvedKey->getPerm() > $this->power) continue;
+                if(!hasAccess($resolvedKey->getPerm())) continue;
                 $processedRow[] = $resolvedKey->getText();
             }
             $replyMarkup->row($processedRow);
