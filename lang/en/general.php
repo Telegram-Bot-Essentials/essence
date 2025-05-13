@@ -45,7 +45,7 @@ return [
     ],
 
     'lock-keys' => [
-        "Waiting for :field change",
+        'waitingForFieldUpdate' => "Waiting for :field change",
     ],
 
     'answers' => [
