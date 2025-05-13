@@ -3,6 +3,7 @@
 return [
     'text' => [
         "enterResourcesNewField" => "Enter the :resourceName's new :field:",
+        "resourceFieldUpdated" => ':categoryName\'s :field updated successfully.',
     ],
 
     'status' => [
