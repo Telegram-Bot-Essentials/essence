@@ -30,7 +30,7 @@ class InvoiceFeature
 
     public static function invoiceRaw(Invoice $invoice, string $encodedCallback): array
     {
-        $text = __('invoice.summary.text.information', [
+        $text = __('tbe::invoice.summary.text.information', [
             'invoiceId' => $invoice->id,
             'orderDescription' => $invoice->payable->description ?? null
         ]);
@@ -38,20 +38,20 @@ class InvoiceFeature
         $replyMarkup = Keyboard::make()->inline();
 
         $replyMarkup->row([Keyboard::inlineButton([
-            'text' => __('invoice.summary.keys.to_card', [
+            'text' => __('tbe::invoice.summary.keys.to_card', [
                 'price' => number_format($invoice->price)
             ]),
             'callback_data' => encodeCallback(self::$type, ['to_card', $invoice->id])
         ])])->row([Keyboard::inlineButton([
-            'text' => __('invoice.summary.keys.back_to_previous'),
+            'text' => __('tbe::invoice.summary.keys.back_to_previous'),
             'callback_data' => $encodedCallback
         ])]);
 
         return ['reply_markup' => $replyMarkup,
             'text' => $text,
             'answer' => $invoice->wasRecentlyCreated ?
-                __('invoice.summary.answers.created') :
-                __('invoice.summary.answers.main')];
+                __('tbe::invoice.summary.answers.created') :
+                __('tbe::invoice.summary.answers.main')];
     }
 
 //    public static function invoiceSend(Invoice $invoice): void
