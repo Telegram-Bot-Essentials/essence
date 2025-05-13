@@ -1,12 +1,22 @@
 <?php
 
 return [
+    'text' => [
+        "Enter the :resourceName's new :field:"
+    ],
+
     'status' => [
         'enabled' => 'Enabled',
         'disabled' => 'Disabled',
         'notSet' => 'Is not set',
         'enabledEmoji' => '✅',
         'disabledEmoji' => '🛑',
+        'addEmoji' => '➕',
+        'removeEmoji' => '➖',
+        'activated' => 'Activated',
+        'deactivated' => 'Deactivated',
+        'removedFrom' => 'removed from',
+        'addedTo' => 'added to',
     ],
 
     'callbackQuery' => [
@@ -27,6 +37,13 @@ return [
     ],
 
     'keys' => [
+        'bunchDeletion' => "Bunch Deletion 🗑",
+        'bunchActivation' => "Bunch Activation 🔥",
+        'delete' => 'Delete 🗑',
         'back' => 'Back 🔙',
+    ],
+
+    'lock-keys' => [
+        "Waiting for :field change",
     ]
 ];
