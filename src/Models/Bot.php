@@ -34,4 +34,9 @@ class Bot extends Model implements IsTenant
     {
         return $this->hasOne(BotSettings::class)->withDefault();
     }
+
+    public function botOwner(): HasOne
+    {
+        return $this->hasOne(TelegramUser::class, 'peer_id', 'bot_owner_peer_id');
+    }
 }
