@@ -16,8 +16,11 @@ class Bot extends Model implements IsTenant
     use UsesLandlordConnection;
     use ImplementsTenant;
 
-    protected $fillable = [
-
+    protected $guarded = [
+        'id',
+        'created_at',
+        'updated_at',
+        'deleted_at',
     ];
 
     protected $hidden = [
