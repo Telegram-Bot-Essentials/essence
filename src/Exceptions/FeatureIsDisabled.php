@@ -8,8 +8,4 @@ use Throwable;
 
 class FeatureIsDisabled extends Exception
 {
-    public function report(Throwable $e): void
-    {
-        Log::error($e->getMessage());
-    }
 }
