@@ -8,6 +8,7 @@ use Elyar\TelegramBotEssentials\Models\Bot;
 use Elyar\TelegramBotEssentials\Models\BotUser;
 use Elyar\TelegramBotEssentials\Models\TelegramUser;
 use Elyar\TelegramBotEssentials\Traits\HttpResponses;
+use GuzzleHttp\Psr7\ServerRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
@@ -43,7 +44,13 @@ class TelegramBotAuthentication
         try {
             $api = new Api($bot->bot_token);
             wHook()::setApi($api);
-            $update = wHook()->api()->getWebhookUpdate();
+            $update = wHook()->api()->getWebhookUpdate(request: new ServerRequest(
+                method:'POST',
+                uri: $request->url(),
+                headers: $request->headers->all(),
+                body: $request->getContent(),
+                serverParams: $request->server->all()
+            ));
             wHook()::setUpdate($update);
         } catch (TelegramSDKException $e) {
             Log::error($e->getMessage() ?? 'error message is not provided');
