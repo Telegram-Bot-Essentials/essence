@@ -52,10 +52,5 @@ class TelegramBotServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../lang' => resource_path('lang/vendor/telegram-bot-essentials'),
         ], 'telegram-bot-essentials-translations');
-
-        $this->publishes([
-            __DIR__.'/../../database/seeders/Development/BotSeeder.php' => database_path('seeders/Development/BotSeeder.php'),
-            __DIR__.'/../../database/seeders/Development/TelegramUserSeeder.php' => database_path('seeders/Development/TelegramUserSeeder.php'),
-        ], 'seeders');
     }
 }
