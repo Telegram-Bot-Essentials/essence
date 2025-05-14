@@ -10,6 +10,7 @@ use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Member\CancelProcessKey;
 use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Member\MainMenuKey;
 use Elyar\TelegramBotEssentials\Traits\CanResolveReplyKey;
 use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -17,6 +18,7 @@ use Telegram\Bot\Keyboard\Keyboard;
 
 class BotUser extends Model
 {
+    use HasFactory;
     use CanResolveReplyKey;
     use SoftDeletes;
 

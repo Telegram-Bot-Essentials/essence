@@ -2,6 +2,7 @@
 
 use Elyar\TelegramBotEssentials\Models\Bot;
 use Elyar\TelegramBotEssentials\Models\BotUser;
+use Elyar\TelegramBotEssentials\Models\TelegramUser;
 use Telegram\Bot\Objects\Update;
 
 test('Set bot in wHook works', function () {
@@ -37,10 +38,11 @@ test('Set update in wHook works', function () {
     expect($setUpdate)->toBe($update);
 });
 
-//test('Set bot user in wHook works', function () {
+test('Set bot user in wHook works', function () {
+    $botUser = TelegramUser::factory()->create();
 //    $botUser = BotUser::factory()->create();
-//
+
 //    wHook()->setUser($botUser);
 //    $setBotUser = wHook()->user();
 //    expect($setBotUser)->toBe($botUser);
-//});
+});
