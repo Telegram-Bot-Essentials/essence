@@ -12,7 +12,8 @@
     "license": "GPL-3.0",
     "autoload": {
         "psr-4": {
-            "Elyar\\TelegramBotEssentials\\": "src/"
+            "Elyar\\TelegramBotEssentials\\": "src/",
+            "Elyar\\TelegramBotEssentials\\Tests\\": "tests"
         },
         "files": [
             "src/helpers.php"
@@ -30,6 +31,16 @@
             "providers": [
                 "Elyar\\TelegramBotEssentials\\TelegramBotServiceProvider"
             ]
+        }
+    },
+    "require-dev": {
+        "pestphp/pest": "^3.8",
+        "pestphp/pest-plugin-laravel": "^3.2",
+        "orchestra/testbench": "^10.3"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
         }
     }
 }
