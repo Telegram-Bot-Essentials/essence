@@ -21,4 +21,9 @@ class TestCase extends Orchestra
             MultitenancyServiceProvider::class,
         ];
     }
+
+    protected function getEnvironmentSetUp($app): void
+    {
+        $app['config']->set('telegram-bot-essentials.bot_access.token', 'xxx');
+    }
 }
