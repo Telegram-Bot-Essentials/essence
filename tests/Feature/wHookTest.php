@@ -2,79 +2,76 @@
 
 use Elyar\TelegramBotEssentials\Models\Bot;
 use Elyar\TelegramBotEssentials\Models\BotUser;
-use Elyar\TelegramBotEssentials\Support\Webhook;
 use Telegram\Bot\Api;
 use Telegram\Bot\Objects\Update;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 beforeEach(function () {
-    Webhook::setApi(null);
-    Webhook::setUpdate(null);
-    Webhook::setBot(null);
-    Webhook::setUser(null);
+    wHook()->setApi(null);
+    wHook()->setUpdate(null);
+    wHook()->setBot(null);
+    wHook()->setUser(null);
 });
 
-test('Set bot in wHook works', function () {
-    $unique_id = rand(0, 1000);
-    $bot = Bot::firstOrCreate([
-        'unique_id' => $unique_id,
-        'bot_token' => 'xxx',
-        'secret_token' => 'xxx',
-        'bot_owner_peer_id' => 11111,
-    ]);
-    Webhook::setBot($bot);
-    $setBot = Webhook::bot();
-    expect($setBot->unique_id)->toBe($bot->unique_id);
+test('api() throws HttpException when api is null', function () {
+    wHook()->setApi(null);
+    expect(fn() => wHook()->api())
+        ->toThrow(HttpException::class, 'Failed to retrieve API service.');
 });
 
-test('Set update in wHook works', function () {
-    $payload = [
-        'update_id' => 1,
-        'message' => [
-            'message_id' => 1,
-            'from' => [
-                'id' => 992258179,
-                'is_bot' => false,
-                'first_name' => 'Test User'
-            ],
-            'chat' => ['id' => 992258179],
-            'text' => '/start'
-        ]
-    ];
-    $update = new Update($payload);
-    Webhook::setUpdate($update);
-    $setUpdate = Webhook::update();
-    expect($setUpdate)->toBe($update);
+test('update() throws HttpException when update is null', function () {
+    wHook()->setUpdate(null);
+    expect(fn() => wHook()->update())
+        ->toThrow(HttpException::class, 'Failed to retrieve Updates.');
 });
 
-test('Set bot user in wHook works', function () {
-    $botUser = BotUser::factory()->create();
-    Webhook::setUser($botUser);
-    $setBotUser = Webhook::user();
-    expect($setBotUser->id)->toBe($botUser->id);
+test('bot() throws HttpException when bot is null', function () {
+    wHook()->setBot(null);
+    expect(fn() => wHook()->bot())
+        ->toThrow(HttpException::class, 'Failed to retrieve bot.');
 });
 
-test('Set api in wHook works', function () {
-    $bot = Bot::factory()->create();
-    $api = new Api($bot->bot_token);
-    Webhook::setApi($api);
-    $setApi = Webhook::api();
-    expect($setApi)->toBe($api);
+test('user() throws HttpException when user is null', function () {
+    wHook()->setUser(null);
+    expect(fn() => wHook()->user())
+        ->toThrow(HttpException::class, 'Failed to retrieve telegram user.');
 });
 
-test('Check function in wHook works when empty', function () {
-    expect(Webhook::check())->toBeFalse();
-});
-
-test('Check function in wHook works when all set', function () {
+test('check() returns false when any property is null', function () {
     $bot = Bot::factory()->create();
     $api = new Api($bot->bot_token);
     $botUser = BotUser::factory()->create();
     $update = new Update(['update_id' => 1]);
 
-    Webhook::setApi($api);
-    Webhook::setUpdate($update);
-    Webhook::setBot($bot);
-    Webhook::setUser($botUser);
+    wHook()->setApi(null);
+    wHook()->setUpdate($update);
+    wHook()->setBot($bot);
+    wHook()->setUser($botUser);
+    expect(wHook()->check())->toBeFalse();
 
-    expect(Webhook::check())->toBeTrue();
+    wHook()->setApi($api);
+    wHook()->setUpdate(null);
+    expect(wHook()->check())->toBeFalse();
+
+    wHook()->setUpdate($update);
+    wHook()->setBot(null);
+    expect(wHook()->check())->toBeFalse();
+
+    wHook()->setBot($bot);
+    wHook()->setUser(null);
+    expect(wHook()->check())->toBeFalse();
+});
+
+test('check() returns true when all properties are set', function () {
+    $bot = Bot::factory()->create();
+    $api = new Api($bot->bot_token);
+    $botUser = BotUser::factory()->create();
+    $update = new Update(['update_id' => 1]);
+
+    wHook()->setApi($api);
+    wHook()->setUpdate($update);
+    wHook()->setBot($bot);
+    wHook()->setUser($botUser);
+
+    expect(wHook()->check())->toBeTrue();
 });

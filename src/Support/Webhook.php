@@ -78,6 +78,9 @@ class Webhook
 
     public static function check(): bool
     {
-        return self::$bot !== null && self::$user !== null && self::$api !== null && self::$user !== null;
+        return self::$bot !== null
+            && self::$user !== null
+            && self::$api !== null
+            && self::$update !== null;
     }
 }
