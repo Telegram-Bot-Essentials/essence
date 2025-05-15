@@ -19,7 +19,7 @@ class BotUserFactory extends Factory
             'telegram_user_id' => TelegramUser::factory()->create()->id,
             'power' => $role,
             'balance' => rand(0, 10) * 25000,
-            'state' => [['test'], null][rand(0, 1)],
+            'state' => ['test', null][rand(0, 1)],
             'menu' => $role == Roles::ADMIN->value ? 'admin' : 'main',
             'suspend' => fake()->unique()->boolean(),
         ];
