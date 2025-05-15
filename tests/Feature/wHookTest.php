@@ -2,8 +2,16 @@
 
 use Elyar\TelegramBotEssentials\Models\Bot;
 use Elyar\TelegramBotEssentials\Models\BotUser;
-use Elyar\TelegramBotEssentials\Models\TelegramUser;
+use Elyar\TelegramBotEssentials\Support\Webhook;
+use Telegram\Bot\Api;
 use Telegram\Bot\Objects\Update;
+
+beforeEach(function () {
+    Webhook::setApi(null);
+    Webhook::setUpdate(null);
+    Webhook::setBot(null);
+    Webhook::setUser(null);
+});
 
 test('Set bot in wHook works', function () {
     $unique_id = rand(0, 1000);
@@ -13,8 +21,8 @@ test('Set bot in wHook works', function () {
         'secret_token' => 'xxx',
         'bot_owner_peer_id' => 11111,
     ]);
-    wHook()->setBot($bot);
-    $setBot = wHook()->bot();
+    Webhook::setBot($bot);
+    $setBot = Webhook::bot();
     expect($setBot->unique_id)->toBe($bot->unique_id);
 });
 
@@ -33,16 +41,40 @@ test('Set update in wHook works', function () {
         ]
     ];
     $update = new Update($payload);
-    wHook()->setUpdate($update);
-    $setUpdate = wHook()->update();
+    Webhook::setUpdate($update);
+    $setUpdate = Webhook::update();
     expect($setUpdate)->toBe($update);
 });
 
 test('Set bot user in wHook works', function () {
-    $botUser = TelegramUser::factory()->create();
-//    $botUser = BotUser::factory()->create();
+    $botUser = BotUser::factory()->create();
+    Webhook::setUser($botUser);
+    $setBotUser = Webhook::user();
+    expect($setBotUser->id)->toBe($botUser->id);
+});
 
-//    wHook()->setUser($botUser);
-//    $setBotUser = wHook()->user();
-//    expect($setBotUser)->toBe($botUser);
+test('Set api in wHook works', function () {
+    $bot = Bot::factory()->create();
+    $api = new Api($bot->bot_token);
+    Webhook::setApi($api);
+    $setApi = Webhook::api();
+    expect($setApi)->toBe($api);
+});
+
+test('Check function in wHook works when empty', function () {
+    expect(Webhook::check())->toBeFalse();
+});
+
+test('Check function in wHook works when all set', function () {
+    $bot = Bot::factory()->create();
+    $api = new Api($bot->bot_token);
+    $botUser = BotUser::factory()->create();
+    $update = new Update(['update_id' => 1]);
+
+    Webhook::setApi($api);
+    Webhook::setUpdate($update);
+    Webhook::setBot($bot);
+    Webhook::setUser($botUser);
+
+    expect(Webhook::check())->toBeTrue();
 });

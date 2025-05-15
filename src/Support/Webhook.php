@@ -15,23 +15,23 @@ class Webhook
     private static ?Bot $bot = null;
     private static ?BotUser $user = null;
 
-    public static function setApi(Api $api): void
+    public static function setApi(?Api $api): void
     {
         self::$api = $api;
     }
 
-    public static function setUpdate(Update $update): void
+    public static function setUpdate(?Update $update): void
     {
         self::$update = $update;
     }
 
-    public static function setBot(Bot $bot): void
+    public static function setBot(?Bot $bot): void
     {
-        $bot->makeCurrent();
+        if (isset($bot)) $bot->makeCurrent();
         self::$bot = $bot;
     }
 
-    public static function setUser(BotUser $user): void
+    public static function setUser(?BotUser $user): void
     {
         self::$user = $user;
     }
