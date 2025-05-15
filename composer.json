@@ -17,6 +17,9 @@
         },
         "files": [
             "src/helpers.php"
+        ],
+        "classmap": [
+            "database/factories"
         ]
     },
     "authors": [
