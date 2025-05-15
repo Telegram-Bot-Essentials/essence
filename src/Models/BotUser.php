@@ -2,6 +2,7 @@
 
 namespace Elyar\TelegramBotEssentials\Models;
 
+use Elyar\TelegramBotEssentials\Database\factories\BotUserFactory;
 use Elyar\TelegramBotEssentials\Exceptions\LogicException;
 use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Admin\AdminPanelKey;
 use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Admin\BotAdminsKey;
@@ -22,6 +23,10 @@ class BotUser extends Model
     use CanResolveReplyKey;
     use SoftDeletes;
 
+    public static function newFactory(): BotUserFactory
+    {
+        return BotUserFactory::new();
+    }
     protected $guarded = [
         'id',
         'created_at',

@@ -2,6 +2,8 @@
 
 namespace Elyar\TelegramBotEssentials\Models;
 
+use Elyar\TelegramBotEssentials\Database\factories\BotFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -12,6 +14,7 @@ use Spatie\Multitenancy\Models\Concerns\UsesLandlordConnection;
 
 class Bot extends Model implements IsTenant
 {
+    use HasFactory;
     use SoftDeletes;
     use UsesLandlordConnection;
     use ImplementsTenant;
@@ -27,6 +30,11 @@ class Bot extends Model implements IsTenant
         'bot_token',
         'secret_token'
     ];
+
+    public static function newFactory(): BotFactory
+    {
+        return BotFactory::new();
+    }
 
     public function botUsers(): HasMany
     {

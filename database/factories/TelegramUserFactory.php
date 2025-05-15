@@ -1,11 +1,13 @@
 <?php
 
-namespace Database\Factories;
+namespace Elyar\TelegramBotEssentials\Database\factories;
 
+use Elyar\TelegramBotEssentials\Models\TelegramUser;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class TelegramUserFactory extends Factory
 {
+    protected $model = TelegramUser::class;
     public function definition(): array
     {
         return [

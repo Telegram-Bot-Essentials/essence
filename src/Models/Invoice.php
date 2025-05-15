@@ -2,6 +2,7 @@
 
 namespace Elyar\TelegramBotEssentials\Models;
 
+use Elyar\TelegramBotEssentials\Database\factories\InvoiceFactory;
 use Elyar\TelegramBotEssentials\Jobs\FinalizeInvoicePaymentAction;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,6 +22,11 @@ class Invoice extends Model
         'updated_at',
         'deleted_at',
     ];
+
+    public static function newFactory(): InvoiceFactory
+    {
+        return InvoiceFactory::new();
+    }
 
     public function getStatusAttribute(): string
     {

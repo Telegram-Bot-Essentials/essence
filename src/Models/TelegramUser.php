@@ -2,7 +2,8 @@
 
 namespace Elyar\TelegramBotEssentials\Models;
 
-use Database\Factories\TelegramUserFactory;
+
+use Elyar\TelegramBotEssentials\Database\factories\TelegramUserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -10,9 +11,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class TelegramUser extends Model
 {
-    /** @use HasFactory<TelegramUserFactory> */
     use HasFactory;
     use SoftDeletes;
+
+    public static function newFactory(): TelegramUserFactory
+    {
+        return TelegramUserFactory::new();
+    }
 
     protected $appends = ['full_name'];
 
