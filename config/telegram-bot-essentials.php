@@ -16,6 +16,10 @@ return [
         HelpCommand::class,
     ],
 
+    'bot_access' => [
+        'token' => env('BOT_MANAGEMENT_ACCESS_TOKEN'),
+    ],
+
     'develop' => [
         'DEVELOP_UNIQUE_ID' => env('DEVELOP_UNIQUE_ID'),
         'DEVELOP_TELEGRAM_BOT_TOKEN' => env('DEVELOP_TELEGRAM_BOT_TOKEN'),
