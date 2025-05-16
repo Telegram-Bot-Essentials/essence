@@ -2,19 +2,24 @@
 
 namespace {{ namespace }};
 use Telegram\Bot\Keyboard\Keyboard;
+use Elyar\TelegramBotEssentials\Telegram\TelegramResponse;
 
 class {{ class_name }}
 {
     static string $type = '{{ type }}';
 
     // TODO: Implement static functions for generating bot messages
-    public static function menuRaw(): array
+    public static function menuRaw(): TelegramResponse
     {
         $text = 'menu';
 
         $replyMarkup = Keyboard::make()
             ->inline();
 
-        return ['reply_markup' => $replyMarkup, 'text' => $text, 'parse_mode' => 'HTML'];
+        return new TelegramResponse(
+            text: $text,
+            replyMarkup: $replyMarkup,
+            parseMode: 'HTML'
+        );
     }
 }
