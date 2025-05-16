@@ -2,7 +2,9 @@
 
 namespace Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Member;
 
+use Elyar\TelegramBotEssentials\Exceptions\LogicException;
 use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\ReplyKey;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 
 class MainMenuKey extends ReplyKey
@@ -19,6 +21,8 @@ class MainMenuKey extends ReplyKey
 
     /**
      * @throws TelegramSDKException
+     * @throws LogicException
+     * @throws BindingResolutionException
      */
     public function handle(): void
     {
