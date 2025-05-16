@@ -1,0 +1,32 @@
+<?php
+
+namespace {{ namespace }};
+
+use Elyar\TelegramBotEssentials\Enums\AllowableFields;
+use Elyar\TelegramBotEssentials\Enums\Roles;
+use Elyar\TelegramBotEssentials\Telegram\StateAnswers\StateAnswer;
+
+class {{ class_name }} extends StateAnswer
+{
+    protected string $type = '{{ type }}';
+    protected int $perm = {{ perm_power }};
+    protected array $allowedFields = [
+        AllowableFields::TEXT->value
+    ];
+
+    public function handle(string $method, array $params): void
+    {
+        $this->params = $params;
+        switch (strtolower($method)) {
+            case "cancel":
+                $this->cancel();
+                break;
+        }
+    }
+
+    function cancel(): void
+    {
+        // TODO: Implement cancel() method.
+        // Logic to revert the process if user cancels action
+    }
+}
