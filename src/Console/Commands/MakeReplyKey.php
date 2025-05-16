@@ -40,7 +40,6 @@ class MakeReplyKey extends GeneratorCommand
 
         $text = $this->generateTextFromName($inputName);
         $response = "$text executed successfully.";
-        $translationKey = $this->generateTranslationKeyFromName($inputName);
         $perm = $this->getPermValue();
         $permPower = $perm === Roles::ADMIN->value ? 'Roles::ADMIN->value' : 'Roles::MEMBER->value';
 
@@ -50,8 +49,6 @@ class MakeReplyKey extends GeneratorCommand
                 '{{ class_name }}',
                 '{{ text }}',
                 '{{ response }}',
-                '{{ translation_key }}',
-                '{{ perm }}',
                 '{{ perm_power }}',
             ],
             [
@@ -59,8 +56,6 @@ class MakeReplyKey extends GeneratorCommand
                 $className,
                 $text,
                 $response,
-                $translationKey,
-                $perm,
                 $permPower,
             ],
             $stub
