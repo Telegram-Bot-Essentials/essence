@@ -3,13 +3,14 @@
 namespace Elyar\TelegramBotEssentials\Console\Commands;
 
 use Elyar\TelegramBotEssentials\Enums\Roles;
+use Elyar\TelegramBotEssentials\Traits\TgObjectBuilder;
 use Illuminate\Console\GeneratorCommand;
 use InvalidArgumentException;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 
 class MakeReplyKey extends GeneratorCommand
 {
+    use TgObjectBuilder;
+
     protected $name = 'tbe:make:reply-key';
     protected $description = 'Create a new ReplyKey class';
     protected $type = 'ReplyKey';
@@ -21,12 +22,7 @@ class MakeReplyKey extends GeneratorCommand
 
     protected function getDefaultNamespace($rootNamespace): string
     {
-        $perm = ucfirst($this->option('perm') ?? 'Member');
-
-        if (!in_array($perm, ['Admin', 'Member'], true)) {
-            throw new InvalidArgumentException('The --perm option must be either "Admin" or "Member".');
-        }
-
+        $perm = $this->validateInputPerm();
         return $rootNamespace . '\\Telegram\\ReplyKeys\\' . $perm;
     }
 
@@ -60,38 +56,5 @@ class MakeReplyKey extends GeneratorCommand
             ],
             $stub
         );
-    }
-
-    protected function getArguments(): array
-    {
-        return [
-            ['name', InputArgument::REQUIRED, 'The name of the ReplyKey class'],
-        ];
-    }
-
-    protected function getOptions(): array
-    {
-        return [
-            ['perm', null, InputOption::VALUE_OPTIONAL, 'User permission level (Admin or Member)', 'Member'],
-        ];
-    }
-
-    protected function generateTextFromName(string $name): string
-    {
-        return ucwords(preg_replace('/(?<!^)[A-Z]/', ' $0', $name)); // BuyService → Buy Service
-    }
-
-    protected function generateTranslationKeyFromName(string $name): string
-    {
-        return strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $name)); // BuyService → buy_service
-    }
-
-    protected function getPermValue(): int
-    {
-        return match (strtolower($this->option('perm') ?? 'member')) {
-            'admin' => Roles::ADMIN->value,
-            'member' => Roles::MEMBER->value,
-            default => throw new InvalidArgumentException('The --perm option must be either "Admin" or "Member".'),
-        };
     }
 }
