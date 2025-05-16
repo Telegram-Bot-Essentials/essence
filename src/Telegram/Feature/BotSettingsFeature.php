@@ -3,6 +3,7 @@
 namespace Elyar\TelegramBotEssentials\Telegram\Feature;
 
 use Elyar\TelegramBotEssentials\Models\BotSettings;
+use Elyar\TelegramBotEssentials\Telegram\TelegramResponse;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\Keyboard\Keyboard;
 
@@ -11,26 +12,9 @@ class BotSettingsFeature
     static string $type = 'BTSTNG';
 
     /**
-     * @return void
-     * @throws TelegramSDKException
+     * @return TelegramResponse
      */
-    public static function menuSend(): void
-    {
-        $data = self::menuRaw();
-
-        wHook()->api()->sendMessage([
-            'chat_id' => wHook()->user()->telegramUser->peer_id,
-            'text' => $data['text'],
-            'reply_markup' => $data['reply_markup'],
-            'parse_mode' => 'HTML',
-        ]);
-
-    }
-
-    /**
-     * @return array
-     */
-    private static function menuRaw(): array
+    public static function menu(): TelegramResponse
     {
         $text = __('tbe::bot_settings.main.text.information', [
             'botStatus' => (wHook()->bot()->settings->bot_status ? __('tbe::general.status.enabledEmoji') : __('tbe::general.status.disabledEmoji')),
@@ -67,7 +51,6 @@ class BotSettingsFeature
             ])
         ]);
 
-
 //        $replyMarkup->row([
 //            Keyboard::inlineButton([
 //                'text' => __('tbe::bot_settings.keysSeparatorPlaceHolder'),
@@ -96,23 +79,9 @@ class BotSettingsFeature
             ])
         ]);
 
-        return ['reply_markup' => $replyMarkup, 'text' => $text];
-    }
-
-    /**
-     * @return void
-     * @throws TelegramSDKException
-     */
-    public static function menuEdit(): void
-    {
-        $data = self::menuRaw();
-
-        wHook()->api()->editMessageText([
-            'chat_id' => wHook()->user()->telegramUser->peer_id,
-            'message_id' => wHook()->update()->callbackQuery->message->messageId,
-            'text' => $data['text'],
-            'parse_mode' => 'HTML',
-            'reply_markup' => $data['reply_markup']
-        ]);
+        return new TelegramResponse(
+            text: $text,
+            replyMarkup: $replyMarkup,
+        );
     }
 }

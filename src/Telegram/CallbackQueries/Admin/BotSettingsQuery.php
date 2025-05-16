@@ -57,10 +57,11 @@ class BotSettingsQuery extends CallbackQuery
     {
         wHook()->bot()->settings->bot_status = $this->params[1];
         wHook()->bot()->settings->save();
-        BotSettingsFeature::menuEdit();
-        $this->answer(__('tbe::bot_settings.main.answers.botStatusUpdated', [
-            'newStatus' => $this->params[1] ? __('tbe::general.status.enabled') : __('tbe::general.status.disabled')
-        ]));
+        BotSettingsFeature::menu()
+            ->answer(__('tbe::bot_settings.main.answers.botStatusUpdated', [
+                'newStatus' => $this->params[1] ? __('tbe::general.status.enabled') : __('tbe::general.status.disabled')
+            ]))
+            ->update();
     }
 
     /**
@@ -71,10 +72,11 @@ class BotSettingsQuery extends CallbackQuery
     {
         wHook()->bot()->settings->pay_with_card = $this->params[1];
         wHook()->bot()->settings->save();
-        BotSettingsFeature::menuEdit();
-        $this->answer(__('tbe::bot_settings.main.answers.payWithCardStatusUpdated', [
-            'newStatus' => $this->params[1] ? __('tbe::general.status.enabled') : __('tbe::general.status.disabled')
-        ]));
+        BotSettingsFeature::menu()
+            ->answer(__('tbe::bot_settings.main.answers.payWithCardStatusUpdated', [
+                'newStatus' => $this->params[1] ? __('tbe::general.status.enabled') : __('tbe::general.status.disabled')
+            ]))
+            ->update();
     }
 
     /**
@@ -149,15 +151,19 @@ class BotSettingsQuery extends CallbackQuery
         $this->answer(__('tbe::bot_settings.main.answers.transactionsChatId'));
     }
 
-    private function botLanguage()
+    /**
+     * @throws TelegramSDKException
+     */
+    private function botLanguage(): void
     {
         $newLanguage = wHook()->bot()->settings->language == 'en' ? 'fa' : 'en';
         wHook()->bot()->settings->language = $newLanguage;
         wHook()->bot()->settings->save();
         App::setLocale(wHook()->bot()->settings->language);
-        BotSettingsFeature::menuEdit();
-        $this->answer(__('tbe::bot_settings.main.answers.botLanguage', [
-            'language' => $newLanguage
-        ]));
+        BotSettingsFeature::menu()
+            ->answer(__('tbe::bot_settings.main.answers.botLanguage', [
+                'language' => $newLanguage
+            ]))
+            ->update();
     }
 }

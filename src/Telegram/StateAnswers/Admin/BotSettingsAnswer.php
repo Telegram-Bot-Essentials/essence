@@ -52,7 +52,7 @@ class BotSettingsAnswer extends StateAnswer
 
         wHook()->user()->changeState();
         $this->sendValueUpdatedMessage();
-        BotSettingsFeature::menuSend();
+        BotSettingsFeature::menu()->send();
     }
 
     /**
@@ -81,7 +81,7 @@ class BotSettingsAnswer extends StateAnswer
 
         wHook()->user()->changeState();
         $this->sendValueUpdatedMessage();
-        BotSettingsFeature::menuSend();
+        BotSettingsFeature::menu()->send();
     }
 
     /**
@@ -97,7 +97,7 @@ class BotSettingsAnswer extends StateAnswer
 
         wHook()->user()->changeState();
         $this->sendValueUpdatedMessage();
-        BotSettingsFeature::menuSend();
+        BotSettingsFeature::menu()->send();
     }
 
     function cancel(): void

@@ -83,9 +83,9 @@ class BotAdminsQuery extends CallbackQuery
         $botUserAsAdmin->save();
 
         BotAdminsFeature::menu()
-            ->setAnswer(__('tbe::bot_admins.main.answers.adminRemoved', [
+            ->answer(__('tbe::bot_admins.main.answers.adminRemoved', [
                 'adminName' => $botUserAsAdmin->telegramUser->full_name
             ]))
-            ->updateToIt();
+            ->update();
     }
 }

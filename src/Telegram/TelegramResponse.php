@@ -45,7 +45,7 @@ class TelegramResponse
         ]);
     }
 
-    public function setAnswer(string $answer): self
+    public function answer(string $answer): self
     {
         $this->answer = $answer;
         return $this;
@@ -70,7 +70,7 @@ class TelegramResponse
     /**
      * @throws TelegramSDKException
      */
-    public function updateToIt(): void
+    public function update(): void
     {
         wHook()->api()->editMessageText(
             array_filter([

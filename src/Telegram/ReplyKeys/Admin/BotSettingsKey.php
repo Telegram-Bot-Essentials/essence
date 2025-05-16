@@ -22,6 +22,6 @@ class BotSettingsKey extends ReplyKey
      */
     public function handle(): void
     {
-        BotSettingsFeature::menuSend();
+        BotSettingsFeature::menu()->send();
     }
 }
