@@ -2,17 +2,27 @@
 
 namespace Elyar\TelegramBotEssentials\Console\Commands;
 
-use Elyar\TelegramBotEssentials\Enums\Roles;
-use Elyar\TelegramBotEssentials\Traits\TgObjectBuilder;
+use Elyar\TelegramBotEssentials\Traits\TgClassMaker;
 use Illuminate\Console\GeneratorCommand;
 
 class MakeCallbackQuery extends GeneratorCommand
 {
-    use TgObjectBuilder;
+    use TgClassMaker;
 
-    protected $name = 'tbe:make:callback-query';
+    protected $signature = 'tbe:make:callback-query
+        {name : The name of the feature}
+        {--admin : Make feature for admin}
+        {--a|all : Generate all types}
+        {--f|feature : Generate feature class}
+        {--r|reply-key : Generate reply key}
+        {--s|state-answer : Generate state answer}';
     protected $description = 'Create a new CallbackQuery class';
-    protected $type = 'CallbackQuery';
+
+    protected array $map = [
+        'feature' => 'tbe:make:feature',
+        'reply-key' => 'tbe:make:reply-key',
+        'state-answer' => 'tbe:make:state-answer',
+    ];
 
     protected function getStub(): string
     {
@@ -21,21 +31,24 @@ class MakeCallbackQuery extends GeneratorCommand
 
     protected function getDefaultNamespace($rootNamespace): string
     {
-        $perm = $this->validateInputPerm();
+        $perm = $this->option('admin') ? 'Admin' : 'Member';
         return $rootNamespace . '\\Telegram\\CallbackQuery\\' . $perm;
+    }
+
+    protected function getNameInput(): string
+    {
+        return $this->initializeName() . 'Query';
     }
 
     protected function buildClass($name): string
     {
+        $this->initializeValues();
+        $this->handleOptions();
+
         $stub = $this->files->get($this->getStub());
 
         $className = class_basename($name);
         $namespace = $this->getNamespace($name);
-        $inputName = $this->argument('name');
-
-        $type = $this->generateTypeFromName($inputName);
-        $perm = $this->getPermValue();
-        $permPower = $perm === Roles::ADMIN->value ? 'Roles::ADMIN->value' : 'Roles::MEMBER->value';
 
         return str_replace(
             [
@@ -47,8 +60,8 @@ class MakeCallbackQuery extends GeneratorCommand
             [
                 $namespace,
                 $className,
-                $type,
-                $permPower,
+                $this->typeValue,
+                $this->permEnumValue,
             ],
             $stub
         );

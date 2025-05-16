@@ -2,18 +2,27 @@
 
 namespace Elyar\TelegramBotEssentials\Console\Commands;
 
-use Elyar\TelegramBotEssentials\Enums\Roles;
-use Elyar\TelegramBotEssentials\Traits\TgObjectBuilder;
+use Elyar\TelegramBotEssentials\Traits\TgClassMaker;
 use Illuminate\Console\GeneratorCommand;
-use InvalidArgumentException;
 
 class MakeReplyKey extends GeneratorCommand
 {
-    use TgObjectBuilder;
+    use TgClassMaker;
 
-    protected $name = 'tbe:make:reply-key';
+    protected $signature = 'tbe:make:reply-key
+        {name : The name of the feature}
+        {--admin : Make feature for admin}
+        {--a|all : Generate all types}
+        {--f|feature : Generate feature class}
+        {--c|callback : Generate callback query}
+        {--s|state-answer : Generate state answer}';
     protected $description = 'Create a new ReplyKey class';
-    protected $type = 'ReplyKey';
+
+    protected array $map = [
+        'feature' => 'tbe:make:feature',
+        'callback' => 'tbe:make:callback-query',
+        'state-answer' => 'tbe:make:state-answer',
+    ];
 
     protected function getStub(): string
     {
@@ -22,22 +31,27 @@ class MakeReplyKey extends GeneratorCommand
 
     protected function getDefaultNamespace($rootNamespace): string
     {
-        $perm = $this->validateInputPerm();
+        $perm = $this->option('admin') ? 'Admin' : 'Member';
         return $rootNamespace . '\\Telegram\\ReplyKeys\\' . $perm;
+    }
+
+    protected function getNameInput(): string
+    {
+        return $this->initializeName() . 'Key';
     }
 
     protected function buildClass($name): string
     {
+        $this->initializeValues();
+        $this->handleOptions();
+
         $stub = $this->files->get($this->getStub());
 
         $className = class_basename($name);
         $namespace = $this->getNamespace($name);
-        $inputName = $this->argument('name');
 
-        $text = $this->generateTextFromName($inputName);
+        $text = $this->generateTextFromName($this->nameValue);
         $response = "$text executed successfully.";
-        $perm = $this->getPermValue();
-        $permPower = $perm === Roles::ADMIN->value ? 'Roles::ADMIN->value' : 'Roles::MEMBER->value';
 
         return str_replace(
             [
@@ -52,7 +66,7 @@ class MakeReplyKey extends GeneratorCommand
                 $className,
                 $text,
                 $response,
-                $permPower,
+                $this->permEnumValue,
             ],
             $stub
         );

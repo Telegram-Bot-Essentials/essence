@@ -2,16 +2,27 @@
 
 namespace Elyar\TelegramBotEssentials\Console\Commands;
 
-use Elyar\TelegramBotEssentials\Traits\TgObjectBuilder;
+use Elyar\TelegramBotEssentials\Traits\TgClassMaker;
 use Illuminate\Console\GeneratorCommand;
 
 class MakeFeature extends GeneratorCommand
 {
-    use TgObjectBuilder;
+    use TgClassMaker;
 
-    protected $name = 'tbe:make:feature';
+    protected $signature = 'tbe:make:feature
+        {name : The name of the feature}
+        {--admin : Make object for admin}
+        {--a|all : Generate all types}
+        {--c|callback : Generate callback query}
+        {--r|reply-key : Generate reply key}
+        {--s|state-answer : Generate state answer}';
     protected $description = 'Create a new feature';
-    protected $type = 'Feature';
+
+    protected array $map = [
+        'callback' => 'tbe:make:callback-query',
+        'reply-key' => 'tbe:make:reply-key',
+        'state-answer' => 'tbe:make:state-answer',
+    ];
 
     protected function getStub(): string
     {
@@ -20,19 +31,24 @@ class MakeFeature extends GeneratorCommand
 
     protected function getDefaultNamespace($rootNamespace): string
     {
-        $perm = $this->validateInputPerm();
+        $perm = $this->option('admin') ? 'Admin' : 'Member';
         return $rootNamespace . '\\Telegram\\Feature\\' . $perm;
+    }
+
+    protected function getNameInput(): string
+    {
+        return $this->initializeName() . 'Feature';
     }
 
     protected function buildClass($name): string
     {
+        $this->initializeValues();
+        $this->handleOptions();
+
         $stub = $this->files->get($this->getStub());
 
         $className = class_basename($name);
         $namespace = $this->getNamespace($name);
-        $inputName = $this->argument('name');
-
-        $type = $this->generateTypeFromName($inputName);
 
         return str_replace(
             [
@@ -43,7 +59,7 @@ class MakeFeature extends GeneratorCommand
             [
                 $namespace,
                 $className,
-                $type,
+                $this->typeValue,
             ],
             $stub
         );

@@ -3,9 +3,11 @@
 namespace Elyar\TelegramBotEssentials;
 
 use Elyar\TelegramBotEssentials\Console\Commands\MakeCallbackQuery;
-use Elyar\TelegramBotEssentials\Console\Commands\MakeFeature;
+use Elyar\TelegramBotEssentials\Console\Commands\MakeFeatureOld;
 use Elyar\TelegramBotEssentials\Console\Commands\MakeReplyKey;
+use Elyar\TelegramBotEssentials\Console\Commands\MakeReplyKeyOld;
 use Elyar\TelegramBotEssentials\Console\Commands\MakeStateAnswer;
+use Elyar\TelegramBotEssentials\Console\Commands\MakeFeature;
 use Elyar\TelegramBotEssentials\Console\Commands\setWebhook;
 use Elyar\TelegramBotEssentials\Console\Commands\BotManagementTokenCommand;
 use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQueryBus;
@@ -34,9 +36,9 @@ class TelegramBotServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->commands([
-            MakeReplyKey::class,
             setWebhook::class,
             BotManagementTokenCommand::class,
+            MakeReplyKey::class,
             MakeCallbackQuery::class,
             MakeStateAnswer::class,
             MakeFeature::class
