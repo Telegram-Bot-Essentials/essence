@@ -2,6 +2,7 @@
 
 namespace Elyar\TelegramBotEssentials;
 
+use Elyar\TelegramBotEssentials\Console\Commands\MakeCallbackQuery;
 use Elyar\TelegramBotEssentials\Console\Commands\MakeReplyKey;
 use Elyar\TelegramBotEssentials\Console\Commands\setWebhook;
 use Elyar\TelegramBotEssentials\Console\Commands\BotManagementTokenCommand;
@@ -34,6 +35,7 @@ class TelegramBotServiceProvider extends ServiceProvider
             MakeReplyKey::class,
             setWebhook::class,
             BotManagementTokenCommand::class,
+            MakeCallbackQuery::class
         ]);
 
         Route::prefix('api/')
