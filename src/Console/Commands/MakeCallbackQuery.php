@@ -32,7 +32,7 @@ class MakeCallbackQuery extends GeneratorCommand
     protected function getDefaultNamespace($rootNamespace): string
     {
         $perm = $this->option('admin') ? 'Admin' : 'Member';
-        return $rootNamespace . '\\Telegram\\CallbackQuery\\' . $perm;
+        return $rootNamespace . '\\Telegram\\CallbackQueries\\' . $perm;
     }
 
     protected function getNameInput(): string

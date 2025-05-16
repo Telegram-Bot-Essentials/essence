@@ -32,7 +32,7 @@ class MakeFeature extends GeneratorCommand
     protected function getDefaultNamespace($rootNamespace): string
     {
         $perm = $this->option('admin') ? 'Admin' : 'Member';
-        return $rootNamespace . '\\Telegram\\Feature\\' . $perm;
+        return $rootNamespace . '\\Telegram\\Features\\' . $perm;
     }
 
     protected function getNameInput(): string
