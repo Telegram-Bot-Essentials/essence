@@ -1,0 +1,20 @@
+<?php
+
+namespace {{ namespace }};
+use Telegram\Bot\Keyboard\Keyboard;
+
+class {{ class_name }}
+{
+    static string $type = '{{ type }}';
+
+    // TODO: Implement static functions for generating bot messages
+    public static function menuRaw(): array
+    {
+        $text = 'menu';
+
+        $replyMarkup = Keyboard::make()
+            ->inline();
+
+        return ['reply_markup' => $replyMarkup, 'text' => $text, 'parse_mode' => 'HTML'];
+    }
+}
