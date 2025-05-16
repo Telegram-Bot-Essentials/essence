@@ -9,7 +9,7 @@ class {{ class_name }}
     static string $type = '{{ type }}';
 
     // TODO: Implement static functions for generating bot messages
-    public static function menuRaw(): TelegramResponse
+    public static function menu(): TelegramResponse
     {
         $text = 'menu';
 
