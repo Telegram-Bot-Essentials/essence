@@ -56,7 +56,6 @@ class TelegramResponse
      */
     public function send(): void
     {
-        Log::debug('Sending message: ' . $this->text);
         wHook()->api()->sendMessage(
             array_filter([
                 'chat_id' => wHook()->user()->telegramUser->peer_id,
