@@ -17,6 +17,8 @@ class BotAdminsQuery extends CallbackQuery
 
     /**
      * @param array $params
+     * @throws BindingResolutionException
+     * @throws LogicException
      * @throws TelegramSDKException
      */
     public function handle(array $params): void
@@ -35,6 +37,11 @@ class BotAdminsQuery extends CallbackQuery
         }
     }
 
+    /**
+     * @throws TelegramSDKException
+     * @throws BindingResolutionException
+     * @throws LogicException
+     */
     private function addAdmin(): void
     {
         $messageMeta = MessageMeta::makeWithCurrentMessage();
@@ -74,9 +81,11 @@ class BotAdminsQuery extends CallbackQuery
         $botUserAsAdmin = wHook()->bot()->botUsers()->where('id', $this->params[1])->first();
         $botUserAsAdmin->power = 0;
         $botUserAsAdmin->save();
-        BotAdminsFeature::menuEdit();
-        $this->answer(__('tbe::bot_admins.main.answers.adminRemoved', [
-            'adminName' => $botUserAsAdmin->telegramUser->full_name
-        ]));
+
+        BotAdminsFeature::menu()
+            ->setAnswer(__('tbe::bot_admins.main.answers.adminRemoved', [
+                'adminName' => $botUserAsAdmin->telegramUser->full_name
+            ]))
+            ->updateToIt();
     }
 }

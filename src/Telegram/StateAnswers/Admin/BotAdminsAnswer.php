@@ -55,7 +55,7 @@ class BotAdminsAnswer extends StateAnswer
             'text' => __('tbe::bot_admins.main.text.adminAddedSuccessfully'),
             'reply_markup' => wHook()->user()->getKeyboard(),
         ]);
-        $data = BotAdminsFeature::menuRaw();
+        $data = BotAdminsFeature::menu();
         $messageMeta->updateAndContinueAction($data);
     }
 

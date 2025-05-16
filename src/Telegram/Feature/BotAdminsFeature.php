@@ -3,8 +3,7 @@
 namespace Elyar\TelegramBotEssentials\Telegram\Feature;
 
 use Elyar\TelegramBotEssentials\Enums\Roles;
-use Illuminate\Support\Facades\Log;
-use Telegram\Bot\Exceptions\TelegramSDKException;
+use Elyar\TelegramBotEssentials\Telegram\TelegramResponse;
 use Telegram\Bot\Keyboard\Keyboard;
 
 class BotAdminsFeature
@@ -12,26 +11,9 @@ class BotAdminsFeature
     static string $type = 'BOTADMNS';
 
     /**
-     * @return void
-     * @throws TelegramSDKException
+     * @return TelegramResponse
      */
-    public static function menuSend(): void
-    {
-        $data = self::menuRaw();
-
-        wHook()->api()->sendMessage([
-            'chat_id' => wHook()->user()->telegramUser->peer_id,
-            'text' => $data['text'],
-            'reply_markup' => $data['reply_markup'],
-            'parse_mode' => $data['parse_mode'],
-        ]);
-
-    }
-
-    /**
-     * @return array
-     */
-    public static function menuRaw(): array
+    public static function menu(): TelegramResponse
     {
         $admins = wHook()->bot()->botUsers()->where('power', '>=', Roles::ADMIN->value)->get();
         $text = __('tbe::bot_admins.main.text.information', [
@@ -65,23 +47,10 @@ class BotAdminsFeature
             ]);
         }
 
-        return ['reply_markup' => $replyMarkup, 'text' => $text, 'parse_mode' => 'HTML'];
-    }
-
-    /**
-     * @return void
-     * @throws TelegramSDKException
-     */
-    public static function menuEdit(): void
-    {
-        $data = self::menuRaw();
-
-        wHook()->api()->editMessageText([
-            'chat_id' => wHook()->user()->telegramUser->peer_id,
-            'message_id' => wHook()->update()->callbackQuery->message->messageId,
-            'text' => $data['text'],
-            'parse_mode' => $data['parse_mode'],
-            'reply_markup' => $data['reply_markup']
-        ]);
+        return new TelegramResponse(
+            text: $text,
+            replyMarkup: $replyMarkup,
+            parseMode: 'HTML'
+        );
     }
 }

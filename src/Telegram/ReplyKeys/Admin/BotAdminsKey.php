@@ -22,6 +22,6 @@ class BotAdminsKey extends ReplyKey
      */
     public function handle(): void
     {
-        BotAdminsFeature::menuSend();
+        BotAdminsFeature::menu()->send();
     }
 }
