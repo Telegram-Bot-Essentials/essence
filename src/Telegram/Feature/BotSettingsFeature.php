@@ -15,14 +15,14 @@ class BotSettingsFeature
     public static function menu(): TelegramResponse
     {
         $text = __('tbe::bot_settings.main.text.information', [
-                'botStatus' => (wHook()->bot()->settings->bot_status ? __('tbe::general.status.enabledEmoji') : __('tbe::general.status.disabledEmoji')),
-                'payWithCardStatus' => (wHook()->bot()->settings->pay_with_card ? __('tbe::general.status.enabledEmoji') : __('tbe::general.status.disabledEmoji')),
-                'transactionsChatId' => wHook()->bot()->settings->transactions_chat_id ?? __('tbe::general.status.notSet'),
-                'paymentCardNumber' => wHook()->bot()->settings->pay_to_card_number ?? __('tbe::general.status.notSet'),
-                'paymentCardName' => wHook()->bot()->settings->pay_to_card_name ?? __('tbe::general.status.notSet'),
-                'language' => wHook()->bot()->settings->language,
-                'defaultCurrency' => wHook()->bot()->settings->default_currency
-            ]) . json_encode(getSupportedCurrencies());
+            'botStatus' => (wHook()->bot()->settings->bot_status ? __('tbe::general.status.enabledEmoji') : __('tbe::general.status.disabledEmoji')),
+            'payWithCardStatus' => (wHook()->bot()->settings->pay_with_card ? __('tbe::general.status.enabledEmoji') : __('tbe::general.status.disabledEmoji')),
+            'transactionsChatId' => wHook()->bot()->settings->transactions_chat_id ?? __('tbe::general.status.notSet'),
+            'paymentCardNumber' => wHook()->bot()->settings->pay_to_card_number ?? __('tbe::general.status.notSet'),
+            'paymentCardName' => wHook()->bot()->settings->pay_to_card_name ?? __('tbe::general.status.notSet'),
+            'language' => wHook()->bot()->settings->language,
+            'defaultCurrency' => wHook()->bot()->settings->default_currency
+        ]);
 
         $replyMarkup = Keyboard::make()
             ->inline();
