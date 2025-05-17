@@ -4,7 +4,7 @@ namespace Elyar\TelegramBotEssentials\Telegram\CallbackQueries\Admin;
 
 use Elyar\TelegramBotEssentials\Enums\Roles;
 use Elyar\TelegramBotEssentials\Exceptions\LogicException;
-use Elyar\TelegramBotEssentials\Models\BotSettings;
+use Elyar\TelegramBotEssentials\Models\Currency;
 use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQuery;
 use Elyar\TelegramBotEssentials\Telegram\Feature\BotSettingsFeature;
 use Illuminate\Contracts\Container\BindingResolutionException;
@@ -26,6 +26,10 @@ class BotSettingsQuery extends CallbackQuery
     {
         $this->params = $params;
         switch (strtolower($params[0])) {
+            case "start":
+                $this->start();
+                break;
+
             case 'bot_status':
                 $this->botStatus();
                 break;
@@ -33,8 +37,18 @@ class BotSettingsQuery extends CallbackQuery
                 $this->payWithCardStatus();
                 break;
 
+                case 'currency_status':
+                    $this->currencyStatus();
+                    break;
+
+            case 'bot_currency':
+                $this->botCurrency();
+                break;
             case "bot_language":
                 $this->botLanguage();
+                break;
+            case "bot_supported_currencies":
+                $this->botSupportedCurrencies();
                 break;
 
             case "change_payment_card_number":
@@ -163,6 +177,53 @@ class BotSettingsQuery extends CallbackQuery
         BotSettingsFeature::menu()
             ->answer(__('tbe::bot_settings.main.answers.botLanguage', [
                 'language' => $newLanguage
+            ]))
+            ->update();
+    }
+
+    /**
+     * @throws TelegramSDKException
+     */
+    private function botCurrency(): void
+    {
+        $newCurrency = $this->params[1];
+        wHook()->bot()->settings->default_currency = $newCurrency;
+        wHook()->bot()->settings->save();
+        BotSettingsFeature::menu()
+            ->answer('Currency update to ' . $newCurrency)
+            ->update();
+    }
+
+    /**
+     * @throws TelegramSDKException
+     */
+    private function botSupportedCurrencies()
+    {
+        BotSettingsFeature::supportedCurrencies()
+            ->update();
+    }
+
+    /**
+     * @throws TelegramSDKException
+     */
+    private function start(): void
+    {
+        BotSettingsFeature::menu()
+            ->update();
+    }
+
+    /**
+     * @throws TelegramSDKException
+     */
+    private function currencyStatus(): void
+    {
+        $currency = $this->params[1];
+        $status = $this->params[2];
+        $status ? wHook()->bot()->settings->currencies()->create(['name' => $currency]) : wHook()->bot()->settings->currencies()->where('name', $currency)->delete();
+        BotSettingsFeature::supportedCurrencies()
+            ->answer(__('tbe::bot_settings.main.answers.botCurrency', [
+                'currency' => $currency,
+                'status' => $status ? __('tbe::general.status.enabled') : __('tbe::general.status.disabled')
             ]))
             ->update();
     }

@@ -165,3 +165,28 @@ if(!function_exists('hasAccess')){
         return (wHook()->user()->power >= $power ?? Roles::ADMIN->value) || (wHook()->bot()->botOwner->id == wHook()->user()->telegramUser->id);
     }
 }
+
+if(!function_exists('getSupportedCurrencies')){
+    function getSupportedCurrencies(): array
+    {
+        $currencies = collect(config('telegram-bot-essentials.supported_currencies') ?? [])->pluck('name');
+        $currencies = $currencies->map(function ($currency) {
+            return strtoupper($currency);
+        });
+        return array_unique(array_merge($currencies->toArray(), ['USD']));
+    }
+}
+
+if(!function_exists('getNextFromArray')){
+    function getNextFromArray(array $array, $current)
+    {
+        $index = array_search($current, $array);
+
+        if ($index === false || empty($array)) {
+            return null;
+        }
+
+        $nextIndex = ($index + 1) % count($array);
+        return $array[$nextIndex];
+    }
+}

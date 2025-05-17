@@ -6,6 +6,7 @@ use Elyar\TelegramBotEssentials\Traits\BelongsToBot;
 use Elyar\TelegramBotEssentials\Traits\BotTenancyScopes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Validator;
 
@@ -42,5 +43,10 @@ class BotSettings extends Model
     {
         Validator::validate(['connection_guide_channel_id' => $value], ['connection_guide_channel_id' => 'required|string|max:64']);
         $this->attributes['connection_guide_channel_id'] = $value;
+    }
+
+    public function currencies(): hasMany
+    {
+        return $this->hasMany(Currency::class);
     }
 }

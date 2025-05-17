@@ -8,6 +8,9 @@ return [
                 . "\r\n❔ <b>وضعیت ربات</b> :botStatus"
                 . "\r\n❔ <b>پرداخت با کارت</b> :payWithCardStatus"
                 . "\r\n"
+                . "\r\n❔ <b>زبان:</b> :language"
+                . "\r\n❔ <b>ارز:</b> :defaultCurrency"
+                . "\r\n"
                 . "\r\n❔ <b>شماره کارت پرداخت:</b> <i>:paymentCardNumber</i>"
                 . "\r\n❔ <b>نام کارت پرداخت:</b> <i>:paymentCardName</i>"
                 . "\r\n"
@@ -15,6 +18,7 @@ return [
             'changePaymentCardNumber' => '❓ شماره کارت جدید را وارد کنید: ',
             'changePaymentCardName' => '❓ نام کارت جدید را وارد کنید: ',
             'transactionsChatId' => '❓ شناسه چت جدید تراکنشها را وارد کنید: ',
+            'supported_currencies' => '👇 ارز های مجاز را انتخاب کنید',
         ],
         'answers' => [
             'paymentCardNumber' => '⏳ در حال بهروزرسانی شماره کارت پرداخت...',
@@ -25,14 +29,18 @@ return [
             'payWithCardStatusUpdated' => 'وضعیت پرداخت با کارت :newStatus',
 
             'botLanguage' => 'زبان ربات به :language تغییر یافت',
+            'botCurrency' => 'ارز :currency :status',
         ],
         'keys' => [
-            'botLanguage' => '🌍 زبان: :language',
+            'botLanguage' => '🌍 زبان :language',
+            'botCurrency' => '💱 ارز :defaultCurrency',
+            'manageCurrencies' => 'مدیریت ارز ها 🛠',
             'botStatus' => 'وضعیت ربات :status',
             'payWithCardStatus' => 'پرداخت با کارت :status',
             'paymentCardNumber' => '✏️ شماره کارت پرداخت',
             'paymentCardName' => '✏️ نام کارت پرداخت',
             'transactionsChatId' => '✏️ شناسه چت تراکنشها',
+            'currencyStatus' => ':currency :status',
         ]
     ],
     'reply_key' => 'تنظیمات ربات ⚙️',
