@@ -205,7 +205,7 @@ if (!function_exists('priceFormat')) {
     {
         $symbol = getDefaultCurrencySymbol();
         $seperator = preg_match('/[\x{0600}-\x{06FF}\x{0750}-\x{077F}\x{08A0}-\x{08FF}\x{FB50}-\x{FDFF}\x{FE70}-\x{FEFF}\x{FDFC}]/u', $symbol) ? ' ' : '';
-        return number_format($price) . $seperator . $symbol;
+        return formatFloat($price) . $seperator . $symbol;
     }
 }
 
@@ -213,5 +213,38 @@ if (!function_exists('priceIn')) {
     function priceIn(float $price): CurrencyFather
     {
         return CurrencyFather::from(wHook()->bot()->settings->default_currency)->amount($price);
+    }
+}
+
+if (!function_exists('formatFloat')) {
+    function formatFloat($number): string
+    {
+        $number = smartRound($number);
+        $formatted = sprintf('%.16f', $number);
+
+        return rtrim(rtrim($formatted, '0'), '.');
+    }
+}
+
+if (!function_exists('smartRound')) {
+    function smartRound($value, $digitsAfterLeadingZeros = 4): string
+    {
+        $value = (float)$value;
+
+        if ($value == 0.0) {
+            return "0";
+        }
+
+        if ($value >= 1) {
+            return sprintf('%.2f', $value);
+        }
+
+        $parts = explode('.', number_format($value, 30, '.', ''));
+        $decimals = $parts[1];
+
+        $leadingZeros = strspn($decimals, '0');
+        $precision = $leadingZeros + $digitsAfterLeadingZeros;
+
+        return sprintf('%.' . $precision . 'f', $value);
     }
 }
