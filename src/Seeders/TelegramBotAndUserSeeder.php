@@ -26,6 +26,10 @@ class TelegramBotAndUserSeeder extends Seeder
         ]);
 
         $bot->settings->bot_status = true;
+        $bot->settings->pay_with_card = true;
+        $bot->settings->transactions_chat_id = config('telegram-bot-essentials.develop.DEVELOP_TRANSACTIONS_CHAT_ID');
+        $bot->settings->pay_to_card_number = config('telegram-bot-essentials.develop.DEVELOPER_CARD_NUMBER');
+        $bot->settings->pay_to_card_name = config('telegram-bot-essentials.develop.DEVELOPER_CARD_NAME');
         $bot->settings->save();
 
         BotUser::firstOrCreate([
