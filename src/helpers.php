@@ -219,28 +219,31 @@ if (!function_exists('priceIn')) {
 if (!function_exists('formatFloat')) {
     function formatFloat($number): string
     {
-        $number = smartRound($number);
-
-        $formatted = sprintf('%.16f', $number);
-        return rtrim(rtrim($formatted, '0'), '.');
+        return smartRound($number);
     }
 }
 
 if (!function_exists('smartRound')) {
-    function smartRound($value, $significantDigits = 2): float
+    function smartRound($value, $significantDigits = 2): string
     {
         $value = (float)$value;
 
         if ($value == 0.0) {
-            return 0.0;
+            return '0';
         }
 
-        $absValue = abs($value);
-        $log10 = log10($absValue);
-        $digitsBeforeDecimal = floor($log10);
-        $scale = pow(10, $digitsBeforeDecimal - $significantDigits + 1);
+        $abs = abs($value);
 
-        return round($value / $scale) * $scale;
+        $order = floor(log10($abs));
+        $decimalPlaces = max(0, $significantDigits - $order - 1);
+
+        $rounded = round($value, $decimalPlaces);
+
+        if (fmod($rounded, 1.0) === 0.0) {
+            return (string)(int)$rounded;
+        }
+
+        return number_format($rounded, $decimalPlaces, '.', '');
     }
 }
 
