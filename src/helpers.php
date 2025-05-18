@@ -187,7 +187,7 @@ if (!function_exists('getSupportedCurrencies')) {
 }
 
 if (!function_exists('getNextFromArray')) {
-    function getNextFromArray(array $array, string $current)
+    function getNextFromArray(array $array, $current)
     {
         $index = array_search($current, $array);
 
