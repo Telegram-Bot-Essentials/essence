@@ -2,6 +2,7 @@
 
 use Elyar\TelegramBotEssentials\Enums\Roles;
 use Elyar\TelegramBotEssentials\Exceptions\FeatureIsDisabled;
+use Elyar\TelegramBotEssentials\Services\CurrencyFather;
 use Elyar\TelegramBotEssentials\Support\Webhook;
 use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQueryBus;
 use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\ReplyKeyBus;
@@ -92,17 +93,17 @@ if (!function_exists('decodeCallback')) {
     }
 }
 
-if(!function_exists('inlineSorter')){
+if (!function_exists('inlineSorter')) {
     function inlineSorter(array $array, ?int $step = null): array
     {
-        if(empty($step)){
-            if(count($array) < 6) $step = 1;
+        if (empty($step)) {
+            if (count($array) < 6) $step = 1;
             else $step = 2;
         }
 
         $list = [];
         $num = 0;
-        foreach($array as $data){
+        foreach ($array as $data) {
             $row = floor($num / $step);
             $list[$row][] = $data;
             $num++;
@@ -111,7 +112,7 @@ if(!function_exists('inlineSorter')){
     }
 }
 
-if(!function_exists('addInlineKeysSorted')){
+if (!function_exists('addInlineKeysSorted')) {
     /**
      * @param Keyboard $keyboard
      * @param array $keys
@@ -147,7 +148,7 @@ if (!function_exists('getInputInlineKeyText')) {
     }
 }
 
-if(!function_exists('dependsOn')){
+if (!function_exists('dependsOn')) {
     /**
      * @throws FeatureIsDisabled
      */
@@ -158,7 +159,7 @@ if(!function_exists('dependsOn')){
     }
 }
 
-if(!function_exists('hasAccess')){
+if (!function_exists('hasAccess')) {
 
     function hasAccess(?int $power = null): bool
     {
@@ -166,7 +167,15 @@ if(!function_exists('hasAccess')){
     }
 }
 
-if(!function_exists('getSupportedCurrencies')){
+if (!function_exists('getSupportedCurrencies')) {
+    function getDefaultCurrencySymbol(): string
+    {
+        return collect(config('telegram-bot-essentials.supported_currencies') ?? [])
+            ->where('name', wHook()->bot()->settings->default_currency)->first()['symbol'];
+    }
+}
+
+if (!function_exists('getSupportedCurrencies')) {
     function getSupportedCurrencies(): array
     {
         $currencies = collect(config('telegram-bot-essentials.supported_currencies') ?? [])->pluck('name');
@@ -177,8 +186,8 @@ if(!function_exists('getSupportedCurrencies')){
     }
 }
 
-if(!function_exists('getNextFromArray')){
-    function getNextFromArray(array $array, $current)
+if (!function_exists('getNextFromArray')) {
+    function getNextFromArray(array $array, string $current)
     {
         $index = array_search($current, $array);
 
@@ -188,5 +197,21 @@ if(!function_exists('getNextFromArray')){
 
         $nextIndex = ($index + 1) % count($array);
         return $array[$nextIndex];
+    }
+}
+
+if (!function_exists('priceFormat')) {
+    function priceFormat(float $price): string
+    {
+        $symbol = getDefaultCurrencySymbol();
+        $seperator = preg_match('/[\x{0600}-\x{06FF}\x{0750}-\x{077F}\x{08A0}-\x{08FF}\x{FB50}-\x{FDFF}\x{FE70}-\x{FEFF}\x{FDFC}]/u', $symbol) ? ' ' : '';
+        return number_format($price) . $seperator . $symbol;
+    }
+}
+
+if (!function_exists('priceIn')) {
+    function priceIn(float $price): CurrencyFather
+    {
+        return CurrencyFather::from(wHook()->bot()->settings->default_currency)->amount($price);
     }
 }

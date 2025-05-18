@@ -23,6 +23,11 @@ class CurrencyFather
         return $this;
     }
 
+    public static function from(string $currency): self
+    {
+        return new self($currency);
+    }
+
     public static function USD(): self
     {
         return new self('USD');
@@ -61,7 +66,7 @@ class CurrencyFather
      */
     public function rate(): float
     {
-        $url = 'https://currency.servicefather.ir/api/currencies/' . $this->currency . '/' . $this->toCurrency. '/' . $this->amount;
+        $url = 'https://currency.servicefather.ir/api/currencies/' . $this->toCurrency . '/' . $this->currency . '/' . $this->amount;
         $response = Http::get($url);
         return $response->json()['data']['rate'];
     }

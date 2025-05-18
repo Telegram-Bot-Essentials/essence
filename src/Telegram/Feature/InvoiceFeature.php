@@ -3,6 +3,7 @@
 namespace Elyar\TelegramBotEssentials\Telegram\Feature;
 
 use Elyar\TelegramBotEssentials\Models\Invoice;
+use Elyar\TelegramBotEssentials\Services\CurrencyFather;
 use Elyar\TelegramBotEssentials\Telegram\TelegramResponse;
 use Telegram\Bot\Keyboard\Keyboard;
 
@@ -21,7 +22,7 @@ class InvoiceFeature
 
         $replyMarkup->row([Keyboard::inlineButton([
             'text' => __('tbe::invoice.summary.keys.to_card', [
-                'price' => number_format($invoice->price)
+                'price' => number_format(priceIn($invoice->price)->toIRT())
             ]),
             'callback_data' => encodeCallback(self::$type, ['to_card', $invoice->id])
         ])])->row([Keyboard::inlineButton([
