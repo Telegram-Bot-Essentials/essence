@@ -167,7 +167,7 @@ if (!function_exists('hasAccess')) {
     }
 }
 
-if (!function_exists('getSupportedCurrencies')) {
+if (!function_exists('getDefaultCurrencySymbol')) {
     function getDefaultCurrencySymbol(): string
     {
         return collect(config('telegram-bot-essentials.supported_currencies') ?? [])
