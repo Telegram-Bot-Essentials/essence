@@ -5,6 +5,7 @@ namespace Elyar\TelegramBotEssentials\Telegram;
 use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\Keyboard\Keyboard;
+use Telegram\Bot\Objects\Message;
 
 class TelegramResponse
 {
@@ -54,11 +55,11 @@ class TelegramResponse
     /**
      * @throws TelegramSDKException
      */
-    public function send(): void
+    public function send(string|int|null $chatId = null): Message
     {
-        wHook()->api()->sendMessage(
+        return wHook()->api()->sendMessage(
             array_filter([
-                'chat_id' => wHook()->user()->telegramUser->peer_id,
+                'chat_id' => $chatId ?? wHook()->user()->telegramUser->peer_id,
                 'text' => $this->text,
                 'reply_markup' => $this->replyMarkup,
                 'parse_mode' => $this->parseMode,
@@ -69,12 +70,12 @@ class TelegramResponse
     /**
      * @throws TelegramSDKException
      */
-    public function update(): void
+    public function update(string|int|null $chatId = null, string|int|null $messageId = null): void
     {
         wHook()->api()->editMessageText(
             array_filter([
-                'chat_id' => wHook()->update()->callbackQuery->message->chat->id,
-                'message_id' => wHook()->update()->callbackQuery->message->messageId,
+                'chat_id' => $chatId ?? wHook()->update()->callbackQuery->message->chat->id,
+                'message_id' => $messageId ?? wHook()->update()->callbackQuery->message->messageId,
                 'text' => $this->text,
                 'reply_markup' => $this->replyMarkup,
                 'parse_mode' => $this->parseMode,

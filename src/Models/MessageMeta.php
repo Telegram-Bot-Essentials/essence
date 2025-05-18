@@ -2,6 +2,7 @@
 
 namespace Elyar\TelegramBotEssentials\Models;
 
+use Elyar\TelegramBotEssentials\Telegram\TelegramResponse;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Telegram\Bot\Exceptions\TelegramSDKException;
@@ -149,30 +150,41 @@ class MessageMeta extends Model
     /**
      * @throws TelegramSDKException
      */
-    public function updateAction(array $data): void
+    public function updateAction(TelegramResponse|array $data): void
     {
-        wHook()->api()->editMessageText([
-            'chat_id' => $this->chat_id,
-            'message_id' => $this->message_id,
-            'text' => $data['text'],
-            'reply_markup' => $data['reply_markup'],
-            'parse_mode' => $data['parse_mode'] ?? null,
-        ]);
+        if ($data instanceof TelegramResponse) {
+            $data->update($this->chat_id, $this->message_id);
+        }else{
+            wHook()->api()->editMessageText([
+                'chat_id' => $this->chat_id,
+                'message_id' => $this->message_id,
+                'text' => $data['text'],
+                'reply_markup' => $data['reply_markup'],
+                'parse_mode' => $data['parse_mode'] ?? null,
+            ]);
+        }
     }
 
-    public function updateAndContinueAction(array $data): void
+    /**
+     * @throws TelegramSDKException
+     */
+    public function updateAndContinueAction(TelegramResponse|array $data): void
     {
         wHook()->api()->deleteMessage([
             'chat_id' => $this->chat_id,
             'message_id' => $this->message_id,
         ]);
 
-        $message = wHook()->api()->sendMessage([
-            'chat_id' => $this->chat_id,
-            'text' => $data['text'],
-            'reply_markup' => $data['reply_markup'],
-            'parse_mode' => $data['parse_mode'] ?? null,
-        ]);
+        if ($data instanceof TelegramResponse) {
+            $message = $data->send($this->chat_id);
+        }else{
+            $message = wHook()->api()->sendMessage([
+                'chat_id' => $this->chat_id,
+                'text' => $data['text'],
+                'reply_markup' => $data['reply_markup'],
+                'parse_mode' => $data['parse_mode'] ?? null,
+            ]);
+        }
 
         $this->initializeModel($message->chat->id, $message->messageId, $message->text, $message->replyMarkup);
     }
