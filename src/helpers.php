@@ -220,31 +220,27 @@ if (!function_exists('formatFloat')) {
     function formatFloat($number): string
     {
         $number = smartRound($number);
-        $formatted = sprintf('%.16f', $number);
 
+        $formatted = sprintf('%.16f', $number);
         return rtrim(rtrim($formatted, '0'), '.');
     }
 }
 
 if (!function_exists('smartRound')) {
-    function smartRound($value, $digitsAfterLeadingZeros = 4): string
+    function smartRound($value, $significantDigits = 2): float
     {
         $value = (float)$value;
 
         if ($value == 0.0) {
-            return "0";
+            return 0.0;
         }
 
-        if ($value >= 1) {
-            return sprintf('%.2f', $value);
-        }
+        $absValue = abs($value);
+        $log10 = log10($absValue);
+        $digitsBeforeDecimal = floor($log10);
+        $scale = pow(10, $digitsBeforeDecimal - $significantDigits + 1);
 
-        $parts = explode('.', number_format($value, 30, '.', ''));
-        $decimals = $parts[1];
-
-        $leadingZeros = strspn($decimals, '0');
-        $precision = $leadingZeros + $digitsAfterLeadingZeros;
-
-        return sprintf('%.' . $precision . 'f', $value);
+        return round($value / $scale) * $scale;
     }
 }
+
