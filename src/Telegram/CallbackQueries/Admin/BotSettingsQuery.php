@@ -37,10 +37,6 @@ class BotSettingsQuery extends CallbackQuery
                 $this->payWithCardStatus();
                 break;
 
-                case 'currency_status':
-                    $this->currencyStatus();
-                    break;
-
             case 'bot_currency':
                 $this->botCurrency();
                 break;
@@ -178,19 +174,6 @@ class BotSettingsQuery extends CallbackQuery
             ->answer(__('tbe::bot_settings.main.answers.botLanguage', [
                 'language' => $newLanguage
             ]))
-            ->update();
-    }
-
-    /**
-     * @throws TelegramSDKException
-     */
-    private function botCurrency(): void
-    {
-        $newCurrency = $this->params[1];
-        wHook()->bot()->settings->default_currency = $newCurrency;
-        wHook()->bot()->settings->save();
-        BotSettingsFeature::menu()
-            ->answer('Currency update to ' . $newCurrency)
             ->update();
     }
 

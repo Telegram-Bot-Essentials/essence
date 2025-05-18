@@ -51,11 +51,6 @@ class BotSettingsFeature
             ])
         ]);
 
-        $replyMarkup->row([Keyboard::inlineButton([
-            'text' => __('tbe::bot_settings.main.keys.manageCurrencies'),
-            'callback_data' => encodeCallback(self::$type, ['bot_supported_currencies'])
-        ])]);
-
         $replyMarkup->row([
             Keyboard::inlineButton([
                 'text' => __('tbe::bot_settings.main.keys.payWithCardStatus', [
@@ -92,45 +87,6 @@ class BotSettingsFeature
                 'callback_data' => encodeCallback(self::$type, ['change_payment_card_name'])
             ])
         ]);
-
-        return new TelegramResponse(
-            text: $text,
-            replyMarkup: $replyMarkup,
-            parseMode: 'HTML'
-        );
-    }
-
-    public static function supportedCurrencies(): TelegramResponse
-    {
-        $text = __('tbe::bot_settings.main.text.supported_currencies');
-
-        $replyMarkup = Keyboard::make()
-            ->inline();
-
-        $currencies = getSupportedCurrencies();
-        $allowedCurrencies = wHook()->bot()->settings->currencies->pluck('name')->toArray();
-
-        $currencyKeys = [];
-        foreach ($currencies as $currency) {
-            $status = in_array($currency, $allowedCurrencies);
-            $currencyKeys[] = Keyboard::inlineButton([
-                'text' => __('tbe::bot_settings.main.keys.currencyStatus', [
-                    'currency' => $currency,
-                    'status' => ($status ? __('tbe::general.status.enabledEmoji') : __('tbe::general.status.disabledEmoji'))
-                ]),
-                'callback_data' => encodeCallback(self::$type, [
-                    'currency_status',
-                    $currency,
-                    intval(!$status)
-                ])
-            ]);
-        }
-        addInlineKeysSorted($replyMarkup, $currencyKeys, 2);
-
-        $replyMarkup->row([Keyboard::inlineButton([
-            'text' => __('tbe::general.keys.back'),
-            'callback_data' => encodeCallback(self::$type, ['start'])
-        ])]);
 
         return new TelegramResponse(
             text: $text,
