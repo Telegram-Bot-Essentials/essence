@@ -25,6 +25,9 @@ class TelegramBotAndUserSeeder extends Seeder
             'bot_owner_peer_id' => $telegramUser->peer_id,
         ]);
 
+        $bot->settings->bot_status = true;
+        $bot->settings->save();
+
         BotUser::firstOrCreate([
             'bot_id' => $bot->id,
             'telegram_user_id' => $telegramUser->id,
