@@ -14,7 +14,7 @@ return [
             'created' => 'Invoice created',
         ],
         'keys' => [
-            'to_card' => 'Pay To Card 💳 - :price$',
+            'to_card' => 'Pay To Card 💳 - :price تومان',
             'back_to_previous' => 'Back to previous action',
         ],
     ],
