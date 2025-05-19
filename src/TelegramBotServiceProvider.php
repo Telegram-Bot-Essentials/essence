@@ -18,6 +18,8 @@ class TelegramBotServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->mergeConfigFrom(__DIR__ . '/../config/multitenancy.php', 'multitenancy');
+
         $this->app->singleton(ReplyKeyBus::class, function ($app) {
             return new ReplyKeyBus();
         });
@@ -54,7 +56,5 @@ class TelegramBotServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../lang' => resource_path('lang/vendor/telegram-bot-essentials'),
         ], 'telegram-bot-essentials-translations');
-
-        $this->mergeConfigFrom(__DIR__ . '/../config/multitenancy.php', 'multitenancy');
     }
 }
