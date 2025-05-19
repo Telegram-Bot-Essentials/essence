@@ -3,9 +3,7 @@
 namespace Elyar\TelegramBotEssentials;
 
 use Elyar\TelegramBotEssentials\Console\Commands\MakeCallbackQuery;
-use Elyar\TelegramBotEssentials\Console\Commands\MakeFeatureOld;
 use Elyar\TelegramBotEssentials\Console\Commands\MakeReplyKey;
-use Elyar\TelegramBotEssentials\Console\Commands\MakeReplyKeyOld;
 use Elyar\TelegramBotEssentials\Console\Commands\MakeStateAnswer;
 use Elyar\TelegramBotEssentials\Console\Commands\MakeFeature;
 use Elyar\TelegramBotEssentials\Console\Commands\setWebhook;
