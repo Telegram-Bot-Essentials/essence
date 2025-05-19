@@ -54,5 +54,7 @@ class TelegramBotServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../lang' => resource_path('lang/vendor/telegram-bot-essentials'),
         ], 'telegram-bot-essentials-translations');
+
+        $this->mergeConfigFrom(__DIR__ . '/../config/multitenancy.php', 'multitenancy');
     }
 }
