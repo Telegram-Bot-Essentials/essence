@@ -33,6 +33,14 @@ class Bot extends Model implements IsTenant
         'secret_token'
     ];
 
+    protected $casts = [
+        'activated_until' => 'datetime',
+        'suspended_at' => 'datetime',
+        'suspended' => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     public function getSuspendedAttribute(): bool
     {
         return $this->suspended_at != null;
