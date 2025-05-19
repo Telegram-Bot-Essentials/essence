@@ -16,8 +16,11 @@ return new class extends Migration
             $table->string('unique_id')->unique();
             $table->string('bot_token')->nullable();
             $table->string('secret_token')->nullable();
+            $table->bigInteger('bot_owner_peer_id')->nullable();
             $table->softDeletes();
             $table->timestamps();
+
+            $table->foreign('bot_owner_peer_id')->references('peer_id')->on('telegram_users')->onDelete('cascade');
         });
     }
 

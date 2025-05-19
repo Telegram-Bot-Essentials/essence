@@ -6,7 +6,13 @@ use Elyar\TelegramBotEssentials\Http\Requests\BotRequest;
 use Elyar\TelegramBotEssentials\Http\Resources\BotResource;
 use Elyar\TelegramBotEssentials\Models\Bot;
 use Elyar\TelegramBotEssentials\Traits\HttpResponses;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
+use Log;
+use Ramsey\Uuid\Uuid;
+use Random\RandomException;
+use Telegram\Bot\Api;
+use Telegram\Bot\Exceptions\TelegramSDKException;
 
 class BotController extends Controller
 {
@@ -23,14 +29,29 @@ class BotController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     * @param BotRequest $request
+     * @return JsonResponse
+     * @throws RandomException
      */
     public function store(BotRequest $request)
     {
         $data = $request->validated();
-        $data['secret_token'] = 'xxx';
-        $data['unique_id'] = 'xxx';
+        $secretToken = rtrim(strtr(base64_encode(random_bytes(96)), '+/', '-_'), '=');
+        $uuid = Uuid::uuid4()->toString();
+        $data['secret_token'] = $secretToken;
+        $data['unique_id'] = $uuid;
         $bot = Bot::create($data);
         $data = new BotResource($bot);
+        try {
+            $telegram = new Api($data['bot_token']);
+            $telegram->setWebhook([
+                'url' => config('app.url') . '/api/telegram/bot/' . $uuid . '/webhook',
+                'drop_pending_updates' => true,
+                'secret_token' => $secretToken,
+            ]);
+        } catch (TelegramSDKException $e) {
+            Log::error($e->getMessage());
+        }
         return $this->success($data, 201);
     }
 

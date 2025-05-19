@@ -14,9 +14,12 @@ class BotUserFactory extends Factory
     public function definition(): array
     {
         $role = Roles::cases()[rand(0, count(Roles::cases()) - 1)];
+        $telegramUser = TelegramUser::factory()->create();
         return [
-            'bot_id' => Bot::factory()->create()->id,
-            'telegram_user_id' => TelegramUser::factory()->create()->id,
+            'bot_id' => Bot::factory()->create([
+                'bot_owner_peer_id' => $telegramUser->peer_id,
+            ])->id,
+            'telegram_user_id' => $telegramUser->id,
             'power' => $role,
             'balance' => rand(0, 10) * 25000,
             'state' => ['test', null][rand(0, 1)],
