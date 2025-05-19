@@ -19,6 +19,8 @@ class TelegramBotAndUserSeeder extends Seeder
         ]);
 
         $bot = Bot::firstOrCreate([
+            'unique_id' => config('telegram-bot-essentials.develop.DEVELOP_UNIQUE_ID')
+        ], [
             'unique_id' => config('telegram-bot-essentials.develop.DEVELOP_UNIQUE_ID'),
             'bot_token' => config('telegram-bot-essentials.develop.DEVELOP_TELEGRAM_BOT_TOKEN'),
             'secret_token' => config('telegram-bot-essentials.develop.DEVELOP_SECRET_TOKEN'),
@@ -42,7 +44,7 @@ class TelegramBotAndUserSeeder extends Seeder
             'balance' => 1000000
         ]);
 
-        if(config('telegram-bot-essentials.develop.TEST_USER_CHAT_ID') == null)
+        if (config('telegram-bot-essentials.develop.TEST_USER_CHAT_ID') == null)
             return;
 
         $telegramTestUser = TelegramUser::firstOrCreate([
