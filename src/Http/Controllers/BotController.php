@@ -8,6 +8,7 @@ use Elyar\TelegramBotEssentials\Models\Bot;
 use Elyar\TelegramBotEssentials\Traits\HttpResponses;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Carbon;
 use Log;
 use Ramsey\Uuid\Uuid;
 use Random\RandomException;
@@ -40,6 +41,7 @@ class BotController extends Controller
         $uuid = Uuid::uuid4()->toString();
         $data['secret_token'] = $secretToken;
         $data['unique_id'] = $uuid;
+        $data['activated_until'] = Carbon::parse($data['activated_until'])->format('Y-m-d H:i:s');
         $bot = Bot::create($data);
         $data = new BotResource($bot);
         try {

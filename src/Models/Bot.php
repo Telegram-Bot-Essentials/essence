@@ -19,6 +19,8 @@ class Bot extends Model implements IsTenant
     use UsesLandlordConnection;
     use ImplementsTenant;
 
+    protected $appends = ['suspended'];
+
     protected $guarded = [
         'id',
         'created_at',
@@ -30,6 +32,11 @@ class Bot extends Model implements IsTenant
         'bot_token',
         'secret_token'
     ];
+
+    public function getSuspendedAttribute(): bool
+    {
+        return $this->suspended_at != null;
+    }
 
     public static function newFactory(): BotFactory
     {

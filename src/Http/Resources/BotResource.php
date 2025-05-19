@@ -22,8 +22,10 @@ class BotResource extends JsonResource
             'id' => $this->resource->id,
             'unique_id' => $this->resource->unique_id,
             'bot_token' => $this->resource->bot_token,
-            'secret_token' => $this->resource->secret_token,
             'bot_owner' => $this->resource->botOwner,
+            'activated_until' => $this->resource->activated_until,
+            'suspended' => $this->resource->suspended,
+            'suspended_at' => $this->resource->suspended_at,
             'created_at' => $this->resource->created_at,
             'updated_at' => $this->resource->updated_at,
         ];

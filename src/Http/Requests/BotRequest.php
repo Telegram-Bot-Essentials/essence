@@ -28,6 +28,8 @@ class BotRequest extends FormRequest
         $rules = [
             'bot_token' => 'required|string|max:255',
             'bot_owner_peer_id' => 'required|integer',
+            'activated_until' => 'nullable|date',
+            'suspended_at' => 'nullable|date',
         ];
 
         if($this->isMethod('PUT')){
