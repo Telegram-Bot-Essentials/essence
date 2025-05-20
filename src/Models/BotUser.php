@@ -41,7 +41,7 @@ class BotUser extends Model
 
     public function telegramUser(): BelongsTo
     {
-        return $this->belongsTo(TelegramUser::class, 'peer_id', 'bot_owner_peer_id');
+        return $this->belongsTo(TelegramUser::class, 'telegram_user_peer_id', 'peer_id');
     }
 
     /**
