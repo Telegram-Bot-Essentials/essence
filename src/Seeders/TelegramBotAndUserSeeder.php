@@ -38,7 +38,7 @@ class TelegramBotAndUserSeeder extends Seeder
 
         BotUser::firstOrCreate([
             'bot_id' => $bot->id,
-            'telegram_user_id' => $telegramUser->id,
+            'telegram_user_peer_id' => $telegramUser->peer_id,
             'state' => 'test',
             'power' => 100,
             'balance' => 1000000
@@ -54,7 +54,7 @@ class TelegramBotAndUserSeeder extends Seeder
 
         BotUser::firstOrCreate([
             'bot_id' => $bot->id,
-            'telegram_user_id' => $telegramTestUser->id,
+            'telegram_user_peer_id' => $telegramTestUser->peer_id,
             'state' => 'test',
             'power' => 100,
             'balance' => 1000000

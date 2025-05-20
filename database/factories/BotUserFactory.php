@@ -19,7 +19,7 @@ class BotUserFactory extends Factory
             'bot_id' => Bot::factory()->create([
                 'bot_owner_peer_id' => $telegramUser->peer_id,
             ])->id,
-            'telegram_user_id' => $telegramUser->id,
+            'telegram_user_peer_id' => $telegramUser->peer_id,
             'power' => $role,
             'balance' => rand(0, 10) * 25000,
             'state' => ['test', null][rand(0, 1)],

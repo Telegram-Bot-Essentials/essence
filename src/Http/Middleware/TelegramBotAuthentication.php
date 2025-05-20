@@ -87,6 +87,6 @@ class TelegramBotAuthentication
         );
 
         $telegramUser->touch();
-        return wHook()->bot()->botUsers()->firstOrCreate(['telegram_user_id' => $telegramUser->id]);
+        return wHook()->bot()->botUsers()->firstOrCreate(['telegram_user_peer_id' => $telegramUser->peer_id]);
     }
 }
