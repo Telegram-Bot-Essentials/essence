@@ -13,12 +13,15 @@ use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\ReplyKeyBus;
 use Elyar\TelegramBotEssentials\Telegram\StateAnswers\StateAnswerBus;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Spatie\Multitenancy\MultitenancyServiceProvider;
 
 class TelegramBotServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/multitenancy.php', 'multitenancy');
+
+        $this->app->register(MultitenancyServiceProvider::class);
 
         $this->app->singleton(ReplyKeyBus::class, function ($app) {
             return new ReplyKeyBus();

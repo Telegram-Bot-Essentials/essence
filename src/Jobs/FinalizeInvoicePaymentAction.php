@@ -11,7 +11,7 @@ use Spatie\Multitenancy\Jobs\TenantAware;
 use Telegram\Bot\Api;
 use Telegram\Bot\Objects\Update;
 
-class FinalizeInvoicePaymentAction implements ShouldQueue, TenantAware
+class FinalizeInvoicePaymentAction implements ShouldQueue
 {
     use Queueable;
 
