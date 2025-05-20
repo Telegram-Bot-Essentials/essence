@@ -15,7 +15,11 @@ return new class extends Migration {
         Schema::create('bot_users', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Bot::class)->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(TelegramUser::class)->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger('telegram_user_peer_id');
+            $table->foreign('telegram_user_peer_id')
+                ->references('peer_id')
+                ->on('telegram_users')
+                ->cascadeOnDelete();
             $table->integer('power')->default(0);
             $table->integer('balance')->default(0);
             $table->string('state')->nullable();

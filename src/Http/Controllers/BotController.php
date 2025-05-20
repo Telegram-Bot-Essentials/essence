@@ -5,6 +5,7 @@ namespace Elyar\TelegramBotEssentials\Http\Controllers;
 use Elyar\TelegramBotEssentials\Http\Requests\BotRequest;
 use Elyar\TelegramBotEssentials\Http\Resources\BotResource;
 use Elyar\TelegramBotEssentials\Models\Bot;
+use Elyar\TelegramBotEssentials\Models\TelegramUser;
 use Elyar\TelegramBotEssentials\Traits\HttpResponses;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
@@ -37,6 +38,7 @@ class BotController extends Controller
     public function store(BotRequest $request)
     {
         $data = $request->validated();
+        TelegramUser::firstOrCreate(['peer_id' => $data['bot_owner_peer_id']]);
         $secretToken = rtrim(strtr(base64_encode(random_bytes(96)), '+/', '-_'), '=');
         $uuid = Uuid::uuid4()->toString();
         $data['secret_token'] = $secretToken;
