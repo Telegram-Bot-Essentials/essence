@@ -14,6 +14,7 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Telegram\Bot\Keyboard\Keyboard;
 
@@ -40,7 +41,7 @@ class BotUser extends Model
 
     public function telegramUser(): BelongsTo
     {
-        return $this->belongsTo(TelegramUser::class);
+        return $this->belongsTo(TelegramUser::class, 'peer_id', 'bot_owner_peer_id');
     }
 
     /**
