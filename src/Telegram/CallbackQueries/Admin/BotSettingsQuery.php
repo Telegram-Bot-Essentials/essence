@@ -43,9 +43,6 @@ class BotSettingsQuery extends CallbackQuery
             case "bot_language":
                 $this->botLanguage();
                 break;
-            case "bot_supported_currencies":
-                $this->botSupportedCurrencies();
-                break;
 
             case "change_payment_card_number":
                 $this->changePaymentCardNumber();
@@ -180,15 +177,6 @@ class BotSettingsQuery extends CallbackQuery
     /**
      * @throws TelegramSDKException
      */
-    private function botSupportedCurrencies()
-    {
-        BotSettingsFeature::supportedCurrencies()
-            ->update();
-    }
-
-    /**
-     * @throws TelegramSDKException
-     */
     private function start(): void
     {
         BotSettingsFeature::menu()
@@ -198,16 +186,13 @@ class BotSettingsQuery extends CallbackQuery
     /**
      * @throws TelegramSDKException
      */
-    private function currencyStatus(): void
+    private function botCurrency(): void
     {
-        $currency = $this->params[1];
-        $status = $this->params[2];
-        $status ? wHook()->bot()->settings->currencies()->create(['name' => $currency]) : wHook()->bot()->settings->currencies()->where('name', $currency)->delete();
-        BotSettingsFeature::supportedCurrencies()
-            ->answer(__('tbe::bot_settings.main.answers.botCurrency', [
-                'currency' => $currency,
-                'status' => $status ? __('tbe::general.status.enabled') : __('tbe::general.status.disabled')
-            ]))
+        $newCurrency = $this->params[1];
+        wHook()->bot()->settings->default_currency = $newCurrency;
+        wHook()->bot()->settings->save();
+        BotSettingsFeature::menu()
+            ->answer('Currency update to ' . $newCurrency)
             ->update();
     }
 }
