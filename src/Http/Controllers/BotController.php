@@ -43,7 +43,7 @@ class BotController extends Controller
         $uuid = Uuid::uuid4()->toString();
         $data['secret_token'] = $secretToken;
         $data['unique_id'] = $uuid;
-        $data['activated_until'] = Carbon::parse($data['activated_until'])->format('Y-m-d H:i:s');
+        $data['activated_until'] = Carbon::parse($data['activated_until'] ?? now())->format('Y-m-d H:i:s');
         $bot = Bot::create($data);
         $data = new BotResource($bot);
         try {

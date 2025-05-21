@@ -4,7 +4,6 @@ use Elyar\TelegramBotEssentials\Http\Controllers\BotController;
 use Elyar\TelegramBotEssentials\Http\Controllers\TelegramWebhookController;
 use Elyar\TelegramBotEssentials\Http\Middleware\AuthorizeAccessToBots;
 use Elyar\TelegramBotEssentials\Http\Middleware\TelegramBotAuthentication;
-use Elyar\TelegramBotEssentials\Models\Bot;
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByPath;
 

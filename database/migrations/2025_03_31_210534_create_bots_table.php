@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('bots', function (Blueprint $table) {
-            $table->string('id')->primary();
+            $table->id();
             $table->string('bot_token')->nullable();
             $table->string('secret_token')->nullable();
             $table->unsignedBigInteger('bot_owner_peer_id')->nullable();
