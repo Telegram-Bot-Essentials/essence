@@ -1,5 +1,6 @@
 <?php
 
+use Elyar\TelegramBotEssentials\Models\Bot;
 use Elyar\TelegramBotEssentials\Models\BotUser;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -13,6 +14,7 @@ return new class extends Migration {
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(Bot::class)->unique()->constrained();
             $table->foreignIdFor(BotUser::class)->constrained()->cascadeOnDelete();
             $table->morphs('payable');
             $table->float('price', 2);
