@@ -9,12 +9,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Validator;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class BotSettings extends Model
 {
     use SoftDeletes;
-    use BelongsToBot;
-    use BotTenancyScopes;
+    use BelongsToTenant;
 
     public function bot(): BelongsTo
     {

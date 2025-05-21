@@ -4,13 +4,10 @@ use Elyar\TelegramBotEssentials\Http\Controllers\BotController;
 use Elyar\TelegramBotEssentials\Http\Controllers\TelegramWebhookController;
 use Elyar\TelegramBotEssentials\Http\Middleware\AuthorizeAccessToBots;
 use Elyar\TelegramBotEssentials\Http\Middleware\TelegramBotAuthentication;
+use Elyar\TelegramBotEssentials\Models\Bot;
 use Illuminate\Support\Facades\Route;
+use Stancl\Tenancy\Middleware\InitializeTenancyByPath;
 
-Route::get('/telegram/bot/{unique_id}/webhook', function (){
-    return response('OK',200);
-});
-
-Route::post('/telegram/bot/{unique_id}/webhook', TelegramWebhookController::class)->middleware(TelegramBotAuthentication::class);
 
 Route::prefix('bots')->middleware(AuthorizeAccessToBots::class)->controller(BotController::class)->group(function () {
     Route::get('/', 'index')->name('index');
@@ -18,4 +15,14 @@ Route::prefix('bots')->middleware(AuthorizeAccessToBots::class)->controller(BotC
     Route::post('/', 'store')->name('store');
     Route::put('/{id}', 'update')->name('update');
     Route::delete('/{id}', 'destroy')->name('destroy');
+});
+
+Route::group([
+    'prefix' => '/{bot}',
+    'middleware' => InitializeTenancyByPath::class,
+], function () {
+    Route::get('/telegram/bot/webhook', function () {
+        return response('OK', 200);
+    });
+    Route::post('/telegram/bot/webhook', TelegramWebhookController::class)->middleware(TelegramBotAuthentication::class);
 });

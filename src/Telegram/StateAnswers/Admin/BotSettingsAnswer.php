@@ -47,8 +47,8 @@ class BotSettingsAnswer extends StateAnswer
      */
     private function changePaymentCardNumber(): void
     {
-        BotSettings::forCurrentBot()->first()->pay_to_card_number = wHook()->update()->message->text;
-        BotSettings::forCurrentBot()->first()->save();
+        BotSettings::first()->pay_to_card_number = wHook()->update()->message->text;
+        BotSettings::first()->save();
 
         wHook()->user()->changeState();
         $this->sendValueUpdatedMessage();
@@ -76,8 +76,8 @@ class BotSettingsAnswer extends StateAnswer
      */
     private function changePaymentCardName(): void
     {
-        BotSettings::forCurrentBot()->first()->pay_to_card_name = wHook()->update()->message->text;
-        BotSettings::forCurrentBot()->first()->save();
+        BotSettings::first()->pay_to_card_name = wHook()->update()->message->text;
+        BotSettings::first()->save();
 
         wHook()->user()->changeState();
         $this->sendValueUpdatedMessage();
@@ -92,8 +92,8 @@ class BotSettingsAnswer extends StateAnswer
      */
     private function changeTransactionsChatId(): void
     {
-        BotSettings::forCurrentBot()->first()->transactions_chat_id = wHook()->update()->message->text;
-        BotSettings::forCurrentBot()->first()->save();
+        BotSettings::first()->transactions_chat_id = wHook()->update()->message->text;
+        BotSettings::first()->save();
 
         wHook()->user()->changeState();
         $this->sendValueUpdatedMessage();

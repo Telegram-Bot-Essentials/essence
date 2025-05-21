@@ -27,7 +27,6 @@ class Webhook
 
     public static function setBot(?Bot $bot): void
     {
-        if (isset($bot)) $bot->makeCurrent();
         self::$bot = $bot;
     }
 

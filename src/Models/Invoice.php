@@ -10,10 +10,12 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class Invoice extends Model
 {
     use SoftDeletes;
+    use BelongsToTenant;
 
     protected $appends = ['status'];
     protected $guarded = [

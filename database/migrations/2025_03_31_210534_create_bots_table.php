@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('bots', function (Blueprint $table) {
-            $table->id();
+            $table->string('id')->primary();
             $table->string('unique_id')->unique();
             $table->string('bot_token')->nullable();
             $table->string('secret_token')->nullable();
@@ -21,6 +21,7 @@ return new class extends Migration
             $table->timestamp('suspended_at')->nullable();
             $table->softDeletes();
             $table->timestamps();
+            $table->json('data')->nullable();
 
             $table->foreign('bot_owner_peer_id')->references('peer_id')->on('telegram_users')->onDelete('cascade');
         });

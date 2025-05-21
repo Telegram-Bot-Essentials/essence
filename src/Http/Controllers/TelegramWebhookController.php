@@ -2,7 +2,6 @@
 
 namespace Elyar\TelegramBotEssentials\Http\Controllers;
 
-use Elyar\TelegramBotEssentials\Enums\Roles;
 use Elyar\TelegramBotEssentials\Exceptions\CannotSetItActive;
 use Elyar\TelegramBotEssentials\Exceptions\CannotSetItAsDone;
 use Elyar\TelegramBotEssentials\Exceptions\FeatureIsDisabled;
@@ -27,7 +26,7 @@ class TelegramWebhookController extends Controller
 {
     use CanCancelOldProcess;
 
-    public function __invoke(Request $request, string $unique_id)
+    public function __invoke(Request $request)
     {
         $request->headers->set('Accept', 'application/json');
         App::setLocale(wHook()->bot()->settings->language);

@@ -30,11 +30,10 @@ class TelegramBotAuthentication
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $unique_id = $request->route('unique_id');
-        $bot = Bot::where('unique_id', $unique_id)->first();
+        $bot = tenancy()->tenant;
 
-        if(empty($bot))
-            return $this->error('Invalid Bot unique ID', 404);
+        if(empty($bot) || !($bot instanceof Bot))
+            return $this->error('Invalid Bot ID', 404);
 
         wHook()::setBot($bot);
 

@@ -8,16 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\Multitenancy\Contracts\IsTenant;
-use Spatie\Multitenancy\Models\Concerns\ImplementsTenant;
-use Spatie\Multitenancy\Models\Concerns\UsesLandlordConnection;
 
-class Bot extends Model implements IsTenant
+use Stancl\Tenancy\Bootstrappers\DatabaseTenancyBootstrapper;
+use Stancl\Tenancy\Database\Models\Tenant as BaseTenant;
+
+class Bot extends BaseTenant
 {
     use HasFactory;
     use SoftDeletes;
-    use UsesLandlordConnection;
-    use ImplementsTenant;
+
+    protected $table = 'bots';
 
     protected $appends = ['suspended'];
 
@@ -64,5 +64,18 @@ class Bot extends Model implements IsTenant
     public function botOwner(): HasOne
     {
         return $this->hasOne(TelegramUser::class, 'peer_id', 'bot_owner_peer_id');
+    }
+
+    public static function getCustomColumns(): array
+    {
+        return [
+            'id',
+            'unique_id',
+            'bot_token',
+            'secret_token',
+            'bot_owner_peer_id',
+            'activated_until',
+            'suspended_at',
+        ];
     }
 }

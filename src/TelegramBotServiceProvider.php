@@ -13,15 +13,16 @@ use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\ReplyKeyBus;
 use Elyar\TelegramBotEssentials\Telegram\StateAnswers\StateAnswerBus;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use Spatie\Multitenancy\MultitenancyServiceProvider;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
+use Stancl\Tenancy\Resolvers\PathTenantResolver;
 
 class TelegramBotServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/multitenancy.php', 'multitenancy');
+        $this->app->register(TenancyServiceProvider::class);
 
-        $this->app->register(MultitenancyServiceProvider::class);
+        $this->mergeConfigFrom(__DIR__ . '/../config/tenancy.php', 'tenancy');
 
         $this->app->singleton(ReplyKeyBus::class, function ($app) {
             return new ReplyKeyBus();
@@ -38,6 +39,9 @@ class TelegramBotServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        BelongsToTenant::$tenantIdColumn = 'bot_id';
+        PathTenantResolver::$tenantParameterName = 'bot';
+
         $this->commands([
             setWebhook::class,
             BotManagementTokenCommand::class,
@@ -47,7 +51,7 @@ class TelegramBotServiceProvider extends ServiceProvider
             MakeFeature::class
         ]);
 
-        Route::prefix('api/')
+        Route::prefix('api')
             ->group(__DIR__ . '/../routes/api.php');
 
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');

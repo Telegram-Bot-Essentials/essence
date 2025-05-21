@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 use Telegram\Bot\Keyboard\Keyboard;
 
 class BotUser extends Model
@@ -23,6 +24,7 @@ class BotUser extends Model
     use HasFactory;
     use CanResolveReplyKey;
     use SoftDeletes;
+    use BelongsToTenant;
 
     public static function newFactory(): BotUserFactory
     {
