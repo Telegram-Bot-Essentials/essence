@@ -2,8 +2,6 @@
 
 namespace Elyar\TelegramBotEssentials\Models;
 
-use Elyar\TelegramBotEssentials\Traits\BelongsToBot;
-use Elyar\TelegramBotEssentials\Traits\BotTenancyScopes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;

@@ -29,7 +29,8 @@ class setWebhook extends Command
      */
     public function handle()
     {
-        $bot = Bot::first();
+        $botToken = config('telegram-bot-essentials.develop.DEVELOP_TELEGRAM_BOT_TOKEN');
+        $bot = $botToken ? Bot::where('bot_token', $botToken)->first() : Bot::first();
         if ($bot) {
             $telegram = new Api($bot->bot_token);
             $telegram->setWebhook([

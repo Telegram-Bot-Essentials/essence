@@ -19,9 +19,8 @@ class TelegramBotAndUserSeeder extends Seeder
         ]);
 
         $bot = Bot::firstOrCreate([
-            'unique_id' => config('telegram-bot-essentials.develop.DEVELOP_UNIQUE_ID')
+            'bot_token' => config('telegram-bot-essentials.develop.DEVELOP_TELEGRAM_BOT_TOKEN'),
         ], [
-            'unique_id' => config('telegram-bot-essentials.develop.DEVELOP_UNIQUE_ID'),
             'bot_token' => config('telegram-bot-essentials.develop.DEVELOP_TELEGRAM_BOT_TOKEN'),
             'secret_token' => config('telegram-bot-essentials.develop.DEVELOP_SECRET_TOKEN'),
             'bot_owner_peer_id' => $telegramUser->peer_id,

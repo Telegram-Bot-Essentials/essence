@@ -12,10 +12,9 @@ class BotFactory extends Factory
     public function definition(): array
     {
         return [
-            'unique_id' => fake()->unique()->randomNumber(),
             'bot_token' => fake()->unique()->randomNumber(),
             'secret_token' => fake()->unique()->randomNumber(),
-            'bot_owner_peer_id' => TelegramUser::factory(),
+            'bot_owner_peer_id' => TelegramUser::factory()->create()->peer_id,
         ];
     }
 }
