@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('bots', function (Blueprint $table) {
             $table->id();
             $table->string('bot_token')->nullable();
+            $table->string('unique_id')->unique();
             $table->string('secret_token')->nullable();
             $table->unsignedBigInteger('bot_owner_peer_id')->nullable();
             $table->timestamp('activated_until')->useCurrent();

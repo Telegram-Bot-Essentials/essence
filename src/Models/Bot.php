@@ -4,12 +4,10 @@ namespace Elyar\TelegramBotEssentials\Models;
 
 use Elyar\TelegramBotEssentials\Database\factories\BotFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-use Stancl\Tenancy\Bootstrappers\DatabaseTenancyBootstrapper;
 use Stancl\Tenancy\Database\Models\Tenant as BaseTenant;
 
 class Bot extends BaseTenant
@@ -64,6 +62,11 @@ class Bot extends BaseTenant
     public function botOwner(): HasOne
     {
         return $this->hasOne(TelegramUser::class, 'peer_id', 'bot_owner_peer_id');
+    }
+
+    public function getTenantKeyName(): string
+    {
+        return 'unique_id';
     }
 
     public static function getCustomColumns(): array

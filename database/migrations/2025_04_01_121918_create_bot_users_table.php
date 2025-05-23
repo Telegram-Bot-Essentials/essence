@@ -15,7 +15,7 @@ return new class extends Migration {
         Schema::create('bot_users', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Bot::class)->constrained();
-            $table->unsignedBigInteger('telegram_user_peer_id')->nullable();
+            $table->unsignedBigInteger('telegram_user_peer_id');
             $table->foreign('telegram_user_peer_id')
                 ->references('peer_id')
                 ->on('telegram_users');

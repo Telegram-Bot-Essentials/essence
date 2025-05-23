@@ -33,12 +33,13 @@ class setWebhook extends Command
         $bot = $botToken ? Bot::where('bot_token', $botToken)->first() : Bot::first();
         if ($bot) {
             $telegram = new Api($bot->bot_token);
+            $uri = '/api/' . $bot->unique_id . '/telegram/bot/webhook';
             $telegram->setWebhook([
-                'url' => config('app.url') . '/api/' . $bot->id . '/telegram/bot/webhook',
+                'url' => config('app.url') . $uri,
                 'drop_pending_updates' => true,
                 'secret_token' => $bot->secret_token,
             ]);
-            $this->info('Telegram webhook is set');
+            $this->info('Telegram webhook is set to ' . $uri);
         }
     }
 }

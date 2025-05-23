@@ -18,15 +18,19 @@ class TelegramBotAndUserSeeder extends Seeder
             'peer_id' => config('telegram-bot-essentials.develop.DEVELOPER_CHAT_ID'),
         ]);
 
-        $bot = Bot::firstOrCreate([
+        $bot = Bot::first([
             'bot_token' => config('telegram-bot-essentials.develop.DEVELOP_TELEGRAM_BOT_TOKEN'),
-        ], [
-            'bot_token' => config('telegram-bot-essentials.develop.DEVELOP_TELEGRAM_BOT_TOKEN'),
-            'secret_token' => config('telegram-bot-essentials.develop.DEVELOP_SECRET_TOKEN'),
-            'bot_owner_peer_id' => $telegramUser->peer_id,
-            'activated_until' => now()->addDays(30),
-            'suspended_at' => null,
         ]);
+
+        if(!$bot) {
+            $bot = Bot::factory()->create([
+                'bot_token' => config('telegram-bot-essentials.develop.DEVELOP_TELEGRAM_BOT_TOKEN'),
+                'secret_token' => config('telegram-bot-essentials.develop.DEVELOP_SECRET_TOKEN'),
+                'bot_owner_peer_id' => $telegramUser->peer_id,
+                'activated_until' => now()->addDays(30),
+                'suspended_at' => null,
+            ]);
+        }
 
         $bot->settings->bot_status = true;
         $bot->settings->pay_with_card = true;

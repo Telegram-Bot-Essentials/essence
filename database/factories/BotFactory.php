@@ -13,6 +13,7 @@ class BotFactory extends Factory
     {
         return [
             'bot_token' => fake()->unique()->randomNumber(),
+            'unique_id' => fake()->unique()->randomNumber(),
             'secret_token' => fake()->unique()->randomNumber(),
             'bot_owner_peer_id' => TelegramUser::factory()->create()->peer_id,
         ];
