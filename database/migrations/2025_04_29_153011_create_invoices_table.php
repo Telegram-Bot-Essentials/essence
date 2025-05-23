@@ -14,8 +14,8 @@ return new class extends Migration {
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Bot::class)->unique()->constrained();
-            $table->foreignIdFor(BotUser::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Bot::class)->constrained();
+            $table->foreignIdFor(BotUser::class)->constrained();
             $table->morphs('payable');
             $table->float('price', 2);
             $table->timestamps();

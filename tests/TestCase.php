@@ -3,6 +3,7 @@
 namespace Elyar\TelegramBotEssentials\Tests;
 
 use Elyar\TelegramBotEssentials\TelegramBotServiceProvider;
+use Elyar\TelegramBotEssentials\TenancyServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 
 class TestCase extends Orchestra
@@ -17,6 +18,7 @@ class TestCase extends Orchestra
     {
         return [
             TelegramBotServiceProvider::class,
+            TenancyServiceProvider::class,
         ];
     }
 

@@ -22,7 +22,6 @@ return new class extends Migration {
             $table->bigInteger('transactions_chat_id')->nullable();
             $table->string('default_currency', 3)->default('USD');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

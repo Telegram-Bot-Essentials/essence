@@ -11,7 +11,6 @@ use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class BotSettings extends Model
 {
-    use SoftDeletes;
     use BelongsToTenant;
 
     public function bot(): BelongsTo

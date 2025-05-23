@@ -24,7 +24,6 @@ return new class extends Migration {
             $table->string('state')->nullable();
             $table->enum('menu', ['main', 'admin'])->default('main');
             $table->boolean('suspend')->default(false);
-            $table->softDeletes();
             $table->timestamps();
 
             $table->unique(['telegram_user_peer_id', 'bot_id']);

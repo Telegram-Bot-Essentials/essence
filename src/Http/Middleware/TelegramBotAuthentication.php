@@ -86,6 +86,7 @@ class TelegramBotAuthentication
         );
 
         $telegramUser->touch();
+        Log::error(wHook()->bot()->botUsers()->firstOrCreate(['telegram_user_peer_id' => $telegramUser->peer_id])->toRawSql());
         return wHook()->bot()->botUsers()->firstOrCreate(['telegram_user_peer_id' => $telegramUser->peer_id]);
     }
 }
