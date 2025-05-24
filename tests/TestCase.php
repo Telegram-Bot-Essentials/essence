@@ -3,11 +3,13 @@
 namespace Elyar\TelegramBotEssentials\Tests;
 
 use Elyar\TelegramBotEssentials\TelegramBotServiceProvider;
-use Elyar\TelegramBotEssentials\TenancyServiceProvider;
+use Orchestra\Testbench\Concerns\WithWorkbench;
 use Orchestra\Testbench\TestCase as Orchestra;
+use Spatie\Multitenancy\MultitenancyServiceProvider;
 
 class TestCase extends Orchestra
 {
+    use WithWorkbench;
     protected function setUp(): void
     {
         parent::setUp();
@@ -18,7 +20,7 @@ class TestCase extends Orchestra
     {
         return [
             TelegramBotServiceProvider::class,
-            TenancyServiceProvider::class,
+            MultitenancyServiceProvider::class,
         ];
     }
 
