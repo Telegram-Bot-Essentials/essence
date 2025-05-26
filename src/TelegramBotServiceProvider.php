@@ -21,6 +21,7 @@ class TelegramBotServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->register(TenancyServiceProvider::class);
+        $this->app->register(\Stancl\Tenancy\TenancyServiceProvider::class);
 
         $this->mergeConfigFrom(__DIR__ . '/../config/tenancy.php', 'tenancy');
 

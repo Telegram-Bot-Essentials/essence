@@ -66,7 +66,7 @@ class Bot extends BaseTenant
 
     public function getTenantKeyName(): string
     {
-        return 'unique_id';
+        return 'id';
     }
 
     public static function getCustomColumns(): array
@@ -80,5 +80,10 @@ class Bot extends BaseTenant
             'activated_until',
             'suspended_at',
         ];
+    }
+
+    public function getIncrementing(): true
+    {
+        return true;
     }
 }

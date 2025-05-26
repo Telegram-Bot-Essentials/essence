@@ -18,6 +18,8 @@ pest()->extend(Elyar\TelegramBotEssentials\Tests\TestCase::class)
  // ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
     ->in('Feature');
 
+pest()->extend(Elyar\TelegramBotEssentials\Tests\TenantTestCase::class)->in('Tenant');
+
 /*
 |--------------------------------------------------------------------------
 | Expectations
