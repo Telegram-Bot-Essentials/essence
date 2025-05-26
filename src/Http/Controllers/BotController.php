@@ -49,7 +49,7 @@ class BotController extends Controller
         try {
             $telegram = new Api($data['bot_token']);
             $telegram->setWebhook([
-                'url' => config('app.url') . '/api/telegram/bot/' . $uuid . '/webhook',
+                'url' => config('app.url') . "/api/{$uuid}/telegram/bot/webhook",
                 'drop_pending_updates' => true,
                 'secret_token' => $secretToken,
             ]);
