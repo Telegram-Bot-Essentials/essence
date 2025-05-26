@@ -40,6 +40,10 @@ class TelegramBotServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        if ($this->app->runningInConsole()) {
+            $this->loadConsoleRoutes();
+        }
+
         BelongsToTenant::$tenantIdColumn = 'bot_id';
         PathTenantResolver::$tenantParameterName = 'bot';
 
@@ -64,5 +68,14 @@ class TelegramBotServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../lang' => resource_path('lang/vendor/telegram-bot-essentials'),
         ], 'telegram-bot-essentials-translations');
+    }
+
+    protected function loadConsoleRoutes(): void
+    {
+        $consoleRoutes = __DIR__ . '/../routes/console.php';
+
+        if (file_exists($consoleRoutes)) {
+            require $consoleRoutes;
+        }
     }
 }
