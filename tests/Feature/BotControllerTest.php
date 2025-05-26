@@ -32,10 +32,10 @@ it('can list bots', function () use ($headers) {
 it('can show a bot', function () use ($headers) {
     $bot = Bot::factory()->create();
 
-    $response = getJson("/api/bots/{$bot->id}", $headers);
+    $response = getJson("/api/bots/{$bot->unique_id}", $headers);
 
     $response->assertOk()
-        ->assertJsonPath('data.id', $bot->id);
+        ->assertJsonPath('data.unique_id', strval($bot->unique_id));
 });
 
 it('can create a bot', function () use ($headers) {
@@ -61,7 +61,7 @@ it('can update a bot', function () use ($headers) {
         'bot_token' => 'yyy'
     ];
 
-    $response = putJson("/api/bots/{$bot->id}", $data, $headers);
+    $response = putJson("/api/bots/{$bot->unique_id}", $data, $headers);
 
     $response->assertOk()
         ->assertJsonPath('data.bot_token', 'yyy');
@@ -72,9 +72,9 @@ it('can update a bot', function () use ($headers) {
 it('can delete a bot', function () use ($headers) {
     $bot = Bot::factory()->create();
 
-    $response = deleteJson("/api/bots/{$bot->id}", headers: $headers);
+    $response = deleteJson("/api/bots/{$bot->unique_id}", headers: $headers);
 
     $response->assertNoContent();
 
-    expect(Bot::find($bot->id))->toBeNull();
+    expect(Bot::find($bot->unique_id))->toBeNull();
 });
