@@ -75,7 +75,20 @@ class BotController extends Controller
     public function update(BotRequest $request, string $id)
     {
         $bot = Bot::where('unique_id', $id)->firstOrFail();
-        $bot->update($request->validated());
+        $data = $request->validated();
+        $bot->update($data);
+        if($request->has('bot_token')){
+            try {
+                $telegram = new Api($data['bot_token']);
+                $telegram->setWebhook([
+                    'url' => config('app.url') . "/api/{$bot->unique_id}/telegram/bot/webhook",
+                    'drop_pending_updates' => true,
+                    'secret_token' => $bot->secret_token,
+                ]);
+            } catch (TelegramSDKException $e) {
+                Log::error($e->getMessage());
+            }
+        }
         $data = new BotResource($bot);
         return $this->success($data);
     }
