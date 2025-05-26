@@ -18,9 +18,7 @@ class TelegramBotAndUserSeeder extends Seeder
             'peer_id' => config('telegram-bot-essentials.develop.DEVELOPER_CHAT_ID'),
         ]);
 
-        $bot = Bot::first([
-            'bot_token' => config('telegram-bot-essentials.develop.DEVELOP_TELEGRAM_BOT_TOKEN'),
-        ]);
+        $bot = Bot::where('bot_token', config('telegram-bot-essentials.develop.DEVELOP_TELEGRAM_BOT_TOKEN'))->first();
 
         if(!$bot) {
             $bot = Bot::factory()->create([
