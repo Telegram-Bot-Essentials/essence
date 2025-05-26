@@ -14,6 +14,15 @@ class TelegramBotAndUserSeeder extends Seeder
      */
     public function run(): void
     {
+        if(!config('telegram-bot-essentials.develop.DEVELOPER_CHAT_ID') ||
+            !config('telegram-bot-essentials.develop.DEVELOP_TELEGRAM_BOT_TOKEN') ||
+            !config('telegram-bot-essentials.develop.DEVELOP_SECRET_TOKEN') ||
+            !config('telegram-bot-essentials.develop.DEVELOP_TRANSACTIONS_CHAT_ID') ||
+            !config('telegram-bot-essentials.develop.DEVELOPER_CARD_NUMBER') ||
+            !config('telegram-bot-essentials.develop.DEVELOPER_CARD_NAME')
+        )
+            return;
+
         $telegramUser = TelegramUser::firstOrCreate([
             'peer_id' => config('telegram-bot-essentials.develop.DEVELOPER_CHAT_ID'),
         ]);
