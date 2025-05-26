@@ -64,7 +64,7 @@ class BotController extends Controller
      */
     public function show(string $id)
     {
-        $bot = Bot::findOrFail($id);
+        $bot = Bot::where('unique_id', $id)->firstOrFail();
         $data = new BotResource($bot);
         return $this->success($data);
     }
@@ -74,7 +74,7 @@ class BotController extends Controller
      */
     public function update(BotRequest $request, string $id)
     {
-        $bot = Bot::findOrFail($id);
+        $bot = Bot::where('unique_id', $id)->firstOrFail();
         $bot->update($request->validated());
         $data = new BotResource($bot);
         return $this->success($data);
@@ -85,7 +85,7 @@ class BotController extends Controller
      */
     public function destroy(string $id)
     {
-        $bot = Bot::findOrFail($id);
+        $bot = Bot::where('unique_id', $id)->firstOrFail();
         $bot->delete();
         return $this->success(code: 204);
     }
