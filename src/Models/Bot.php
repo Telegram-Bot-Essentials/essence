@@ -21,13 +21,13 @@ class Bot extends BaseTenant
 
     protected $guarded = [
         'id',
+        'unique_id',
         'created_at',
         'updated_at',
         'deleted_at',
     ];
 
     protected $hidden = [
-        'bot_token',
         'secret_token'
     ];
 

@@ -36,6 +36,11 @@ class BotRequest extends FormRequest
             $rules['bot_owner_peer_id'] = 'nullable|integer';
         }
 
+        if($this->isMethod('PATCH')){
+            $rules['bot_token'] = 'nullable|string|max:255';
+            $rules['bot_owner_peer_id'] = 'nullable|integer';
+        }
+
         return $rules;
     }
 }

@@ -12,7 +12,8 @@ Route::prefix('bots')->middleware(AuthorizeAccessToBots::class)->controller(BotC
     Route::get('/', 'index')->name('index');
     Route::get('/{id}', 'show')->name('show');
     Route::post('/', 'store')->name('store');
-    Route::put('/{id}', 'update')->name('update');
+    Route::put('/{id}', 'update')->name('put-update');
+    Route::patch('/{id}', 'update')->name('patch-update');
     Route::delete('/{id}', 'destroy')->name('destroy');
 });
 
