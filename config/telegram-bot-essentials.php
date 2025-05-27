@@ -36,5 +36,11 @@ return [
         'DEVELOPER_CARD_NUMBER' => env('DEVELOPER_CARD_NUMBER'),
         'DEVELOPER_CARD_NAME' => env('DEVELOPER_CARD_NAME'),
         'DEVELOP_TRANSACTIONS_CHAT_ID' => env('DEVELOP_TRANSACTIONS_CHAT_ID'),
-    ]
+    ],
+
+    'main' => [
+        'UNIQUE_ID' => 'main',
+        'TELEGRAM_BOT_TOKEN' => env('MAIN_TELEGRAM_BOT_TOKEN'),
+        'ADMIN_CHAT_ID' => env('MAIN_ADMIN_CHAT_ID'),
+    ],
 ];
