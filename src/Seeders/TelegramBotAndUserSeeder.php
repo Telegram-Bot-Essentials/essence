@@ -14,7 +14,7 @@ class TelegramBotAndUserSeeder extends Seeder
      */
     public function run(): void
     {
-        if(!config('telegram-bot-essentials.develop.DEVELOPER_CHAT_ID') ||
+        if (!config('telegram-bot-essentials.develop.DEVELOPER_CHAT_ID') ||
             !config('telegram-bot-essentials.develop.DEVELOP_TELEGRAM_BOT_TOKEN') ||
             !config('telegram-bot-essentials.develop.DEVELOP_SECRET_TOKEN') ||
             !config('telegram-bot-essentials.develop.DEVELOP_TRANSACTIONS_CHAT_ID') ||
@@ -29,7 +29,7 @@ class TelegramBotAndUserSeeder extends Seeder
 
         $bot = Bot::where('bot_token', config('telegram-bot-essentials.develop.DEVELOP_TELEGRAM_BOT_TOKEN'))->first();
 
-        if(!$bot) {
+        if (!$bot) {
             $bot = Bot::factory()->create([
                 'bot_token' => config('telegram-bot-essentials.develop.DEVELOP_TELEGRAM_BOT_TOKEN'),
                 'secret_token' => config('telegram-bot-essentials.develop.DEVELOP_SECRET_TOKEN'),
@@ -46,9 +46,12 @@ class TelegramBotAndUserSeeder extends Seeder
         $bot->settings->pay_to_card_name = config('telegram-bot-essentials.develop.DEVELOPER_CARD_NAME');
         $bot->settings->save();
 
-        BotUser::firstOrCreate([
+        $botUser = BotUser::firstOrCreate([
             'bot_id' => $bot->id,
             'telegram_user_peer_id' => $telegramUser->peer_id,
+        ]);
+
+        $botUser->update([
             'state' => 'test',
             'power' => 100,
             'balance' => 1000000
