@@ -2,6 +2,7 @@
 
 namespace Elyar\TelegramBotEssentials\Services;
 
+use Cache;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 
@@ -66,8 +67,11 @@ class CurrencyFather
      */
     public function rate(): float
     {
-        $url = 'https://currency.servicefather.ir/api/currencies/' . $this->toCurrency . '/' . $this->currency . '/' . $this->amount;
-        $response = Http::get($url);
-        return $response->json()['data']['rate'];
+        $key = 'currencyfather-' . $this->currency . '-' . $this->toCurrency . '-' . $this->amount;
+        return Cache::remember($key, now()->addHours(6), function () {
+            $url = 'https://currency.servicefather.ir/api/currencies/' . $this->toCurrency . '/' . $this->currency . '/' . $this->amount;
+            $response = Http::get($url);
+            return $response->json()['data']['rate'];
+        });
     }
 }
