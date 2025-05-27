@@ -14,7 +14,8 @@ class setWebhook extends Command
      *
      * @var string
      */
-    protected $signature = 'tbe:set-webhook';
+    protected $signature = 'tbe:set-webhook
+         {--unique-id= : Enter the target bots unique id}';
 
     /**
      * The console command description.
@@ -29,17 +30,16 @@ class setWebhook extends Command
      */
     public function handle()
     {
-        $botToken = config('telegram-bot-essentials.develop.DEVELOP_TELEGRAM_BOT_TOKEN');
-        $bot = $botToken ? Bot::where('bot_token', $botToken)->first() : Bot::first();
-        if ($bot) {
+        $uniqueID = $this->option('unique-id') ?? config('telegram-bot-essentials.main.TELEGRAM_BOT_TOKEN');
+        if ($uniqueID) {
+            $bot = Bot::where('unique_id', $uniqueID)->firstOrFail();
             $telegram = new Api($bot->bot_token);
-            $uri = '/api/' . $bot->unique_id . '/telegram/bot/webhook';
             $telegram->setWebhook([
-                'url' => config('app.url') . $uri,
+                'url' => config('app.url') . "/api/{$uniqueID}/telegram/bot/webhook",
                 'drop_pending_updates' => true,
                 'secret_token' => $bot->secret_token,
             ]);
-            $this->info('Telegram webhook is set to ' . $uri);
+            $this->info('Telegram webhook is set');
         }
     }
 }
