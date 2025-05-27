@@ -5,6 +5,7 @@ namespace Elyar\TelegramBotEssentials\Database\factories;
 use Elyar\TelegramBotEssentials\Models\Bot;
 use Elyar\TelegramBotEssentials\Models\TelegramUser;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Ramsey\Uuid\Uuid;
 
 class BotFactory extends Factory
 {
@@ -13,7 +14,7 @@ class BotFactory extends Factory
     {
         return [
             'bot_token' => fake()->unique()->randomNumber(),
-            'unique_id' => fake()->unique()->randomNumber(),
+            'unique_id' => Uuid::uuid4()->toString(),
             'secret_token' => fake()->unique()->randomNumber(),
             'bot_owner_peer_id' => TelegramUser::factory()->create()->peer_id,
         ];
