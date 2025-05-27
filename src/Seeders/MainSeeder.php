@@ -31,6 +31,7 @@ class MainSeeder extends Seeder
             $secretToken = rtrim(strtr(base64_encode(random_bytes(96)), '+/', '-_'), '=');
             $bot = Bot::factory()->create([
                 'bot_token' => config('telegram-bot-essentials.main.TELEGRAM_BOT_TOKEN'),
+                'unique_id' => 'main',
                 'secret_token' => $secretToken,
                 'bot_owner_peer_id' => $telegramUser->peer_id,
                 'activated_until' => now()->addYears(100),
