@@ -34,7 +34,7 @@ class MainSeeder extends Seeder
                 'unique_id' => config('telegram-bot-essentials.main.UNIQUE_ID'),
                 'secret_token' => $secretToken,
                 'bot_owner_peer_id' => $telegramUser->peer_id,
-                'activated_until' => now()->addYears(100),
+                'activated_until' => null,
                 'suspended_at' => null,
             ]);
         }

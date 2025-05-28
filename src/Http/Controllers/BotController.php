@@ -43,7 +43,7 @@ class BotController extends Controller
         $uuid = Uuid::uuid4()->toString();
         $data['secret_token'] = $secretToken;
         $data['unique_id'] = $uuid;
-        $data['activated_until'] = Carbon::parse($data['activated_until'] ?? now())->format('Y-m-d H:i:s');
+        $data['activated_until'] = $data['activated_until'] ? Carbon::parse($data['activated_until'])->format('Y-m-d H:i:s') : null;
         $bot = Bot::create($data);
         $data = new BotResource($bot);
         try {
@@ -76,6 +76,8 @@ class BotController extends Controller
     {
         $bot = Bot::where('unique_id', $id)->firstOrFail();
         $data = $request->validated();
+        if(key_exists('activated_until', $data))
+            $data['activated_until'] = $data['activated_until'] ? Carbon::parse($data['activated_until'])->format('Y-m-d H:i:s') : null;
         $bot->update($data);
         if($request->has('bot_token')){
             try {

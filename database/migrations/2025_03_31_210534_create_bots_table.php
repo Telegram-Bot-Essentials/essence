@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('unique_id')->unique();
             $table->string('secret_token')->nullable();
             $table->unsignedBigInteger('bot_owner_peer_id')->nullable();
-            $table->timestamp('activated_until')->useCurrent();
+            $table->timestamp('activated_until')->nullable()->useCurrent();
             $table->timestamp('suspended_at')->nullable();
             $table->softDeletes();
             $table->timestamps();
