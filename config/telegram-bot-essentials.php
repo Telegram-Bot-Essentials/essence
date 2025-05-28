@@ -27,7 +27,7 @@ return [
     ],
 
     'develop' => [
-        'DEVELOP_UNIQUE_ID' => 'develop',
+        'DEVELOP_UNIQUE_ID' => env('DEVELOP_UNIQUE_ID', 'develop'),
         'DEVELOP_TELEGRAM_BOT_TOKEN' => env('DEVELOP_TELEGRAM_BOT_TOKEN'),
         'DEVELOP_SECRET_TOKEN' => env('DEVELOP_SECRET_TOKEN'),
         'DEVELOPER_CHAT_ID' => env('DEVELOPER_CHAT_ID'),
@@ -39,7 +39,7 @@ return [
     ],
 
     'main' => [
-        'UNIQUE_ID' => 'main',
+        'UNIQUE_ID' => env('DEVELOP_UNIQUE_ID', 'main'),
         'TELEGRAM_BOT_TOKEN' => env('MAIN_TELEGRAM_BOT_TOKEN'),
         'ADMIN_CHAT_ID' => env('MAIN_ADMIN_CHAT_ID'),
     ],
