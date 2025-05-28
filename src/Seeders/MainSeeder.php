@@ -25,7 +25,7 @@ class MainSeeder extends Seeder
             'peer_id' => config('telegram-bot-essentials.main.ADMIN_CHAT_ID'),
         ]);
 
-        $bot = Bot::where('bot_token', config('telegram-bot-essentials.main.TELEGRAM_BOT_TOKEN'))->first();
+        $bot = Bot::where('unique_id', config('telegram-bot-essentials.main.UNIQUE_ID'))->first();
 
         if (!$bot) {
             $secretToken = rtrim(strtr(base64_encode(random_bytes(96)), '+/', '-_'), '=');
