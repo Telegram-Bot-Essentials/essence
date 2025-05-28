@@ -24,7 +24,7 @@ class BotUserFactory extends Factory
             'balance' => rand(0, 10) * 25000,
             'state' => ['test', null][rand(0, 1)],
             'menu' => $role == Roles::ADMIN->value ? 'admin' : 'main',
-            'suspend' => fake()->unique()->boolean(),
+            'suspend' => fake()->boolean(),
         ];
     }
 }

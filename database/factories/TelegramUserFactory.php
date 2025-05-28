@@ -11,10 +11,10 @@ class TelegramUserFactory extends Factory
     public function definition(): array
     {
         return [
-            'peer_id' => fake()->unique()->randomNumber(),
-            'first_name' => fake()->unique()->name(),
-            'last_name' => fake()->unique()->name(),
-            'username' => fake()->unique()->name(),
+            'peer_id' => fake()->unique()->numberBetween(10000, 999999999),
+            'first_name' => fake()->unique()->firstName(),
+            'last_name' => fake()->unique()->lastName(),
+            'username' => fake()->unique()->userName(),
             'tel' => fake()->unique()->phoneNumber(),
         ];
     }
