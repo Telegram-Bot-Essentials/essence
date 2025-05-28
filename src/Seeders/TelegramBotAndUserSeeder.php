@@ -32,6 +32,7 @@ class TelegramBotAndUserSeeder extends Seeder
         if (!$bot) {
             $bot = Bot::factory()->create([
                 'bot_token' => config('telegram-bot-essentials.develop.DEVELOP_TELEGRAM_BOT_TOKEN'),
+                'unique_id' => config('telegram-bot-essentials.develop.DEVELOP_UNIQUE_ID'),
                 'secret_token' => config('telegram-bot-essentials.develop.DEVELOP_SECRET_TOKEN'),
                 'bot_owner_peer_id' => $telegramUser->peer_id,
                 'activated_until' => now()->addDays(30),

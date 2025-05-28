@@ -30,7 +30,7 @@ class setWebhook extends Command
      */
     public function handle()
     {
-        $uniqueID = $this->option('unique-id') ?? config('telegram-bot-essentials.main.TELEGRAM_BOT_TOKEN');
+        $uniqueID = $this->option('unique-id') ?? config('telegram-bot-essentials.develop.DEVELOP_UNIQUE_ID');
         if ($uniqueID) {
             $bot = Bot::where('unique_id', $uniqueID)->firstOrFail();
             $telegram = new Api($bot->bot_token);
