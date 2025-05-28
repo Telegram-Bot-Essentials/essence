@@ -40,7 +40,7 @@ test('Main Menu reply key works fine', function () {
     $response->assertOk();
 });
 
-test('Main Panel reply key works fine', function () {
+test('Admin Panel reply key works fine', function () {
     $bot = Bot::first();
 
     $response = postJson(
