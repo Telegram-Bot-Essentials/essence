@@ -13,6 +13,10 @@ class BotSettings extends Model
 {
     use BelongsToTenant;
 
+    protected $casts = [
+        'bot_status' => 'boolean',
+    ];
+
     public function bot(): BelongsTo
     {
         return $this->belongsTo(Bot::class);
@@ -40,10 +44,5 @@ class BotSettings extends Model
     {
         Validator::validate(['connection_guide_channel_id' => $value], ['connection_guide_channel_id' => 'required|string|max:64']);
         $this->attributes['connection_guide_channel_id'] = $value;
-    }
-
-    public function currencies(): hasMany
-    {
-        return $this->hasMany(Currency::class);
     }
 }
