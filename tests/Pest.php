@@ -1,5 +1,9 @@
 <?php
 
+use Dotenv\Dotenv;
+use Telegram\Bot\Api;
+use Telegram\Bot\Exceptions\TelegramSDKException;
+
 //use Illuminate\Foundation\Testing\RefreshDatabase;
 //
 //uses(RefreshDatabase::class);
@@ -15,8 +19,8 @@
 */
 
 pest()->extend(Elyar\TelegramBotEssentials\Tests\TestCase::class)
- // ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
-    ->in('Feature');
+    // ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
+    ->in('Feature', 'Telegram');
 
 /*
 |--------------------------------------------------------------------------
@@ -47,4 +51,128 @@ expect()->extend('toBeOne', function () {
 function something()
 {
     // ..
+}
+
+$envPath = dirname(__DIR__); // adjust if needed
+if (file_exists($envPath . '/.env.testing')) {
+    Dotenv::createImmutable($envPath, '.env.testing')->load();
+}
+
+/**
+ * @return Api
+ * @throws TelegramSDKException
+ */
+function api(): Api {
+    return new Api(env('TELEGRAM_TEST_BOT_TOKEN'));
+}
+
+function message(string $text = 'Main Menu 🔰'): array
+{
+    $chatId = env('TELEGRAM_TEST_CHAT_ID');
+    $messageId = rand(10000, 100000);
+
+    return [
+        "update_id" => rand(10000, 100000),
+        "message" => [
+            "message_id" => $messageId,
+            "from" => [
+                "id" => $chatId,
+                "is_bot" => false,
+                "first_name" => "ELYAR",
+                "username" => "Elyar_rr",
+                "language_code" => "en",
+            ],
+            "chat" => [
+                "id" => $chatId,
+                "first_name" => "ELYAR",
+                "username" => "Elyar_rr",
+                "type" => "private",
+            ],
+            "date" => now()->timestamp,
+            "text" => $text,
+        ],
+    ];
+}
+
+function command(string $text = '/start'): array
+{
+    $chatId = env('TELEGRAM_TEST_CHAT_ID');
+    $messageId = rand(10000, 100000);
+
+    return [
+        "update_id" => rand(10000, 100000),
+        "message" => [
+            "message_id" => $messageId,
+            "from" => [
+                "id" => $chatId,
+                "is_bot" => false,
+                "first_name" => "ELYAR",
+                "username" => "Elyar_rr",
+                "language_code" => "en",
+            ],
+            "chat" => [
+                "id" => $chatId,
+                "first_name" => "ELYAR",
+                "username" => "Elyar_rr",
+                "type" => "private",
+            ],
+            "date" => now()->timestamp,
+            "text" => $text,
+            "entities" => [
+                [
+                    "offset" => 0,
+                    "length" => strlen(trim($text)),
+                    "type" => "bot_command"
+                ]
+            ],
+        ],
+    ];
+}
+
+function callbackQuery(string $data = "BTSTNG?bot_status&1"): array
+{
+    $chatId = env('TELEGRAM_TEST_CHAT_ID');
+    preg_match('/^\d+/', env('TELEGRAM_TEST_BOT_TOKEN'), $matches);
+    $botId = $matches[0] ?? rand(10000, 100000);
+
+    $result = api()->sendMessage([
+        'chat_id' => $chatId,
+        'text' => 'test',
+    ]);
+
+    $messageId = $result->messageId;
+    return [
+        "update_id" => rand(10000, 100000),
+        "callback_query" => [
+            "id" => "4261716429142386678",
+            "from" => [
+                "id" => $chatId,
+                "is_bot" => false,
+                "first_name" => "ELYAR",
+                "username" => "Elyar_rr",
+                "language_code" => "en",
+            ],
+            "message" => [
+                "message_id" => $messageId,
+                "from" => [
+                    "id" => $botId,
+                    "is_bot" => true,
+                    "first_name" => "telBot",
+                    "username" => "telBot",
+                ],
+                "chat" => [
+                    "id" => $chatId,
+                    "first_name" => "ELYAR",
+                    "username" => "Elyar_rr",
+                    "type" => "private",
+                ],
+                "date" => rand(10000, 100000),
+                "edit_date" => rand(10000, 100000),
+                "text" => "message_text",
+            ],
+            "chat_instance" => "-1552160730376182465",
+            "data" => $data,
+        ],
+    ];
+
 }
