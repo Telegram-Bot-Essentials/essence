@@ -44,15 +44,5 @@ class MainSeeder extends Seeder
             'telegram_user_peer_id' => $telegramUser->peer_id,
             'power' => 100,
         ]);
-
-        try{
-            $api = new Api($bot->bot_token);
-            $api->setWebhook([
-                'url' => config('app.url') . "/api/{$bot->unique_id}/telegram/bot/webhook",
-                'secret_token' => $bot->secret_token,
-            ]);
-        } catch (Exception){
-
-        }
     }
 }
