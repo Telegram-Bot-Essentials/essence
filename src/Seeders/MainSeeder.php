@@ -39,6 +39,9 @@ class MainSeeder extends Seeder
             ]);
         }
 
+        $bot->settings->bot_status = true;
+        $bot->settings->save();
+
         BotUser::firstOrCreate([
             'bot_id' => $bot->id,
             'telegram_user_peer_id' => $telegramUser->peer_id,
