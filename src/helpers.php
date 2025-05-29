@@ -236,16 +236,20 @@ if (!function_exists('smartRound')) {
         $order = floor(log10($abs));
         $decimalPlaces = max(0, $significantDigits - $order - 1);
 
-        $rounded = round($value, $decimalPlaces);
-
         $hasDecimals = fmod($value, 1.0) !== 0.0;
 
-        if ($hasDecimals && $decimalPlaces < 2) {
-            $decimalPlaces = 2;
-            $rounded = round($value, $decimalPlaces);
+        if ($hasDecimals) {
+            $decimalPlaces = max(2, $decimalPlaces);
+        }
+
+        $rounded = round($value, $decimalPlaces);
+
+        if (fmod($rounded, 1.0) === 0.0) {
+            return number_format($rounded, 0, '.', ',');
         }
 
         return number_format($rounded, $decimalPlaces, '.', ',');
     }
 }
+
 
