@@ -238,6 +238,13 @@ if (!function_exists('smartRound')) {
 
         $rounded = round($value, $decimalPlaces);
 
+        $hasDecimals = fmod($value, 1.0) !== 0.0;
+
+        if ($hasDecimals && $decimalPlaces < 2) {
+            $decimalPlaces = 2;
+            $rounded = round($value, $decimalPlaces);
+        }
+
         return number_format($rounded, $decimalPlaces, '.', ',');
     }
 }
