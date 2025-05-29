@@ -5,6 +5,7 @@ namespace Elyar\TelegramBotEssentials\Http\Controllers;
 use Elyar\TelegramBotEssentials\Exceptions\CannotSetItActive;
 use Elyar\TelegramBotEssentials\Exceptions\CannotSetItAsDone;
 use Elyar\TelegramBotEssentials\Exceptions\FeatureIsDisabled;
+use Elyar\TelegramBotEssentials\Exceptions\InvalidPageNumber;
 use Elyar\TelegramBotEssentials\Exceptions\LogicException;
 use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQuery;
 use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\ReplyKey;
@@ -36,6 +37,8 @@ class TelegramWebhookController extends Controller
                 if (!hasAccess()) dependsOn(wHook()->bot()->settings->bot_status, __('tbe::general.alerts.botIsOff'));
                 $this->initializeOptions();
                 $this->processUpdate();
+            } catch (InvalidPageNumber $e){
+                $this->invalidPageNumberUserAlert($e);
             } catch (ValidationException $e) {
                 $this->validationExceptionUserAlert($e);
             } catch (CannotSetItActive $e) {
@@ -213,6 +216,23 @@ class TelegramWebhookController extends Controller
             wHook()->api()->answerCallbackQuery([
                 'callback_query_id' => wHook()->update()->callbackQuery->id,
                 'text' => $e->getMessage() == "" ? __('tbe::general.alerts.disabledFeature', ['feature' => getInputInlineKeyText()]) : $e->getMessage(),
+                'show_alert' => true,
+                'cache_time' => 5,
+            ]);
+        }
+    }
+
+    private function invalidPageNumberUserAlert(InvalidPageNumber|Exception $e)
+    {
+        if (wHook()->update()->message) {
+            wHook()->api()->sendMessage([
+                'chat_id' => wHook()->update()->message->from->id,
+                'text' => $e->getMessage() == "" ? __('tbe::general.alerts.invalidPageNumber') : $e->getMessage(),
+            ]);
+        } elseif (wHook()->update()->callbackQuery) {
+            wHook()->api()->answerCallbackQuery([
+                'callback_query_id' => wHook()->update()->callbackQuery->id,
+                'text' => $e->getMessage() == "" ? __('tbe::general.alerts.invalidPageNumber') : $e->getMessage(),
                 'show_alert' => true,
                 'cache_time' => 5,
             ]);
