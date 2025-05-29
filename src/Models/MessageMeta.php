@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\Keyboard\Keyboard;
+use Telegram\Bot\Objects\Message;
 use Telegram\Bot\Objects\TelegramObject;
 
 class MessageMeta extends Model
@@ -22,6 +23,13 @@ class MessageMeta extends Model
     {
         $messageMeta = MessageMeta::make();
         $messageMeta->initializeModel();
+        return $messageMeta;
+    }
+
+    public static function makeWithMessage(Message $message)
+    {
+        $messageMeta = MessageMeta::make();
+        $messageMeta->initializeModel($message->chat->id, $message->messageId, $message->text, $message->replyMarkup);
         return $messageMeta;
     }
 
@@ -187,5 +195,13 @@ class MessageMeta extends Model
         }
 
         $this->initializeModel($message->chat->id, $message->messageId, $message->text, $message->replyMarkup);
+    }
+
+    public function deleteMessage(): void
+    {
+        wHook()->api()->deleteMessage([
+            'chat_id' => $this->chat_id,
+            'message_id' => $this->message_id,
+        ]);
     }
 }
