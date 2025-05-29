@@ -3,7 +3,7 @@
 return [
     'main' => [
         'text' => [
-            'totalCredit' => "مجموع اعتبار: :price",
+            'totalCredit' => "💸 موجودی کل: :price",
             'enterCreditAmount' => "مقدار اعتباری که می‌خواهید به حساب خود اضافه کنید را وارد کنید:",
         ],
         'answers' => [
