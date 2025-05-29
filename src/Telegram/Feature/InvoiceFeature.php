@@ -11,7 +11,7 @@ class InvoiceFeature
 {
     static string $type = 'INVOICE';
 
-    public static function invoice(Invoice $invoice, string $encodedCallback): TelegramResponse
+    public static function invoice(Invoice $invoice, ?string $encodedCallback = null): TelegramResponse
     {
         $text = __('tbe::invoice.summary.text.information', [
             'invoiceId' => $invoice->id,
@@ -25,10 +25,14 @@ class InvoiceFeature
                 'price' => number_format(priceIn($invoice->price)->toIRT())
             ]),
             'callback_data' => encodeCallback(self::$type, ['to_card', $invoice->id])
-        ])])->row([Keyboard::inlineButton([
-            'text' => __('tbe::invoice.summary.keys.back_to_previous'),
-            'callback_data' => $encodedCallback
         ])]);
+
+        if($encodedCallback){
+            $replyMarkup->row([Keyboard::inlineButton([
+                'text' => __('tbe::invoice.summary.keys.back_to_previous'),
+                'callback_data' => $encodedCallback
+            ])]);
+        }
 
         return new TelegramResponse(
             text: $text,
