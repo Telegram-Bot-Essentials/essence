@@ -3,7 +3,9 @@
 namespace Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Member;
 
 use Elyar\TelegramBotEssentials\Enums\Roles;
+use Elyar\TelegramBotEssentials\Telegram\Feature\Member\MyWalletFeature;
 use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\ReplyKey;
+use Telegram\Bot\Exceptions\TelegramSDKException;
 
 class MyWalletKey extends ReplyKey
 {
@@ -18,8 +20,11 @@ class MyWalletKey extends ReplyKey
         // $this->response = __('');
     }
 
+    /**
+     * @throws TelegramSDKException
+     */
     public function handle(): void
     {
-        // Logic to execute
+        MyWalletFeature::main()->send();
     }
 }

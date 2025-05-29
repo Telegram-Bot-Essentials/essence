@@ -3,7 +3,11 @@
 namespace Elyar\TelegramBotEssentials\Telegram\CallbackQueries\Member;
 
 use Elyar\TelegramBotEssentials\Enums\Roles;
+use Elyar\TelegramBotEssentials\Exceptions\LogicException;
+use Elyar\TelegramBotEssentials\Models\MessageMeta;
 use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQuery;
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Telegram\Bot\Exceptions\TelegramSDKException;
 
 class MyWalletQuery extends CallbackQuery
 {
@@ -14,16 +18,26 @@ class MyWalletQuery extends CallbackQuery
     {
         $this->params = $params;
         switch (strtolower($params[0])) {
-            case "start":
-                // Use dependsOn() to give condition to check if the callback is allowed
-                // dependsOn(false);
-                $this->start();
+            case "add_credit":
+                $this->addCredit();
                 break;
         }
     }
 
-    public function start(): void
+    /**
+     * @throws TelegramSDKException
+     * @throws BindingResolutionException
+     * @throws LogicException
+     */
+    public function addCredit(): void
     {
-        // Logic to execute
+        $messageMeta = MessageMeta::makeWithCurrentMessage();
+        $messageMeta->deleteMessage();
+        wHook()->user()->changeState(encodeAnswerState($this->type, "add_credit"));
+        wHook()->api()->sendMessage([
+            'chat_id' => wHook()->user()->telegramUser->peer_id,
+            'text' => "Enter credit amount to add:",
+            'reply_markup' => wHook()->user()->getKeyboard()
+        ]);
     }
 }

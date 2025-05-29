@@ -8,13 +8,19 @@ class MyWalletFeature
 {
     static string $type = 'MYWALLET';
 
-    // TODO: Implement static functions for generating bot messages
-    public static function menu(): TelegramResponse
+    public static function main(): TelegramResponse
     {
-        $text = 'menu';
+        $text = "Total Credit: " . priceFormat(wHook()->user()->balance);
 
         $replyMarkup = Keyboard::make()
             ->inline();
+
+        $replyMarkup->row([
+            Keyboard::inlineButton([
+                'text' => "Add credit 💲",
+                'callback_data' => encodeCallback(self::$type, ['add_credit'])
+            ])
+        ]);
 
         return new TelegramResponse(
             text: $text,
