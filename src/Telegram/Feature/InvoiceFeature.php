@@ -27,6 +27,8 @@ class InvoiceFeature
             'callback_data' => encodeCallback(self::$type, ['to_card', $invoice->id])
         ])]);
 
+        // TODO: Add payment option by wallet if it is not Credit Order
+
         if($encodedCallback){
             $replyMarkup->row([Keyboard::inlineButton([
                 'text' => __('tbe::invoice.summary.keys.back_to_previous'),
