@@ -10,14 +10,16 @@ class MyWalletFeature
 
     public static function main(): TelegramResponse
     {
-        $text = "Total Credit: " . priceFormat(wHook()->user()->balance);
+        $text = __('tbe::my_wallet.main.text.totalCredit', [
+            'price' => priceFormat(wHook()->bot()->settings->wallet)
+        ]);
 
         $replyMarkup = Keyboard::make()
             ->inline();
 
         $replyMarkup->row([
             Keyboard::inlineButton([
-                'text' => "Add credit 💲",
+                'text' => __('tbe::my_wallet.main.keys.addCredit'),
                 'callback_data' => encodeCallback(self::$type, ['add_credit'])
             ])
         ]);

@@ -16,7 +16,7 @@ class MyWalletKey extends ReplyKey
     public function __construct()
     {
         // Multilingual translations
-        // $this->text = __('');
+         $this->text = __('tbe::my_wallet.reply_key');
         // $this->response = __('');
     }
 

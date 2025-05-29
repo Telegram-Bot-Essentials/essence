@@ -36,7 +36,7 @@ class MyWalletQuery extends CallbackQuery
         wHook()->user()->changeState(encodeAnswerState($this->type, "add_credit"));
         wHook()->api()->sendMessage([
             'chat_id' => wHook()->user()->telegramUser->peer_id,
-            'text' => "Enter credit amount to add:",
+            'text' => __('tbe::my_wallet.main.text.enterCreditAmount'),
             'reply_markup' => wHook()->user()->getKeyboard()
         ]);
     }
