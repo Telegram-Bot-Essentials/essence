@@ -18,6 +18,8 @@ return [
         'deactivated' => 'غیرفعال شد',
         'removedFrom' => 'حذف شد از',
         'addedTo' => 'افزوده شد به',
+        'suspended' => "تعلیق شده 🛑\r\nتاریخ تعلیق: :suspendedDate",
+        'notSuspended' => 'تعلیق نشده ✅',
     ],
 
     'callbackQuery' => [
@@ -53,5 +55,11 @@ return [
 
     'answers' => [
         'updatedResourceField' => 'در حال به روزرسانی فیلد :field برای ":resource"...',
+    ],
+
+    'roles' => [
+        'admin' => 'مدیر',
+        'moderator' => 'ناظر',
+        'member' => 'عضو',
     ],
 ];

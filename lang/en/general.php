@@ -18,6 +18,8 @@ return [
         'deactivated' => 'Deactivated',
         'removedFrom' => 'removed from',
         'addedTo' => 'added to',
+        'suspended' => "Suspended 🛑\r\nSuspended at :suspendedDate",
+        'notSuspended' => 'Not suspended ✅',
     ],
 
     'callbackQuery' => [
@@ -54,5 +56,11 @@ return [
 
     'answers' => [
         'updatedResourceField' => 'Updating ":resource"s :field...',
+    ],
+
+    'roles' => [
+        'admin' => 'Admin',
+        'moderator' => 'Moderator',
+        'member' => 'Member',
     ],
 ];
