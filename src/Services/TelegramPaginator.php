@@ -20,15 +20,6 @@ class TelegramPaginator
         };
     }
 
-    public static function isOutOfBounds(string $target, int $currentPage, int $lastPage): ?string
-    {
-        return match (true) {
-            ($target === 'first' || $target === 'prev') && $currentPage <= 1 => 'Already on first page',
-            ($target === 'last' || $target === 'next') && $currentPage >= $lastPage => 'Already on last page',
-            default => null,
-        };
-    }
-
     public static function validatePageInput(string|int $page, int $lastPage): void
     {
         Validator::validate(
@@ -37,14 +28,14 @@ class TelegramPaginator
         );
     }
 
-    public static function makeNavigationButtonsRow(string $callbackType, int $page, int $lastPage): array
+    public static function makeNavigationButtonsRow(string $callbackType, int $page, int $lastPage, $callbackMethod = 'start', $customPageMethod = 'set_start_page'): array
     {
         return [
-            Keyboard::inlineButton(['text' => '<<', 'callback_data' => encodeCallback($callbackType, ['start', $page, 'first'])]),
-            Keyboard::inlineButton(['text' => '<', 'callback_data' => encodeCallback($callbackType, ['start', $page, 'prev'])]),
-            Keyboard::inlineButton(['text' => "$page/$lastPage", 'callback_data' => encodeCallback($callbackType, ['start_with_page', $page])]),
-            Keyboard::inlineButton(['text' => '>', 'callback_data' => encodeCallback($callbackType, ['start', $page, 'next'])]),
-            Keyboard::inlineButton(['text' => '>>', 'callback_data' => encodeCallback($callbackType, ['start', $page, 'last'])]),
+            Keyboard::inlineButton(['text' => '<<', 'callback_data' => encodeCallback($callbackType, [$callbackMethod, 1, $page])]),
+            Keyboard::inlineButton(['text' => '<', 'callback_data' => encodeCallback($callbackType, [$callbackMethod, $page - 1, $page])]),
+            Keyboard::inlineButton(['text' => "$page/{$lastPage}", 'callback_data' => encodeCallback($callbackType, [$customPageMethod])]),
+            Keyboard::inlineButton(['text' => '>', 'callback_data' => encodeCallback($callbackType, [$callbackMethod, $page + 1, $page])]),
+            Keyboard::inlineButton(['text' => '>>', 'callback_data' => encodeCallback($callbackType, [$callbackMethod, $lastPage, $page])]),
         ];
     }
 
