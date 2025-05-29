@@ -3,6 +3,7 @@
 namespace Elyar\TelegramBotEssentials\Models;
 
 use Elyar\TelegramBotEssentials\Database\factories\BotUserFactory;
+use Elyar\TelegramBotEssentials\Enums\Roles;
 use Elyar\TelegramBotEssentials\Exceptions\LogicException;
 use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Admin\AdminPanelKey;
 use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Admin\BotAdminsKey;
@@ -30,11 +31,24 @@ class BotUser extends Model
     {
         return BotUserFactory::new();
     }
+
+    protected $appends = ['role'];
+
     protected $guarded = [
         'id',
         'created_at',
         'updated_at',
     ];
+
+    public function getRoleAttribute(): string
+    {
+        switch ($this->power) {
+            case Roles::ADMIN->value:
+                return __('tbe::general.roles.admin');
+            default:
+                return __('tbe::general.roles.member');
+        }
+    }
 
     public function bot(): BelongsTo
     {
