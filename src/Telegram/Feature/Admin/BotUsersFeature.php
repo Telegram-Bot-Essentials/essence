@@ -55,7 +55,9 @@ class BotUsersFeature
             'userRole' => $botUser->role,
             'userCredit' => priceFormat($botUser->balance),
             'userSuspendStatus' => $botUser->suspend ?
-                __('tbe::general.status.suspended') :
+                __('tbe::general.status.suspended', [
+                    'suspendedDate' => $botUser->suspended_at?->format('Y-m-d H:i:s')
+                ]) :
                 __('tbe::general.status.notSuspended'),
             'userCreatedAt' => $botUser->created_at,
             'userUpdatedAt' => $botUser->updated_at,

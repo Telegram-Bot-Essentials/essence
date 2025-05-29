@@ -23,7 +23,7 @@ return new class extends Migration {
             $table->float('balance', 2)->default(0);
             $table->string('state')->nullable();
             $table->enum('menu', ['main', 'admin'])->default('main');
-            $table->boolean('suspend')->default(false);
+            $table->timestamp('suspended_at')->nullable();
             $table->timestamps();
 
             $table->unique(['telegram_user_peer_id', 'bot_id']);

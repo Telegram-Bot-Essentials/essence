@@ -25,16 +25,31 @@ class BotUser extends Model
     use CanResolveReplyKey;
     use BelongsToTenant;
 
-    protected $appends = ['role'];
+    protected $appends = ['role', 'suspend'];
     protected $guarded = [
         'id',
         'created_at',
         'updated_at',
     ];
 
+    protected $casts = [
+        'suspended_at' => 'datetime',
+    ];
+
     public static function newFactory(): BotUserFactory
     {
         return BotUserFactory::new();
+    }
+
+    public function getSuspendAttribute(): bool
+    {
+        return isset($this->suspended_at);
+    }
+
+    public function setSuspendAttribute($value): void
+    {
+        $this->attributes['suspended_at'] = $value ? now() : null;
+        $this->save();
     }
 
     public function getRoleAttribute(): string
