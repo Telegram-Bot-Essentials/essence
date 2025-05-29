@@ -6,8 +6,6 @@ use Elyar\TelegramBotEssentials\Exceptions\InvalidPageNumber;
 use Elyar\TelegramBotEssentials\Models\BotUser;
 use Elyar\TelegramBotEssentials\Services\TelegramPaginator;
 use Elyar\TelegramBotEssentials\Telegram\TelegramResponse;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Telegram\Bot\Keyboard\Keyboard;
 
 class BotUsersFeature
@@ -47,7 +45,41 @@ class BotUsersFeature
     {
         $text = $botUser->telegramUser->full_name;
 
+        $text = __('tbe::bot_users.main.text.show_user', [
+            'userFullName' => "<a href=\"tg://user?id={$botUser->telegramUser->peer_id}\">{$botUser->telegramUser->full_name}</a>",
+            'userPeerId' => $botUser->telegramUser->peer_id,
+            'userUsername' => $botUser->telegramUser->username ? '@' . $botUser->telegramUser->username : '',
+            'userFirstName' => $botUser->telegramUser->first_name,
+            'userLastName' => $botUser->telegramUser->last_name,
+            'userTel' => $botUser->telegramUser->tel,
+            'userRole' => $botUser->role,
+            'userCredit' => $botUser->balance,
+            'userSuspendStatus' => $botUser->suspend ?
+                __('tbe::general.status.suspended') :
+                __('tbe::general.status.notSuspended'),
+            'userCreatedAt' => $botUser->created_at,
+            'userUpdatedAt' => $botUser->updated_at,
+            'dataReceiveTime' => now()->format('Y-m-d H:i:s'),
+        ]);
         $replyMarkup = Keyboard::make()->inline();
+
+        $replyMarkup->row([
+            Keyboard::inlineButton([
+                'text' => $botUser->suspend ? 'User is suspended 🛑' : 'User is active ✅',
+                'callback_data' => encodeCallback(self::$type, ['suspend', $botUser->id, intval(!$botUser->suspend)])
+            ])
+        ]);
+
+        $replyMarkup->row([
+            Keyboard::inlineButton([
+                'text' => '💪 Role: ' . $botUser->role,
+                'callback_data' => encodeCallback(self::$type, ['role', $botUser->id, $lastPage])
+            ]),
+            Keyboard::inlineButton([
+                'text' => 'Update ♻️',
+                'callback_data' => encodeCallback(self::$type, ['show', $botUser->id, $lastPage])
+            ])
+        ]);
 
         $replyMarkup->row([
             Keyboard::inlineButton([
