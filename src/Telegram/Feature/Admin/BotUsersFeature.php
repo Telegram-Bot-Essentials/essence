@@ -17,7 +17,11 @@ class BotUsersFeature
      */
     public static function start(int $page = 1, int $currentPage = 0): TelegramResponse
     {
-        $text = 'users';
+        $text = __('tbe::bot_users.main.text.index', [
+            'userCount' => BotUser::count(),
+            'usersJoinedLastDay' => BotUser::where('created_at', '>', now()->subDays(1))->count(),
+            'totalUserCredits' => priceFormat(BotUser::sum('balance')),
+        ]);
         $users = BotUser::paginate(perPage: 10, page: $page);
         $replyMarkup = Keyboard::make()->inline();
 
@@ -26,7 +30,11 @@ class BotUsersFeature
         foreach ($users as $botUser) {
             $replyMarkup->row([
                 Keyboard::inlineButton([
-                    'text' => $botUser->telegramUser->first_name . ' ' . $botUser->telegramUser->last_name,
+                    'text' => __('tbe::bot_users.main.keys.user', [
+                        'fullName' => $botUser->telegramUser->full_name,
+                        'credit' => priceFormat($botUser->balance),
+                        'suspendStatus' => $botUser->suspend ? __('tbe::general.status.disabledEmoji') : __('tbe::general.status.enabledEmoji'),
+                    ]),
                     'callback_data' => encodeCallback(self::$type, ['show', $botUser->id, $page])
                 ])
             ]);
@@ -67,29 +75,29 @@ class BotUsersFeature
 
         $replyMarkup->row([
             Keyboard::inlineButton([
-                'text' => $botUser->suspend ? 'User is suspended 🛑' : 'User is active ✅',
+                'text' => $botUser->suspend ? __('tbe::bot_users.main.keys.userIsSuspended') : __('tbe::bot_users.main.keys.userIsActive'),
                 'callback_data' => encodeCallback(self::$type, ['suspend', $botUser->id, intval(!$botUser->suspend)])
             ])
         ]);
 
         $replyMarkup->row([
             Keyboard::inlineButton([
-                'text' => '💪 Role: ' . $botUser->role,
+                'text' => __('tbe::bot_users.main.keys.userRole', ['role' => $botUser->role]),
                 'callback_data' => encodeCallback(self::$type, ['role', $botUser->id, $lastPage])
             ]),
             Keyboard::inlineButton([
-                'text' => 'Update ♻️',
+                'text' => __('tbe::bot_users.main.keys.userUpdateData'),
                 'callback_data' => encodeCallback(self::$type, ['show', $botUser->id, $lastPage])
             ])
         ]);
 
         $replyMarkup->row([
             Keyboard::inlineButton([
-                'text' => 'Add Balance 💸',
+                'text' => __('tbe::bot_users.main.keys.addUserBalance'),
                 'callback_data' => encodeCallback(self::$type, ['balance', 'add', $botUser->id, $lastPage])
             ]),
             Keyboard::inlineButton([
-                'text' => 'Set Balance 💵',
+                'text' => __('tbe::bot_users.main.keys.setUserBalance'),
                 'callback_data' => encodeCallback(self::$type, ['balance', 'set', $botUser->id, $lastPage])
             ])
         ]);
