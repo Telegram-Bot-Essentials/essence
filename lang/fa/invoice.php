@@ -15,7 +15,20 @@ return [
         ],
         'keys' => [
             'to_card' => 'کارت به کارت 💳 - :price تومان',
+            'by_wallet' => 'پرداخت با کیف پول 💰 - :price',
             'back_to_previous' => '🔙 بازگشت به مرحله قبلی',
+        ],
+    ],
+
+    'by_wallet' => [
+        'text' => [
+        ],
+        'answers' => [
+            'creditIsNotEnough' => '⛔️ اعتبار شما برای پرداخت این فاکتور کافی نیست.'
+                . "\r\nاعتبار شما: :credit"
+                . "\r\nاعتبار مورد نیاز: :neededCredit",
+        ],
+        'keys' => [
         ],
     ],
 

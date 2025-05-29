@@ -33,6 +33,9 @@ class InvoiceQuery extends CallbackQuery
                 dependsOn(isset(wHook()->bot()->settings->transactions_chat_id));
                 $this->toCard();
                 break;
+            case "by_wallet":
+                $this->byWallet();
+                break;
         }
     }
 
@@ -67,5 +70,30 @@ class InvoiceQuery extends CallbackQuery
             'reply_markup' => wHook()->user()->getKeyboard()
         ]);
         $this->answer(__('tbe::invoice.to_card.answers.attempting'));
+    }
+
+    private function byWallet(): void
+    {
+        $invoice = Invoice::findOrFail($this->params[1]);
+        if($invoice->botUser->balance < $invoice->price){
+            wHook()->api()->answerCallbackQuery([
+                'callback_query_id' => wHook()->update()->callbackQuery->id,
+                'text' => __('tbe::invoice.by_wallet.answers.creditIsNotEnough', [
+                    'credit' => priceFormat($invoice->botUser->balance),
+                    'neededCredit' => priceFormat($invoice->price)
+                ]),
+                'show_alert' => true,
+            ]);
+            return;
+        }
+
+        $paymentAttempt = $invoice->paymentAttempt()->create();
+        $byWalletAttempt = $paymentAttempt->byWalletAttempt()->firstOrCreate([
+            'amount' => $paymentAttempt->invoice->price
+        ]);
+
+        $byWalletAttempt->attempt();
+        $invoice->triggerInvoicePaidHook();
+        $invoice->messageMeta->lockAction(__('tbe::invoice.to_card.lock-keys.user-payment_accepted'), customEmoji: "✅");
     }
 }

@@ -15,8 +15,21 @@ return [
         ],
         'keys' => [
             'to_card' => 'Pay To Card 💳 - :price تومان',
+            'by_wallet' => 'Pay Using wallet 💰 - :price',
             'back_to_previous' => 'Back to previous action',
         ],
+    ],
+
+    'by_wallet' => [
+        'text' => [
+            ],
+        'answers' => [
+            'creditIsNotEnough' => '⛔️ Your credit is not enough for paying this invoice.'
+            . "\r\nYour credit: :credit"
+            . "\r\nNeeded credit: :neededCredit",
+            ],
+        'keys' => [
+            ],
     ],
 
     'to_card' => [

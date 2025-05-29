@@ -36,5 +36,10 @@ class PaymentAttempt extends Model
     {
         return $this->hasOne(ToCardAttempt::class);
     }
+
+    public function byWalletAttempt(): HasOne
+    {
+        return $this->hasOne(ByWalletAttempt::class);
+    }
 }
 
