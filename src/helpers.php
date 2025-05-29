@@ -204,8 +204,8 @@ if (!function_exists('priceFormat')) {
     function priceFormat(float $price, bool $raw = false): string
     {
         $symbol = getDefaultCurrencySymbol();
-        $seperator = preg_match('/[\x{0600}-\x{06FF}\x{0750}-\x{077F}\x{08A0}-\x{08FF}\x{FB50}-\x{FDFF}\x{FE70}-\x{FEFF}\x{FDFC}]/u', $symbol) ? ' ' : '';
-        return $raw ? formatFloat($price) . $seperator . $symbol : $price . $seperator . $symbol;
+        $separator = preg_match('/[\x{0600}-\x{06FF}\x{0750}-\x{077F}\x{08A0}-\x{08FF}\x{FB50}-\x{FDFF}\x{FE70}-\x{FEFF}\x{FDFC}]/u', $symbol) ? ' ' : '';
+        return ($raw ? $price : formatFloat($price)) . $separator . $symbol;
     }
 }
 
@@ -233,17 +233,12 @@ if (!function_exists('smartRound')) {
         }
 
         $abs = abs($value);
-
         $order = floor(log10($abs));
         $decimalPlaces = max(0, $significantDigits - $order - 1);
 
         $rounded = round($value, $decimalPlaces);
 
-        if (fmod($rounded, 1.0) === 0.0) {
-            return (string)(int)$rounded;
-        }
-
-        return number_format($rounded, $decimalPlaces, '.', '');
+        return number_format($rounded, $decimalPlaces, '.', ',');
     }
 }
 
