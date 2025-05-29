@@ -2,6 +2,8 @@
 
 namespace Elyar\TelegramBotEssentials\Services;
 
+use Elyar\TelegramBotEssentials\Exceptions\InvalidPageNumber;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Validator;
 use Telegram\Bot\Keyboard\Keyboard;
 
@@ -44,5 +46,16 @@ class TelegramPaginator
             Keyboard::inlineButton(['text' => '>', 'callback_data' => encodeCallback($callbackType, ['start', $page, 'next'])]),
             Keyboard::inlineButton(['text' => '>>', 'callback_data' => encodeCallback($callbackType, ['start', $page, 'last'])]),
         ];
+    }
+
+    /**
+     * @throws InvalidPageNumber
+     */
+    public static function validatePageNumber(int $targetPage, int $currentPage, LengthAwarePaginator $models): void
+    {
+        if($targetPage == $currentPage)
+            throw new InvalidPageNumber(__('tbe::general.alerts.samePageNumber'));
+        if($targetPage < 1 || $targetPage > $models->lastPage())
+            throw new InvalidPageNumber(__('tbe::general.alerts.outOfBoundPageNumber'));
     }
 }
