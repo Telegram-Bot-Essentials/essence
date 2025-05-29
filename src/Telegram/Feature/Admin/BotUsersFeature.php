@@ -52,7 +52,7 @@ class BotUsersFeature
         $replyMarkup->row([
             Keyboard::inlineButton([
                 'text' => __('tbe::general.keys.back'),
-                'callback_data' => encodeCallback(self::$type, ['start_with', $lastPage])
+                'callback_data' => encodeCallback(self::$type, ['start', $lastPage])
             ])
         ]);
 
