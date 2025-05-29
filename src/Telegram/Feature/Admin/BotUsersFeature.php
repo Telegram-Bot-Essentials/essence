@@ -53,7 +53,7 @@ class BotUsersFeature
             'userLastName' => $botUser->telegramUser->last_name,
             'userTel' => $botUser->telegramUser->tel,
             'userRole' => $botUser->role,
-            'userCredit' => $botUser->balance,
+            'userCredit' => priceFormat($botUser->balance),
             'userSuspendStatus' => $botUser->suspend ?
                 __('tbe::general.status.suspended') :
                 __('tbe::general.status.notSuspended'),
@@ -78,6 +78,17 @@ class BotUsersFeature
             Keyboard::inlineButton([
                 'text' => 'Update ♻️',
                 'callback_data' => encodeCallback(self::$type, ['show', $botUser->id, $lastPage])
+            ])
+        ]);
+
+        $replyMarkup->row([
+            Keyboard::inlineButton([
+                'text' => 'Add Balance 💸',
+                'callback_data' => encodeCallback(self::$type, ['balance', 'add', $botUser->id, $lastPage])
+            ]),
+            Keyboard::inlineButton([
+                'text' => 'Set Balance 💵',
+                'callback_data' => encodeCallback(self::$type, ['balance', 'set', $botUser->id, $lastPage])
             ])
         ]);
 

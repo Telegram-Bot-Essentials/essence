@@ -41,6 +41,10 @@ class BotUsersQuery extends CallbackQuery
             case "role":
                 $this->role();
                 break;
+
+            case "balance":
+                $this->balance();
+                break;
         }
     }
 
@@ -102,5 +106,26 @@ class BotUsersQuery extends CallbackQuery
 
         $lastPage = intval($this->params[2] ?? 1);
         BotUsersFeature::show($botUser, $lastPage)->update();
+    }
+
+    private function balance()
+    {
+        $type = $this->params[1];
+        $botUser = BotUser::findOrFail($this->params[2]);
+        $lastPage = intval($this->params[3] ?? 1);
+
+        $messageMeta = MessageMeta::makeWithCurrentMessage();
+        $messageMeta->lockAction("Waiting for $type balance");
+        wHook()->user()->changeState(encodeAnswerState($this->type, "balance", [
+            "type" => $type,
+            "bot_user_id" => $botUser->id,
+            "message_meta_id" => $messageMeta->id,
+            "last_page" => $lastPage
+        ]));
+        wHook()->api()->sendMessage([
+            'chat_id' => wHook()->user()->telegramUser->peer_id,
+            'text' => "Enter balance amount to $type:",
+            'reply_markup' => wHook()->user()->getKeyboard(),
+        ]);
     }
 }

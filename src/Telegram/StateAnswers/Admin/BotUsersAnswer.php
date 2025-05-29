@@ -40,6 +40,9 @@ class BotUsersAnswer extends StateAnswer
             case "set_start_page":
                 $this->setStartPage();
                 break;
+                case "balance":
+                $this->balance();
+                break;
         }
     }
 
@@ -74,6 +77,45 @@ class BotUsersAnswer extends StateAnswer
         wHook()->api()->sendMessage([
             'chat_id' => wHook()->user()->telegramUser->peer_id,
             'text' => "Page $page loaded",
+            'reply_markup' => wHook()->user()->getKeyboard(),
+        ]);
+
+        $messageMeta->updateAndContinueAction($data);
+    }
+
+    /**
+     * @throws TelegramSDKException
+     * @throws BindingResolutionException
+     * @throws LogicException
+     */
+    private function balance(): void
+    {
+        $botUser = BotUser::findOrFail($this->params['bot_user_id']);
+        $type = $this->params['type'];
+        $messageMeta = MessageMeta::findOrFail($this->params['message_meta_id']);
+        $lastPage = $this->params['last_page'];
+
+        $amount = wHook()->update()->message->text;
+        Validator::validate(
+            ['amount' => $amount],
+            ['amount' => "required|numeric|min:0.01|max:100000000"]
+        );
+        $amount = floatval($amount);
+
+        if($type == 'add'){
+            $botUser->balance = $botUser->balance + $amount;
+        }
+        elseif($type == 'set'){
+            $botUser->balance = $amount;
+        }
+        $botUser->save();
+
+        $data = BotUsersFeature::show($botUser, $lastPage);
+
+        wHook()->user()->changeState();
+        wHook()->api()->sendMessage([
+            'chat_id' => wHook()->user()->telegramUser->peer_id,
+            'text' => "User " . $botUser->telegramUser->full_name . " balance updated to " . priceFormat($botUser->balance),
             'reply_markup' => wHook()->user()->getKeyboard(),
         ]);
 
