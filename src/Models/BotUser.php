@@ -16,8 +16,6 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 use Telegram\Bot\Keyboard\Keyboard;
 
@@ -27,24 +25,25 @@ class BotUser extends Model
     use CanResolveReplyKey;
     use BelongsToTenant;
 
-    public static function newFactory(): BotUserFactory
-    {
-        return BotUserFactory::new();
-    }
-
     protected $appends = ['role'];
-
     protected $guarded = [
         'id',
         'created_at',
         'updated_at',
     ];
 
+    public static function newFactory(): BotUserFactory
+    {
+        return BotUserFactory::new();
+    }
+
     public function getRoleAttribute(): string
     {
         switch ($this->power) {
             case Roles::ADMIN->value:
                 return __('tbe::general.roles.admin');
+            case Roles::MODERATOR->value:
+                return __('tbe::general.roles.moderator');
             default:
                 return __('tbe::general.roles.member');
         }
@@ -75,23 +74,10 @@ class BotUser extends Model
         } elseif ($this->menu == 'admin') {
             $rows = array_merge($rows, config('telegram-bot-essentials.keyboard.admin') ?? []);
             $rows[] = [BotUsersKey::class];
-            $rows[] = [BotAdminsKey::class,BotSettingsKey::class];
+            $rows[] = [BotAdminsKey::class, BotSettingsKey::class];
             $rows[] = [MainMenuKey::class];
         }
         return $this->keyboardGenerator($rows);
-    }
-
-    public function changeState(?string $state = null): void
-    {
-        $this->attributes['state'] = $state;
-        $this->save();
-    }
-
-    public function addParamToState(array $params): void
-    {
-        $state = decodeAnswerState($this->attributes['state']);
-        $this->attributes['state'] = encodeAnswerState($state['type'], $state['method'], array_merge($state['params'], $params));
-        $this->save();
     }
 
     /**
@@ -108,12 +94,25 @@ class BotUser extends Model
             $processedRow = [];
             foreach ($keys as $key) {
                 $resolvedKey = $this->resolveReplyKey($key);
-                if(!hasAccess($resolvedKey->getPerm())) continue;
+                if (!hasAccess($resolvedKey->getPerm())) continue;
                 $processedRow[] = $resolvedKey->getText();
             }
             $replyMarkup->row($processedRow);
         }
 
         return $replyMarkup;
+    }
+
+    public function changeState(?string $state = null): void
+    {
+        $this->attributes['state'] = $state;
+        $this->save();
+    }
+
+    public function addParamToState(array $params): void
+    {
+        $state = decodeAnswerState($this->attributes['state']);
+        $this->attributes['state'] = encodeAnswerState($state['type'], $state['method'], array_merge($state['params'], $params));
+        $this->save();
     }
 }
