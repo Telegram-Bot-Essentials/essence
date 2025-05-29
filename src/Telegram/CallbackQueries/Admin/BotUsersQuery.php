@@ -6,11 +6,9 @@ use Elyar\TelegramBotEssentials\Enums\Roles;
 use Elyar\TelegramBotEssentials\Exceptions\LogicException;
 use Elyar\TelegramBotEssentials\Models\BotUser;
 use Elyar\TelegramBotEssentials\Models\MessageMeta;
-use Elyar\TelegramBotEssentials\Services\TelegramPaginator;
 use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQuery;
 use Elyar\TelegramBotEssentials\Telegram\Feature\Admin\BotUsersFeature;
 use Illuminate\Contracts\Container\BindingResolutionException;
-use Illuminate\Database\Eloquent\Model;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 
 class BotUsersQuery extends CallbackQuery
@@ -33,8 +31,15 @@ class BotUsersQuery extends CallbackQuery
             case "set_start_page":
                 $this->setStartPage();
                 break;
+
             case "show":
                 $this->show();
+                break;
+            case "suspend":
+                $this->suspend();
+                break;
+            case "role":
+                $this->role();
                 break;
         }
     }
@@ -71,7 +76,31 @@ class BotUsersQuery extends CallbackQuery
     private function show(): void
     {
         $botUser = BotUser::findOrFail($this->params[1]);
-        $page = intval($this->params[2]) ?? 1;
-        BotUsersFeature::show($botUser, $page)->update();
+        $lastPage = intval($this->params[2] ?? 1);
+        BotUsersFeature::show($botUser, $lastPage)->update();
+    }
+
+    private function suspend()
+    {
+        $botUser = BotUser::findOrFail($this->params[1]);
+        $botUser->suspend = $this->params[2];
+        $botUser->save();
+        $lastPage = intval($this->params[3] ?? 1);
+
+        BotUsersFeature::show($botUser, $lastPage)->update();
+    }
+
+    private function role()
+    {
+        $botUser = BotUser::findOrFail($this->params[1]);
+        $roles = array_map(fn($role) => $role->value, Roles::cases());
+        \Log::error(json_encode($roles));
+        $next = getNextFromArray($roles, $botUser->power);
+        \Log::error(json_encode($next));
+        $botUser->power = $next ?? 0;
+        $botUser->save();
+
+        $lastPage = intval($this->params[2] ?? 1);
+        BotUsersFeature::show($botUser, $lastPage)->update();
     }
 }
