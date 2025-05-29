@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignIdFor(PaymentAttempt::class)->constrained()->cascadeOnDelete();
             $table->bigInteger('card_number');
-            $table->float('amount', 2);
+            $table->decimal('amount', 20, 2);
             $table->float('received_amount', 2)->nullable();
             $table->timestamp('received_at')->nullable();
             $table->text('info_text')->nullable();

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Bot::class)->constrained();
             $table->foreignIdFor(BotUser::class)->nullable()->constrained();
-            $table->float('amount', 2)->default(0);
+            $table->decimal('amount', 20, 2);
             $table->timestamps();
         });
     }

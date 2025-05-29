@@ -20,7 +20,7 @@ return new class extends Migration {
                 ->references('peer_id')
                 ->on('telegram_users');
             $table->integer('power')->default(0);
-            $table->float('balance', 2)->default(0);
+            $table->decimal('balance', 20, 2)->default(0);
             $table->string('state')->nullable();
             $table->enum('menu', ['main', 'admin'])->default('main');
             $table->timestamp('suspended_at')->nullable();

@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->foreignIdFor(Bot::class)->constrained();
             $table->foreignIdFor(BotUser::class)->constrained();
             $table->morphs('payable');
-            $table->float('price', 2);
+            $table->decimal('price', 20, 2);
             $table->timestamps();
             $table->softDeletes();
         });
