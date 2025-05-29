@@ -2,9 +2,11 @@
 
 namespace Elyar\TelegramBotEssentials\Telegram\Feature\Admin;
 
+use Elyar\TelegramBotEssentials\Exceptions\InvalidPageNumber;
 use Elyar\TelegramBotEssentials\Models\BotUser;
 use Elyar\TelegramBotEssentials\Services\TelegramPaginator;
 use Elyar\TelegramBotEssentials\Telegram\TelegramResponse;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Telegram\Bot\Keyboard\Keyboard;
 
@@ -12,12 +14,16 @@ class BotUsersFeature
 {
     static string $type = 'BOTUSERS';
 
-    // TODO: Implement static functions for generating bot messages
-    public static function start(int $page = 1): TelegramResponse
+    /**
+     * @throws InvalidPageNumber
+     */
+    public static function start(int $page = 1, int $currentPage = 0): TelegramResponse
     {
         $text = 'users';
         $users = BotUser::paginate(perPage: 10, page: $page);
         $replyMarkup = Keyboard::make()->inline();
+
+        TelegramPaginator::validatePageNumber($page, $currentPage, $users);
 
         foreach ($users as $botUser) {
             $replyMarkup->row([
@@ -27,9 +33,8 @@ class BotUsersFeature
                 ])
             ]);
         }
-        $replyMarkup->row(
-            TelegramPaginator::makeNavigationButtonsRow(self::$type, $page, $users->lastPage())
-        );
+
+        $replyMarkup->row(TelegramPaginator::makeNavigationButtonsRow(self::$type, $page, $users->lastPage()));
 
         return new TelegramResponse(
             text: $text,
