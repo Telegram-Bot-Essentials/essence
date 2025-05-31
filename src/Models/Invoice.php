@@ -3,7 +3,12 @@
 namespace Elyar\TelegramBotEssentials\Models;
 
 use Elyar\TelegramBotEssentials\Database\factories\InvoiceFactory;
-use Elyar\TelegramBotEssentials\Jobs\FinalizeInvoicePaymentAction;
+use Elyar\TelegramBotEssentials\Jobs\InvoiceCancelledHookJob;
+use Elyar\TelegramBotEssentials\Jobs\InvoiceFailedHookJob;
+use Elyar\TelegramBotEssentials\Jobs\InvoicePaidHookJob;
+use Elyar\TelegramBotEssentials\Jobs\InvoicePendingHookJob;
+use Elyar\TelegramBotEssentials\Traits\HasMessageMeta;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -16,10 +21,12 @@ class Invoice extends Model
 {
     use SoftDeletes;
     use BelongsToTenant;
+    use HasFactory;
+    use HasMessageMeta;
 
-    protected $appends = ['status'];
     protected $guarded = [
         'id',
+        'status',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -30,36 +37,34 @@ class Invoice extends Model
         return InvoiceFactory::new();
     }
 
-    public function getStatusAttribute(): string
-    {
-        $paymentAttempt = $this->paymentAttempt;
-        if ($paymentAttempt->paid_at) return 'success';
-        if ($paymentAttempt->failed_at) return 'failed';
-        return 'pending';
-    }
-
-    public function payable(): MorphTo
-    {
-        return $this->morphTo();
-    }
-
     public function botUser(): BelongsTo
     {
         return $this->belongsTo(BotUser::class);
     }
 
-    public function paymentAttempt(): HasOne
+    public function payment(): HasOne
     {
-        return $this->hasOne(PaymentAttempt::class);
+        return $this->hasOne(Payment::class);
     }
 
-    public function messageMeta(): morphOne
+    public function markAsPaid(): void
     {
-        return $this->morphOne(MessageMeta::class, 'action')->withDefault();
+        $this->setAttribute('status', 'paid');
+        $this->save();
+        dispatch(new InvoicePaidHookJob(wHook()->api(), wHook()->update(), wHook()->bot(), wHook()->user(), $this));
     }
 
-    public function triggerInvoicePaidHook(): void
+    public function markAsFailed(): void
     {
-        dispatch(new FinalizeInvoicePaymentAction(wHook()->api(), wHook()->update(), wHook()->bot(), wHook()->user(), $this));
+        $this->setAttribute('status', 'failed');
+        $this->save();
+        dispatch(new InvoiceFailedHookJob(wHook()->api(), wHook()->update(), wHook()->bot(), wHook()->user(), $this));
+    }
+
+    public function markAsPending(): void
+    {
+        $this->setAttribute('status', 'pending');
+        $this->save();
+        dispatch(new InvoicePendingHookJob(wHook()->api(), wHook()->update(), wHook()->bot(), wHook()->user(), $this));
     }
 }
