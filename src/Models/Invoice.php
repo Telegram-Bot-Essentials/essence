@@ -3,6 +3,7 @@
 namespace Elyar\TelegramBotEssentials\Models;
 
 use Elyar\TelegramBotEssentials\Database\factories\InvoiceFactory;
+use Elyar\TelegramBotEssentials\Jobs\CancelOrderHookJob;
 use Elyar\TelegramBotEssentials\Jobs\InvoiceFailedHookJob;
 use Elyar\TelegramBotEssentials\Jobs\InvoicePaidHookJob;
 use Elyar\TelegramBotEssentials\Jobs\InvoicePendingHookJob;
@@ -10,6 +11,7 @@ use Elyar\TelegramBotEssentials\Traits\HasMessageMeta;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
@@ -36,6 +38,19 @@ class Invoice extends Model
     public function botUser(): BelongsTo
     {
         return $this->belongsTo(BotUser::class);
+    }
+
+    public function payable(): MorphTo
+    {
+        return $this->morphTo();
+    }
+
+    public function setStatusAttribute($value): void
+    {
+        if($this->status == 'paid') {
+            dispatch(new CancelOrderHookJob(wHook()->api(), wHook()->update(), wHook()->bot(), wHook()->user(), $this));
+        }
+        $this->attributes['status'] = $value;
     }
 
     public function markAsPaid(): void

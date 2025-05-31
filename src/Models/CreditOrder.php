@@ -3,6 +3,7 @@
 namespace Elyar\TelegramBotEssentials\Models;
 
 use Elyar\TelegramBotEssentials\Exceptions\LogicException;
+use Elyar\TelegramBotEssentials\Telegram\Feature\Member\MyWalletFeature;
 use Elyar\TelegramBotEssentials\Traits\HasInvoice;
 use Elyar\TelegramBotEssentials\Traits\HasMessageMeta;
 use Illuminate\Contracts\Container\BindingResolutionException;
@@ -56,20 +57,23 @@ class CreditOrder extends Model
             'text' => 'Your total credit increased by ' . priceFormat($this->amount) . ' 💸',
             'reply_markup' => wHook()->user()->getKeyboard(),
         ]);
+        MyWalletFeature::main()->send();
     }
 
-    public function invoiceCancelledHook(): void
+    /**
+     * @throws TelegramSDKException
+     * @throws BindingResolutionException
+     * @throws LogicException
+     */
+    public function cancelOrderHook(): void
     {
-        // TODO: Implement invoiceCancelledHook() method.
-    }
-
-    public function invoicePendingHook(): void
-    {
-        // TODO: Implement invoicePendingHook() method.
-    }
-
-    public function invoiceFailedHook(): void
-    {
-        // TODO: Implement invoiceFailedHook() method.
+        wHook()->user()->balance -= $this->amount;
+        wHook()->user()->save();
+        wHook()->api()->sendMessage([
+            'chat_id' => wHook()->user()->telegramUser->peer_id,
+            'text' => 'Your total credit decreased by ' . priceFormat($this->amount) . ' 💸' . ' due to order cancellation',
+            'reply_markup' => wHook()->user()->getKeyboard(),
+        ]);
+        MyWalletFeature::main()->send();
     }
 }
