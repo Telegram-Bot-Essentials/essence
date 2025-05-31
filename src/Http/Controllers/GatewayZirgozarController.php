@@ -3,10 +3,12 @@
 namespace Elyar\TelegramBotEssentials\Http\Controllers;
 
 use Elyar\TelegramBotEssentials\Models\Invoice;
+use Exception;
 use Http;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Telegram\Bot\Api;
 
 class GatewayZirgozarController extends Controller
 {
@@ -68,11 +70,29 @@ class GatewayZirgozarController extends Controller
 
         if($response['status'] == 'paid'){
             $invoice->markAsPaid();
+            try {
+                $api = new Api($invoice->bot->bot_token);
+                $me = $api->getMe();
+                $username = $me->username;
+            }catch (Exception $e){
+                \Log::error($e->getMessage());
+                return response('Payment accepted', 200);
+            }
+            return redirect('https://t.me/' . $username . '?start=invoice_' . $invoice->id);
             return response('Payment accepted', 200);
         }elseif ($response['status'] == 'unpaid'){
             return response('Payment rejected', 400);
         }
 
-        return response('Failed to handle payment', 503);
+        try {
+            $api = new Api($invoice->bot->bot_token);
+            $me = $api->getMe();
+            $username = $me->username;
+        }catch (Exception $e){
+            \Log::error($e->getMessage());
+            return response('Failed to redirect', 503);
+        }
+
+        return redirect('https://t.me/' . $username . '?start=invoice_' . $invoice->id);
     }
 }
