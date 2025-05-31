@@ -57,4 +57,19 @@ class CreditOrder extends Model
             'reply_markup' => wHook()->user()->getKeyboard(),
         ]);
     }
+
+    public function invoiceCancelledHook(): void
+    {
+        // TODO: Implement invoiceCancelledHook() method.
+    }
+
+    public function invoicePendingHook(): void
+    {
+        // TODO: Implement invoicePendingHook() method.
+    }
+
+    public function invoiceFailedHook(): void
+    {
+        // TODO: Implement invoiceFailedHook() method.
+    }
 }
