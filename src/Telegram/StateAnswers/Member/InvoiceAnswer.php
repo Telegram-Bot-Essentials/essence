@@ -121,7 +121,7 @@ class InvoiceAnswer extends StateAnswer
     function cancel(): void
     {
         $invoice = Invoice::findOrFail($this->params['invoice_id']);
-        $invoice->paymentAttempt()->delete();
+        $invoice->payment()->delete();
         $invoice->messageMeta->continueAction();
     }
 }

@@ -48,12 +48,12 @@ class InvoiceQuery extends CallbackQuery
     {
         $invoice = Invoice::findOrFail($this->params[1]);
 
-        $paymentAttempt = $invoice->paymentAttempt()->create();
+        $paymentAttempt = $invoice->payment()->create();
         $paymentAttempt->toCardAttempt()->create([
             'card_number' => wHook()->bot()->settings->pay_to_card_number,
             'amount' => $invoice->price
         ]);
-        $invoice->paymentAttempt()->whereNot('id', $paymentAttempt->id)->delete();
+        $invoice->payment()->whereNot('id', $paymentAttempt->id)->delete();
 
         $text = __('tbe::invoice.to_card.text.user-pay_message', [
             'cardNumber' => wHook()->bot()->settings->pay_to_card_number,
@@ -87,7 +87,7 @@ class InvoiceQuery extends CallbackQuery
             return;
         }
 
-        $paymentAttempt = $invoice->paymentAttempt()->create();
+        $paymentAttempt = $invoice->payment()->create();
         $byWalletAttempt = $paymentAttempt->byWalletAttempt()->firstOrCreate([
             'amount' => $paymentAttempt->invoice->price
         ]);
