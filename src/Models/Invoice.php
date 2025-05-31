@@ -35,6 +35,11 @@ class Invoice extends Model
         return InvoiceFactory::new();
     }
 
+    public function paymentAttempt(): MorphTo
+    {
+        return $this->morphTo();
+    }
+
     public function bot(): BelongsTo
     {
         return $this->belongsTo(Bot::class);

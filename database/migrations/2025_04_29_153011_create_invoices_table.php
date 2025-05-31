@@ -19,6 +19,7 @@ return new class extends Migration {
             $table->morphs('payable');
             $table->decimal('price', 20, 2);
             $table->enum('status', ['pending', 'paid', 'failed'])->default('pending');
+            $table->nullableMorphs('payment_attempt');
             $table->timestamps();
             $table->softDeletes();
         });
