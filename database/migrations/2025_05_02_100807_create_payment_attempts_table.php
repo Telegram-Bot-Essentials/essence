@@ -11,9 +11,12 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('payment_attempts', function (Blueprint $table) {
+        Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Invoice::class)->constrained()->cascadeOnDelete();
+
+            $table->nullableMorphs('attempt');
+
             $table->timestamps();
         });
     }
@@ -23,6 +26,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('payment_attempts');
+        Schema::dropIfExists('payments');
     }
 };

@@ -43,4 +43,11 @@ return [
         'TELEGRAM_BOT_TOKEN' => env('MAIN_TELEGRAM_BOT_TOKEN'),
         'ADMIN_CHAT_ID' => env('MAIN_ADMIN_CHAT_ID'),
     ],
+
+    'gateways' => [
+        'zirgozar' => [
+            'url' => env('ZIRGOZAR_URL', 'https://tron.digipnl.ir'),
+            'token' => env('ZIRGOZAR_TOKEN'),
+        ]
+    ],
 ];

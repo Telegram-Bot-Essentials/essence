@@ -5,41 +5,27 @@ namespace Elyar\TelegramBotEssentials\Models;
 use Elyar\TelegramBotEssentials\Traits\HasMessageMeta;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
 
-class PaymentAttempt extends Model
+abstract class PaymentAttempt extends Model
 {
-    use HasMessageMeta;
+    abstract public function attempt(): void;
 
-    protected $appends = ['paid_at', 'failed_at'];
-    protected $fillable = ['payment_id', 'attemptable_type', 'attemptable_id', 'status'];
-
-    public function getPaidAtAttribute(): ?Carbon
+    public function isConfirmed(): ?Carbon
     {
-        $toCardAttempt = $this->toCardAttempt;
-        return $toCardAttempt?->accepted_at;
+        return $this->confirmed_at;
     }
 
-    public function getFailedAtAttribute(): ?Carbon
+    public function isFailed(): ?Carbon
     {
-        $toCardAttempt = $this->toCardAttempt;
-        return $toCardAttempt?->rejected_at;
+        return $this->failed_at;
     }
 
-    public function invoice(): BelongsTo
+    public function payment(): BelongsTo
     {
-        return $this->belongsTo(Invoice::class);
-    }
-
-    public function toCardAttempt(): HasOne
-    {
-        return $this->hasOne(ToCardAttempt::class);
-    }
-
-    public function byWalletAttempt(): HasOne
-    {
-        return $this->hasOne(ByWalletAttempt::class);
+        return $this->belongsTo(Payments::class);
     }
 }
+
 
