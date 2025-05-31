@@ -5,27 +5,37 @@ namespace Elyar\TelegramBotEssentials\Models;
 use Elyar\TelegramBotEssentials\Traits\HasMessageMeta;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
 
 abstract class PaymentAttempt extends Model
 {
-    abstract public function attempt(): void;
-
-    public function isConfirmed(): ?Carbon
+    protected $guarded = [
+        'id',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
+    public function invoice(): MorphOne
     {
-        return $this->confirmed_at;
+        return $this->morphOne(Invoice::class, 'payment_attempt');
     }
 
-    public function isFailed(): ?Carbon
+    public function attemptSucceed(): void
     {
-        return $this->failed_at;
+//        $this->attemptSucceedHook();
+//        $this->invoice->markAsPaid();
     }
 
-    public function payment(): BelongsTo
+    public function attemptFailed(): void
     {
-        return $this->belongsTo(Payments::class);
+        $this->attemptFailedHook();
+        $this->invoice->markAsFailed();
     }
+
+    abstract protected function attemptSucceedHook(): void;
+    abstract protected function attemptFailedHook(): void;
 }
 
 
