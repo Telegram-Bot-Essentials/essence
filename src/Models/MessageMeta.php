@@ -132,10 +132,14 @@ class MessageMeta extends Model
      */
     public function continueAction(): void
     {
-        wHook()->api()->deleteMessage([
-            'chat_id' => $this->chat_id,
-            'message_id' => $this->message_id,
-        ]);
+        try{
+            wHook()->api()->deleteMessage([
+                'chat_id' => $this->chat_id,
+                'message_id' => $this->message_id,
+            ]);
+        } catch (\Exception $e) {
+            \Log::error($e->getMessage());
+        }
 
         $message = wHook()->api()->sendMessage([
             'chat_id' => $this->chat_id,
@@ -182,10 +186,14 @@ class MessageMeta extends Model
      */
     public function updateAndContinueAction(TelegramResponse|array $data): void
     {
-        wHook()->api()->deleteMessage([
-            'chat_id' => $this->chat_id,
-            'message_id' => $this->message_id,
-        ]);
+        try{
+            wHook()->api()->deleteMessage([
+                'chat_id' => $this->chat_id,
+                'message_id' => $this->message_id,
+            ]);
+        } catch (\Exception $e) {
+            \Log::error($e->getMessage());
+        }
 
         if ($data instanceof TelegramResponse) {
             $message = $data->send($this->chat_id);
