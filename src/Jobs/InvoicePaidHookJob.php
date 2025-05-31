@@ -7,11 +7,10 @@ use Elyar\TelegramBotEssentials\Models\BotUser;
 use Elyar\TelegramBotEssentials\Models\Invoice;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
-use Spatie\Multitenancy\Jobs\TenantAware;
 use Telegram\Bot\Api;
 use Telegram\Bot\Objects\Update;
 
-class FinalizeInvoicePaymentAction implements ShouldQueue
+class InvoicePaidHookJob implements ShouldQueue
 {
     use Queueable;
 
@@ -43,6 +42,10 @@ class FinalizeInvoicePaymentAction implements ShouldQueue
         wHook()->setBot($this->bot);
         wHook()->setUser($this->botUser);
 
-        $this->invoice->payable->invoicePaidHook();
+        $payable = $this->invoice->payable ?? null;
+
+        if ($payable && method_exists($payable, 'invoicePaidHook')) {
+            $payable->invoicePaidHook();
+        }
     }
 }

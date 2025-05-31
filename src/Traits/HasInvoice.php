@@ -11,6 +11,8 @@ trait HasInvoice
     {
         return $this->morphOne(Invoice::class, 'payable')->latest();
     }
-
     abstract public function invoicePaidHook(): void;
+    abstract public function invoiceCancelledHook(): void;
+    abstract public function invoicePendingHook(): void;
+    abstract public function invoiceFailedHook(): void;
 }
