@@ -9,6 +9,7 @@ use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Admin\AdminPanelKey;
 use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Admin\BotAdminsKey;
 use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Admin\BotSettingsKey;
 use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Admin\BotUsersKey;
+use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Admin\ManageInvoicesKey;
 use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Member\CancelProcessKey;
 use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Member\MainMenuKey;
 use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Member\MyWalletKey;
@@ -90,8 +91,8 @@ class BotUser extends Model
             $rows[] = [AdminPanelKey::class];
         } elseif ($this->menu == 'admin') {
             $rows = array_merge($rows, config('telegram-bot-essentials.keyboard.admin') ?? []);
-            $rows[] = [BotUsersKey::class];
-            $rows[] = [BotAdminsKey::class, BotSettingsKey::class];
+            $rows[] = [BotUsersKey::class, BotAdminsKey::class];
+            $rows[] = [ManageInvoicesKey::class, BotSettingsKey::class];
             $rows[] = [MainMenuKey::class];
         }
         return $this->keyboardGenerator($rows);
