@@ -69,32 +69,21 @@ class ManageInvoicesFeature
         $replyMarkup = Keyboard::make()
             ->inline();
 
-        if($invoice->status != 'pending') {
-            $replyMarkup->row([
-                Keyboard::inlineButton([
-                    'text' => 'Mark as pending',
-                    'callback_data' => encodeCallback(self::$type, ['mark_as_pending', $invoice->id, $lastPage])
-                ])
-            ]);
-        }
-
-        if($invoice->status != 'paid') {
-            $replyMarkup->row([
-                Keyboard::inlineButton([
-                    'text' => 'Mark as Paid',
-                    'callback_data' => encodeCallback(self::$type, ['mark_as_paid', $invoice->id, $lastPage])
-                ])
-            ]);
-        }
-
-        if($invoice->status != 'failed') {
-            $replyMarkup->row([
-                Keyboard::inlineButton([
-                    'text' => 'Mark as failed',
-                    'callback_data' => encodeCallback(self::$type, ['mark_as_failed', $invoice->id, $lastPage])
-                ])
-            ]);
-        }
+        // TODO : Localize this buttons
+        $replyMarkup->row([
+            Keyboard::inlineButton([
+                'text' => 'failed' . ($invoice->status == 'failed' ? ' ✅' : ''),
+                'callback_data' => encodeCallback(self::$type, ['mark_as_failed', $invoice->id, $lastPage])
+            ]),
+            Keyboard::inlineButton([
+                'text' => 'pending' . ($invoice->status == 'pending' ? ' ✅' : ''),
+                'callback_data' => encodeCallback(self::$type, ['mark_as_pending', $invoice->id, $lastPage])
+            ]),
+            Keyboard::inlineButton([
+                'text' => 'paid' . ($invoice->status == 'paid' ? ' ✅' : ''),
+                'callback_data' => encodeCallback(self::$type, ['mark_as_paid', $invoice->id, $lastPage])
+            ])
+        ]);
 
         $replyMarkup->row([
             Keyboard::inlineButton([
