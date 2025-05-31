@@ -35,6 +35,11 @@ class Invoice extends Model
         return InvoiceFactory::new();
     }
 
+    public function bot(): BelongsTo
+    {
+        return $this->belongsTo(Bot::class);
+    }
+
     public function botUser(): BelongsTo
     {
         return $this->belongsTo(BotUser::class);
