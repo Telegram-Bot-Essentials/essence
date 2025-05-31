@@ -44,12 +44,12 @@ class InvoiceFeature
             ])]);
         }
 
-        return new TelegramResponse(
+        return (new TelegramResponse(
             text: $text,
             replyMarkup: $replyMarkup,
             answer: $invoice->wasRecentlyCreated ?
                 __('tbe::invoice.summary.answers.created') :
                 __('tbe::invoice.summary.answers.main')
-        );
+        ))->messageMetaModel($invoice, 'invoice_view');
     }
 }
