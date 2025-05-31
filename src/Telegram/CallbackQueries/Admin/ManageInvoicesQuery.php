@@ -60,6 +60,14 @@ class ManageInvoicesQuery extends CallbackQuery
     private function markAsPaid(): void
     {
         $invoice = Invoice::findOrFail($this->params[1]);
+        if($invoice->status == 'paid') {
+            wHook()->api()->answerCallbackQuery([
+                'callback_query_id' => wHook()->update()->callbackQuery->id,
+                'text' => "Invoice is already paid", // TODO: Localize this message
+                'show_alert' => true,
+            ]);
+            return;
+        }
         $invoice->markAsPaid();
         $lastPage = intval($this->params[2] ?? 1);
         ManageInvoicesFeature::show($invoice, $lastPage)->update();
@@ -71,6 +79,14 @@ class ManageInvoicesQuery extends CallbackQuery
     private function markAsPending(): void
     {
         $invoice = Invoice::findOrFail($this->params[1]);
+        if($invoice->status == 'pending') {
+            wHook()->api()->answerCallbackQuery([
+                'callback_query_id' => wHook()->update()->callbackQuery->id,
+                'text' => "Invoice is already pending", // TODO: Localize this message
+                'show_alert' => true,
+            ]);
+            return;
+        }
         $invoice->markAsPending();
         $lastPage = intval($this->params[2] ?? 1);
         ManageInvoicesFeature::show($invoice, $lastPage)->update();
@@ -82,6 +98,14 @@ class ManageInvoicesQuery extends CallbackQuery
     private function markAsFailed(): void
     {
         $invoice = Invoice::findOrFail($this->params[1]);
+        if($invoice->status == 'failed') {
+            wHook()->api()->answerCallbackQuery([
+                'callback_query_id' => wHook()->update()->callbackQuery->id,
+                'text' => "Invoice is already failed", // TODO: Localize this message
+                'show_alert' => true,
+            ]);
+            return;
+        }
         $invoice->markAsFailed();
         $lastPage = intval($this->params[2] ?? 1);
         ManageInvoicesFeature::show($invoice, $lastPage)->update();
