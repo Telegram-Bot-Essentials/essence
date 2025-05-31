@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->foreignIdFor(BotUser::class)->constrained();
             $table->morphs('payable');
             $table->decimal('price', 20, 2);
+            $table->enum('status', ['pending', 'paid', 'failed'])->default('pending');
             $table->timestamps();
             $table->softDeletes();
         });
