@@ -64,6 +64,14 @@ class MyWalletAnswer extends StateAnswer
             'price' => $creditOrder->amount
         ]);
 
+        wHook()->user()->changeState();
+
+        wHook()->api()->sendMessage([
+            'chat_id' => wHook()->user()->telegramUser->peer_id,
+            'text' => "Creating invoice for amount of " . priceFormat($amount) . " 💸", // TODO: Localize this message
+            'reply_markup' => wHook()->user()->getKeyboard(),
+        ]);
+
         InvoiceFeature::invoice($invoice)->send();
     }
 
