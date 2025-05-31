@@ -2,6 +2,8 @@
 
 namespace Elyar\TelegramBotEssentials\Telegram;
 
+use Elyar\TelegramBotEssentials\Models\MessageMeta;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\Keyboard\Keyboard;
@@ -9,6 +11,9 @@ use Telegram\Bot\Objects\Message;
 
 class TelegramResponse
 {
+    private ?Model $modelForMessageMeta = null;
+    private ?string $messageMetaTag = null;
+
     public function __construct(
         public ?string   $text = null,
         public ?Keyboard $replyMarkup = null,
@@ -52,12 +57,25 @@ class TelegramResponse
         return $this;
     }
 
+    public function messageMetaModel(Model $model, ?string $tag = null): self
+    {
+        $this->modelForMessageMeta = $model;
+        $this->messageMetaTag = $tag;
+        return $this;
+    }
+
+    public function messageMetaTag(?string $tag = null): self
+    {
+        $this->messageMetaTag = $tag;
+        return $this;
+    }
+
     /**
      * @throws TelegramSDKException
      */
     public function send(string|int|null $chatId = null): Message
     {
-        return wHook()->api()->sendMessage(
+        $message = wHook()->api()->sendMessage(
             array_filter([
                 'chat_id' => $chatId ?? wHook()->user()->telegramUser->peer_id,
                 'text' => $this->text,
@@ -65,6 +83,14 @@ class TelegramResponse
                 'parse_mode' => $this->parseMode,
             ])
         );
+
+        if($this->modelForMessageMeta) {
+            $messageMeta = MessageMeta::makeWithMessage($message, $this->messageMetaTag);
+            $messageMeta->action()->associate($this->modelForMessageMeta);
+            $messageMeta->save();
+        }
+
+        return $message;
     }
 
     /**
@@ -72,7 +98,7 @@ class TelegramResponse
      */
     public function update(string|int|null $chatId = null, string|int|null $messageId = null): void
     {
-        wHook()->api()->editMessageText(
+        $message = wHook()->api()->editMessageText(
             array_filter([
                 'chat_id' => $chatId ?? wHook()->update()->callbackQuery->message->chat->id,
                 'message_id' => $messageId ?? wHook()->update()->callbackQuery->message->messageId,
@@ -81,6 +107,13 @@ class TelegramResponse
                 'parse_mode' => $this->parseMode,
             ])
         );
+
+        if($this->modelForMessageMeta) {
+            $messageMeta = MessageMeta::makeWithMessage($message, $this->messageMetaTag);
+            $messageMeta->action()->associate($this->modelForMessageMeta);
+            $messageMeta->save();
+        }
+
         if($this->answer) {
             wHook()->api()->answerCallbackQuery([
                 'callback_query_id' => wHook()->update()->callbackQuery->id,
