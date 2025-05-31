@@ -19,17 +19,21 @@ class MessageMeta extends Model
         'message_reply_markup' => 'array',
     ];
 
-    public static function makeWithCurrentMessage(): MessageMeta
+    public static function makeWithCurrentMessage(?string $tag = null): MessageMeta
     {
         $messageMeta = MessageMeta::make();
         $messageMeta->initializeModel();
+        $messageMeta->tag = $tag;
+        $messageMeta->save();
         return $messageMeta;
     }
 
-    public static function makeWithMessage(Message $message)
+    public static function makeWithMessage(Message $message, ?string $tag = null)
     {
         $messageMeta = MessageMeta::make();
         $messageMeta->initializeModel($message->chat->id, $message->messageId, $message->text, $message->replyMarkup);
+        $messageMeta->tag = $tag;
+        $messageMeta->save();
         return $messageMeta;
     }
 
@@ -96,7 +100,7 @@ class MessageMeta extends Model
         $this->lockingProcess($replyMarkup);
     }
 
-    public function initializeModel(?int $chat_id = null, ?int $message_id = null, ?string $message_text = null, ?string $message_reply_markup = null): void
+    public function initializeModel(?int $chat_id = null, ?int $message_id = null, ?string $message_text = null, ?string $message_reply_markup = null, ?string $tag = null): void
     {
         if (
             wHook()->update()->callbackQuery ||
@@ -107,7 +111,7 @@ class MessageMeta extends Model
             $this->message_text = $message_text ?? wHook()->update()->callbackQuery->message->text;
             $this->message_reply_markup = $message_reply_markup ?? wHook()->update()->callbackQuery->message->replyMarkup;
         }
-
+        $this->tag = $tag;
         $this->save();
     }
 

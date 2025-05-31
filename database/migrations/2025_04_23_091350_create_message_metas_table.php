@@ -18,6 +18,7 @@ return new class extends Migration
             $table->bigInteger('message_id')->nullable();
             $table->text('message_text')->nullable();
             $table->json('message_reply_markup')->nullable();
+            $table->string('tag')->nullable()->index();
             $table->timestamps();
         });
     }
