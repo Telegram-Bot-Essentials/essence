@@ -1,0 +1,89 @@
+<?php
+
+namespace Elyar\TelegramBotEssentials\Telegram\CallbackQueries\Admin;
+
+use Elyar\TelegramBotEssentials\Enums\Roles;
+use Elyar\TelegramBotEssentials\Models\Invoice;
+use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQuery;
+use Elyar\TelegramBotEssentials\Telegram\Feature\Admin\ManageInvoicesFeature;
+use Telegram\Bot\Exceptions\TelegramSDKException;
+
+class ManageInvoicesQuery extends CallbackQuery
+{
+    protected string $type = 'MANAGEINVOICES';
+    protected int $perm = Roles::ADMIN->value;
+
+    public function handle(array $params): void
+    {
+        $this->params = $params;
+        switch (strtolower($params[0])) {
+            case "start":
+                // Use dependsOn() to give condition to check if the callback is allowed
+                // dependsOn(false);
+                $this->start();
+                break;
+            case "show":
+                $this->show();
+                break;
+            case "mark_as_pending":
+                $this->markAsPending();
+                break;
+            case "mark_as_paid":
+                $this->markAsPaid();
+                break;
+            case "mark_as_failed":
+                $this->markAsFailed();
+                break;
+        }
+    }
+
+    public function start(): void
+    {
+        $page = intval($this->params[1] ?? 1);
+        $currentPage = intval($this->params[2] ?? 0);
+        ManageInvoicesFeature::menu($page, $currentPage)->update();
+    }
+
+    /**
+     * @throws TelegramSDKException
+     */
+    private function show(): void
+    {
+        $invoice = Invoice::findOrFail($this->params[1]);
+        $lastPage = intval($this->params[2] ?? 1);
+        ManageInvoicesFeature::show($invoice, $lastPage)->update();
+    }
+
+    /**
+     * @throws TelegramSDKException
+     */
+    private function markAsPaid(): void
+    {
+        $invoice = Invoice::findOrFail($this->params[1]);
+        $invoice->markAsPaid();
+        $lastPage = intval($this->params[2] ?? 1);
+        ManageInvoicesFeature::show($invoice, $lastPage)->update();
+    }
+
+    /**
+     * @throws TelegramSDKException
+     */
+    private function markAsPending(): void
+    {
+        $invoice = Invoice::findOrFail($this->params[1]);
+        $invoice->markAsPending();
+        $lastPage = intval($this->params[2] ?? 1);
+        ManageInvoicesFeature::show($invoice, $lastPage)->update();
+    }
+
+    /**
+     * @throws TelegramSDKException
+     */
+    private function markAsFailed(): void
+    {
+        $invoice = Invoice::findOrFail($this->params[1]);
+        $invoice->markAsFailed();
+        $lastPage = intval($this->params[2] ?? 1);
+        ManageInvoicesFeature::show($invoice, $lastPage)->update();
+    }
+}
