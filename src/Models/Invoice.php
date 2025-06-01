@@ -35,6 +35,35 @@ class Invoice extends Model
         return InvoiceFactory::new();
     }
 
+    protected static function booted(): void
+    {
+        static::creating(function ($invoice) {
+            if (empty($invoice->currency)) {
+                $invoice->currency = $invoice->bot->settings->default_currency;
+            }
+        });
+    }
+
+    public function getPublicTokenAttribute(): ?string
+    {
+        if (empty($this->attributes['public_token'] ?? null)) {
+            $publicToken = uniqid();
+            $this->attributes['public_token'] = $publicToken;
+            $this->save();
+        }
+        return $this->attributes['public_token'];
+    }
+
+    public function paymentAttempt(): MorphTo
+    {
+        return $this->morphTo();
+    }
+
+    public function bot(): BelongsTo
+    {
+        return $this->belongsTo(Bot::class);
+    }
+
     public function botUser(): BelongsTo
     {
         return $this->belongsTo(BotUser::class);
@@ -51,6 +80,11 @@ class Invoice extends Model
             dispatch(new CancelOrderHookJob(wHook()->api(), wHook()->update(), wHook()->bot(), wHook()->user(), $this));
         }
         $this->attributes['status'] = $value;
+    }
+
+    public function geStatusAttribute(): string
+    {
+        return $this->status;
     }
 
     public function markAsPaid(): void
