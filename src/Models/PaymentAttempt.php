@@ -5,41 +5,41 @@ namespace Elyar\TelegramBotEssentials\Models;
 use Elyar\TelegramBotEssentials\Traits\HasMessageMeta;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
 
-class PaymentAttempt extends Model
+abstract class PaymentAttempt extends Model
 {
-    use HasMessageMeta;
+    protected $guarded = [
+        'id',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
 
-    protected $appends = ['paid_at', 'failed_at'];
-    protected $fillable = ['payment_id', 'attemptable_type', 'attemptable_id', 'status'];
-
-    public function getPaidAtAttribute(): ?Carbon
+    public function invoice(): MorphOne
     {
-        $toCardAttempt = $this->toCardAttempt;
-        return $toCardAttempt?->accepted_at;
+        return $this->morphOne(Invoice::class, 'payment_attempt');
     }
 
-    public function getFailedAtAttribute(): ?Carbon
+    public function attemptSucceed(): void
     {
-        $toCardAttempt = $this->toCardAttempt;
-        return $toCardAttempt?->rejected_at;
+        $this->attemptSucceedHook();
+        $this->status = 'succeed';
+        $this->save();
+        $this->invoice->markAsPaid();
     }
 
-    public function invoice(): BelongsTo
+    public function attemptFailed(): void
     {
-        return $this->belongsTo(Invoice::class);
+        $this->attemptFailedHook();
+        $this->status = 'failed';
+        $this->save();
+        $this->invoice->markAsFailed();
     }
 
-    public function toCardAttempt(): HasOne
-    {
-        return $this->hasOne(ToCardAttempt::class);
-    }
-
-    public function byWalletAttempt(): HasOne
-    {
-        return $this->hasOne(ByWalletAttempt::class);
-    }
+    abstract public function attemptSucceedHook(): void;
+    abstract public function attemptFailedHook(): void;
 }
 
