@@ -16,6 +16,7 @@ return [
         'keys' => [
             'to_card' => 'Pay To Card 💳 - :price تومان',
             'by_wallet' => 'Pay Using wallet 💰 - :price',
+            'to_zirgozar' => 'Pay in zirgozar 💰 - :price تومان',
             'back_to_previous' => 'Back to previous action',
         ],
     ],

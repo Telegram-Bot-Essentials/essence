@@ -28,6 +28,13 @@ class InvoiceFeature
             'callback_data' => encodeCallback(self::$type, ['to_card', $invoice->id])
         ])]);
 
+        $replyMarkup->row([Keyboard::inlineButton([
+            'text' => __('tbe::invoice.summary.keys.to_zirgozar', [
+                'price' => number_format(priceIn($invoice->price)->toIRT())
+            ]),
+            'url' => config('app.url') . '/invoice/' . $invoice->public_token . '/zirgozar/pay'
+        ])]);
+
         if(!($invoice->payable instanceof CreditOrder)){
             $replyMarkup->row([Keyboard::inlineButton([
                 'text' => __('tbe::invoice.summary.keys.by_wallet', [
