@@ -29,6 +29,6 @@ class ByWalletAttempt extends Model
 
     public function paymentAttempt(): BelongsTo
     {
-        return $this->belongsTo(PaymentAttempt::class);
+        return $this->belongsTo(Payment::class);
     }
 }

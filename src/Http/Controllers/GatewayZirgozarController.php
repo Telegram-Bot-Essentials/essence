@@ -104,6 +104,7 @@ class GatewayZirgozarController extends Controller
             \Log::error($response['error_desc']);
             return response('Failed to handle payment', 503);
         }
+        if(!($invoice->paymentAttempt instanceof ToZirgozarAttempt)) return response('Failed to handle payment', 503);
 
         $paymentAttempt = $invoice->paymentAttempt;
         $paymentAttempt->update([

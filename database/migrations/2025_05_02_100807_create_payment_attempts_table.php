@@ -4,16 +4,19 @@ use Elyar\TelegramBotEssentials\Models\Invoice;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-
+// TODO: remove this migration
 return new class extends Migration {
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::create('payment_attempts', function (Blueprint $table) {
+        Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Invoice::class)->constrained()->cascadeOnDelete();
+
+            $table->nullableMorphs('attempt');
+
             $table->timestamps();
         });
     }
@@ -23,6 +26,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('payment_attempts');
+        Schema::dropIfExists('payments');
     }
 };

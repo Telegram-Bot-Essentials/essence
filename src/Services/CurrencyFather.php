@@ -62,11 +62,11 @@ class CurrencyFather
         return $this->rate();
     }
 
-    /**
-     * @throws ConnectionException
-     */
     public function rate(): float
     {
+        if($this->currency == $this->toCurrency){
+            return $this->amount;
+        }
         $key = 'currencyfather-' . $this->currency . '-' . $this->toCurrency . '-' . $this->amount;
         return Cache::remember($key, now()->addHours(6), function () {
             $url = 'https://currency.servicefather.ir/api/currencies/' . $this->toCurrency . '/' . $this->currency . '/' . $this->amount;

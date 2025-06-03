@@ -1,6 +1,6 @@
 <?php
 
-use Elyar\TelegramBotEssentials\Models\PaymentAttempt;
+use Elyar\TelegramBotEssentials\Models\Payment;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,7 +13,7 @@ return new class extends Migration {
     {
         Schema::create('to_card_attempts', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(PaymentAttempt::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Payment::class)->constrained()->cascadeOnDelete();
             $table->bigInteger('card_number');
             $table->decimal('amount', 20, 2);
             $table->float('received_amount', 2)->nullable();
