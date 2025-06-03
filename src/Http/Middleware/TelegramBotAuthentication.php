@@ -7,6 +7,7 @@ use Elyar\TelegramBotEssentials\Exceptions\WebhookAuthException;
 use Elyar\TelegramBotEssentials\Models\Bot;
 use Elyar\TelegramBotEssentials\Models\BotUser;
 use Elyar\TelegramBotEssentials\Models\TelegramUser;
+use Elyar\TelegramBotEssentials\TelegramHttpHandler;
 use Elyar\TelegramBotEssentials\Traits\HttpResponses;
 use GuzzleHttp\Psr7\ServerRequest;
 use Illuminate\Http\Request;
@@ -32,19 +33,22 @@ class TelegramBotAuthentication
     {
         $bot = tenancy()->tenant;
 
-        if(empty($bot) || !($bot instanceof Bot))
+        if (empty($bot) || !($bot instanceof Bot))
             return $this->error('Invalid Bot ID', 404);
 
         wHook()::setBot($bot);
 
-        if($request->header('x-telegram-bot-api-secret-token') !== $bot->secret_token)
+        if ($request->header('x-telegram-bot-api-secret-token') !== $bot->secret_token)
             return $this->error('Unauthorized', 403);
 
         try {
-            $api = new Api($bot->bot_token);
+            $api = new Api(
+                token: $bot->bot_token,
+                baseBotUrl: config('telegram-bot-essentials.base_bot_url'
+                ));
             wHook()::setApi($api);
             $update = wHook()->api()->getWebhookUpdate(request: new ServerRequest(
-                method:'POST',
+                method: 'POST',
                 uri: $request->url(),
                 headers: $request->headers->all(),
                 body: $request->getContent(),
@@ -73,7 +77,7 @@ class TelegramBotAuthentication
             $from = wHook()->update()->callbackQuery->from;
         }
 
-        if(empty($from) || !($from instanceof User))
+        if (empty($from) || !($from instanceof User))
             throw new WebhookAuthException('Failed to retrieve telegram from.');
 
         $telegramUser = TelegramUser::updateOrCreate(
