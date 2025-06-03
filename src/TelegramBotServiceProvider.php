@@ -62,6 +62,8 @@ class TelegramBotServiceProvider extends ServiceProvider
         Route::prefix('')
             ->group(__DIR__ . '/../routes/web.php');
 
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'tbe');
+
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         $this->publishes([
             __DIR__ . '/../config/telegram-bot-essentials.php' => config_path('telegram-bot-essentials.php'),
