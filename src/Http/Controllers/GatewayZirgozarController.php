@@ -127,7 +127,12 @@ class GatewayZirgozarController extends Controller
             Log::error($e->getMessage());
             return response('Failed to redirect', 503);
         }
+
         $botLink = 'https://t.me/' . $username . '?start=invoice_' . $invoice->id;
-        return response('invoice successfully paid, go to ' . "<a href=\"{$botLink}\">Telegram</a>", 200);
+        return view('tbe::app', [
+            'status' => $response['status'],
+            'invoice' => $invoice,
+            'botLink' => $botLink,
+        ]);
     }
 }
