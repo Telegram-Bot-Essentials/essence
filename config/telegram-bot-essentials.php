@@ -50,4 +50,6 @@ return [
             'token' => env('ZIRGOZAR_TOKEN'),
         ]
     ],
+
+    'base_bot_url' => env('TELEGRAM_BOT_BASE_URL', 'https://telegram-api.servicefather.ir/bot'),
 ];
