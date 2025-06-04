@@ -76,7 +76,7 @@ class Invoice extends Model
 
     public function setStatusAttribute($value): void
     {
-        if($this->status == 'paid') {
+        if($this->status != $value && $this->status == 'paid') {
             dispatch(new CancelOrderHookJob(wHook()->api(), wHook()->update(), wHook()->bot(), wHook()->user(), $this));
         }
         $this->attributes['status'] = $value;
