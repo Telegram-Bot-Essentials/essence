@@ -48,7 +48,7 @@ class CancelOrderHookJob implements ShouldQueue
         try {
             wHook()->api()->sendMessage([
                 'chat_id' => $this->invoice->botUser->telegramUser->peer_id,
-                'text' => "Your invoice status changed to failed", // TODO: Localize this message
+                'text' => "Your order reverted", // TODO: Localize this message
                 'reply_markup' => wHook()->user()->getKeyboard(),
             ]);
 
