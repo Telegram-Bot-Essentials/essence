@@ -41,6 +41,12 @@ class Invoice extends Model
             if (empty($invoice->currency)) {
                 $invoice->currency = $invoice->bot->settings->default_currency;
             }
+            if ($invoice->payable_type && $invoice->payable_id) {
+                self::where('payable_type', $invoice->payable_type)
+                    ->where('payable_id', $invoice->payable_id)
+                    ->whereNull('deleted_at')
+                    ->delete();
+            }
         });
     }
 
