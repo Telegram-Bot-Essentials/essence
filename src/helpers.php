@@ -170,8 +170,15 @@ if (!function_exists('hasAccess')) {
 if (!function_exists('getDefaultCurrencySymbol')) {
     function getDefaultCurrencySymbol(): string
     {
+        return getCurrencySymbol(wHook()->bot()->settings->default_currency);
+    }
+}
+
+if (!function_exists('getCurrencySymbol')) {
+    function getCurrencySymbol(string $currency): string
+    {
         return collect(config('telegram-bot-essentials.supported_currencies') ?? [])
-            ->where('name', wHook()->bot()->settings->default_currency)->first()['symbol'];
+            ->where('name', $currency)->first()['symbol'] ?? '?';
     }
 }
 
@@ -201,9 +208,9 @@ if (!function_exists('getNextFromArray')) {
 }
 
 if (!function_exists('priceFormat')) {
-    function priceFormat(float $price, bool $raw = false): string
+    function priceFormat(float $price, bool $raw = false, ?string $currency = null): string
     {
-        $symbol = getDefaultCurrencySymbol();
+        $symbol = empty($currency) ? getDefaultCurrencySymbol() : getCurrencySymbol($currency);
         $separator = preg_match('/[\x{0600}-\x{06FF}\x{0750}-\x{077F}\x{08A0}-\x{08FF}\x{FB50}-\x{FDFF}\x{FE70}-\x{FEFF}\x{FDFC}]/u', $symbol) ? ' ' : '';
         return ($raw ? $price : formatFloat($price)) . $separator . $symbol;
     }
@@ -252,4 +259,10 @@ if (!function_exists('smartRound')) {
     }
 }
 
-
+if(!function_exists('getResourceName')){
+    function getResourceName(string $resource): string
+    {
+        $parts = explode('\\', $resource);
+        return end($parts);
+    }
+}
