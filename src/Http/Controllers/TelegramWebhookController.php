@@ -7,6 +7,7 @@ use Elyar\TelegramBotEssentials\Exceptions\CannotSetItAsDone;
 use Elyar\TelegramBotEssentials\Exceptions\FeatureIsDisabled;
 use Elyar\TelegramBotEssentials\Exceptions\InvalidPageNumber;
 use Elyar\TelegramBotEssentials\Exceptions\LogicException;
+use Elyar\TelegramBotEssentials\Exceptions\TbeLogicException;
 use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQuery;
 use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\ReplyKey;
 use Elyar\TelegramBotEssentials\Telegram\StateAnswers\StateAnswer;
@@ -15,13 +16,13 @@ use Exception;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Telegram\Bot\Commands\Command;
 use Telegram\Bot\Exceptions\TelegramSDKException;
-use Illuminate\Routing\Controller;
 
 class TelegramWebhookController extends Controller
 {
@@ -37,7 +38,7 @@ class TelegramWebhookController extends Controller
                 if (!hasAccess()) dependsOn(wHook()->bot()->settings->bot_status, __('tbe::general.alerts.botIsOff'));
                 $this->initializeOptions();
                 $this->processUpdate();
-            } catch (InvalidPageNumber $e){
+            } catch (InvalidPageNumber $e) {
                 $this->invalidPageNumberUserAlert($e);
             } catch (ValidationException $e) {
                 $this->validationExceptionUserAlert($e);
@@ -49,6 +50,8 @@ class TelegramWebhookController extends Controller
                 $this->modelNotFoundUserAlert($e);
             } catch (FeatureIsDisabled $e) {
                 $this->featureIsDisabledUserAlert($e);
+            } catch (TbeLogicException $e) {
+                $this->generalAlert($e);
             }
         } catch (TelegramSDKException|Exception $e) {
             Log::error($e->getMessage() ?? 'error message is not provided');
@@ -176,6 +179,32 @@ class TelegramWebhookController extends Controller
     }
 
     /**
+     * @throws BindingResolutionException
+     * @throws TelegramSDKException
+     * @throws LogicException
+     */
+    private function generalAlert(Exception $e)
+    {
+        Log::error($e->getMessage() ?? 'error message is not provided');
+        Log::error(json_encode(wHook()->update(), JSON_PRETTY_PRINT) ?? 'Update is not provided');
+        Log::error($e->getTraceAsString() ?? 'Trace is not provided');
+        if (wHook()->update()->message) {
+            wHook()->api()->sendMessage([
+                'chat_id' => wHook()->update()->message->from->id,
+                'text' => $e->getMessage(),
+                'reply_markup' => wHook()->user()->getKeyboard(),
+            ]);
+        } elseif (wHook()->update()->callbackQuery) {
+            wHook()->api()->answerCallbackQuery([
+                'callback_query_id' => wHook()->update()->callbackQuery->id,
+                'text' => $e->getMessage(),
+                'show_alert' => true,
+                'cache_time' => 5,
+            ]);
+        }
+    }
+
+    /**
      * @throws LogicException
      * @throws TelegramSDKException
      * @throws BindingResolutionException
@@ -185,17 +214,17 @@ class TelegramWebhookController extends Controller
         Log::error($e->getMessage() ?? 'error message is not provided');
         Log::error(json_encode(wHook()->update(), JSON_PRETTY_PRINT) ?? 'Update is not provided');
         Log::error($e->getTraceAsString() ?? 'Trace is not provided');
-        $parts = preg_split('/\\\\/', $e->getModel());
+        $resourceName = getResourceName($e->getModel());
         if (wHook()->update()->message) {
             wHook()->api()->sendMessage([
                 'chat_id' => wHook()->update()->message->from->id,
-                'text' => __('tbe::general.alerts.notFound', ['resource' => end($parts)]),
+                'text' => __('tbe::general.alerts.notFound', ['resource' => $resourceName]),
                 'reply_markup' => wHook()->user()->getKeyboard(),
             ]);
         } elseif (wHook()->update()->callbackQuery) {
             wHook()->api()->answerCallbackQuery([
                 'callback_query_id' => wHook()->update()->callbackQuery->id,
-                'text' => __('tbe::general.alerts.notFound', ['resource' => end($parts)]),
+                'text' => __('tbe::general.alerts.notFound', ['resource' => $resourceName]),
                 'show_alert' => true,
                 'cache_time' => 5,
             ]);
