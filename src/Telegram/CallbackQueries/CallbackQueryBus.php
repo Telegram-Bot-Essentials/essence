@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Elyar\TelegramBotEssentials\Telegram\CallbackQueries;
 
 use Elyar\TelegramBotEssentials\Exceptions\LogicException;
+use Elyar\TelegramBotEssentials\Exceptions\TbeLogicException;
 use Elyar\TelegramBotEssentials\Traits\CanResolveCallbackQuery;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Facades\Log;
@@ -67,6 +68,19 @@ class CallbackQueryBus
     /**
      * @throws BindingResolutionException
      * @throws LogicException
+     * @throws TbeLogicException
+     */
+    public function routeQuery(string $callbackQuery): void
+    {
+        $callbackQueryData = decodeCallback($callbackQuery);
+
+        $this->route($callbackQueryData);
+    }
+
+    /**
+     * @throws BindingResolutionException
+     * @throws LogicException
+     * @throws TbeLogicException
      */
     public function processCallbackQueries(): void
     {
@@ -74,22 +88,23 @@ class CallbackQueryBus
 
         if (!$update->isType('callback_query')) return;
         $callbackQueryData = decodeCallback($update->callbackQuery->data);
+
+        $this->route($callbackQueryData);
+    }
+
+    /**
+     * @throws BindingResolutionException
+     * @throws LogicException
+     * @throws TbeLogicException
+     */
+    private function route(array $callbackQueryData): void
+    {
         $type = $callbackQueryData['type'];
 
         $key = $this->callbackQueryTypes[$type] ?? null;
         if (empty($key)) {
             Log::error('query "' . $type . '" is not registered');
-            try {
-                wHook()->api()->answerCallbackQuery([
-                    'callback_query_id' => $update->callbackQuery->id,
-                    'text' => __('tbe::general.callbackQuery.willBeAddedInTheFuture'),
-                    'show_alert' => true,
-                    'cache_time' => 5,
-                ]);
-            } catch (TelegramSDKException $e) {
-                Log::error($e->getMessage());
-            }
-            return;
+            throw new TbeLogicException(__('tbe::general.callbackQuery.willBeAddedInTheFuture'));
         }
 
         $resolvedCallbackQuery = $this->resolveCallbackQuery($key);
