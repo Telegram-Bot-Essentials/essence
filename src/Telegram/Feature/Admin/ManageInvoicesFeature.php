@@ -1,6 +1,7 @@
 <?php
 
 namespace Elyar\TelegramBotEssentials\Telegram\Feature\Admin;
+
 use Elyar\TelegramBotEssentials\Exceptions\InvalidPageNumber;
 use Elyar\TelegramBotEssentials\Models\Invoice;
 use Elyar\TelegramBotEssentials\Services\TelegramPaginator;
@@ -27,7 +28,7 @@ class ManageInvoicesFeature
 
         TelegramPaginator::validatePageNumber($page, $currentPage, $invoices);
 
-        if(count($invoices) == 0){
+        if (count($invoices) == 0) {
             $text = 'No invoices found';
             return new TelegramResponse(
                 text: $text,
@@ -38,7 +39,16 @@ class ManageInvoicesFeature
         foreach ($invoices as $invoice) {
             $replyMarkup->row([
                 Keyboard::inlineButton([
-                    'text' => $invoice->id,
+                    'text' => __('tbe::manage_invoices.main.keys.invoice', [
+                        'invoiceId' => $invoice->id,
+                        'resourceName' => getResourceName($invoice->payable_type),
+                        'price' => priceFormat($invoice->price, currency: $invoice->currency),
+                        'userFullName' => $invoice->botUser->telegramUser->full_name,
+                        'status' => $invoice->status == 'paid' ?
+                            __('tbe::general.status.enabledEmoji') :
+                            ($invoice->status == 'failed' ? __('tbe::general.status.xEmoji')
+                                : __('tbe::general.status.pendingEmoji')),
+                    ]),
                     'callback_data' => encodeCallback(self::$type, ['show', $invoice->id, $page])
                 ])
             ]);
