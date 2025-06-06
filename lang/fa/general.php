@@ -12,6 +12,8 @@ return [
         'notSet' => 'تنظیم نشده است',
         'enabledEmoji' => '✅',
         'disabledEmoji' => '🛑',
+        'xEmoji' => '❌',
+        'pendingEmoji' => '⏳',
         'addEmoji' => '➕',
         'removeEmoji' => '➖',
         'activated' => 'فعال شد',

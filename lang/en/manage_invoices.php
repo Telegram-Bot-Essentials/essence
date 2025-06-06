@@ -20,6 +20,7 @@ return [
         'answers' => [
         ],
         'keys' => [
+            'invoice' => '#:invoiceId - :resourceName :price | :userFullName :status',
         ],
     ],
 ];

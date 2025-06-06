@@ -12,6 +12,8 @@ return [
         'notSet' => 'Is not set',
         'enabledEmoji' => '✅',
         'disabledEmoji' => '🛑',
+        'xEmoji' => '❌',
+        'pendingEmoji' => '⏳',
         'addEmoji' => '➕',
         'removeEmoji' => '➖',
         'activated' => 'Activated',
