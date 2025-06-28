@@ -51,5 +51,5 @@ return [
         ]
     ],
 
-    'base_bot_url' => env('TELEGRAM_BOT_BASE_URL', 'https://telegram-api.servicefather.ir/bot'),
+    'base_bot_url' => env('TELEGRAM_BOT_BASE_URL', 'https://api.telegram.org/bot'),
 ];
