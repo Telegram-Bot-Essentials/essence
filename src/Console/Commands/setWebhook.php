@@ -30,8 +30,9 @@ class setWebhook extends Command
      */
     public function handle()
     {
-        $uniqueID = $this->option('unique-id') ?? config('telegram-bot-essentials.main.UNIQUE_ID');
+        $uniqueID = $this->option('unique-id');
         if ($uniqueID) {
+            $this->info('Setting webhook for bot with unique id: ' . $uniqueID);
             $bot = Bot::where('unique_id', $uniqueID)->firstOrFail();
             $telegram = new Api(
                 token: $bot->bot_token,
@@ -43,6 +44,8 @@ class setWebhook extends Command
                 'secret_token' => $bot->secret_token,
             ]);
             $this->info('Telegram webhook is set');
+        } else {
+            $this->error('Unique id is not provided');
         }
     }
 }
