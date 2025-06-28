@@ -34,13 +34,16 @@ class setWebhook extends Command
         if ($uniqueID) {
             $this->info('Setting webhook for bot with unique id: ' . $uniqueID);
             $this->info('Telegram bot api url: ' . config('telegram-bot-essentials.base_bot_url'));
+
+            $url = config('app.url') . "/api/{$uniqueID}/telegram/bot/webhook";
+            $this->info('Webhook url: ' . $url);
             $bot = Bot::where('unique_id', $uniqueID)->firstOrFail();
             $telegram = new Api(
                 token: $bot->bot_token,
                 baseBotUrl: config('telegram-bot-essentials.base_bot_url')
             );
             $telegram->setWebhook([
-                'url' => config('app.url') . "/api/{$uniqueID}/telegram/bot/webhook",
+                'url' => $url,
                 'drop_pending_updates' => true,
                 'secret_token' => $bot->secret_token,
             ]);
