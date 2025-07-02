@@ -14,7 +14,7 @@ return new class extends Migration {
         Schema::create('by_wallet_attempts', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Payment::class)->constrained()->cascadeOnDelete();
-            $table->decimal('amount', 20, 2);
+            $table->decimal('amount', 20, 10);
             $table->timestamp('received_at')->nullable();
             $table->timestamps();
         });

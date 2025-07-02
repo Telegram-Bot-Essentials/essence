@@ -261,6 +261,11 @@ if (!function_exists('smartRound')) {
 
         $hasDecimals = fmod($value, 1.0) !== 0.0;
 
+        if ($abs >= 1000 && $hasDecimals) {
+            $value = ceil($value);
+            return number_format($value, 0, '.', ',');
+        }
+
         if ($hasDecimals) {
             $decimalPlaces = max(2, $decimalPlaces);
         }
