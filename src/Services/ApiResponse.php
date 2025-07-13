@@ -1,12 +1,12 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Traits;
+namespace Elyar\TelegramBotEssentials\Services;
 
 use Illuminate\Http\JsonResponse;
 
-trait HttpResponses
+class ApiResponse
 {
-    protected function success(mixed $data = null, int $code = 200, array $extra = [], string $message = null): JsonResponse
+    public function success(mixed $data = null, int $code = 200, array $extra = [], string $message = null): JsonResponse
     {
         $response = [
             'success' => true
@@ -19,7 +19,7 @@ trait HttpResponses
         return response()->json($response, $code);
     }
 
-    protected function error(string $error, int $code = 400, ?string $errorType = null): JsonResponse
+    public function error(string $error, int $code = 400, ?string $errorType = null): JsonResponse
     {
         $response = [
             'success' => false,

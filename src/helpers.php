@@ -3,6 +3,7 @@
 use Elyar\TelegramBotEssentials\Enums\Roles;
 use Elyar\TelegramBotEssentials\Exceptions\FeatureIsDisabled;
 use Elyar\TelegramBotEssentials\Services\CurrencyFather;
+use Elyar\TelegramBotEssentials\Services\ApiResponse;
 use Elyar\TelegramBotEssentials\Support\Webhook;
 use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQueryBus;
 use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\ReplyKeyBus;
@@ -13,6 +14,13 @@ if (!function_exists('wHook')) {
     function wHook(): Webhook
     {
         return app(Webhook::class);
+    }
+}
+
+if (!function_exists('apiResponse')) {
+    function apiResponse(): ApiResponse
+    {
+        return app(ApiResponse::class);
     }
 }
 
