@@ -4,7 +4,7 @@ namespace Elyar\TelegramBotEssentials\Telegram\CallbackQueries\Admin;
 
 use Elyar\TelegramBotEssentials\Enums\Roles;
 use Elyar\TelegramBotEssentials\Exceptions\LogicException;
-use Elyar\TelegramBotEssentials\Models\ToCardAttempt;
+use Elyar\TelegramBotEssentials\Models\Billing\Attempts\ToCardAttempt;
 use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQuery;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Telegram\Bot\Exceptions\TelegramSDKException;

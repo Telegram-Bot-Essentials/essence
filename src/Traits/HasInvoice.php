@@ -2,7 +2,7 @@
 
 namespace Elyar\TelegramBotEssentials\Traits;
 
-use Elyar\TelegramBotEssentials\Models\Invoice;
+use Elyar\TelegramBotEssentials\Models\Billing\Invoice;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 trait HasInvoice

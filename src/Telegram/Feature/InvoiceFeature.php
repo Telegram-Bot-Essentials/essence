@@ -3,8 +3,7 @@
 namespace Elyar\TelegramBotEssentials\Telegram\Feature;
 
 use Elyar\TelegramBotEssentials\Models\CreditOrder;
-use Elyar\TelegramBotEssentials\Models\Invoice;
-use Elyar\TelegramBotEssentials\Services\CurrencyFather;
+use Elyar\TelegramBotEssentials\Models\Billing\Invoice;
 use Elyar\TelegramBotEssentials\Telegram\TelegramResponse;
 use Telegram\Bot\Keyboard\Keyboard;
 

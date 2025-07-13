@@ -5,7 +5,7 @@ namespace Elyar\TelegramBotEssentials\Telegram\StateAnswers\Member;
 use Elyar\TelegramBotEssentials\Enums\AllowableFields;
 use Elyar\TelegramBotEssentials\Enums\Roles;
 use Elyar\TelegramBotEssentials\Exceptions\LogicException;
-use Elyar\TelegramBotEssentials\Models\Invoice;
+use Elyar\TelegramBotEssentials\Models\Billing\Invoice;
 use Elyar\TelegramBotEssentials\Telegram\StateAnswers\StateAnswer;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Facades\Storage;

@@ -2,8 +2,8 @@
 
 namespace Elyar\TelegramBotEssentials\Http\Controllers;
 
-use Elyar\TelegramBotEssentials\Models\Invoice;
-use Elyar\TelegramBotEssentials\Models\ToZirgozarAttempt;
+use Elyar\TelegramBotEssentials\Models\Billing\Attempts\ToZirgozarAttempt;
+use Elyar\TelegramBotEssentials\Models\Billing\Invoice;
 use Elyar\TelegramBotEssentials\Services\CurrencyFather;
 use Http;
 use Illuminate\Http\Client\ConnectionException;

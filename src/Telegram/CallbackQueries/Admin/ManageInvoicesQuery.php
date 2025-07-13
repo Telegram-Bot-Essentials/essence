@@ -3,7 +3,7 @@
 namespace Elyar\TelegramBotEssentials\Telegram\CallbackQueries\Admin;
 
 use Elyar\TelegramBotEssentials\Enums\Roles;
-use Elyar\TelegramBotEssentials\Models\Invoice;
+use Elyar\TelegramBotEssentials\Models\Billing\Invoice;
 use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQuery;
 use Elyar\TelegramBotEssentials\Telegram\Feature\Admin\ManageInvoicesFeature;
 use Telegram\Bot\Exceptions\TelegramSDKException;

@@ -5,7 +5,7 @@ namespace Elyar\TelegramBotEssentials\Telegram\CallbackQueries\Member;
 use Elyar\TelegramBotEssentials\Enums\Roles;
 use Elyar\TelegramBotEssentials\Exceptions\FeatureIsDisabled;
 use Elyar\TelegramBotEssentials\Exceptions\LogicException;
-use Elyar\TelegramBotEssentials\Models\Invoice;
+use Elyar\TelegramBotEssentials\Models\Billing\Invoice;
 use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQuery;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Telegram\Bot\Exceptions\TelegramSDKException;

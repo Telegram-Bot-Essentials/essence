@@ -1,12 +1,14 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Models;
+namespace Elyar\TelegramBotEssentials\Models\Billing;
 
 use Elyar\TelegramBotEssentials\Database\factories\InvoiceFactory;
 use Elyar\TelegramBotEssentials\Jobs\CancelOrderHookJob;
 use Elyar\TelegramBotEssentials\Jobs\InvoiceFailedHookJob;
 use Elyar\TelegramBotEssentials\Jobs\InvoicePaidHookJob;
 use Elyar\TelegramBotEssentials\Jobs\InvoicePendingHookJob;
+use Elyar\TelegramBotEssentials\Models\Bot;
+use Elyar\TelegramBotEssentials\Models\BotUser;
 use Elyar\TelegramBotEssentials\Traits\HasMessageMeta;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

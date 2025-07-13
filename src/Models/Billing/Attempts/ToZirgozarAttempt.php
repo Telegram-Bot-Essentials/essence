@@ -1,6 +1,6 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Models;
+namespace Elyar\TelegramBotEssentials\Models\Billing\Attempts;
 
 class ToZirgozarAttempt extends PaymentAttempt
 {

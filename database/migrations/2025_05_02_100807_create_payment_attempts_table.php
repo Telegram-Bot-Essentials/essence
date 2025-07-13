@@ -1,9 +1,10 @@
 <?php
 
-use Elyar\TelegramBotEssentials\Models\Invoice;
+use Elyar\TelegramBotEssentials\Models\Billing\Invoice;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+
 // TODO: remove this migration
 return new class extends Migration {
     /**

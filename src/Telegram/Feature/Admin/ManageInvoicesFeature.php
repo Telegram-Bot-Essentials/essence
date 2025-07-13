@@ -3,7 +3,7 @@
 namespace Elyar\TelegramBotEssentials\Telegram\Feature\Admin;
 
 use Elyar\TelegramBotEssentials\Exceptions\InvalidPageNumber;
-use Elyar\TelegramBotEssentials\Models\Invoice;
+use Elyar\TelegramBotEssentials\Models\Billing\Invoice;
 use Elyar\TelegramBotEssentials\Services\TelegramPaginator;
 use Elyar\TelegramBotEssentials\Telegram\TelegramResponse;
 use Telegram\Bot\Keyboard\Keyboard;
