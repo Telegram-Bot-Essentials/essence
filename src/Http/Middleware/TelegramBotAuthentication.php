@@ -7,8 +7,6 @@ use Elyar\TelegramBotEssentials\Exceptions\WebhookAuthException;
 use Elyar\TelegramBotEssentials\Models\Bot;
 use Elyar\TelegramBotEssentials\Models\BotUser;
 use Elyar\TelegramBotEssentials\Models\TelegramUser;
-use Elyar\TelegramBotEssentials\TelegramHttpHandler;
-use Elyar\TelegramBotEssentials\Traits\HttpResponses;
 use GuzzleHttp\Psr7\ServerRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -19,8 +17,6 @@ use Telegram\Bot\Objects\User;
 
 class TelegramBotAuthentication
 {
-    use HttpResponses;
-
     /**
      * Handle an incoming request.
      *
@@ -34,12 +30,12 @@ class TelegramBotAuthentication
         $bot = tenancy()->tenant;
 
         if (empty($bot) || !($bot instanceof Bot))
-            return $this->error('Invalid Bot ID', 404);
+            return apiResponse()->error('Invalid Bot ID', 404);
 
         wHook()::setBot($bot);
 
         if ($request->header('x-telegram-bot-api-secret-token') !== $bot->secret_token)
-            return $this->error('Unauthorized', 403);
+            return apiResponse()->error('Unauthorized', 403);
 
         try {
             $api = new Api(
@@ -58,7 +54,7 @@ class TelegramBotAuthentication
         } catch (TelegramSDKException $e) {
             Log::error($e->getMessage() ?? 'error message is not provided');
             Log::error($e->getTraceAsString() ?? 'Trace is not provided');
-            return $this->error('Failed to initialize API service', 503);
+            return apiResponse()->error('Failed to initialize API service', 503);
         }
 
         wHook()::setUser($this->fetchUserData());

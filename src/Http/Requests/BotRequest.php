@@ -2,14 +2,11 @@
 
 namespace Elyar\TelegramBotEssentials\Http\Requests;
 
-use Elyar\TelegramBotEssentials\Traits\HttpResponses;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class BotRequest extends FormRequest
 {
-    use HttpResponses;
-
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -30,6 +27,7 @@ class BotRequest extends FormRequest
             'bot_owner_peer_id' => 'required|integer',
             'activated_until' => 'nullable|date',
             'suspended_at' => 'nullable|date',
+            'currency' => 'nullable|string|max:10',
         ];
 
         if($this->isMethod('PUT')){
