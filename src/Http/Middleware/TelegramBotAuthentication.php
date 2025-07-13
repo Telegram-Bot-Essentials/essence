@@ -33,6 +33,7 @@ class TelegramBotAuthentication
             return apiResponse()->error('Invalid Bot ID', 404);
 
         wHook()::setBot($bot);
+        currency()->setCurrency($bot->currency);
 
         if ($request->header('x-telegram-bot-api-secret-token') !== $bot->secret_token)
             return apiResponse()->error('Unauthorized', 403);

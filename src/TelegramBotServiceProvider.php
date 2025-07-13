@@ -9,6 +9,7 @@ use Elyar\TelegramBotEssentials\Console\Commands\MakeFeature;
 use Elyar\TelegramBotEssentials\Console\Commands\setWebhook;
 use Elyar\TelegramBotEssentials\Console\Commands\BotManagementTokenCommand;
 use Elyar\TelegramBotEssentials\Services\ApiResponse;
+use Elyar\TelegramBotEssentials\Services\Currency;
 use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQueryBus;
 use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\ReplyKeyBus;
 use Elyar\TelegramBotEssentials\Telegram\StateAnswers\StateAnswerBus;
@@ -42,6 +43,10 @@ class TelegramBotServiceProvider extends ServiceProvider
 
         $this->app->singleton(ApiResponse::class, function ($app) {
             return new ApiResponse();
+        });
+
+        $this->app->singleton(Currency::class, function ($app) {
+            return new Currency();
         });
     }
 

@@ -2,6 +2,7 @@
 
 use Elyar\TelegramBotEssentials\Enums\Roles;
 use Elyar\TelegramBotEssentials\Exceptions\FeatureIsDisabled;
+use Elyar\TelegramBotEssentials\Services\Currency;
 use Elyar\TelegramBotEssentials\Services\CurrencyFather;
 use Elyar\TelegramBotEssentials\Services\ApiResponse;
 use Elyar\TelegramBotEssentials\Support\Webhook;
@@ -21,6 +22,13 @@ if (!function_exists('apiResponse')) {
     function apiResponse(): ApiResponse
     {
         return app(ApiResponse::class);
+    }
+}
+
+if (!function_exists('currency')) {
+    function currency(): Currency
+    {
+        return app(Currency::class);
     }
 }
 
