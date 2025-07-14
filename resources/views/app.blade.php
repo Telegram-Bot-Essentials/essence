@@ -67,7 +67,7 @@
     @if (!empty($invoice))
         <div class="details">
             <p><strong>Invoice ID:</strong> {{ $invoice->id }}</p>
-            <p><strong>Amount:</strong> {{ smartRound($invoice->price) }} {{ $invoice->currency ?? 'USD' }}</p>
+            <p><strong>Amount:</strong> {{ currency()->priceFormat($invoice->price) }}</p>
             <p><strong>Status:</strong> {{ ucfirst($status) }}</p>
             <p><strong>Reference:</strong> {{ $invoice->reference ?? 'N/A' }}</p>
         </div>

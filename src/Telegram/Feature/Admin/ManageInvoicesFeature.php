@@ -42,7 +42,7 @@ class ManageInvoicesFeature
                     'text' => __('tbe::manage_invoices.main.keys.invoice', [
                         'invoiceId' => $invoice->id,
                         'resourceName' => getResourceName($invoice->payable_type),
-                        'price' => priceFormat($invoice->price, currency: $invoice->currency),
+                        'price' => currency()->priceFormat($invoice->price, currency: $invoice->currency),
                         'userFullName' => $invoice->botUser->telegramUser->full_name,
                         'status' => $invoice->status == 'paid' ?
                             __('tbe::general.status.enabledEmoji') :
@@ -68,7 +68,7 @@ class ManageInvoicesFeature
         $text = __('tbe::manage_invoices.main.text.show', [
             'invoiceId' => $invoice->id,
             'invoiceOwner' => "<a href=\"tg://user?id={$invoice->botUser->telegramUser->peer_id}\">{$invoice->botUser->telegramUser->full_name}</a>",
-            'invoiceAmount' => priceFormat($invoice->price),
+            'invoiceAmount' => currency()->priceFormat($invoice->price),
             'invoiceStatus' => $invoice->status,
             'paymentAttempt' => $invoice->paymentAttempt?->id,
             'paymentAttemptStatus' => $invoice->status,

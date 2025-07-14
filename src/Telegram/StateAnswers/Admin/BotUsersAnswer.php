@@ -115,7 +115,7 @@ class BotUsersAnswer extends StateAnswer
         wHook()->user()->changeState();
         wHook()->api()->sendMessage([
             'chat_id' => wHook()->user()->telegramUser->peer_id,
-            'text' => "User " . $botUser->telegramUser->full_name . " balance updated to " . priceFormat($botUser->balance),
+            'text' => "User " . $botUser->telegramUser->full_name . " balance updated to " . currency()->priceFormat($botUser->balance),
             'reply_markup' => wHook()->user()->getKeyboard(),
         ]);
 

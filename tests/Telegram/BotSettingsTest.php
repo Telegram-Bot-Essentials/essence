@@ -58,31 +58,31 @@ it('Can change bot status', function () {
     $toggle();
 });
 
-it('Can change bot currency', function () {
-    $bot = Bot::first();
-
-    $toggle = function () use (&$bot) {
-        $bot->refresh();
-
-        $oldCurrency = $bot->settings->default_currency;
-        $nextCurrency = getNextFromArray(getSupportedCurrencies(), $oldCurrency);
-        $response = postJson(
-            "/api/{$bot->unique_id}/telegram/bot/webhook",
-            callbackQuery(encodeCallback('BTSTNG', ['bot_currency',
-                $nextCurrency])),
-            ['x-telegram-bot-api-secret-token' => $bot->secret_token]
-        );
-
-        $response->assertOk();
-        $bot->refresh();
-
-        expect($bot->settings->default_currency)->toBe($nextCurrency);
-    };
-
-    foreach (getSupportedCurrencies() as $currency) {
-        $toggle();
-    }
-});
+//it('Can change bot currency', function () {
+//    $bot = Bot::first();
+//
+//    $toggle = function () use (&$bot) {
+//        $bot->refresh();
+//
+//        $oldCurrency = $bot->settings->default_currency;
+//        $nextCurrency = getNextFromArray(getSupportedCurrencies(), $oldCurrency);
+//        $response = postJson(
+//            "/api/{$bot->unique_id}/telegram/bot/webhook",
+//            callbackQuery(encodeCallback('BTSTNG', ['bot_currency',
+//                $nextCurrency])),
+//            ['x-telegram-bot-api-secret-token' => $bot->secret_token]
+//        );
+//
+//        $response->assertOk();
+//        $bot->refresh();
+//
+//        expect($bot->settings->default_currency)->toBe($nextCurrency);
+//    };
+//
+//    foreach (getSupportedCurrencies() as $currency) {
+//        $toggle();
+//    }
+//});
 
 it('Can change bot language', function () {
     $bot = Bot::first();

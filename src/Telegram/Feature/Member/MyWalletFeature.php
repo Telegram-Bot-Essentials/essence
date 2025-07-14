@@ -11,7 +11,7 @@ class MyWalletFeature
     public static function main(): TelegramResponse
     {
         $text = __('tbe::my_wallet.main.text.totalCredit', [
-            'price' => priceFormat(wHook()->user()->balance)
+            'price' => currency()->priceFormat(wHook()->user()->balance)
         ]);
 
         $replyMarkup = Keyboard::make()

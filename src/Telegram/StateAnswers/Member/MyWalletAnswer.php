@@ -63,7 +63,7 @@ class MyWalletAnswer extends StateAnswer
 
         wHook()->api()->sendMessage([
             'chat_id' => wHook()->user()->telegramUser->peer_id,
-            'text' => "Creating invoice for amount of " . priceFormat($amount) . " 💸", // TODO: Localize this message
+            'text' => "Creating invoice for amount of " . currency()->priceFormat($amount) . " 💸", // TODO: Localize this message
             'reply_markup' => wHook()->user()->getKeyboard(),
         ]);
 

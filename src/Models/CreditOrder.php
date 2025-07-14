@@ -35,7 +35,7 @@ class CreditOrder extends Model
 
     public function getPriceAttribute(): float
     {
-        return formatFloat($this->timePlan?->price + $this->quotaPlan?->price);
+        return currency()->smartRound($this->timePlan?->price + $this->quotaPlan?->price);
     }
 
     public function getDescriptionAttribute(): string
@@ -54,7 +54,7 @@ class CreditOrder extends Model
         wHook()->user()->save();
         wHook()->api()->sendMessage([
             'chat_id' => wHook()->user()->telegramUser->peer_id,
-            'text' => 'Your total credit increased by ' . priceFormat($this->amount) . ' 💸',
+            'text' => 'Your total credit increased by ' . currency()->priceFormat($this->amount) . ' 💸',
             'reply_markup' => wHook()->user()->getKeyboard(),
         ]);
         MyWalletFeature::main()->send();
@@ -71,7 +71,7 @@ class CreditOrder extends Model
         wHook()->user()->save();
         wHook()->api()->sendMessage([
             'chat_id' => wHook()->user()->telegramUser->peer_id,
-            'text' => 'Your total credit decreased by ' . priceFormat($this->amount) . ' 💸' . ' due to order cancellation',
+            'text' => 'Your total credit decreased by ' . currency()->priceFormat($this->amount) . ' 💸' . ' due to order cancellation',
             'reply_markup' => wHook()->user()->getKeyboard(),
         ]);
         MyWalletFeature::main()->send();

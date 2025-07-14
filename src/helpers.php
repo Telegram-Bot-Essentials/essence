@@ -59,7 +59,6 @@ if (!function_exists('encodeAnswerState')) {
         $queryString = http_build_query($params);
         return $type . '#' . $method . ($queryString ? '?' . $queryString : '');
     }
-
 }
 
 if (!function_exists('decodeAnswerState')) {
@@ -183,32 +182,6 @@ if (!function_exists('hasAccess')) {
     }
 }
 
-if (!function_exists('getDefaultCurrencySymbol')) {
-    function getDefaultCurrencySymbol(): string
-    {
-        return getCurrencySymbol(wHook()->bot()->settings->default_currency);
-    }
-}
-
-if (!function_exists('getCurrencySymbol')) {
-    function getCurrencySymbol(string $currency): string
-    {
-        return collect(config('telegram-bot-essentials.supported_currencies') ?? [])
-            ->where('name', $currency)->first()['symbol'] ?? '?';
-    }
-}
-
-if (!function_exists('getSupportedCurrencies')) {
-    function getSupportedCurrencies(): array
-    {
-        $currencies = collect(config('telegram-bot-essentials.supported_currencies') ?? [])->pluck('name');
-        $currencies = $currencies->map(function ($currency) {
-            return strtoupper($currency);
-        });
-        return array_unique(array_merge($currencies->toArray(), ['USD']));
-    }
-}
-
 if (!function_exists('getNextFromArray')) {
     function getNextFromArray(array $array, $current)
     {
@@ -223,60 +196,10 @@ if (!function_exists('getNextFromArray')) {
     }
 }
 
-if (!function_exists('priceFormat')) {
-    function priceFormat(float $price, bool $raw = false, ?string $currency = null): string
-    {
-        $symbol = empty($currency) ? getDefaultCurrencySymbol() : getCurrencySymbol($currency);
-        $separator = preg_match('/[\x{0600}-\x{06FF}\x{0750}-\x{077F}\x{08A0}-\x{08FF}\x{FB50}-\x{FDFF}\x{FE70}-\x{FEFF}\x{FDFC}]/u', $symbol) ? ' ' : '';
-        return ($raw ? $price : formatFloat($price)) . $separator . $symbol;
-    }
-}
-
 if (!function_exists('priceIn')) {
     function priceIn(float $price): CurrencyFather
     {
         return CurrencyFather::from(wHook()->bot()->settings->default_currency)->amount($price);
-    }
-}
-
-if (!function_exists('formatFloat')) {
-    function formatFloat($number): string
-    {
-        return smartRound($number);
-    }
-}
-
-if (!function_exists('smartRound')) {
-    function smartRound($value, $significantDigits = 2): string
-    {
-        $value = (float)$value;
-
-        if ($value == 0.0) {
-            return '0';
-        }
-
-        $abs = abs($value);
-        $order = floor(log10($abs));
-        $decimalPlaces = max(0, $significantDigits - $order - 1);
-
-        $hasDecimals = fmod($value, 1.0) !== 0.0;
-
-        if ($abs >= 1000 && $hasDecimals) {
-            $value = ceil($value);
-            return number_format($value, 0, '.', ',');
-        }
-
-        if ($hasDecimals) {
-            $decimalPlaces = max(2, $decimalPlaces);
-        }
-
-        $rounded = round($value, $decimalPlaces);
-
-        if (fmod($rounded, 1.0) === 0.0) {
-            return number_format($rounded, 0, '.', ',');
-        }
-
-        return number_format($rounded, $decimalPlaces, '.', ',');
     }
 }
 

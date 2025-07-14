@@ -20,7 +20,7 @@ class BotUsersFeature
         $text = __('tbe::bot_users.main.text.index', [
             'userCount' => BotUser::count(),
             'usersJoinedLastDay' => BotUser::where('created_at', '>', now()->subDays(1))->count(),
-            'totalUserCredits' => priceFormat(BotUser::sum('balance')),
+            'totalUserCredits' => currency()->priceFormat(BotUser::sum('balance')),
         ]);
         $users = BotUser::paginate(perPage: 10, page: $page);
         $replyMarkup = Keyboard::make()->inline();
@@ -32,7 +32,7 @@ class BotUsersFeature
                 Keyboard::inlineButton([
                     'text' => __('tbe::bot_users.main.keys.user', [
                         'fullName' => $botUser->telegramUser->full_name,
-                        'credit' => priceFormat($botUser->balance),
+                        'credit' => currency()->priceFormat($botUser->balance),
                         'suspendStatus' => $botUser->suspend ? __('tbe::general.status.disabledEmoji') : __('tbe::general.status.enabledEmoji'),
                     ]),
                     'callback_data' => encodeCallback(self::$type, ['show', $botUser->id, $page])
@@ -61,7 +61,7 @@ class BotUsersFeature
             'userLastName' => $botUser->telegramUser->last_name,
             'userTel' => $botUser->telegramUser->tel,
             'userRole' => $botUser->role,
-            'userCredit' => priceFormat($botUser->balance),
+            'userCredit' => currency()->priceFormat($botUser->balance),
             'userSuspendStatus' => $botUser->suspend ?
                 __('tbe::general.status.suspended', [
                     'suspendedDate' => $botUser->suspended_at?->format('Y-m-d H:i:s')

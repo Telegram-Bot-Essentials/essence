@@ -21,11 +21,36 @@ class Currency
 
     public function setCurrency(string $currency): void
     {
-        if(!$this->isCurrencySupported($currency)){
+        if (!$this->isCurrencySupported($currency)) {
             throw new InvalidArgumentException('Unsupported currency');
         }
 
         $this->currency = $currency;
+    }
+
+    public function isCurrencySupported(string $currency): bool
+    {
+        return in_array($currency, currency()->getSupportedCurrencies());
+    }
+
+    public function getSupportedCurrencies(): array
+    {
+        $currencies = collect(config('telegram-bot-essentials.supported_currencies') ?? [])->pluck('name');
+        $currencies = $currencies->map(function ($currency) {
+            return strtoupper($currency);
+        });
+        return array_unique(array_merge($currencies->toArray(), ['USD']));
+    }
+
+    function getCurrentCurrencySymbol(): string
+    {
+        return currency()->getCurrencySymbol($this->currency);
+    }
+
+    public function getCurrencySymbol(string $currency): string
+    {
+        return collect(config('telegram-bot-essentials.supported_currencies') ?? [])
+            ->where('name', $currency)->first()['symbol'] ?? '?';
     }
 
     public function amount(string $amount): self
@@ -39,13 +64,21 @@ class Currency
         return $this->amount;
     }
 
-    public function getSupportedCurrencies(): array
+    function priceFormat(string $amount, bool $raw = false, ?string $currency = null): string
     {
-        return collect(config('telegram-bot-essentials.supported_currencies'))->pluck('name')->toArray();
+        $symbol = $this->getCurrencySymbol($currency ?? $this->getCurrency());
+        $persianCharacterPattern = '/[\x{0600}-\x{06FF}\x{0750}-\x{077F}\x{08A0}-\x{08FF}\x{FB50}-\x{FDFF}\x{FE70}-\x{FEFF}\x{FDFC}]/u';
+        $separator = preg_match($persianCharacterPattern, $symbol) ? ' ' : '';
+        return ($raw ? $amount : $this->smartRound($amount)) . $separator . $symbol;
     }
 
-    public function isCurrencySupported(string $currency): bool
+    function formatFloat($number): string
     {
-        return in_array($currency, currency()->getSupportedCurrencies());
+        return $this->smartRound($number);
+    }
+
+    function smartRound(string $value, $significantDigits = 2): string
+    {
+        return $value;
     }
 }

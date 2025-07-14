@@ -37,7 +37,7 @@ class InvoiceFeature
         if(!($invoice->payable instanceof CreditOrder)){
             $replyMarkup->row([Keyboard::inlineButton([
                 'text' => __('tbe::invoice.summary.keys.by_wallet', [
-                    'price' => priceFormat($invoice->price)
+                    'price' => currency()->priceFormat($invoice->price)
                 ]),
                 'callback_data' => encodeCallback(self::$type, ['by_wallet', $invoice->id])
             ])]);

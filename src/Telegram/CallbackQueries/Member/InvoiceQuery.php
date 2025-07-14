@@ -79,8 +79,8 @@ class InvoiceQuery extends CallbackQuery
             wHook()->api()->answerCallbackQuery([
                 'callback_query_id' => wHook()->update()->callbackQuery->id,
                 'text' => __('tbe::invoice.by_wallet.answers.creditIsNotEnough', [
-                    'credit' => priceFormat($invoice->botUser->balance),
-                    'neededCredit' => priceFormat($invoice->price)
+                    'credit' => currency()->priceFormat($invoice->botUser->balance),
+                    'neededCredit' => currency()->priceFormat($invoice->price)
                 ]),
                 'show_alert' => true,
             ]);

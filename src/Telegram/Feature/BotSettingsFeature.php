@@ -40,7 +40,7 @@ class BotSettingsFeature
                     'defaultCurrency' => wHook()->bot()->settings->default_currency
                 ]),
                 'callback_data' => encodeCallback(self::$type, ['bot_currency',
-                    getNextFromArray(getSupportedCurrencies(), wHook()->bot()->settings->default_currency)
+                    getNextFromArray(currency()->getSupportedCurrencies(), wHook()->bot()->currency)
                 ])
             ]),
             Keyboard::inlineButton([
