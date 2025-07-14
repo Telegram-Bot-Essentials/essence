@@ -4,6 +4,7 @@ namespace Elyar\TelegramBotEssentials\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class BotRequest extends FormRequest
 {
@@ -29,6 +30,10 @@ class BotRequest extends FormRequest
             'suspended_at' => 'nullable|date',
             'currency' => 'nullable|string|max:10',
         ];
+
+        if(currency()->isCurrencySupported($this->input('currency'))){
+            throw new HttpResponseException(apiResponse()->error('Unsupported currency', 403));
+        }
 
         if($this->isMethod('PUT')){
             $rules['bot_owner_peer_id'] = 'nullable|integer';

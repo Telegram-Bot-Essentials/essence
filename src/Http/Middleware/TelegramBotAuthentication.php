@@ -10,6 +10,7 @@ use Elyar\TelegramBotEssentials\Models\TelegramUser;
 use GuzzleHttp\Psr7\ServerRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Response;
 use Telegram\Bot\Api;
 use Telegram\Bot\Exceptions\TelegramSDKException;
@@ -33,7 +34,12 @@ class TelegramBotAuthentication
             return apiResponse()->error('Invalid Bot ID', 404);
 
         wHook()::setBot($bot);
-        currency()->setCurrency($bot->currency);
+
+        try{
+            currency()->setCurrency($bot->currency);
+        }catch (InvalidArgumentException $e){
+            return apiResponse()->error($e->getMessage(), 403);
+        }
 
         if ($request->header('x-telegram-bot-api-secret-token') !== $bot->secret_token)
             return apiResponse()->error('Unauthorized', 403);
