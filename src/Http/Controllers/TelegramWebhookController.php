@@ -54,9 +54,7 @@ class TelegramWebhookController extends Controller
                 $this->generalAlert($e);
             }
         } catch (TelegramSDKException|Exception $e) {
-            Log::error($e->getMessage() ?? 'error message is not provided');
-            Log::error(json_encode(wHook()->update(), JSON_PRETTY_PRINT) ?? 'Update is not provided');
-            Log::error($e->getTraceAsString() ?? 'Trace is not provided');
+            $this->unhandledException($e);
         }
     }
 
@@ -355,5 +353,27 @@ class TelegramWebhookController extends Controller
                 replyKeyBus()->addReplyKey($fqcn);
             }
         }
+    }
+
+    private function unhandledException(Exception $e)
+    {
+        try {
+            wHook()->api()->sendMessage([
+                'chat_id' => wHook()->update()->message->from->id,
+                'text' => "😭 Something went wrong, please contact the bot support",
+                'reply_markup' => wHook()->user()->getKeyboard(),
+            ]);
+
+            wHook()->api()->sendMessage([
+                'chat_id' => config('telegram-bot-essentials.bug_report.telegram_chat_id'),
+                'text' => $e->getMessage(),
+            ]);
+        } catch (TelegramSDKException $e) {
+
+        }
+        Log::error($e->getMessage() ?? 'error message is not provided');
+        Log::error(json_encode(wHook()->update(), JSON_PRETTY_PRINT) ?? 'Update is not provided');
+        Log::error($e->getTraceAsString() ?? 'Trace is not provided');
+
     }
 }

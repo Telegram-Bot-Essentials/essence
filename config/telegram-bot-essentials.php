@@ -52,4 +52,8 @@ return [
     ],
 
     'base_bot_url' => env('TELEGRAM_BOT_BASE_URL', 'https://api.telegram.org/bot'),
+
+    'bug_report' => [
+        'telegram_chat_id' => env('BUG_REPORT_TELEGRAM_CHAT_ID'),
+    ],
 ];
