@@ -14,34 +14,6 @@ class Currency
 
     }
 
-    public function getCurrency(): string
-    {
-        return $this->currency;
-    }
-
-    public function setCurrency(string $currency): void
-    {
-        if (!$this->isCurrencySupported($currency)) {
-            throw new InvalidArgumentException('Unsupported currency');
-        }
-
-        $this->currency = $currency;
-    }
-
-    public function isCurrencySupported(string $currency): bool
-    {
-        return in_array($currency, currency()->getSupportedCurrencies());
-    }
-
-    public function getSupportedCurrencies(): array
-    {
-        $currencies = collect(config('telegram-bot-essentials.supported_currencies') ?? [])->pluck('name');
-        $currencies = $currencies->map(function ($currency) {
-            return strtoupper($currency);
-        });
-        return array_unique(array_merge($currencies->toArray(), ['USD']));
-    }
-
     function getCurrentCurrencySymbol(): string
     {
         return currency()->getCurrencySymbol($this->currency);
@@ -72,13 +44,54 @@ class Currency
         return ($raw ? $amount : $this->smartRound($amount)) . $separator . $symbol;
     }
 
+    public function getCurrency(): string
+    {
+        return $this->currency;
+    }
+
+    public function setCurrency(string $currency): void
+    {
+        if (!$this->isCurrencySupported($currency)) {
+            throw new InvalidArgumentException('Unsupported currency');
+        }
+
+        $this->currency = $currency;
+    }
+
+    function smartRound(string $amount, string $currencyCode = null, $significantDigits = 2): string
+    {
+        if($currencyCode === null){
+            $currencyCode = $this->getCurrency();
+        }
+
+        $formatted = rtrim(rtrim($amount, '0'), '.');
+
+        $decimals = match ($currencyCode) {
+            'IRT' => 0,
+            'IRR' => 0,
+            'USD' => 2,
+            default => 2,
+        };
+
+        return number_format((float)$formatted, $decimals, '.', ',');
+    }
+
+    public function isCurrencySupported(string $currency): bool
+    {
+        return in_array($currency, currency()->getSupportedCurrencies());
+    }
+
+    public function getSupportedCurrencies(): array
+    {
+        $currencies = collect(config('telegram-bot-essentials.supported_currencies') ?? [])->pluck('name');
+        $currencies = $currencies->map(function ($currency) {
+            return strtoupper($currency);
+        });
+        return array_unique(array_merge($currencies->toArray(), ['USD']));
+    }
+
     function formatFloat($number): string
     {
         return $this->smartRound($number);
-    }
-
-    function smartRound(string $value, $significantDigits = 2): string
-    {
-        return $value;
     }
 }
