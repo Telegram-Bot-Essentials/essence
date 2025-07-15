@@ -39,9 +39,10 @@ return [
     ],
 
     'main' => [
-        'UNIQUE_ID' => env('DEVELOP_UNIQUE_ID', 'main'),
-        'TELEGRAM_BOT_TOKEN' => env('MAIN_TELEGRAM_BOT_TOKEN'),
-        'ADMIN_CHAT_ID' => env('MAIN_ADMIN_CHAT_ID'),
+        'unique_id' => env('MAIN_UNIQUE_ID', 'main'),
+        'telegram_bot_token' => env('MAIN_TELEGRAM_BOT_TOKEN'),
+        'admin_chat_id' => env('MAIN_ADMIN_CHAT_ID'),
+        'currency' => env('MAIN_CURRENCY', 'USD'),
     ],
 
     'gateways' => [

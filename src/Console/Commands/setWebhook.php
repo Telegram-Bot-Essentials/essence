@@ -30,7 +30,7 @@ class setWebhook extends Command
      */
     public function handle()
     {
-        $uniqueID = $this->option('unique-id') ?? "main";
+        $uniqueID = $this->option('unique-id') ?? config('telegram-bot-essentials.main.unique_id');
         $this->info('Setting webhook for bot with unique id: ' . $uniqueID);
         $this->info('Telegram bot api url: ' . config('telegram-bot-essentials.base_bot_url'));
 
