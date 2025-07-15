@@ -17,7 +17,8 @@ return new class extends Migration
             $table->string('payment_token');
             $table->string('payer_mobile')->nullable();
             $table->string('payer_card')->nullable();
-            $table->integer('amount')->nullable();
+            $table->decimal('amount', 65, 30);
+            $table->decimal('received_amount',65, 30)->nullable();
             $table->string('status')->nullable();
             $table->timestamps();
         });

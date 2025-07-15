@@ -17,8 +17,7 @@ return new class extends Migration {
             $table->foreignIdFor(Bot::class)->constrained();
             $table->foreignIdFor(BotUser::class)->constrained();
             $table->morphs('payable');
-            $table->decimal('price', 20, 10);
-            $table->string('currency');
+            $table->decimal('price', 65, 30);
             $table->enum('status', ['pending', 'paid', 'failed'])->default('pending');
             $table->nullableMorphs('payment_attempt');
             $table->string('public_token')->nullable();
