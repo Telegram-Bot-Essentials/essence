@@ -41,7 +41,7 @@ class Invoice extends Model
     {
         static::creating(function ($invoice) {
             if (empty($invoice->currency)) {
-                $invoice->currency = $invoice->bot->settings->default_currency;
+                $invoice->currency = $invoice->bot->currency;
             }
             if ($invoice->payable_type && $invoice->payable_id) {
                 self::where('payable_type', $invoice->payable_type)

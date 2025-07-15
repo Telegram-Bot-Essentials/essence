@@ -199,7 +199,7 @@ if (!function_exists('getNextFromArray')) {
 if (!function_exists('priceIn')) {
     function priceIn(float $price): CurrencyFather
     {
-        return CurrencyFather::from(wHook()->bot()->settings->default_currency)->amount($price);
+        return CurrencyFather::from(wHook()->bot()->currency)->amount($price);
     }
 }
 
