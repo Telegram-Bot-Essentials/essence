@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Telegram\Bot\Commands\Command;
 use Telegram\Bot\Exceptions\TelegramSDKException;
+use Telegram\Bot\FileUpload\InputFile;
 
 class TelegramWebhookController extends Controller
 {
@@ -364,9 +365,18 @@ class TelegramWebhookController extends Controller
                 'reply_markup' => wHook()->user()->getKeyboard(),
             ]);
 
+            $time = time();
             wHook()->api()->sendMessage([
                 'chat_id' => config('telegram-bot-essentials.bug_report.telegram_chat_id'),
                 'text' => $e->getMessage(),
+            ]);
+            wHook()->api()->sendDocument([
+                'chat_id' => config('telegram-bot-essentials.bug_report.telegram_chat_id'),
+                'document' => InputFile::createFromContents($e->getTraceAsString(), $time.'.trace'),
+            ]);
+            wHook()->api()->sendDocument([
+                'chat_id' => config('telegram-bot-essentials.bug_report.telegram_chat_id'),
+                'document' => InputFile::createFromContents(json_encode(wHook()->update(), JSON_PRETTY_PRINT), $time.'.update'),
             ]);
         } catch (TelegramSDKException $e) {
 

@@ -8,6 +8,7 @@ use Elyar\TelegramBotEssentials\Models\Bot;
 use Elyar\TelegramBotEssentials\Models\BotUser;
 use Elyar\TelegramBotEssentials\Models\TelegramUser;
 use GuzzleHttp\Psr7\ServerRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
@@ -78,6 +79,8 @@ class TelegramBotAuthentication
             $from = wHook()->update()->message->from;
         } elseif (wHook()->update()->callbackQuery) {
             $from = wHook()->update()->callbackQuery->from;
+        } else {
+            throw new HttpResponseException(apiResponse()->error('Invalid update', 204));
         }
 
         if (empty($from) || !($from instanceof User))
