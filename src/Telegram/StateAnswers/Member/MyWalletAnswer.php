@@ -47,7 +47,6 @@ class MyWalletAnswer extends StateAnswer
             ['amount' => $amount],
             ['amount' => "required|numeric|min:0.01|max:100000000"]
         );
-        $amount = floatval($amount);
 
         $creditOrder = CreditOrder::create([
             'bot_user_id' => wHook()->user()->id,

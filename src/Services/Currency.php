@@ -41,7 +41,7 @@ class Currency
         $symbol = $this->getCurrencySymbol($currency ?? $this->getCurrency());
         $persianCharacterPattern = '/[\x{0600}-\x{06FF}\x{0750}-\x{077F}\x{08A0}-\x{08FF}\x{FB50}-\x{FDFF}\x{FE70}-\x{FEFF}\x{FDFC}]/u';
         $separator = preg_match($persianCharacterPattern, $symbol) ? ' ' : '';
-        return ($raw ? $amount : $this->smartRound($amount)) . $separator . $symbol;
+        return ($raw ? $amount : $this->currencyFormat($amount, thousandSeparator: ',')) . $separator . $symbol;
     }
 
     public function getCurrency(): string
@@ -58,13 +58,13 @@ class Currency
         $this->currency = $currency;
     }
 
-    function smartRound(string $amount, string $currencyCode = null, $significantDigits = 2): string
+    function currencyFormat(string $amount, string $currencyCode = null, $significantDigits = null, $thousandSeparator = null): string
     {
         if($currencyCode === null){
             $currencyCode = $this->getCurrency();
         }
 
-        $formatted = rtrim(rtrim($amount, '0'), '.');
+        $hasDecimal = is_numeric($amount) && floor($amount) != $amount;
 
         $decimals = match ($currencyCode) {
             'IRT' => 0,
@@ -73,7 +73,7 @@ class Currency
             default => 2,
         };
 
-        return number_format((float)$formatted, $decimals, '.', ',');
+        return number_format($amount, $hasDecimal ? ($significantDigits ?? $decimals) : 0, '.', $thousandSeparator);
     }
 
     public function isCurrencySupported(string $currency): bool
@@ -88,10 +88,5 @@ class Currency
             return strtoupper($currency);
         });
         return array_unique(array_merge($currencies->toArray(), ['USD']));
-    }
-
-    function formatFloat($number): string
-    {
-        return $this->smartRound($number);
     }
 }

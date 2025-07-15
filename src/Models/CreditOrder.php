@@ -35,7 +35,7 @@ class CreditOrder extends Model
 
     public function getPriceAttribute(): float
     {
-        return currency()->smartRound($this->timePlan?->price + $this->quotaPlan?->price);
+        return currency()->currencyFormat($this->timePlan?->price + $this->quotaPlan?->price);
     }
 
     public function getDescriptionAttribute(): string
