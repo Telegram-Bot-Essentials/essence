@@ -21,27 +21,18 @@ class BotSettingsFeature
             'paymentCardNumber' => wHook()->bot()->settings->pay_to_card_number ?? __('tbe::general.status.notSet'),
             'paymentCardName' => wHook()->bot()->settings->pay_to_card_name ?? __('tbe::general.status.notSet'),
             'language' => wHook()->bot()->settings->language,
-            'defaultCurrency' => wHook()->bot()->settings->default_currency
+            'defaultCurrency' => wHook()->bot()->currency
         ]);
 
         $replyMarkup = Keyboard::make()
             ->inline();
 
-        $replyMarkup->row([Keyboard::inlineButton([
-            'text' => __('tbe::bot_settings.main.keys.botStatus', [
-                'status' => (wHook()->bot()->settings->bot_status ? __('tbe::general.status.enabledEmoji') : __('tbe::general.status.disabledEmoji'))
-            ]),
-            'callback_data' => encodeCallback(self::$type, ['bot_status', intval(!wHook()->bot()->settings->bot_status)])
-        ])]);
-
         $replyMarkup->row([
             Keyboard::inlineButton([
-                'text' => __('tbe::bot_settings.main.keys.botCurrency', [
-                    'defaultCurrency' => wHook()->bot()->settings->default_currency
+                'text' => __('tbe::bot_settings.main.keys.botStatus', [
+                    'status' => (wHook()->bot()->settings->bot_status ? __('tbe::general.status.enabledEmoji') : __('tbe::general.status.disabledEmoji'))
                 ]),
-                'callback_data' => encodeCallback(self::$type, ['bot_currency',
-                    getNextFromArray(currency()->getSupportedCurrencies(), wHook()->bot()->currency)
-                ])
+                'callback_data' => encodeCallback(self::$type, ['bot_status', intval(!wHook()->bot()->settings->bot_status)])
             ]),
             Keyboard::inlineButton([
                 'text' => __('tbe::bot_settings.main.keys.botLanguage', [
