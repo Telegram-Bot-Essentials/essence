@@ -33,7 +33,9 @@ class MyWalletQuery extends CallbackQuery
     {
         $messageMeta = MessageMeta::makeWithCurrentMessage();
         $messageMeta->deleteMessage();
-        wHook()->user()->changeState(encodeAnswerState($this->type, "add_credit"));
+        wHook()->user()->changeState(encodeAnswerState($this->type, "add_credit", [
+            'message_meta_id' => $messageMeta->id
+        ]));
         wHook()->api()->sendMessage([
             'chat_id' => wHook()->user()->telegramUser->peer_id,
             'text' => __('tbe::my_wallet.main.text.enterCreditAmount'),

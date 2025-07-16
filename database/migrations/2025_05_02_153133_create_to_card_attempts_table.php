@@ -13,7 +13,6 @@ return new class extends Migration {
     {
         Schema::create('to_card_attempts', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Payment::class)->constrained()->cascadeOnDelete();
             $table->bigInteger('card_number');
             $table->decimal('amount', 65, 30);
             $table->decimal('received_amount',65, 30)->nullable();
