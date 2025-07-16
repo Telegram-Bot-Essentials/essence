@@ -152,7 +152,7 @@ if (!function_exists('getInputInlineKeyText')) {
 
         foreach ($inlineKeys as $rows) {
             foreach ($rows as $key) {
-                if ($key['callback_data'] == $data) {
+                if ($key['callback_data'] ?? null === $data) {
                     $result = $key['text'];
                     break;
                 }

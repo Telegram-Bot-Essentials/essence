@@ -360,7 +360,7 @@ class TelegramWebhookController extends Controller
     {
         try {
             wHook()->api()->sendMessage([
-                'chat_id' => wHook()->update()->message->from->id,
+                'chat_id' => wHook()->user()->telegramUser->peer_id,
                 'text' => "😭 Something went wrong, please contact the bot support",
                 'reply_markup' => wHook()->user()->getKeyboard(),
             ]);
