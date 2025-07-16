@@ -2,11 +2,14 @@
 
 namespace Elyar\TelegramBotEssentials\Http\Controllers;
 
+use Elyar\TelegramBotEssentials\Models\Abstract\PaymentAttempt;
 use Elyar\TelegramBotEssentials\Models\Billing\Attempts\ToZirgozarAttempt;
 use Elyar\TelegramBotEssentials\Models\Billing\Invoice;
 use Elyar\TelegramBotEssentials\Services\CurrencyFather;
+use Exception;
 use Http;
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
@@ -27,32 +30,43 @@ class GatewayZirgozarController extends Controller
             return response('invoice is already paid', 400);
         }
 
-        $url = config('telegram-bot-essentials.gateways.zirgozar.url') . '/api/index.php';
-        $data = [
-            'key' => config('telegram-bot-essentials.gateways.zirgozar.token'),
-            'action' => 'web_pay',
-            'mobile' => $invoice->botUser->telegramUser->tel,
-            'amount' => CurrencyFather::from($invoice->currency)->amount($invoice->price)->toIRT(),
-            'callback_url' => route('invoice.zirgozar.callback', ['token' => $token]),
-        ];
-
-        $data = array_filter($data);
-        $response = Http::post($url, $data);
-        $response = $response->json();
-        if (!$response['result']) {
-            \Log::error($response['error_desc']);
-            return response('Failed to pay', 503);
-        }
+        $response = $this->initializeWebPay($invoice, $token);
 
         $toZirgozarAttempt = ToZirgozarAttempt::create([
             'payment_code' => $response['code'],
             'payment_token' => $response['token'],
         ]);
-        $invoice->paymentAttempt()->associate($toZirgozarAttempt);
-        $invoice->save();
+
+        billing()->attemptPayment($invoice, $toZirgozarAttempt);
 
         $link = config('telegram-bot-essentials.gateways.zirgozar.url') . '/api/portal/?token=' . $response['token'];
         return redirect($link);
+    }
+
+    private function initializeWebPay(Invoice $invoice, string $token): array
+    {
+        try{
+            $url = config('telegram-bot-essentials.gateways.zirgozar.url') . '/zirgozar/api/index.php';
+            $data = [
+                'key' => config('telegram-bot-essentials.gateways.zirgozar.token'),
+                'action' => 'web_pay',
+                'mobile' => $invoice->botUser->telegramUser->tel,
+                'amount' => CurrencyFather::from($invoice->bot->currency)->amount($invoice->price)->toIRT(),
+                'callback_url' => route('invoice.zirgozar.callback', ['token' => $token]),
+            ];
+
+            $data = array_filter($data);
+            $response = Http::post($url, $data);
+            $response = $response->json();
+            if(!$response || !$response['result']) {
+                \Log::error($response['error_desc'] ?? 'error is not provided');
+                throw new HttpResponseException(apiResponse()->error('Failed to initialize web payment', 503));
+            }
+            return $response;
+        } catch (Exception $e){
+            exceptionReport($e);
+            return [];
+        }
     }
 
     /**
@@ -64,18 +78,18 @@ class GatewayZirgozarController extends Controller
     {
         $invoice = Invoice::where('public_token', $token)->firstOrFail();
 
-//        if ($invoice->status == 'paid') {
-//            try {
-//                $api = new Api($invoice->bot->bot_token);
-//                $me = $api->getMe();
-//                $username = $me->username;
-//            } catch (TelegramSDKException $e) {
-//                Log::error($e->getMessage());
-//                return response('Failed to redirect', 503);
-//            }
-//            $botLink = 'https://t.me/' . $username . '?start=invoice_' . $invoice->id;
-//            return response('invoice is already paid, go to ' . "<a href=\"{$botLink}\">Telegram</a>", 200);
-//        }
+        if ($invoice->status == 'paid') {
+            try {
+                $api = new Api($invoice->bot->bot_token);
+                $me = $api->getMe();
+                $username = $me->username;
+            } catch (TelegramSDKException $e) {
+                Log::error($e->getMessage());
+                return response('Failed to redirect', 503);
+            }
+            $botLink = 'https://t.me/' . $username . '?start=invoice_' . $invoice->id;
+            return response('invoice is already paid, go to ' . "<a href=\"{$botLink}\">Telegram</a>", 200);
+        }
 
         try {
             $paymentToken = $request->input('token') ?? throw new \LogicException('Payment token is not provided');
@@ -85,38 +99,22 @@ class GatewayZirgozarController extends Controller
             return response($e->getMessage(), 400);
         }
 
-        tenancy()->initialize($invoice->bot);
-        wHook()::setBot($invoice->bot);
-        wHook()::setApi(new Api($invoice->bot->bot_token));
-        wHook()::setUser($invoice->botUser);
-        wHook()::setUpdate(Update::make($request->all()));
+        $this->initializeWHook($invoice);
+        $response = $this->getWebPayResult($paymentToken);
 
-        $url = config('telegram-bot-essentials.gateways.zirgozar.url') . '/api/index.php';
-        $data = [
-            'key' => config('telegram-bot-essentials.gateways.zirgozar.token'),
-            'action' => 'web_pay_status',
-            'token' => $paymentToken,
-        ];
+        if(!($invoice->paymentAttempt instanceof ToZirgozarAttempt) || !($invoice->paymentAttempt instanceof PaymentAttempt)) new HttpResponseException(apiResponse()->error('Failed to handle payment', 503));
 
-        $response = Http::post($url, $data);
-        $response = $response->json();
-        if (!$response['result']) {
-            \Log::error($response['error_desc']);
-            return response('Failed to handle payment', 503);
-        }
-        if(!($invoice->paymentAttempt instanceof ToZirgozarAttempt)) return response('Failed to handle payment', 503);
-
-        $paymentAttempt = $invoice->paymentAttempt;
-        $paymentAttempt->update([
-            'payer_mobile' => $response['payer_mobile'],
-            'payer_card' => $response['payer_card'],
+        $zirGozarAttempt = $invoice->paymentAttempt;
+        $zirGozarAttempt->update([
+            'payer_mobile' => $response['payer_mobile'] ?? 'N/A',
+            'payer_card' => $response['payer_card'] ?? 'N/A',
             'amount' => $response['amount'],
         ]);
 
         if ($response['status'] == 'paid') {
-            $paymentAttempt->attemptSucceed();
+            $zirGozarAttempt->attemptSucceed();
         } elseif ($response['status'] == 'unpaid') {
-            $paymentAttempt->attemptFailed();
+            $zirGozarAttempt->attemptFailed();
         }
 
         try {
@@ -134,5 +132,41 @@ class GatewayZirgozarController extends Controller
             'invoice' => $invoice,
             'botLink' => $botLink,
         ]);
+    }
+
+    /**
+     * @throws TelegramSDKException
+     * @throws TenantCouldNotBeIdentifiedById
+     */
+    function initializeWHook(Invoice $invoice): void
+    {
+        tenancy()->initialize($invoice->bot);
+        wHook()::setBot($invoice->bot);
+        wHook()::setApi(new Api($invoice->bot->bot_token));
+        wHook()::setUser($invoice->botUser);
+        wHook()::setUpdate(Update::make(request()->all()));
+    }
+
+    private function getWebPayResult(string $paymentToken): array
+    {
+        try{
+            $url = config('telegram-bot-essentials.gateways.zirgozar.url') . '/zirgozar/api/index.php';
+            $data = [
+                'key' => config('telegram-bot-essentials.gateways.zirgozar.token'),
+                'action' => 'web_pay_status',
+                'token' => $paymentToken,
+            ];
+
+            $response = Http::post($url, $data);
+            $response = $response->json();
+            if(!$response || !$response['result']) {
+                \Log::error($response['error_desc'] ?? 'error is not provided');
+                throw new HttpResponseException(apiResponse()->error('Failed to handle payment', 503));
+            }
+            return $response;
+        } catch (Exception $e){
+            exceptionReport($e);
+            return [];
+        }
     }
 }

@@ -2,12 +2,12 @@
 
 namespace Elyar\TelegramBotEssentials\Models\Billing\Attempts;
 
+use Elyar\TelegramBotEssentials\Models\Abstract\PaymentAttempt;
 use Elyar\TelegramBotEssentials\Models\Billing\Payment;
 use Elyar\TelegramBotEssentials\Traits\HasMessageMeta;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class ToCardAttempt extends Model
+class ToCardAttempt extends PaymentAttempt
 {
     use HasMessageMeta;
     protected $guarded = [
@@ -17,8 +17,13 @@ class ToCardAttempt extends Model
         'created_at',
     ];
 
-    public function paymentAttempt(): BelongsTo
+    protected function attemptSucceedHook(): void
     {
-        return $this->belongsTo(Payment::class);
+        // TODO: Implement attemptSucceedHook() method.
+    }
+
+    protected function attemptFailedHook(): void
+    {
+        // TODO: Implement attemptFailedHook() method.
     }
 }

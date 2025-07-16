@@ -1,6 +1,6 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Models\Billing\Attempts;
+namespace Elyar\TelegramBotEssentials\Models\Abstract;
 
 use Elyar\TelegramBotEssentials\Models\Billing\Invoice;
 use Illuminate\Database\Eloquent\Model;

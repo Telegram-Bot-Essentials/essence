@@ -14,6 +14,11 @@ class MyWalletQuery extends CallbackQuery
     protected string $type = 'MYWALLET';
     protected int $perm = Roles::MEMBER->value;
 
+    /**
+     * @throws BindingResolutionException
+     * @throws TelegramSDKException
+     * @throws LogicException
+     */
     public function handle(array $params): void
     {
         $this->params = $params;

@@ -5,10 +5,14 @@ use Elyar\TelegramBotEssentials\Exceptions\FeatureIsDisabled;
 use Elyar\TelegramBotEssentials\Services\Currency;
 use Elyar\TelegramBotEssentials\Services\CurrencyFather;
 use Elyar\TelegramBotEssentials\Services\ApiResponse;
+use Elyar\TelegramBotEssentials\Services\Billing;
 use Elyar\TelegramBotEssentials\Support\Webhook;
 use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQueryBus;
 use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\ReplyKeyBus;
 use Elyar\TelegramBotEssentials\Telegram\StateAnswers\StateAnswerBus;
+use Illuminate\Support\Facades\Log;
+use Telegram\Bot\Exceptions\TelegramSDKException;
+use Telegram\Bot\FileUpload\InputFile;
 use Telegram\Bot\Keyboard\Keyboard;
 
 if (!function_exists('wHook')) {
@@ -29,6 +33,13 @@ if (!function_exists('currency')) {
     function currency(): Currency
     {
         return app(Currency::class);
+    }
+}
+
+if (!function_exists('billing')) {
+    function billing(): Billing
+    {
+        return app(Billing::class);
     }
 }
 
@@ -208,5 +219,31 @@ if(!function_exists('getResourceName')){
     {
         $parts = explode('\\', $resource);
         return end($parts);
+    }
+}
+
+if(!function_exists('exceptionReport')){
+    function exceptionReport(Exception $e): void
+    {
+        try {
+            $time = time();
+            wHook()->api()->sendMessage([
+                'chat_id' => config('telegram-bot-essentials.bug_report.telegram_chat_id'),
+                'text' => $e->getMessage(),
+            ]);
+            wHook()->api()->sendDocument([
+                'chat_id' => config('telegram-bot-essentials.bug_report.telegram_chat_id'),
+                'document' => InputFile::createFromContents($e->getTraceAsString(), $time.'.trace'),
+            ]);
+            wHook()->api()->sendDocument([
+                'chat_id' => config('telegram-bot-essentials.bug_report.telegram_chat_id'),
+                'document' => InputFile::createFromContents(json_encode(wHook()->update(), JSON_PRETTY_PRINT), $time.'.update'),
+            ]);
+        } catch (TelegramSDKException $e) {
+
+        }
+        Log::error($e->getMessage() ?? 'error message is not provided');
+        Log::error(json_encode(wHook()->update(), JSON_PRETTY_PRINT) ?? 'Update is not provided');
+        Log::error($e->getTraceAsString() ?? 'Trace is not provided');
     }
 }

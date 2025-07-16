@@ -53,10 +53,7 @@ class MyWalletAnswer extends StateAnswer
             'amount' => $amount
         ]);
 
-        $invoice = $creditOrder->invoice()->create([
-            'bot_user_id' => wHook()->user()->id,
-            'price' => $creditOrder->amount
-        ]);
+        $invoice = billing()->createInvoice($creditOrder);
 
         wHook()->user()->changeState();
 

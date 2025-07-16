@@ -5,6 +5,8 @@ namespace Elyar\TelegramBotEssentials\Telegram\CallbackQueries\Member;
 use Elyar\TelegramBotEssentials\Enums\Roles;
 use Elyar\TelegramBotEssentials\Exceptions\FeatureIsDisabled;
 use Elyar\TelegramBotEssentials\Exceptions\LogicException;
+use Elyar\TelegramBotEssentials\Models\Billing\Attempts\ByWalletAttempt;
+use Elyar\TelegramBotEssentials\Models\Billing\Attempts\ToCardAttempt;
 use Elyar\TelegramBotEssentials\Models\Billing\Invoice;
 use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQuery;
 use Illuminate\Contracts\Container\BindingResolutionException;
@@ -48,12 +50,12 @@ class InvoiceQuery extends CallbackQuery
     {
         $invoice = Invoice::findOrFail($this->params[1]);
 
-        $paymentAttempt = $invoice->payment()->create();
-        $paymentAttempt->toCardAttempt()->create([
+        $toCardAttempt = ToCardAttempt::create([
             'card_number' => wHook()->bot()->settings->pay_to_card_number,
             'amount' => $invoice->price
         ]);
-        $invoice->payment()->whereNot('id', $paymentAttempt->id)->delete();
+
+        billing()->attemptPayment($invoice, $toCardAttempt);
 
         $text = __('tbe::invoice.to_card.text.user-pay_message', [
             'cardNumber' => wHook()->bot()->settings->pay_to_card_number,
@@ -75,6 +77,7 @@ class InvoiceQuery extends CallbackQuery
     private function byWallet(): void
     {
         $invoice = Invoice::findOrFail($this->params[1]);
+
         if($invoice->botUser->balance < $invoice->price){
             wHook()->api()->answerCallbackQuery([
                 'callback_query_id' => wHook()->update()->callbackQuery->id,
@@ -87,13 +90,13 @@ class InvoiceQuery extends CallbackQuery
             return;
         }
 
-        $paymentAttempt = $invoice->payment()->create();
-        $byWalletAttempt = $paymentAttempt->byWalletAttempt()->firstOrCreate([
-            'amount' => $paymentAttempt->invoice->price
+        $byWalletAttempt = ByWalletAttempt::create([
+            'amount' => $invoice->price
         ]);
 
-        $byWalletAttempt->attempt();
-        $invoice->triggerInvoicePaidHook();
+        billing()->attemptPayment($invoice, $byWalletAttempt);
+
+        $byWalletAttempt->attemptSucceed();
         $invoice->messageMeta->lockAction(__('tbe::invoice.to_card.lock-keys.user-payment_accepted'), customEmoji: "✅");
     }
 }

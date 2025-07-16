@@ -3,6 +3,7 @@
 namespace Elyar\TelegramBotEssentials\Models;
 
 use Elyar\TelegramBotEssentials\Exceptions\LogicException;
+use Elyar\TelegramBotEssentials\Models\Abstract\Order;
 use Elyar\TelegramBotEssentials\Telegram\Feature\Member\MyWalletFeature;
 use Elyar\TelegramBotEssentials\Traits\HasInvoice;
 use Elyar\TelegramBotEssentials\Traits\HasMessageMeta;
@@ -12,7 +13,7 @@ use Illuminate\Support\Carbon;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 
-class CreditOrder extends Model
+class CreditOrder extends Order
 {
     use BelongsToTenant;
     use HasMessageMeta;
@@ -40,7 +41,9 @@ class CreditOrder extends Model
 
     public function getDescriptionAttribute(): string
     {
-        return 'develop';
+        return __('tbe::credit_order.main.text.description', [
+            'price' => currency()->priceFormat($this->amount)
+        ]);
     }
 
     /**

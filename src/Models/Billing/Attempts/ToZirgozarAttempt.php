@@ -2,6 +2,8 @@
 
 namespace Elyar\TelegramBotEssentials\Models\Billing\Attempts;
 
+use Elyar\TelegramBotEssentials\Models\Abstract\PaymentAttempt;
+
 class ToZirgozarAttempt extends PaymentAttempt
 {
     protected function attemptSucceedHook(): void

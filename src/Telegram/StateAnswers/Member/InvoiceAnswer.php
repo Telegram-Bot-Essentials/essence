@@ -5,6 +5,7 @@ namespace Elyar\TelegramBotEssentials\Telegram\StateAnswers\Member;
 use Elyar\TelegramBotEssentials\Enums\AllowableFields;
 use Elyar\TelegramBotEssentials\Enums\Roles;
 use Elyar\TelegramBotEssentials\Exceptions\LogicException;
+use Elyar\TelegramBotEssentials\Models\Billing\Attempts\ToCardAttempt;
 use Elyar\TelegramBotEssentials\Models\Billing\Invoice;
 use Elyar\TelegramBotEssentials\Telegram\StateAnswers\StateAnswer;
 use Illuminate\Contracts\Container\BindingResolutionException;
@@ -46,10 +47,12 @@ class InvoiceAnswer extends StateAnswer
     private function payToCard(): void
     {
         $invoice = Invoice::findOrFail($this->params['invoice_id']);
+        if(!$invoice->paymentAttempt instanceof ToCardAttempt) return;
+
         $this->storePaymentInformation($invoice);
 
-        $invoice->paymentAttempt->toCardAttempt->received_at = now();
-        $invoice->paymentAttempt->toCardAttempt->save();
+        $invoice->paymentAttempt->received_at = now();
+        $invoice->paymentAttempt->save();
 
         $invoice->messageMeta->lockAction(__('tbe::invoice.to_card.lock-keys.user-wait_for_payment_processing'));
         wHook()->user()->changeState();
@@ -69,10 +72,10 @@ class InvoiceAnswer extends StateAnswer
 
         $replyMarkup->row([Keyboard::inlineButton([
             'text' => __('tbe::invoice.to_card.keys.admin-accept_payment'),
-            'callback_data' => encodeCallback('MANAGE_INVOICE', ['accept_card_payment', $invoice->paymentAttempt->toCardAttempt->id])
+            'callback_data' => encodeCallback('MANAGE_INVOICE', ['accept_card_payment', $invoice->paymentAttempt->id])
         ]), Keyboard::inlineButton([
             'text' => __('tbe::invoice.to_card.keys.admin-reject_payment'),
-            'callback_data' => encodeCallback('MANAGE_INVOICE', ['reject_card_payment', $invoice->paymentAttempt->toCardAttempt->id])
+            'callback_data' => encodeCallback('MANAGE_INVOICE', ['reject_card_payment', $invoice->paymentAttempt->id])
         ])]);
 
 
@@ -92,7 +95,7 @@ class InvoiceAnswer extends StateAnswer
             ]);
         }
 
-        $invoice->paymentAttempt->toCardAttempt->messageMeta
+        $invoice->paymentAttempt->messageMeta
             ->initializeModel($message->chat->id, $message->messageId, $message->text, $message->replyMarkup);
     }
 
@@ -101,7 +104,7 @@ class InvoiceAnswer extends StateAnswer
      */
     private function storePaymentInformation(Invoice $invoice): void
     {
-        $toCardAttempt = $invoice->paymentAttempt->toCardAttempt;
+        $toCardAttempt = $invoice->paymentAttempt;
         $toCardAttempt->info_text = wHook()->update()->message?->photo ? wHook()->update()->message->caption : wHook()->update()->message->text;
 
         if (wHook()->update()->message?->photo[0] ?? null) {
@@ -121,7 +124,6 @@ class InvoiceAnswer extends StateAnswer
     function cancel(): void
     {
         $invoice = Invoice::findOrFail($this->params['invoice_id']);
-        $invoice->payment()->delete();
         $invoice->messageMeta->continueAction();
     }
 }
