@@ -45,4 +45,16 @@ class BotSettings extends Model
         Validator::validate(['connection_guide_channel_id' => $value], ['connection_guide_channel_id' => 'required|string|max:64']);
         $this->attributes['connection_guide_channel_id'] = $value;
     }
+
+    public function setZibalMerchantAttribute($value): void
+    {
+        Validator::validate(['zibal_merchant' => $value], ['zibal_merchant' => 'required|string|max:64']);
+        $this->attributes['zibal_merchant'] = $value;
+    }
+
+    public function setZirgozarTokenAttribute($value): void
+    {
+        Validator::validate(['zirgozar_token' => $value], ['zirgozar_token' => 'required|string|max:64']);
+        $this->attributes['zirgozar_token'] = $value;
+    }
 }

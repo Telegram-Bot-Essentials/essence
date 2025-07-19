@@ -101,8 +101,25 @@ class BotSettingsAnswer extends StateAnswer
         BotSettingsFeature::menu()->send();
     }
 
+    /**
+     */
     function cancel(): void
     {
         // TODO: Implement cancel() method.
+    }
+
+    /**
+     * @throws TelegramSDKException
+     * @throws BindingResolutionException
+     * @throws LogicException
+     */
+    private function changeZibalMerchant(): void
+    {
+        wHook()->bot()->settings->zibal_merchant = wHook()->update()->message->text;
+        wHook()->bot()->settings->save();
+
+        wHook()->user()->changeState();
+        $this->sendValueUpdatedMessage();
+        $this->messageMeta()->updateAndContinueAction(BotSettingsFeature::zibal());
     }
 }

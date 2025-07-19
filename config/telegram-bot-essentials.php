@@ -47,8 +47,7 @@ return [
 
     'gateways' => [
         'zirgozar' => [
-            'url' => env('ZIRGOZAR_URL', 'https://dgpaneltr.sbs'),
-            'token' => env('ZIRGOZAR_TOKEN'),
+            'url' => env('ZIRGOZAR_URL', 'https://dgpaneltr.sbs/zirgozar'),
         ]
     ],
 

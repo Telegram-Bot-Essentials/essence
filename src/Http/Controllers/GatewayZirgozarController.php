@@ -2,16 +2,24 @@
 
 namespace Elyar\TelegramBotEssentials\Http\Controllers;
 
+use Elyar\TelegramBotEssentials\Exceptions\FeatureIsDisabled;
 use Elyar\TelegramBotEssentials\Models\Abstract\PaymentAttempt;
 use Elyar\TelegramBotEssentials\Models\Billing\Attempts\ToZirgozarAttempt;
 use Elyar\TelegramBotEssentials\Models\Billing\Invoice;
 use Elyar\TelegramBotEssentials\Services\CurrencyFather;
 use Exception;
 use Http;
+use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Log;
 use Stancl\Tenancy\Exceptions\TenantCouldNotBeIdentifiedById;
 use Telegram\Bot\Api;
@@ -21,7 +29,9 @@ use Telegram\Bot\Objects\Update;
 class GatewayZirgozarController extends Controller
 {
     /**
-     * @throws ConnectionException
+     * @param string $token
+     * @param Request $request
+     * @return ResponseFactory|Application|RedirectResponse|Response|Redirector|object
      */
     function pay(string $token, Request $request)
     {
@@ -35,20 +45,20 @@ class GatewayZirgozarController extends Controller
         $toZirgozarAttempt = ToZirgozarAttempt::create([
             'payment_code' => $response['code'],
             'payment_token' => $response['token'],
+            'amount' => $invoice->price
         ]);
 
         billing()->attemptPayment($invoice, $toZirgozarAttempt);
 
-        $link = config('telegram-bot-essentials.gateways.zirgozar.url') . '/api/portal/?token=' . $response['token'];
-        return redirect($link);
+        return redirect($response['link']);
     }
 
     private function initializeWebPay(Invoice $invoice, string $token): array
     {
         try{
-            $url = config('telegram-bot-essentials.gateways.zirgozar.url') . '/zirgozar/api/index.php';
+            $url = config('telegram-bot-essentials.gateways.zirgozar.url') . '/api/index.php';
             $data = [
-                'key' => config('telegram-bot-essentials.gateways.zirgozar.token'),
+                'key' => $invoice->bot->settings->zirgozar_token,
                 'action' => 'web_pay',
                 'mobile' => $invoice->botUser->telegramUser->tel,
                 'amount' => CurrencyFather::from($invoice->bot->currency)->amount($invoice->price)->toIRT(),
@@ -70,9 +80,11 @@ class GatewayZirgozarController extends Controller
     }
 
     /**
-     * @throws ConnectionException
-     * @throws TenantCouldNotBeIdentifiedById
+     * @param string $token
+     * @param Request $request
+     * @return ResponseFactory|Factory|View|Application|Response|\Illuminate\View\View|object
      * @throws TelegramSDKException
+     * @throws TenantCouldNotBeIdentifiedById
      */
     function callback(string $token, Request $request)
     {
@@ -150,9 +162,9 @@ class GatewayZirgozarController extends Controller
     private function getWebPayResult(string $paymentToken): array
     {
         try{
-            $url = config('telegram-bot-essentials.gateways.zirgozar.url') . '/zirgozar/api/index.php';
+            $url = config('telegram-bot-essentials.gateways.zirgozar.url') . '/api/index.php';
             $data = [
-                'key' => config('telegram-bot-essentials.gateways.zirgozar.token'),
+                'key' => wHook()->bot()->settings->zirgozar_token,
                 'action' => 'web_pay_status',
                 'token' => $paymentToken,
             ];

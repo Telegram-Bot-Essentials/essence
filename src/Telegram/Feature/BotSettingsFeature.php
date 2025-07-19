@@ -16,10 +16,6 @@ class BotSettingsFeature
     {
         $text = __('tbe::bot_settings.main.text.information', [
             'botStatus' => (wHook()->bot()->settings->bot_status ? __('tbe::general.status.enabledEmoji') : __('tbe::general.status.disabledEmoji')),
-            'payWithCardStatus' => (wHook()->bot()->settings->pay_with_card ? __('tbe::general.status.enabledEmoji') : __('tbe::general.status.disabledEmoji')),
-            'transactionsChatId' => wHook()->bot()->settings->transactions_chat_id ?? __('tbe::general.status.notSet'),
-            'paymentCardNumber' => wHook()->bot()->settings->pay_to_card_number ?? __('tbe::general.status.notSet'),
-            'paymentCardName' => wHook()->bot()->settings->pay_to_card_name ?? __('tbe::general.status.notSet'),
             'language' => wHook()->bot()->settings->language,
             'defaultCurrency' => wHook()->bot()->currency
         ]);
@@ -44,38 +40,220 @@ class BotSettingsFeature
 
         $replyMarkup->row([
             Keyboard::inlineButton([
-                'text' => __('tbe::bot_settings.main.keys.payWithCardStatus', [
-                    'status' => (wHook()->bot()->settings->pay_with_card ? __('tbe::general.status.enabledEmoji') : __('tbe::general.status.disabledEmoji'))
+                'text' => __('tbe::bot_settings.main.keys.manageGateways'),
+                'callback_data' => encodeCallback(self::$type, ['gateways'])
+            ])
+        ]);
+
+        return new TelegramResponse(
+            text: $text,
+            replyMarkup: $replyMarkup,
+            parseMode: 'HTML'
+        );
+    }
+
+    public static function gateways(): TelegramResponse
+    {
+        $text = __('tbe::bot_settings.gateways.text.information');
+
+        $replyMarkup = Keyboard::make()
+            ->inline();
+
+        $replyMarkup->row([
+            Keyboard::inlineButton([
+                'text' => __('tbe::bot_settings.gateways.keys.toCard', [
+                    'status' => wHook()->bot()->settings->pay_with_card ? __('tbe::general.status.enabledEmoji') : __('tbe::general.status.disabledEmoji')
+                ]),
+                'callback_data' => encodeCallback(self::$type, ['to_card'])
+            ]),
+        ]);
+
+        $replyMarkup->row([
+            Keyboard::inlineButton([
+                'text' => __('tbe::bot_settings.gateways.keys.zibal', [
+                    'status' => wHook()->bot()->settings->zibal ? __('tbe::general.status.enabledEmoji') : __('tbe::general.status.disabledEmoji')
+                ]),
+                'callback_data' => encodeCallback(self::$type, ['zibal'])
+            ]),
+            Keyboard::inlineButton([
+                'text' => __('tbe::bot_settings.gateways.keys.zarinpal', [
+                    'status' => '🚫'
+                ]),
+                'callback_data' => encodeCallback(self::$type, ['zarinpal'])
+            ]),
+        ]);
+
+        $replyMarkup->row([
+            Keyboard::inlineButton([
+                'text' => __('tbe::bot_settings.gateways.keys.idpay', [
+                    'status' => '🚫'
+                ]),
+                'callback_data' => encodeCallback(self::$type, ['idpay'])
+            ]),
+            Keyboard::inlineButton([
+                'text' => __('tbe::bot_settings.gateways.keys.nextpay', [
+                    'status' => '🚫'
+                ]),
+                'callback_data' => encodeCallback(self::$type, ['nextpay'])
+            ]),
+        ]);
+
+        $replyMarkup->row([
+            Keyboard::inlineButton([
+                'text' => __('tbe::bot_settings.gateways.keys.nowpayments', [
+                    'status' => '🚫'
+                ]),
+                'callback_data' => encodeCallback(self::$type, ['nowpayments'])
+            ]),
+            Keyboard::inlineButton([
+                'text' => __('tbe::bot_settings.gateways.keys.zirgozar', [
+                    'status' => wHook()->bot()->settings->zirgozar ? __('tbe::general.status.enabledEmoji') : __('tbe::general.status.disabledEmoji')
+                ]),
+                'callback_data' => encodeCallback(self::$type, ['zirgozar'])
+            ])
+        ]);
+
+        $replyMarkup->row([
+            Keyboard::inlineButton([
+                'text' => __('tbe::general.keys.back'),
+                'callback_data' => encodeCallback(self::$type, ['start'])
+            ])
+        ]);
+
+        return new TelegramResponse(
+            text: $text,
+            replyMarkup: $replyMarkup,
+            parseMode: 'HTML'
+        );
+    }
+
+    public static function zibal(): TelegramResponse
+    {
+        $text = __('tbe::bot_settings.zibal.text.information', [
+            'activationStatus' => wHook()->bot()->settings->zibal ? __('tbe::general.status.activated') : __('tbe::general.status.deactivated'),
+            'zibalMerchant' => wHook()->bot()->settings->zibal_merchant ?? __('tbe::general.status.notSet')
+        ]);
+
+        $replyMarkup = Keyboard::make()
+            ->inline();
+
+        $replyMarkup->row([
+            Keyboard::inlineButton([
+                'text' => __('tbe::bot_settings.zibal.keys.activation', [
+                    'statusEmoji' => wHook()->bot()->settings->zibal ? __('tbe::general.status.enabledEmoji') : __('tbe::general.status.disabledEmoji'),
+                ]),
+                'callback_data' => encodeCallback(self::$type, ['switch_zibal_status', intval(!wHook()->bot()->settings->zibal)])
+            ]),
+        ]);
+
+        $replyMarkup->row([
+            Keyboard::inlineButton([
+                'text' => __('tbe::bot_settings.zibal.keys.merchant'),
+                'callback_data' => encodeCallback(self::$type, ['change_zibal_merchant'])
+            ]),
+        ]);
+
+        $replyMarkup->row([
+            Keyboard::inlineButton([
+                'text' => __('tbe::general.keys.back'),
+                'callback_data' => encodeCallback(self::$type, ['gateways'])
+            ])
+        ]);
+
+        return new TelegramResponse(
+            text: $text,
+            replyMarkup: $replyMarkup,
+            parseMode: 'HTML'
+        );
+    }
+
+    public static function toCard(): TelegramResponse
+    {
+        $text = __('tbe::bot_settings.to_card.text.information', [
+            'activationStatus' => (wHook()->bot()->settings->pay_with_card ? __('tbe::general.status.enabledEmoji') : __('tbe::general.status.disabledEmoji')),
+            'transactionsChatId' => wHook()->bot()->settings->transactions_chat_id ?? __('tbe::general.status.notSet'),
+            'paymentCardNumber' => wHook()->bot()->settings->pay_to_card_number ?? __('tbe::general.status.notSet'),
+            'paymentCardName' => wHook()->bot()->settings->pay_to_card_name ?? __('tbe::general.status.notSet'),
+
+        ]);
+
+        $replyMarkup = Keyboard::make()
+            ->inline();
+
+        $replyMarkup->row([
+            Keyboard::inlineButton([
+                'text' => __('tbe::bot_settings.to_card.keys.payWithCardStatus', [
+                    'statusEmoji' => (wHook()->bot()->settings->pay_with_card ? __('tbe::general.status.enabledEmoji') : __('tbe::general.status.disabledEmoji'))
                 ]),
                 'callback_data' => encodeCallback(self::$type, ['pay_with_card_status', intval(!wHook()->bot()->settings->pay_with_card)])
             ])
         ]);
 
-//        $replyMarkup->row([
-//            Keyboard::inlineButton([
-//                'text' => __('tbe::bot_settings.keysSeparatorPlaceHolder'),
-//                'callback_data' => encodeCallback('place_holder')
-//            ])
-//        ]);
-
         $replyMarkup->row([
             Keyboard::inlineButton([
-                'text' => __('tbe::bot_settings.main.keys.transactionsChatId'),
+                'text' => __('tbe::bot_settings.to_card.keys.transactionsChatId'),
                 'callback_data' => encodeCallback(self::$type, ['change_transactions_chat_id'])
             ])
         ]);
 
         $replyMarkup->row([
             Keyboard::inlineButton([
-                'text' => __('tbe::bot_settings.main.keys.paymentCardNumber'),
+                'text' => __('tbe::bot_settings.to_card.keys.paymentCardNumber'),
                 'callback_data' => encodeCallback(self::$type, ['change_payment_card_number'])
             ])
         ]);
 
         $replyMarkup->row([
             Keyboard::inlineButton([
-                'text' => __('tbe::bot_settings.main.keys.paymentCardName'),
+                'text' => __('tbe::bot_settings.to_card.keys.paymentCardName'),
                 'callback_data' => encodeCallback(self::$type, ['change_payment_card_name'])
+            ])
+        ]);
+
+        $replyMarkup->row([
+            Keyboard::inlineButton([
+                'text' => __('tbe::general.keys.back'),
+                'callback_data' => encodeCallback(self::$type, ['gateways'])
+            ])
+        ]);
+
+        return new TelegramResponse(
+            text: $text,
+            replyMarkup: $replyMarkup,
+            parseMode: 'HTML'
+        );
+    }
+
+    public static function zirgozar(): TelegramResponse
+    {
+        $text = __('tbe::bot_settings.zirgozar.text.information', [
+            'activationStatus' => (wHook()->bot()->settings->zirgozar ? __('tbe::general.status.enabledEmoji') : __('tbe::general.status.disabledEmoji')),
+            'zirgozarToken' => wHook()->bot()->settings->zirgozar_token ?? __('tbe::general.status.notSet'),
+        ]);
+
+        $replyMarkup = Keyboard::make()
+            ->inline();
+
+        $replyMarkup->row([
+            Keyboard::inlineButton([
+                'text' => __('tbe::bot_settings.zirgozar.keys.activation', [
+                    'statusEmoji' => (wHook()->bot()->settings->zirgozar ? __('tbe::general.status.enabledEmoji') : __('tbe::general.status.disabledEmoji'))
+                ]),
+                'callback_data' => encodeCallback(self::$type, ['zirgozar_status', intval(!wHook()->bot()->settings->zirgozar)])
+            ])
+        ]);
+
+        $replyMarkup->row([
+            Keyboard::inlineButton([
+                'text' => __('tbe::bot_settings.zirgozar.keys.token'),
+                'callback_data' => encodeCallback(self::$type, ['change_zirgozar_token'])
+            ]),
+        ]);
+
+        $replyMarkup->row([
+            Keyboard::inlineButton([
+                'text' => __('tbe::general.keys.back'),
+                'callback_data' => encodeCallback(self::$type, ['gateways'])
             ])
         ]);
 

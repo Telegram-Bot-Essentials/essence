@@ -4,7 +4,7 @@ namespace Elyar\TelegramBotEssentials\Telegram\CallbackQueries\Admin;
 
 use Elyar\TelegramBotEssentials\Enums\Roles;
 use Elyar\TelegramBotEssentials\Exceptions\LogicException;
-use Elyar\TelegramBotEssentials\Models\Currency;
+use Elyar\TelegramBotEssentials\Models\MessageMeta;
 use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQuery;
 use Elyar\TelegramBotEssentials\Telegram\Feature\BotSettingsFeature;
 use Illuminate\Contracts\Container\BindingResolutionException;
@@ -48,9 +48,62 @@ class BotSettingsQuery extends CallbackQuery
                 $this->changePaymentCardName();
                 break;
             case "change_transactions_chat_id":
-                $this->changeTransactionsChatId();
+                $this->cbalhangeTransactionsChatId();
+                break;
+
+            case "gateways":
+                $this->gateways();
+                break;
+
+            case "to_card":
+                $this->toCard();
+                break;
+
+            case "zibal":
+                $this->zibal();
+                break;
+            case "switch_zibal_status":
+                $this->switchZibalStatus();
+                break;
+            case "change_zibal_merchant":
+                $this->changeZibalMerchant();
+                break;
+
+            case "zarinpal":
+                $this->zarinpal();
+                break;
+
+            case "idpay":
+                $this->idpay();
+                break;
+
+            case "nextpay":
+                $this->nextpay();
+                break;
+
+            case "nowpayments":
+                $this->nowpayments();
+                break;
+
+            case "zirgozar":
+                $this->zirgozar();
+                break;
+            case "zirgozar_status":
+                $this->switchZirgozarStatus();
+                break;
+            case "change_zirgozar_token":
+                $this->changeZirgozarMerchant();
                 break;
         }
+    }
+
+    /**
+     * @throws TelegramSDKException
+     */
+    private function start(): void
+    {
+        BotSettingsFeature::menu()
+            ->update();
     }
 
     /**
@@ -76,9 +129,25 @@ class BotSettingsQuery extends CallbackQuery
     {
         wHook()->bot()->settings->pay_with_card = $this->params[1];
         wHook()->bot()->settings->save();
-        BotSettingsFeature::menu()
+        BotSettingsFeature::toCard()
             ->answer(__('tbe::bot_settings.main.answers.payWithCardStatusUpdated', [
                 'newStatus' => $this->params[1] ? __('tbe::general.status.enabled') : __('tbe::general.status.disabled')
+            ]))
+            ->update();
+    }
+
+    /**
+     * @throws TelegramSDKException
+     */
+    private function botLanguage(): void
+    {
+        $newLanguage = wHook()->bot()->settings->language == 'en' ? 'fa' : 'en';
+        wHook()->bot()->settings->language = $newLanguage;
+        wHook()->bot()->settings->save();
+        App::setLocale(wHook()->bot()->settings->language);
+        BotSettingsFeature::menu()
+            ->answer(__('tbe::bot_settings.main.answers.botLanguage', [
+                'language' => $newLanguage
             ]))
             ->update();
     }
@@ -132,6 +201,15 @@ class BotSettingsQuery extends CallbackQuery
     }
 
     /**
+     * @throws TelegramSDKException
+     */
+    private function gateways()
+    {
+        BotSettingsFeature::gateways()
+            ->update();
+    }
+
+    /**
      * @return void
      * @throws BindingResolutionException
      * @throws LogicException
@@ -155,28 +233,115 @@ class BotSettingsQuery extends CallbackQuery
         $this->answer(__('tbe::bot_settings.main.answers.transactionsChatId'));
     }
 
-    /**
-     * @throws TelegramSDKException
-     */
-    private function botLanguage(): void
+    private function toCard(): void
     {
-        $newLanguage = wHook()->bot()->settings->language == 'en' ? 'fa' : 'en';
-        wHook()->bot()->settings->language = $newLanguage;
-        wHook()->bot()->settings->save();
-        App::setLocale(wHook()->bot()->settings->language);
-        BotSettingsFeature::menu()
-            ->answer(__('tbe::bot_settings.main.answers.botLanguage', [
-                'language' => $newLanguage
-            ]))
+        BotSettingsFeature::toCard()
             ->update();
     }
 
     /**
      * @throws TelegramSDKException
      */
-    private function start(): void
+    private function zibal(): void
     {
-        BotSettingsFeature::menu()
+        BotSettingsFeature::zibal()
             ->update();
+    }
+
+    /**
+     * @throws TelegramSDKException
+     */
+    private function switchZibalStatus(): void
+    {
+        wHook()->bot()->settings->zibal = $this->params[1];
+        wHook()->bot()->settings->save();
+        BotSettingsFeature::zibal()->answer(__('tbe::general.answers.resourceFieldUpdatedSuccessfully', [
+            'resource' => __('tbe::bot_settings.zibal.name')
+        ]))->update();
+    }
+
+    /**
+     * @throws TelegramSDKException
+     * @throws BindingResolutionException
+     * @throws LogicException
+     */
+    private function changeZibalMerchant(): void
+    {
+        $messageMeta = MessageMeta::makeWithCurrentMessage();
+        $messageMeta->lockAction();
+
+        wHook()->user()->changeState(encodeAnswerState($this->type, "change_zibal_merchant", [
+            'message_meta_id' => $messageMeta->id,
+        ]));
+
+        wHook()->api()->sendMessage([
+            'chat_id' => wHook()->user()->telegramUser->peer_id,
+            'text' => __('tbe::bot_settings.zibal.text.setMerchant'),
+            'reply_markup' => wHook()->user()->getKeyboard()
+        ]);
+        $this->answer(__('tbe::bot_settings.zibal.answers.updatingMerchant'));
+    }
+
+    private function zarinpal(): void
+    {
+        $this->answer('Currently not supported');
+    }
+
+    private function idpay(): void
+    {
+        $this->answer('Currently not supported');
+    }
+
+    private function nextpay(): void
+    {
+        $this->answer('Currently not supported');
+    }
+
+    private function nowpayments(): void
+    {
+        $this->answer('Currently not supported');
+    }
+
+    /**
+     * @throws TelegramSDKException
+     */
+    private function zirgozar(): void
+    {
+        BotSettingsFeature::zirgozar()
+            ->update();
+    }
+
+    /**
+     * @throws TelegramSDKException
+     */
+    private function switchZirgozarStatus(): void
+    {
+        wHook()->bot()->settings->zirgozar = $this->params[1];
+        wHook()->bot()->settings->save();
+        BotSettingsFeature::zirgozar()->answer(__('tbe::general.answers.resourceFieldUpdatedSuccessfully', [
+            'resource' => __('tbe::bot_settings.zirgozar.name')
+        ]))->update();
+    }
+
+    /**
+     * @throws TelegramSDKException
+     * @throws BindingResolutionException
+     * @throws LogicException
+     */
+    private function changeZirgozarMerchant(): void
+    {
+        $messageMeta = MessageMeta::makeWithCurrentMessage();
+        $messageMeta->lockAction();
+
+        wHook()->user()->changeState(encodeAnswerState($this->type, "change_zibal_merchant", [
+            'message_meta_id' => $messageMeta->id,
+        ]));
+
+        wHook()->api()->sendMessage([
+            'chat_id' => wHook()->user()->telegramUser->peer_id,
+            'text' => __('tbe::bot_settings.zirgozar.text.setToken'),
+            'reply_markup' => wHook()->user()->getKeyboard()
+        ]);
+        $this->answer(__('tbe::bot_settings.zirgozar.answers.updatingToken'));
     }
 }
