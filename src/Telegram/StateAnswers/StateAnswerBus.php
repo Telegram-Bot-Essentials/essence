@@ -9,6 +9,7 @@ use Elyar\TelegramBotEssentials\Traits\CanResolveStateAnswer;
 use Exception;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Facades\Log;
+use Telegram\Bot\Exceptions\TelegramSDKException;
 
 /**
  * Class CommandBus.
@@ -69,7 +70,7 @@ class StateAnswerBus
 
     /**
      * @throws BindingResolutionException
-     * @throws LogicException
+     * @throws LogicException|TelegramSDKException
      */
     private function handleStateAnswer(array $decodedStates): bool
     {
@@ -105,17 +106,27 @@ class StateAnswerBus
         return false;
     }
 
+    /**
+     * @throws TelegramSDKException
+     */
     protected function handler(StateAnswerInterface $resolvedStateAnswer, string $method, array $params): void
     {
         if (!hasAccess($resolvedStateAnswer->getPerm())) return;
         $resolvedStateAnswer->setParams($params);
-        if($method == 'cancel') $resolvedStateAnswer->cancel();
-        $resolvedStateAnswer->handle($method);
+        if($method == 'cancel') {
+            $resolvedStateAnswer->cancel();
+            $resolvedStateAnswer->messageMeta()?->revertAction();
+        }else{
+            $resolvedStateAnswer->handle($method);
+        }
     }
 
     /**
+     * @param string|null $state
+     * @return bool
      * @throws BindingResolutionException
      * @throws LogicException
+     * @throws TelegramSDKException
      */
     public function cancelHandler(?string $state): bool
     {
@@ -126,8 +137,10 @@ class StateAnswerBus
     }
 
     /**
-     * @throws LogicException
+     * @return bool
      * @throws BindingResolutionException
+     * @throws LogicException
+     * @throws TelegramSDKException
      */
     public function processStateAnswers(): bool
     {
