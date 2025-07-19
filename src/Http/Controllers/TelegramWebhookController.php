@@ -21,6 +21,8 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
+use Laravel\Telescope\IncomingEntry;
+use Laravel\Telescope\Telescope;
 use Telegram\Bot\Commands\Command;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\FileUpload\InputFile;
@@ -55,6 +57,7 @@ class TelegramWebhookController extends Controller
                 $this->generalAlert($e);
             }
         } catch (TelegramSDKException|Exception $e) {
+            Telescope::tag(fn () => ['BUG']);
             wHook()->api()->sendMessage([
                 'chat_id' => wHook()->user()->telegramUser->peer_id,
                 'text' => "😭 Something went wrong, please contact the bot support",
