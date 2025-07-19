@@ -15,11 +15,19 @@ return new class extends Migration {
             $table->id();
             $table->foreignIdFor(Bot::class)->unique()->constrained();
             $table->boolean('bot_status')->default(true);
-            $table->boolean('pay_with_card')->default(false);
             $table->char('language', 2)->default('en');
+
+            $table->boolean('zibal')->default(false);
+            $table->string('zibal_merchant')->nullable();
+
+            $table->boolean('pay_with_card')->default(false);
             $table->string('pay_to_card_number')->nullable();
             $table->string('pay_to_card_name')->nullable();
             $table->bigInteger('transactions_chat_id')->nullable();
+
+            $table->boolean('zirgozar')->default(false);
+            $table->string('zirgozar_token')->nullable();
+
             $table->timestamps();
         });
     }
