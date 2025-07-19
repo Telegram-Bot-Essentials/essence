@@ -25,14 +25,12 @@ class BotUsersAnswer extends StateAnswer
 
     /**
      * @param string $method
-     * @param array $params
      * @throws BindingResolutionException
      * @throws LogicException
      * @throws TelegramSDKException|InvalidPageNumber
      */
-    public function handle(string $method, array $params): void
+    public function handle(string $method): void
     {
-        $this->params = $params;
         switch (strtolower($method)) {
             case "cancel":
                 $this->cancel();

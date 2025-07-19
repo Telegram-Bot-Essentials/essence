@@ -21,14 +21,12 @@ class InvoiceAnswer extends StateAnswer
 
     /**
      * @param string $method
-     * @param array $params
      * @throws BindingResolutionException
      * @throws TelegramSDKException
      * @throws LogicException
      */
-    public function handle(string $method, array $params): void
+    public function handle(string $method): void
     {
-        $this->params = $params;
         switch (strtolower($method)) {
             case "pay_to_card":
                 $this->payToCard();

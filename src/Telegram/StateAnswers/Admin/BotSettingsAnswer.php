@@ -4,7 +4,6 @@ namespace Elyar\TelegramBotEssentials\Telegram\StateAnswers\Admin;
 
 use Elyar\TelegramBotEssentials\Enums\Roles;
 use Elyar\TelegramBotEssentials\Exceptions\LogicException;
-use Elyar\TelegramBotEssentials\Models\BotSettings;
 use Elyar\TelegramBotEssentials\Telegram\Feature\BotSettingsFeature;
 use Elyar\TelegramBotEssentials\Telegram\StateAnswers\StateAnswer;
 use Illuminate\Contracts\Container\BindingResolutionException;
@@ -17,15 +16,13 @@ class BotSettingsAnswer extends StateAnswer
 
     /**
      * @param string $method
-     * @param array $params
      * @return void
      * @throws BindingResolutionException
      * @throws LogicException
      * @throws TelegramSDKException
      */
-    public function handle(string $method, array $params): void
+    public function handle(string $method): void
     {
-        $this->params = $params;
         switch (strtolower($method)) {
             case "change_payment_card_number":
                 $this->changePaymentCardNumber();
@@ -35,6 +32,10 @@ class BotSettingsAnswer extends StateAnswer
                 break;
             case 'change_transactions_chat_id':
                 $this->changeTransactionsChatId();
+                break;
+
+            case 'change_zibal_merchant':
+                $this->changeZibalMerchant();
                 break;
         }
     }

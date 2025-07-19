@@ -24,9 +24,8 @@ class MyWalletAnswer extends StateAnswer
     /**
      * @throws TelegramSDKException
      */
-    public function handle(string $method, array $params): void
+    public function handle(string $method): void
     {
-        $this->params = $params;
         switch (strtolower($method)) {
             case "add_credit":
                 $this->addCredit();

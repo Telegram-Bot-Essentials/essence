@@ -18,15 +18,13 @@ class BotAdminsAnswer extends StateAnswer
 
     /**
      * @param string $method
-     * @param array $params
      * @return void
      * @throws BindingResolutionException
      * @throws LogicException
      * @throws TelegramSDKException
      */
-    public function handle(string $method, array $params): void
+    public function handle(string $method): void
     {
-        $this->params = $params;
         switch (strtolower($method)) {
             case "add_admin":
                 $this->addAdmin();

@@ -16,14 +16,12 @@ class ManageInvoiceAnswer extends StateAnswer
 
     /**
      * @param string $method
-     * @param array $params
      * @throws BindingResolutionException
      * @throws LogicException
      * @throws TelegramSDKException
      */
-    public function handle(string $method, array $params): void
+    public function handle(string $method): void
     {
-        $this->params = $params;
         switch (strtolower($method)) {
             case "reject_reason":
                 $this->rejectReason();

@@ -3,12 +3,16 @@
 namespace Elyar\TelegramBotEssentials\Telegram\StateAnswers;
 
 use Elyar\TelegramBotEssentials\Enums\AllowableFields;
+use Elyar\TelegramBotEssentials\Exceptions\TbeLogicException;
+use Elyar\TelegramBotEssentials\Models\MessageMeta;
 
 abstract class StateAnswer implements StateAnswerInterface
 {
     protected string $type;
     protected int $perm;
     protected array $params;
+    protected ?MessageMeta $messageMeta = null;
+
     protected array $allowedFields = [AllowableFields::TEXT->value];
 
     public function getType(): string
@@ -21,12 +25,29 @@ abstract class StateAnswer implements StateAnswerInterface
         return $this->perm;
     }
 
+    public function setParams(?array $params): void
+    {
+        $this->params = $params ?? [];
+    }
+
     public function getAllowedFields(): array
     {
         return $this->allowedFields;
     }
 
-    abstract public function handle(string $method, array $params): void;
+    abstract public function handle(string $method): void;
+
+    public function messageMeta(): ?MessageMeta
+    {
+        if($this->messageMeta) return $this->messageMeta;
+        $messageMeta = MessageMeta::find($this->params['message_meta_id'] ?? $this->params['message_meta']);
+        if (!$messageMeta) {
+            exceptionReport(new TbeLogicException('Trying to access message meta, but it is not provided'));
+            return null;
+        }
+        $this->messageMeta = $messageMeta;
+        return $messageMeta;
+    }
 
     abstract function cancel(): void;
 }

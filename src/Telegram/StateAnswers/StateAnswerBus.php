@@ -108,7 +108,9 @@ class StateAnswerBus
     protected function handler(StateAnswerInterface $resolvedStateAnswer, string $method, array $params): void
     {
         if (!hasAccess($resolvedStateAnswer->getPerm())) return;
-        $resolvedStateAnswer->handle($method, $params);
+        $resolvedStateAnswer->setParams($params);
+        if($method == 'cancel') $resolvedStateAnswer->cancel();
+        $resolvedStateAnswer->handle($method);
     }
 
     /**

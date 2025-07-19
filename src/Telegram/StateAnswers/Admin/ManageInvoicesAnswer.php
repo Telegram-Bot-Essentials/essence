@@ -14,9 +14,8 @@ class ManageInvoicesAnswer extends StateAnswer
         AllowableFields::TEXT->value
     ];
 
-    public function handle(string $method, array $params): void
+    public function handle(string $method): void
     {
-        $this->params = $params;
         switch (strtolower($method)) {
             case "cancel":
                 $this->cancel();
