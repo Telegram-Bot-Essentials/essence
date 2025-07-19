@@ -58,6 +58,7 @@ return [
 
     'answers' => [
         'updatedResourceField' => 'Updating ":resource"s :field...',
+        'resourceFieldUpdatedSuccessfully' => ':resource Updated successfully.',
     ],
 
     'roles' => [
