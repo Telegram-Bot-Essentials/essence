@@ -17,6 +17,8 @@ return new class extends Migration {
             $table->boolean('bot_status')->default(true);
             $table->char('language', 2)->default('en');
 
+            $table->boolean('wallet')->default(true);
+
             $table->boolean('zibal')->default(false);
             $table->string('zibal_merchant')->nullable();
 
@@ -27,6 +29,9 @@ return new class extends Migration {
 
             $table->boolean('zirgozar')->default(false);
             $table->string('zirgozar_token')->nullable();
+
+            $table->boolean('zarinpal')->default(false);
+            $table->string('zarinpal_merchant_id')->nullable();
 
             $table->timestamps();
         });
