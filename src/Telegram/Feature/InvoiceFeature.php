@@ -20,21 +20,43 @@ class InvoiceFeature
 
         $replyMarkup = Keyboard::make()->inline();
 
-        $replyMarkup->row([Keyboard::inlineButton([
-            'text' => __('tbe::invoice.summary.keys.to_card', [
-                'price' => number_format(priceIn($invoice->price)->toIRT())
-            ]),
-            'callback_data' => encodeCallback(self::$type, ['to_card', $invoice->id])
-        ])]);
+        if(wHook()->bot()->settings->pay_with_card) {
+            $replyMarkup->row([Keyboard::inlineButton([
+                'text' => __('tbe::invoice.summary.keys.to_card', [
+                    'price' => number_format(priceIn($invoice->price)->toIRT())
+                ]),
+                'callback_data' => encodeCallback(self::$type, ['to_card', $invoice->id])
+            ])]);
+        }
 
-        $replyMarkup->row([Keyboard::inlineButton([
-            'text' => __('tbe::invoice.summary.keys.to_zirgozar', [
-                'price' => number_format(priceIn($invoice->price)->toIRT())
-            ]),
-            'url' => config('app.url') . '/invoice/' . $invoice->public_token . '/zirgozar/pay'
-        ])]);
+        if(wHook()->bot()->settings->zirgozar){
+            $replyMarkup->row([Keyboard::inlineButton([
+                'text' => __('tbe::invoice.summary.keys.to_zirgozar', [
+                    'price' => number_format(priceIn($invoice->price)->toIRT())
+                ]),
+                'url' => route('invoice.zirgozar.pay', ['token' => $invoice->public_token])
+            ])]);
+        }
 
-        if(!($invoice->payable instanceof CreditOrder)){
+        if(wHook()->bot()->settings->zibal){
+            $replyMarkup->row([Keyboard::inlineButton([
+                'text' => __('tbe::invoice.summary.keys.to_zibal', [
+                    'price' => number_format(priceIn($invoice->price)->toIRT())
+                ]),
+                'url' => route('invoice.zibal.pay', ['token' => $invoice->public_token])
+            ])]);
+        }
+
+        if(wHook()->bot()->settings->zarinpal){
+            $replyMarkup->row([Keyboard::inlineButton([
+                'text' => __('tbe::invoice.summary.keys.to_zarinpal', [
+                    'price' => number_format(priceIn($invoice->price)->toIRT())
+                ]),
+                'url' => route('invoice.zarinpal.pay', ['token' => $invoice->public_token])
+            ])]);
+        }
+
+        if(!($invoice->payable instanceof CreditOrder) && wHook()->bot()->settings->wallet){
             $replyMarkup->row([Keyboard::inlineButton([
                 'text' => __('tbe::invoice.summary.keys.by_wallet', [
                     'price' => currency()->priceFormat($invoice->price)

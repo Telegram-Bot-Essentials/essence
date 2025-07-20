@@ -48,7 +48,7 @@ class BotSettingsQuery extends CallbackQuery
                 $this->changePaymentCardName();
                 break;
             case "change_transactions_chat_id":
-                $this->cbalhangeTransactionsChatId();
+                $this->changeTransactionsChatId();
                 break;
 
             case "gateways":
@@ -71,6 +71,12 @@ class BotSettingsQuery extends CallbackQuery
 
             case "zarinpal":
                 $this->zarinpal();
+                break;
+            case "zarinpal_status":
+                $this->switchZarinpalStatus();
+                break;
+            case "change_zarinpal_token":
+                $this->changeZarinpalMerchant();
                 break;
 
             case "idpay":
@@ -282,9 +288,47 @@ class BotSettingsQuery extends CallbackQuery
         $this->answer(__('tbe::bot_settings.zibal.answers.updatingMerchant'));
     }
 
+    /**
+     * @throws TelegramSDKException
+     */
     private function zarinpal(): void
     {
-        $this->answer('Currently not supported');
+        BotSettingsFeature::zarinpal()
+            ->update();
+    }
+
+    /**
+     * @throws TelegramSDKException
+     */
+    private function switchZarinpalStatus(): void
+    {
+        wHook()->bot()->settings->zarinpal = $this->params[1];
+        wHook()->bot()->settings->save();
+        BotSettingsFeature::zarinpal()->answer(__('tbe::general.answers.resourceFieldUpdatedSuccessfully', [
+            'resource' => __('tbe::bot_settings.zarinpal.name')
+        ]))->update();
+    }
+
+    /**
+     * @throws TelegramSDKException
+     * @throws BindingResolutionException
+     * @throws LogicException
+     */
+    private function changeZarinpalMerchant(): void
+    {
+        $messageMeta = MessageMeta::makeWithCurrentMessage();
+        $messageMeta->lockAction();
+
+        wHook()->user()->changeState(encodeAnswerState($this->type, "change_zarinpal_merchant", [
+            'message_meta_id' => $messageMeta->id,
+        ]));
+
+        wHook()->api()->sendMessage([
+            'chat_id' => wHook()->user()->telegramUser->peer_id,
+            'text' => __('tbe::bot_settings.zarinpal.text.setMerchant'),
+            'reply_markup' => wHook()->user()->getKeyboard()
+        ]);
+        $this->answer(__('tbe::bot_settings.zarinpal.answers.updatingToken'));
     }
 
     private function idpay(): void

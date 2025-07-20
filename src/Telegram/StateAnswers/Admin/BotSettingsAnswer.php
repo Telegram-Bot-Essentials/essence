@@ -37,6 +37,10 @@ class BotSettingsAnswer extends StateAnswer
             case 'change_zibal_merchant':
                 $this->changeZibalMerchant();
                 break;
+
+            case 'change_zarinpal_merchant':
+                $this->changeZarinpalMerchant();
+                break;
         }
     }
 
@@ -121,5 +125,20 @@ class BotSettingsAnswer extends StateAnswer
         wHook()->user()->changeState();
         $this->sendValueUpdatedMessage();
         $this->messageMeta()->updateAndContinueAction(BotSettingsFeature::zibal());
+    }
+
+    /**
+     * @throws BindingResolutionException
+     * @throws TelegramSDKException
+     * @throws LogicException
+     */
+    private function changeZarinpalMerchant(): void
+    {
+        wHook()->bot()->settings->zarinpal_merchant_id = wHook()->update()->message->text;
+        wHook()->bot()->settings->save();
+
+        wHook()->user()->changeState();
+        $this->sendValueUpdatedMessage();
+        $this->messageMeta()->updateAndContinueAction(BotSettingsFeature::zarinpal());
     }
 }

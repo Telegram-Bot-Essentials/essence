@@ -77,7 +77,7 @@ class BotSettingsFeature
             ]),
             Keyboard::inlineButton([
                 'text' => __('tbe::bot_settings.gateways.keys.zarinpal', [
-                    'status' => '🚫'
+                    'status' => wHook()->bot()->settings->zarinpal ? __('tbe::general.status.enabledEmoji') : __('tbe::general.status.disabledEmoji')
                 ]),
                 'callback_data' => encodeCallback(self::$type, ['zarinpal'])
             ]),
@@ -247,6 +247,46 @@ class BotSettingsFeature
             Keyboard::inlineButton([
                 'text' => __('tbe::bot_settings.zirgozar.keys.token'),
                 'callback_data' => encodeCallback(self::$type, ['change_zirgozar_token'])
+            ]),
+        ]);
+
+        $replyMarkup->row([
+            Keyboard::inlineButton([
+                'text' => __('tbe::general.keys.back'),
+                'callback_data' => encodeCallback(self::$type, ['gateways'])
+            ])
+        ]);
+
+        return new TelegramResponse(
+            text: $text,
+            replyMarkup: $replyMarkup,
+            parseMode: 'HTML'
+        );
+    }
+
+    public static function zarinpal(): TelegramResponse
+    {
+        $text = __('tbe::bot_settings.zarinpal.text.information', [
+            'activationStatus' => (wHook()->bot()->settings->zarinpal ? __('tbe::general.status.enabledEmoji') : __('tbe::general.status.disabledEmoji')),
+            'merchantID' => wHook()->bot()->settings->zarinpal_merchant_id ?? __('tbe::general.status.notSet'),
+        ]);
+
+        $replyMarkup = Keyboard::make()
+            ->inline();
+
+        $replyMarkup->row([
+            Keyboard::inlineButton([
+                'text' => __('tbe::bot_settings.zarinpal.keys.activation', [
+                    'statusEmoji' => (wHook()->bot()->settings->zarinpal ? __('tbe::general.status.enabledEmoji') : __('tbe::general.status.disabledEmoji'))
+                ]),
+                'callback_data' => encodeCallback(self::$type, ['zarinpal_status', intval(!wHook()->bot()->settings->zarinpal)])
+            ])
+        ]);
+
+        $replyMarkup->row([
+            Keyboard::inlineButton([
+                'text' => __('tbe::bot_settings.zarinpal.keys.merchantID'),
+                'callback_data' => encodeCallback(self::$type, ['change_zarinpal_token'])
             ]),
         ]);
 
