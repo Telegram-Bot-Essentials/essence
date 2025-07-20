@@ -2,15 +2,18 @@
 
 namespace Elyar\TelegramBotEssentials;
 
+use Elyar\TelegramBotEssentials\Console\Commands\BotManagementTokenCommand;
 use Elyar\TelegramBotEssentials\Console\Commands\MakeCallbackQuery;
+use Elyar\TelegramBotEssentials\Console\Commands\MakeFeature;
 use Elyar\TelegramBotEssentials\Console\Commands\MakeReplyKey;
 use Elyar\TelegramBotEssentials\Console\Commands\MakeStateAnswer;
-use Elyar\TelegramBotEssentials\Console\Commands\MakeFeature;
 use Elyar\TelegramBotEssentials\Console\Commands\setWebhook;
-use Elyar\TelegramBotEssentials\Console\Commands\BotManagementTokenCommand;
 use Elyar\TelegramBotEssentials\Services\ApiResponse;
-use Elyar\TelegramBotEssentials\Services\Currency;
 use Elyar\TelegramBotEssentials\Services\Billing;
+use Elyar\TelegramBotEssentials\Services\Currency;
+use Elyar\TelegramBotEssentials\Services\Gateways\Gateways;
+use Elyar\TelegramBotEssentials\Services\Gateways\ZarinPal\ZarinPal;
+use Elyar\TelegramBotEssentials\Services\Gateways\Zibal\Zibal;
 use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQueryBus;
 use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\ReplyKeyBus;
 use Elyar\TelegramBotEssentials\Telegram\StateAnswers\StateAnswerBus;
@@ -30,6 +33,11 @@ class TelegramBotServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/tenancy.php', 'tenancy');
         $this->mergeConfigFrom(__DIR__ . '/../config/telegram.php', 'telegram');
 
+        $this->initializeSingletons();
+    }
+
+    private function initializeSingletons(): void
+    {
         $this->app->singleton(ReplyKeyBus::class, function ($app) {
             return new ReplyKeyBus();
         });
@@ -52,6 +60,23 @@ class TelegramBotServiceProvider extends ServiceProvider
 
         $this->app->singleton(Billing::class, function ($app) {
             return new Billing();
+        });
+
+        $this->initializeGatewaySingletons();
+    }
+
+    private function initializeGatewaySingletons(): void
+    {
+        $this->app->singleton(Gateways::class, function ($app){
+            return new Gateways();
+        });
+
+        $this->app->singleton(Zibal::class, function ($app) {
+            return new Zibal();
+        });
+
+        $this->app->singleton(ZarinPal::class, function ($app) {
+            return new ZarinPal();
         });
     }
 
@@ -78,7 +103,7 @@ class TelegramBotServiceProvider extends ServiceProvider
         Route::prefix('')
             ->group(__DIR__ . '/../routes/web.php');
 
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'tbe');
+        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'tbe');
 
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         $this->publishes([
