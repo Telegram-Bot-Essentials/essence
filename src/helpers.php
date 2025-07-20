@@ -6,6 +6,7 @@ use Elyar\TelegramBotEssentials\Services\Currency;
 use Elyar\TelegramBotEssentials\Services\CurrencyFather;
 use Elyar\TelegramBotEssentials\Services\ApiResponse;
 use Elyar\TelegramBotEssentials\Services\Billing;
+use Elyar\TelegramBotEssentials\Services\Gateways\Gateways;
 use Elyar\TelegramBotEssentials\Support\Webhook;
 use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQueryBus;
 use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\ReplyKeyBus;
@@ -61,6 +62,13 @@ if (!function_exists('stateAnswerBus')) {
     function stateAnswerBus(): StateAnswerBus
     {
         return app(StateAnswerBus::class);
+    }
+}
+
+if (!function_exists('gateways')) {
+    function gateways(): Gateways
+    {
+        return app(Gateways::class);
     }
 }
 
@@ -208,7 +216,7 @@ if (!function_exists('getNextFromArray')) {
 }
 
 if (!function_exists('priceIn')) {
-    function priceIn(float $price): CurrencyFather
+    function priceIn(string $price): CurrencyFather
     {
         return CurrencyFather::from(wHook()->bot()->currency)->amount($price);
     }
