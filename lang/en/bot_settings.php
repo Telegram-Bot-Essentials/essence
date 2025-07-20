@@ -87,7 +87,7 @@ return [
         ],
         'keys' => [
             'activation' => 'Zibal Status :statusEmoji',
-            'merchant' => '✏️ merchant',
+            'merchant' => '✏️ Merchant',
         ]
     ],
 
@@ -106,8 +106,28 @@ return [
         ],
         'keys' => [
             'activation' => 'Zirgozar Status :statusEmoji',
-            'token' => '✏️ token',
+            'token' => '✏️ Token',
         ]
     ],
+
+    'zarinpal' => [
+        'name' => 'Zarinpal',
+        'text' => [
+            'information' => '⚙️ <b><i>Zarinpal</i></b>'
+                . "\r\n"
+                . "\r\n❔ <b>Activation Status:</b> :activationStatus"
+                . "\r\n"
+                . "\r\n❔ <b>Merchant ID:</b> <tg-spoiler>:merchantID</tg-spoiler>",
+            'setMerchant' => '❓ Enter new zarinpal/merchantID: '
+        ],
+        'answers' => [
+            'updatingToken' => '⏳ Updating zarinpal/merchantID...',
+        ],
+        'keys' => [
+            'activation' => 'Zarinpal Status :statusEmoji',
+            'merchantID' => '✏️ Merchant ID',
+        ]
+    ],
+
     'reply_key' => 'Bot Settings ⚙️',
 ];
