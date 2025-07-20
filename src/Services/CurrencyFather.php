@@ -3,7 +3,6 @@
 namespace Elyar\TelegramBotEssentials\Services;
 
 use Cache;
-use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 
 class CurrencyFather
@@ -11,14 +10,14 @@ class CurrencyFather
     private string $currency;
 
     private string $toCurrency;
-    private float $amount;
+    private string $amount;
 
     public function __construct(string $currency)
     {
         $this->currency = $currency;
     }
 
-    public function amount(float $amount = 1): self
+    public function amount(string $amount = '1'): self
     {
         $this->amount = $amount;
         return $this;
@@ -34,7 +33,7 @@ class CurrencyFather
         return new self('USD');
     }
 
-    public function toUSD(): float
+    public function toUSD(): string
     {
         $this->toCurrency = 'USD';
         return $this->rate();
@@ -45,7 +44,7 @@ class CurrencyFather
         return new self('IRR');
     }
 
-    public function toIRR(): float
+    public function toIRR(): string
     {
         $this->toCurrency = 'IRR';
         return $this->rate();
@@ -56,13 +55,13 @@ class CurrencyFather
         return new self('IRT');
     }
 
-    public function toIRT(): float
+    public function toIRT(): string
     {
         $this->toCurrency = 'IRT';
         return $this->rate();
     }
 
-    public function rate(): float
+    public function rate(): string
     {
         if($this->currency == $this->toCurrency){
             return $this->amount;
