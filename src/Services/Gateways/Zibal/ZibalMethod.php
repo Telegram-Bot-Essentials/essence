@@ -3,6 +3,7 @@
 namespace Elyar\TelegramBotEssentials\Services\Gateways\Zibal;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 abstract class ZibalMethod
 {

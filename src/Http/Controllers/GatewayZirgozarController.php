@@ -114,13 +114,13 @@ class GatewayZirgozarController extends Controller
         $this->initializeWHook($invoice);
         $response = $this->getWebPayResult($paymentToken);
 
-        if(!($invoice->paymentAttempt instanceof ToZirgozarAttempt) || !($invoice->paymentAttempt instanceof PaymentAttempt)) new HttpResponseException(apiResponse()->error('Failed to handle payment', 503));
+        if(!($invoice->paymentAttempt instanceof ToZirgozarAttempt) || !($invoice->paymentAttempt instanceof PaymentAttempt)) return apiResponse()->error('Failed to handle payment', 503);
 
         $zirGozarAttempt = $invoice->paymentAttempt;
         $zirGozarAttempt->update([
             'payer_mobile' => $response['payer_mobile'] ?? 'N/A',
             'payer_card' => $response['payer_card'] ?? 'N/A',
-            'amount' => $response['amount'],
+            'received_amount' => $response['amount'],
         ]);
 
         if ($response['status'] == 'paid') {
@@ -141,6 +141,7 @@ class GatewayZirgozarController extends Controller
         $botLink = 'https://t.me/' . $username . '?start=invoice_' . $invoice->id;
         return view('tbe::app', [
             'status' => $response['status'],
+            'gateway' => 'zirgozar',
             'invoice' => $invoice,
             'botLink' => $botLink,
         ]);

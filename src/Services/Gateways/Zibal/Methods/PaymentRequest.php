@@ -57,16 +57,4 @@ class PaymentRequest extends ZibalMethod
         $this->data['checkMobileWithCard'] = $checkMobileWithCard;
         return $this;
     }
-
-    public function currency(string $currency): self
-    {
-        $allowedCurrencies = ['IRR', 'IRT'];
-
-        if (in_array($currency, $allowedCurrencies))
-            throw new \ValueError('The value must be one of: ' . implode(', ', $allowedCurrencies));
-
-        $this->data['currency'] = $currency;
-
-        return $this;
-    }
 }

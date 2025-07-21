@@ -56,7 +56,7 @@
 </head>
 <body>
 <div class="container">
-    @if ($status === 'paid')
+    @if ($success)
         <h1 class="success">✅ Payment Successful</h1>
         <p>Thank you for your payment. Your transaction has been completed.</p>
     @else
@@ -68,7 +68,7 @@
         <div class="details">
             <p><strong>Invoice ID:</strong> {{ $invoice->id }}</p>
             <p><strong>Amount:</strong> {{ currency()->priceFormat($invoice->price) }}</p>
-            <p><strong>Status:</strong> {{ ucfirst($status) }}</p>
+            <p><strong>Status:</strong> {{ $success ? 'Paid' : 'Unpaid' }}</p>
             <p><strong>Reference:</strong> {{ $invoice->reference ?? 'N/A' }}</p>
         </div>
     @endif
