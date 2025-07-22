@@ -8,6 +8,7 @@ use Brick\Math\BigNumber;
 use Elyar\TelegramBotEssentials\Exceptions\FeatureIsDisabled;
 use Elyar\TelegramBotEssentials\Exceptions\LogicException;
 use Elyar\TelegramBotEssentials\Exceptions\TbeLogicException;
+use Elyar\TelegramBotEssentials\Exceptions\TbeLogicExceptions\InsufficientBalanceException;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 
@@ -67,13 +68,13 @@ class Wallet
     }
 
     /**
-     * @throws TbeLogicException
+     * @throws InsufficientBalanceException
      */
     private function validateUserBalanceIsSufficient(BigDecimal|string $amount): void
     {
         $this->validateAmount($amount);
         if (BigDecimal::of($amount)->compareTo($this->currentUserBalance()))
-            throw new TbeLogicException("Insufficient balance.");
+            throw new InsufficientBalanceException("Insufficient balance.");
     }
 
     /**
