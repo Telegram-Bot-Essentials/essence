@@ -57,13 +57,13 @@ class ManageInvoiceAnswer extends StateAnswer
         ]);
 
         wHook()->api()->sendMessage([
-            'chat_id' => $toCardAttempt->paymentAttempt->invoice->botUser->telegramUser->peer_id,
+            'chat_id' => $toCardAttempt->invoice->botUser->telegramUser->peer_id,
             'text' => $text,
         ]);
 
         $toCardAttempt->messageMeta->lockAction(__('tbe::invoice.to_card.lock-keys.admin-payment_rejected_by', [
             'adminName' => wHook()->user()->telegramUser->full_name]), customEmoji: "❌");
-        $toCardAttempt->paymentAttempt->invoice->messageMeta->lockAction(__('tbe::invoice.to_card.lock-keys.user-payment_rejected'), '❌');
+        $toCardAttempt->invoice->messageMeta->lockAction(__('tbe::invoice.to_card.lock-keys.user-payment_rejected'), '❌');
     }
 
     /**

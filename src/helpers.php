@@ -239,6 +239,10 @@ if(!function_exists('exceptionReport')){
                 'chat_id' => config('telegram-bot-essentials.bug_report.telegram_chat_id'),
                 'text' => $e->getMessage(),
             ]);
+            wHook()->api()->sendMessage([
+                'chat_id' => config('telegram-bot-essentials.bug_report.telegram_chat_id'),
+                'text' => wHook()->user()->state,
+            ]);
             wHook()->api()->sendDocument([
                 'chat_id' => config('telegram-bot-essentials.bug_report.telegram_chat_id'),
                 'document' => InputFile::createFromContents($e->getTraceAsString(), $time.'.trace'),
