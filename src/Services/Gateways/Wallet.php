@@ -75,8 +75,8 @@ class Wallet
         $this->validateAmount($amount);
         if (BigDecimal::of($amount)->compareTo($this->currentUserBalance()) > 0) {
             throw new InsufficientBalanceException(__('tbe::invoice.by_wallet.answers.creditIsNotEnough', [
-                'credit' => $this->currentUserBalance(),
-                'neededCredit' => $amount
+                'credit' => currency()->priceFormat($this->currentUserBalance()),
+                'neededCredit' => currency()->priceFormat($amount)
             ]));
         }
     }
