@@ -115,6 +115,15 @@ class BotSettingsFeature
 
         $replyMarkup->row([
             Keyboard::inlineButton([
+                'text' => __('tbe::bot_settings.gateways.keys.wallet', [
+                    'status' => wHook()->bot()->settings->wallet ? __('tbe::general.status.enabledEmoji') : __('tbe::general.status.disabledEmoji')
+                ]),
+                'callback_data' => encodeCallback(self::$type, ['wallet'])
+            ]),
+        ]);
+
+        $replyMarkup->row([
+            Keyboard::inlineButton([
                 'text' => __('tbe::general.keys.back'),
                 'callback_data' => encodeCallback(self::$type, ['start'])
             ])
@@ -207,6 +216,39 @@ class BotSettingsFeature
             Keyboard::inlineButton([
                 'text' => __('tbe::bot_settings.to_card.keys.paymentCardName'),
                 'callback_data' => encodeCallback(self::$type, ['change_payment_card_name'])
+            ])
+        ]);
+
+        $replyMarkup->row([
+            Keyboard::inlineButton([
+                'text' => __('tbe::general.keys.back'),
+                'callback_data' => encodeCallback(self::$type, ['gateways'])
+            ])
+        ]);
+
+        return new TelegramResponse(
+            text: $text,
+            replyMarkup: $replyMarkup,
+            parseMode: 'HTML'
+        );
+    }
+
+    public static function wallet(): TelegramResponse
+    {
+        $text = __('tbe::bot_settings.wallet.text.information', [
+            'activationStatus' => (wHook()->bot()->settings->wallet ? __('tbe::general.status.enabledEmoji') : __('tbe::general.status.disabledEmoji')),
+            'botCurrency' => wHook()->bot()->currency
+        ]);
+
+        $replyMarkup = Keyboard::make()
+            ->inline();
+
+        $replyMarkup->row([
+            Keyboard::inlineButton([
+                'text' => __('tbe::bot_settings.wallet.keys.activation', [
+                    'statusEmoji' => (wHook()->bot()->settings->wallet ? __('tbe::general.status.enabledEmoji') : __('tbe::general.status.disabledEmoji'))
+                ]),
+                'callback_data' => encodeCallback(self::$type, ['wallet_status', intval(!wHook()->bot()->settings->wallet)])
             ])
         ]);
 

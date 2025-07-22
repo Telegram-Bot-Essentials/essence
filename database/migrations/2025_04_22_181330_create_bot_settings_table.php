@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->boolean('bot_status')->default(true);
             $table->char('language', 2)->default('en');
 
-            $table->boolean('wallet')->default(true);
+            $table->boolean('wallet')->default(false);
 
             $table->boolean('zibal')->default(false);
             $table->string('zibal_merchant')->nullable();

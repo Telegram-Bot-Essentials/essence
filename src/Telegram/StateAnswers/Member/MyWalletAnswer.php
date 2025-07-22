@@ -12,6 +12,7 @@ use Elyar\TelegramBotEssentials\Telegram\Feature\InvoiceFeature;
 use Elyar\TelegramBotEssentials\Telegram\StateAnswers\StateAnswer;
 use Illuminate\Support\Facades\Validator;
 use Telegram\Bot\Exceptions\TelegramSDKException;
+use Telegram\Bot\Keyboard\Keyboard;
 
 class MyWalletAnswer extends StateAnswer
 {
@@ -61,6 +62,16 @@ class MyWalletAnswer extends StateAnswer
             'text' => "Creating invoice for amount of " . currency()->priceFormat($amount) . " 💸", // TODO: Localize this message
             'reply_markup' => wHook()->user()->getKeyboard(),
         ]);
+
+        $replyMarkup = Keyboard::make()->inline();
+        \Log::error(json_encode($replyMarkup->all()));
+        $replyMarkup->row([
+            Keyboard::inlineButton([
+                'text' => "test",
+                'callback_data' => encodeCallback('test', ['test', $invoice->id])
+            ])
+        ]);
+        \Log::error(json_encode($replyMarkup->all()));
 
         InvoiceFeature::invoice($invoice)->send();
     }

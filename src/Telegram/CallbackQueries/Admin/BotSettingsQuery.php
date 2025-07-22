@@ -100,6 +100,13 @@ class BotSettingsQuery extends CallbackQuery
             case "change_zirgozar_token":
                 $this->changeZirgozarMerchant();
                 break;
+
+            case 'wallet':
+                $this->wallet();
+                break;
+            case "wallet_status":
+                $this->switchWalletStatus();
+                break;
         }
     }
 
@@ -139,6 +146,12 @@ class BotSettingsQuery extends CallbackQuery
             ->answer(__('tbe::bot_settings.main.answers.payWithCardStatusUpdated', [
                 'newStatus' => $this->params[1] ? __('tbe::general.status.enabled') : __('tbe::general.status.disabled')
             ]))
+            ->update();
+    }
+
+    private function toCard(): void
+    {
+        BotSettingsFeature::toCard()
             ->update();
     }
 
@@ -207,15 +220,6 @@ class BotSettingsQuery extends CallbackQuery
     }
 
     /**
-     * @throws TelegramSDKException
-     */
-    private function gateways()
-    {
-        BotSettingsFeature::gateways()
-            ->update();
-    }
-
-    /**
      * @return void
      * @throws BindingResolutionException
      * @throws LogicException
@@ -239,9 +243,12 @@ class BotSettingsQuery extends CallbackQuery
         $this->answer(__('tbe::bot_settings.main.answers.transactionsChatId'));
     }
 
-    private function toCard(): void
+    /**
+     * @throws TelegramSDKException
+     */
+    private function gateways()
     {
-        BotSettingsFeature::toCard()
+        BotSettingsFeature::gateways()
             ->update();
     }
 
@@ -387,5 +394,26 @@ class BotSettingsQuery extends CallbackQuery
             'reply_markup' => wHook()->user()->getKeyboard()
         ]);
         $this->answer(__('tbe::bot_settings.zirgozar.answers.updatingToken'));
+    }
+
+    /**
+     * @throws TelegramSDKException
+     */
+    private function wallet(): void
+    {
+        BotSettingsFeature::wallet()
+            ->update();
+    }
+
+    /**
+     * @throws TelegramSDKException
+     */
+    private function switchWalletStatus()
+    {
+        wHook()->bot()->settings->wallet = $this->params[1];
+        wHook()->bot()->settings->save();
+        BotSettingsFeature::wallet()->answer(__('tbe::general.answers.resourceFieldUpdatedSuccessfully', [
+            'resource' => __('tbe::bot_settings.wallet.name')
+        ]))->update();
     }
 }

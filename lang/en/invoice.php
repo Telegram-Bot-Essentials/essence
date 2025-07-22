@@ -8,6 +8,11 @@ return [
                 . "\r\n📝 Description: \r\n:orderDescription"
                 . "\r\n"
                 . "\r\n👇 Choose your payment option from below.",
+            'noPaymentMethods' => "#⃣ Invoice :invoiceId"
+                . "\r\n"
+                . "\r\n📝 Description: \r\n:orderDescription"
+                . "\r\n"
+                . "\r\n❌ Currently there is no available payment method, Please try again later.",
         ],
         'answers' => [
             'main' => 'Invoice loaded',

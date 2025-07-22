@@ -39,6 +39,7 @@ return [
             'idpay' => 'IDPay :status',
             'nextpay' => 'NextPay :status',
             'nowpayments' => 'NowPayments :status',
+            'wallet' => 'Wallet :status',
         ]
     ],
 
@@ -126,6 +127,22 @@ return [
         'keys' => [
             'activation' => 'Zarinpal Status :statusEmoji',
             'merchantID' => '✏️ Merchant ID',
+        ]
+    ],
+
+    'wallet' => [
+        'name' => 'Wallet',
+        'text' => [
+            'information' => '⚙️ <b><i>Wallet</i></b>'
+                . "\r\n"
+                . "\r\n❔ <b>Activation Status:</b> :activationStatus"
+                . "\r\n"
+                . "\r\n❔ <b>Bot currency:</b> :botCurrency",
+        ],
+        'answers' => [
+        ],
+        'keys' => [
+            'activation' => 'Wallet Status :statusEmoji',
         ]
     ],
 

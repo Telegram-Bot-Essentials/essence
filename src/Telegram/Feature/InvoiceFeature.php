@@ -65,11 +65,24 @@ class InvoiceFeature
             ])]);
         }
 
+        $noPaymentMethods = empty($replyMarkup->all());
+
         if($encodedCallback){
             $replyMarkup->row([Keyboard::inlineButton([
                 'text' => __('tbe::invoice.summary.keys.back_to_previous'),
                 'callback_data' => $encodedCallback
             ])]);
+        }
+
+        if($noPaymentMethods){
+            return (new TelegramResponse(
+                text: __('tbe::invoice.summary.text.noPaymentMethods', [
+                    'invoiceId' => $invoice->id,
+                    'orderDescription' => $invoice->payable->description ?? null
+                ]),
+                replyMarkup: empty($replyMarkup->all()) ? null : $replyMarkup,
+                answer: 'There is no available payment method'
+            ))->messageMetaModel($invoice, 'invoice_view');
         }
 
         return (new TelegramResponse(
