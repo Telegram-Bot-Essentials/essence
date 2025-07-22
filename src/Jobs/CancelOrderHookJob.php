@@ -26,6 +26,8 @@ class CancelOrderHookJob implements ShouldQueue
      */
     public function __construct(Api $api, Update $update, Bot $bot, BotUser $botUser, Invoice $invoice)
     {
+        $this->queue = 'billing';
+
         $this->api = $api;
         $this->update = $update;
         $this->bot = $bot;
