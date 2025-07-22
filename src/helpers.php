@@ -6,6 +6,7 @@ use Elyar\TelegramBotEssentials\Services\Currency;
 use Elyar\TelegramBotEssentials\Services\CurrencyFather;
 use Elyar\TelegramBotEssentials\Services\ApiResponse;
 use Elyar\TelegramBotEssentials\Services\Billing;
+use Elyar\TelegramBotEssentials\Services\ExceptionHandler;
 use Elyar\TelegramBotEssentials\Services\Gateways\Gateways;
 use Elyar\TelegramBotEssentials\Support\Webhook;
 use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQueryBus;
@@ -261,5 +262,12 @@ if(!function_exists('exceptionReport')){
         Log::error($e->getMessage() ?? 'error message is not provided');
         Log::error(json_encode(wHook()->update(), JSON_PRETTY_PRINT) ?? 'Update is not provided');
         Log::error($e->getTraceAsString() ?? 'Trace is not provided');
+    }
+}
+
+if(!function_exists('ExceptionHandler')){
+    function ExceptionHandler(): ExceptionHandler
+    {
+        return app(ExceptionHandler::class);
     }
 }

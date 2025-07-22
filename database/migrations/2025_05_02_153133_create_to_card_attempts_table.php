@@ -22,6 +22,7 @@ return new class extends Migration {
             $table->string('reject_reason')->nullable();
             $table->timestamp('rejected_at')->nullable();
             $table->timestamp('accepted_at')->nullable();
+            $table->string('status')->nullable();
             $table->timestamps();
         });
     }

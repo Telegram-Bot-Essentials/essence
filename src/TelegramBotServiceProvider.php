@@ -12,6 +12,7 @@ use Elyar\TelegramBotEssentials\Services\ApiResponse;
 use Elyar\TelegramBotEssentials\Services\Billing;
 use Elyar\TelegramBotEssentials\Services\Currency;
 use Elyar\TelegramBotEssentials\Services\Gateways\Gateways;
+use Elyar\TelegramBotEssentials\Services\Gateways\Wallet;
 use Elyar\TelegramBotEssentials\Services\Gateways\ZarinPal\ZarinPal;
 use Elyar\TelegramBotEssentials\Services\Gateways\Zibal\Zibal;
 use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQueryBus;
@@ -77,6 +78,10 @@ class TelegramBotServiceProvider extends ServiceProvider
 
         $this->app->singleton(ZarinPal::class, function ($app) {
             return new ZarinPal();
+        });
+
+        $this->app->singleton(Wallet::class, function (){
+            return new Wallet();
         });
     }
 

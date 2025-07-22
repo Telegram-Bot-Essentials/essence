@@ -37,10 +37,8 @@ class ManageInvoiceQuery extends CallbackQuery
     {
         $toCardAttempt = ToCardAttempt::findOrFail($this->params[1]);
 
-        $toCardAttempt->invoice-
-
+        $toCardAttempt->attemptSucceed();
         $invoice = $toCardAttempt->invoice;
-        $invoice->triggerInvoicePaidHook();
         $invoice->messageMeta->lockAction(__('tbe::invoice.to_card.lock-keys.user-payment_accepted'), customEmoji: "✅");
         $toCardAttempt->messageMeta->lockAction(__('tbe::invoice.to_card.lock-keys.admin-payment_accepted_by', [
             'adminName' => wHook()->user()->telegramUser->full_name]), customEmoji: "✅");

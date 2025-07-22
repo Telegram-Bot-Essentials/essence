@@ -2,6 +2,7 @@
 
 namespace Elyar\TelegramBotEssentials\Services\Gateways;
 
+use Elyar\TelegramBotEssentials\Exceptions\FeatureIsDisabled;
 use Elyar\TelegramBotEssentials\Services\Gateways\ZarinPal\ZarinPal;
 use Elyar\TelegramBotEssentials\Services\Gateways\Zibal\Zibal;
 
@@ -15,5 +16,10 @@ class Gateways
     public function zarinpal(): Zarinpal
     {
         return app(Zarinpal::class);
+    }
+
+    public function wallet(): Wallet
+    {
+        return app(Wallet::class);
     }
 }

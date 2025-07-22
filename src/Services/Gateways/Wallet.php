@@ -1,0 +1,93 @@
+<?php
+
+namespace Elyar\TelegramBotEssentials\Services\Gateways;
+
+
+use Brick\Math\BigDecimal;
+use Brick\Math\BigNumber;
+use Elyar\TelegramBotEssentials\Exceptions\FeatureIsDisabled;
+use Elyar\TelegramBotEssentials\Exceptions\LogicException;
+use Elyar\TelegramBotEssentials\Exceptions\TbeLogicException;
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Telegram\Bot\Exceptions\TelegramSDKException;
+
+class Wallet
+{
+    /**
+     * @param BigDecimal|string $amount
+     * @throws FeatureIsDisabled
+     * @throws TbeLogicException
+     * @throws TelegramSDKException
+     * @throws LogicException
+     * @throws BindingResolutionException
+     */
+    public function takeAmount(BigDecimal|string $amount): void
+    {
+        $this->validateAmount($amount);
+        $this->validateMethodAllowed();
+        $this->validateUserBalanceIsSufficient($amount);
+
+        wHook()->user()->balance = $this->currentUserBalance()->minus($amount);
+        wHook()->user()->save();
+
+        wHook()->api()->sendMessage([
+            'chat_id' => wHook()->user()->telegramUser->peer_id,
+            'text' => currency()->priceFormat($amount) . " 💸 successfully taken from your wallet",
+            'reply_markup' => wHook()->user()->getKeyboard(),
+        ]);
+    }
+
+    /**
+     * @param BigDecimal|string $amount
+     * @throws FeatureIsDisabled
+     * @throws TbeLogicException
+     * @throws TelegramSDKException
+     * @throws LogicException
+     * @throws BindingResolutionException
+     */
+    public function addAmount(BigDecimal|string $amount): void
+    {
+        $this->validateAmount($amount);
+        $this->validateMethodAllowed();
+        $this->validateUserBalanceIsSufficient($amount);
+
+        wHook()->user()->balance = $this->currentUserBalance()->plus($amount);
+        wHook()->user()->save();
+
+        wHook()->api()->sendMessage([
+            'chat_id' => wHook()->user()->telegramUser->peer_id,
+            'text' => currency()->priceFormat($amount) . " 💸 successfully added to your wallet",
+            'reply_markup' => wHook()->user()->getKeyboard(),
+        ]);
+    }
+
+    public function currentUserBalance(): BigDecimal
+    {
+        return BigDecimal::of(wHook()->user()->balance);
+    }
+
+    /**
+     * @throws TbeLogicException
+     */
+    private function validateUserBalanceIsSufficient(BigDecimal|string $amount): void
+    {
+        $this->validateAmount($amount);
+        if (BigDecimal::of($amount)->compareTo($this->currentUserBalance()))
+            throw new TbeLogicException("Insufficient balance.");
+    }
+
+    /**
+     * @throws FeatureIsDisabled
+     */
+    public function validateMethodAllowed(): void
+    {
+        dependsOn(wHook()->bot()->settings->wallet);
+    }
+
+    private function validateAmount(BigDecimal|string &$amount): void
+    {
+        if(!($amount instanceof BigDecimal)){
+            $amount = BigDecimal::of($amount);
+        }
+    }
+}

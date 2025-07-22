@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->id();
             $table->decimal('amount', 65, 30);
             $table->timestamp('received_at')->nullable();
+            $table->string('status')->nullable();
             $table->timestamps();
         });
     }

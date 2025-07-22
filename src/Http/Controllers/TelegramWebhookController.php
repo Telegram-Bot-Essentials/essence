@@ -35,35 +35,14 @@ class TelegramWebhookController extends Controller
     {
         $request->headers->set('Accept', 'application/json');
         App::setLocale(wHook()->bot()->settings->language);
+
         try {
-            try {
-                dependsOn(!wHook()->bot()->suspended && (is_null(wHook()->bot()->activated_until) || wHook()->bot()->activated_until->isFuture()), __('tbe::general.alerts.botIsOff'));
-                if (!hasAccess()) dependsOn(wHook()->bot()->settings->bot_status, __('tbe::general.alerts.botIsOff'));
-                $this->initializeOptions();
-                $this->processUpdate();
-            } catch (InvalidPageNumber $e) {
-                $this->invalidPageNumberUserAlert($e);
-            } catch (ValidationException $e) {
-                $this->validationExceptionUserAlert($e);
-            } catch (CannotSetItActive $e) {
-                $this->cannotSetItActiveUserAlert($e);
-            } catch (CannotSetItAsDone $e) {
-                $this->cannotSetItAsDoneUserAlert($e);
-            } catch (ModelNotFoundException $e) {
-                $this->modelNotFoundUserAlert($e);
-            } catch (FeatureIsDisabled $e) {
-                $this->featureIsDisabledUserAlert($e);
-            } catch (TbeLogicException $e) {
-                $this->generalAlert($e);
-            }
-        } catch (TelegramSDKException|Exception $e) {
-            Telescope::tag(fn () => ['BUG']);
-            wHook()->api()->sendMessage([
-                'chat_id' => wHook()->user()->telegramUser->peer_id,
-                'text' => "😭 Something went wrong, please contact the bot support",
-                'reply_markup' => wHook()->user()->getKeyboard(),
-            ]);
-            exceptionReport($e);
+            dependsOn(!wHook()->bot()->suspended && (is_null(wHook()->bot()->activated_until) || wHook()->bot()->activated_until->isFuture()), __('tbe::general.alerts.botIsOff'));
+            if (!hasAccess()) dependsOn(wHook()->bot()->settings->bot_status, __('tbe::general.alerts.botIsOff'));
+            $this->initializeOptions();
+            $this->processUpdate();
+        }catch (Exception $e) {
+            exceptionHandler()->handle($e);
         }
     }
 
@@ -105,9 +84,10 @@ class TelegramWebhookController extends Controller
     }
 
     /**
-     * @throws TelegramSDKException
-     * @throws BindingResolutionException
      * @throws LogicException
+     * @throws TbeLogicException
+     * @throws BindingResolutionException
+     * @throws TelegramSDKException
      */
     private function processUpdate()
     {
@@ -136,142 +116,6 @@ class TelegramWebhookController extends Controller
             }
         } elseif (wHook()->update()->callbackQuery) {
             callbackQueryBus()->processCallbackQueries();
-        }
-    }
-
-    /**
-     * @param ValidationException $e
-     * @throws BindingResolutionException
-     * @throws LogicException
-     * @throws TelegramSDKException
-     */
-    private function validationExceptionUserAlert(ValidationException $e)
-    {
-        Log::error($e->getMessage() ?? 'error message is not provided');
-        Log::error(json_encode(wHook()->update(), JSON_PRETTY_PRINT) ?? 'Update is not provided');
-        Log::error($e->getTraceAsString() ?? 'Trace is not provided');
-        wHook()->api()->sendMessage([
-            'chat_id' => wHook()->user()->telegramUser->peer_id,
-            'text' => $e->getMessage(),
-            'reply_markup' => wHook()->user()->getKeyboard()
-        ]);
-    }
-
-    /**
-     * @throws TelegramSDKException
-     */
-    private function cannotSetItAsDoneUserAlert(CannotSetItAsDone $e)
-    {
-        Log::error($e->getMessage() ?? 'error message is not provided');
-        Log::error(json_encode(wHook()->update(), JSON_PRETTY_PRINT) ?? 'Update is not provided');
-        Log::error($e->getTraceAsString() ?? 'Trace is not provided');
-        wHook()->api()->sendMessage([
-            'chat_id' => wHook()->user()->telegramUser->peer_id,
-            'text' => $e->getMessage(),
-        ]);
-    }
-
-    /**
-     * @throws TelegramSDKException
-     */
-    private function cannotSetItActiveUserAlert(CannotSetItActive $e)
-    {
-        Log::error($e->getMessage() ?? 'error message is not provided');
-        Log::error(json_encode(wHook()->update(), JSON_PRETTY_PRINT) ?? 'Update is not provided');
-        Log::error($e->getTraceAsString() ?? 'Trace is not provided');
-        wHook()->api()->sendMessage([
-            'chat_id' => wHook()->user()->telegramUser->peer_id,
-            'text' => $e->getMessage(),
-        ]);
-    }
-
-    /**
-     * @throws BindingResolutionException
-     * @throws TelegramSDKException
-     * @throws LogicException
-     */
-    private function generalAlert(Exception $e)
-    {
-        Log::error($e->getMessage() ?? 'error message is not provided');
-        Log::error(json_encode(wHook()->update(), JSON_PRETTY_PRINT) ?? 'Update is not provided');
-        Log::error($e->getTraceAsString() ?? 'Trace is not provided');
-        if (wHook()->update()->message) {
-            wHook()->api()->sendMessage([
-                'chat_id' => wHook()->update()->message->from->id,
-                'text' => $e->getMessage(),
-                'reply_markup' => wHook()->user()->getKeyboard(),
-            ]);
-        } elseif (wHook()->update()->callbackQuery) {
-            wHook()->api()->answerCallbackQuery([
-                'callback_query_id' => wHook()->update()->callbackQuery->id,
-                'text' => $e->getMessage(),
-                'show_alert' => true,
-                'cache_time' => 5,
-            ]);
-        }
-    }
-
-    /**
-     * @throws LogicException
-     * @throws TelegramSDKException
-     * @throws BindingResolutionException
-     */
-    public function modelNotFoundUserAlert(ModelNotFoundException $e)
-    {
-        Log::error($e->getMessage() ?? 'error message is not provided');
-        Log::error(json_encode(wHook()->update(), JSON_PRETTY_PRINT) ?? 'Update is not provided');
-        Log::error($e->getTraceAsString() ?? 'Trace is not provided');
-        $resourceName = getResourceName($e->getModel());
-        if (wHook()->update()->message) {
-            wHook()->api()->sendMessage([
-                'chat_id' => wHook()->update()->message->from->id,
-                'text' => __('tbe::general.alerts.notFound', ['resource' => $resourceName]),
-                'reply_markup' => wHook()->user()->getKeyboard(),
-            ]);
-        } elseif (wHook()->update()->callbackQuery) {
-            wHook()->api()->answerCallbackQuery([
-                'callback_query_id' => wHook()->update()->callbackQuery->id,
-                'text' => __('tbe::general.alerts.notFound', ['resource' => $resourceName]),
-                'show_alert' => true,
-                'cache_time' => 5,
-            ]);
-        }
-    }
-
-    /**
-     * @throws TelegramSDKException
-     */
-    private function featureIsDisabledUserAlert(FeatureIsDisabled|Exception $e)
-    {
-        if (wHook()->update()->message) {
-            wHook()->api()->sendMessage([
-                'chat_id' => wHook()->update()->message->from->id,
-                'text' => $e->getMessage() == "" ? __('tbe::general.alerts.disabledFeature', ['feature' => wHook()->update()->message->text]) : $e->getMessage(),
-            ]);
-        } elseif (wHook()->update()->callbackQuery) {
-            wHook()->api()->answerCallbackQuery([
-                'callback_query_id' => wHook()->update()->callbackQuery->id,
-                'text' => $e->getMessage() == "" ? __('tbe::general.alerts.disabledFeature', ['feature' => getInputInlineKeyText()]) : $e->getMessage(),
-                'show_alert' => true,
-                'cache_time' => 5,
-            ]);
-        }
-    }
-
-    private function invalidPageNumberUserAlert(InvalidPageNumber|Exception $e)
-    {
-        if (wHook()->update()->message) {
-            wHook()->api()->sendMessage([
-                'chat_id' => wHook()->update()->message->from->id,
-                'text' => $e->getMessage() == "" ? __('tbe::general.alerts.invalidPageNumber') : $e->getMessage(),
-            ]);
-        } elseif (wHook()->update()->callbackQuery) {
-            wHook()->api()->answerCallbackQuery([
-                'callback_query_id' => wHook()->update()->callbackQuery->id,
-                'text' => $e->getMessage() == "" ? __('tbe::general.alerts.invalidPageNumber') : $e->getMessage(),
-                'show_alert' => true,
-                'cache_time' => 5,
-            ]);
         }
     }
 
