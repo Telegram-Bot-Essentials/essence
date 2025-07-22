@@ -58,17 +58,17 @@ class ExceptionHandler
      */
     private function invalidPageNumberUserAlert(InvalidPageNumber|Exception $e): void
     {
-        if (wHook()->update()->message) {
-            wHook()->api()->sendMessage([
-                'chat_id' => wHook()->update()->message->from->id,
-                'text' => $e->getMessage() == "" ? __('tbe::general.alerts.invalidPageNumber') : $e->getMessage(),
-            ]);
-        } elseif (wHook()->update()->callbackQuery) {
+        if (wHook()->update()->callbackQuery) {
             wHook()->api()->answerCallbackQuery([
                 'callback_query_id' => wHook()->update()->callbackQuery->id,
                 'text' => $e->getMessage() == "" ? __('tbe::general.alerts.invalidPageNumber') : $e->getMessage(),
                 'show_alert' => true,
                 'cache_time' => 5,
+            ]);
+        } else {
+            wHook()->api()->sendMessage([
+                'chat_id' => wHook()->update()->message->from->id,
+                'text' => $e->getMessage() == "" ? __('tbe::general.alerts.invalidPageNumber') : $e->getMessage(),
             ]);
         }
     }
@@ -130,18 +130,18 @@ class ExceptionHandler
         Log::error(json_encode(wHook()->update(), JSON_PRETTY_PRINT) ?? 'Update is not provided');
         Log::error($e->getTraceAsString() ?? 'Trace is not provided');
         $resourceName = getResourceName($e->getModel());
-        if (wHook()->update()->message) {
-            wHook()->api()->sendMessage([
-                'chat_id' => wHook()->update()->message->from->id,
-                'text' => __('tbe::general.alerts.notFound', ['resource' => $resourceName]),
-                'reply_markup' => wHook()->user()->getKeyboard(),
-            ]);
-        } elseif (wHook()->update()->callbackQuery) {
+        if (wHook()->update()->callbackQuery) {
             wHook()->api()->answerCallbackQuery([
                 'callback_query_id' => wHook()->update()->callbackQuery->id,
                 'text' => __('tbe::general.alerts.notFound', ['resource' => $resourceName]),
                 'show_alert' => true,
                 'cache_time' => 5,
+            ]);
+        } else {
+            wHook()->api()->sendMessage([
+                'chat_id' => wHook()->update()->message->from->id,
+                'text' => __('tbe::general.alerts.notFound', ['resource' => $resourceName]),
+                'reply_markup' => wHook()->user()->getKeyboard(),
             ]);
         }
     }
@@ -151,17 +151,17 @@ class ExceptionHandler
      */
     private function featureIsDisabledUserAlert(FeatureIsDisabled|Exception $e): void
     {
-        if (wHook()->update()->message) {
-            wHook()->api()->sendMessage([
-                'chat_id' => wHook()->update()->message->from->id,
-                'text' => $e->getMessage() == "" ? __('tbe::general.alerts.disabledFeature', ['feature' => wHook()->update()->message->text]) : $e->getMessage(),
-            ]);
-        } elseif (wHook()->update()->callbackQuery) {
+        if (wHook()->update()->callbackQuery) {
             wHook()->api()->answerCallbackQuery([
                 'callback_query_id' => wHook()->update()->callbackQuery->id,
                 'text' => $e->getMessage() == "" ? __('tbe::general.alerts.disabledFeature', ['feature' => getInputInlineKeyText()]) : $e->getMessage(),
                 'show_alert' => true,
                 'cache_time' => 5,
+            ]);
+        } else {
+            wHook()->api()->sendMessage([
+                'chat_id' => wHook()->update()->message->from->id,
+                'text' => $e->getMessage() == "" ? __('tbe::general.alerts.disabledFeature', ['feature' => wHook()->update()->message->text]) : $e->getMessage(),
             ]);
         }
     }
@@ -176,18 +176,18 @@ class ExceptionHandler
         Log::error($e->getMessage() ?? 'error message is not provided');
         Log::error(json_encode(wHook()->update(), JSON_PRETTY_PRINT) ?? 'Update is not provided');
         Log::error($e->getTraceAsString() ?? 'Trace is not provided');
-        if (wHook()->update()->message) {
-            wHook()->api()->sendMessage([
-                'chat_id' => wHook()->update()->message->from->id,
-                'text' => $e->getMessage(),
-                'reply_markup' => wHook()->user()->getKeyboard(),
-            ]);
-        } elseif (wHook()->update()->callbackQuery) {
+        if (wHook()->update()->callbackQuery) {
             wHook()->api()->answerCallbackQuery([
                 'callback_query_id' => wHook()->update()->callbackQuery->id,
                 'text' => $e->getMessage(),
                 'show_alert' => true,
                 'cache_time' => 5,
+            ]);
+        } else {
+            wHook()->api()->sendMessage([
+                'chat_id' => wHook()->update()->message->from->id,
+                'text' => $e->getMessage(),
+                'reply_markup' => wHook()->user()->getKeyboard(),
             ]);
         }
     }
