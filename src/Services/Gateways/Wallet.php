@@ -73,11 +73,12 @@ class Wallet
     private function validateUserBalanceIsSufficient(BigDecimal|string $amount): void
     {
         $this->validateAmount($amount);
-        if (BigDecimal::of($amount)->compareTo($this->currentUserBalance()))
+        if (BigDecimal::of($amount)->compareTo($this->currentUserBalance()) > 0) {
             throw new InsufficientBalanceException(__('tbe::invoice.by_wallet.answers.creditIsNotEnough', [
                 'credit' => $this->currentUserBalance(),
                 'neededCredit' => $amount
             ]));
+        }
     }
 
     /**
