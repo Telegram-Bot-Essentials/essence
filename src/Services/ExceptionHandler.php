@@ -67,7 +67,7 @@ class ExceptionHandler
             ]);
         } else {
             wHook()->api()->sendMessage([
-                'chat_id' => wHook()->update()->message->from->id,
+                'chat_id' => wHook()->user()->telegramUser->peer_id,
                 'text' => $e->getMessage() == "" ? __('tbe::general.alerts.invalidPageNumber') : $e->getMessage(),
             ]);
         }
@@ -139,7 +139,7 @@ class ExceptionHandler
             ]);
         } else {
             wHook()->api()->sendMessage([
-                'chat_id' => wHook()->update()->message->from->id,
+                'chat_id' => wHook()->user()->telegramUser->peer_id,
                 'text' => __('tbe::general.alerts.notFound', ['resource' => $resourceName]),
                 'reply_markup' => wHook()->user()->getKeyboard(),
             ]);
@@ -160,7 +160,7 @@ class ExceptionHandler
             ]);
         } else {
             wHook()->api()->sendMessage([
-                'chat_id' => wHook()->update()->message->from->id,
+                'chat_id' => wHook()->user()->telegramUser->peer_id,
                 'text' => $e->getMessage() == "" ? __('tbe::general.alerts.disabledFeature', ['feature' => wHook()->update()->message->text]) : $e->getMessage(),
             ]);
         }
@@ -185,7 +185,7 @@ class ExceptionHandler
             ]);
         } else {
             wHook()->api()->sendMessage([
-                'chat_id' => wHook()->update()->message->from->id,
+                'chat_id' => wHook()->user()->telegramUser->peer_id,
                 'text' => $e->getMessage(),
                 'reply_markup' => wHook()->user()->getKeyboard(),
             ]);
