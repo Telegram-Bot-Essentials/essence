@@ -8,6 +8,7 @@ use Elyar\TelegramBotEssentials\Services\CurrencyFather;
 use Elyar\TelegramBotEssentials\Services\ApiResponse;
 use Elyar\TelegramBotEssentials\Services\Billing;
 use Elyar\TelegramBotEssentials\Services\ExceptionHandler;
+use Elyar\TelegramBotEssentials\Services\StateDataService;
 use Elyar\TelegramBotEssentials\Services\Gateways\Gateways;
 use Elyar\TelegramBotEssentials\Support\Webhook;
 use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQueryBus;
@@ -268,8 +269,8 @@ if(!function_exists('exceptionReport')){
     }
 }
 
-if(!function_exists('ExceptionHandler')){
-    function ExceptionHandler(): ExceptionHandler
+if(!function_exists('exceptionHandler')){
+    function exceptionHandler(): ExceptionHandler
     {
         return app(ExceptionHandler::class);
     }
@@ -288,5 +289,12 @@ if(!function_exists('inlineConfirmationKey')){
             'text' => $keyText,
             'callback_data' => encodeCallback(InlineConfirmationFeature::$type, ['load', $inlineConfirmation->id])
         ]);
+    }
+}
+
+if(!function_exists('stateData')){
+    function stateData(): StateDataService
+    {
+        return app(StateDataService::class);
     }
 }
