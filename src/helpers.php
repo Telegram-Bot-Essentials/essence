@@ -2,6 +2,7 @@
 
 use Elyar\TelegramBotEssentials\Enums\Roles;
 use Elyar\TelegramBotEssentials\Exceptions\FeatureIsDisabled;
+use Elyar\TelegramBotEssentials\Models\InlineConfirmation;
 use Elyar\TelegramBotEssentials\Services\Currency;
 use Elyar\TelegramBotEssentials\Services\CurrencyFather;
 use Elyar\TelegramBotEssentials\Services\ApiResponse;
@@ -10,11 +11,13 @@ use Elyar\TelegramBotEssentials\Services\ExceptionHandler;
 use Elyar\TelegramBotEssentials\Services\Gateways\Gateways;
 use Elyar\TelegramBotEssentials\Support\Webhook;
 use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQueryBus;
+use Elyar\TelegramBotEssentials\Telegram\Feature\Member\InlineConfirmationFeature;
 use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\ReplyKeyBus;
 use Elyar\TelegramBotEssentials\Telegram\StateAnswers\StateAnswerBus;
 use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\FileUpload\InputFile;
+use Telegram\Bot\Keyboard\Button;
 use Telegram\Bot\Keyboard\Keyboard;
 
 if (!function_exists('wHook')) {
@@ -269,5 +272,20 @@ if(!function_exists('ExceptionHandler')){
     function ExceptionHandler(): ExceptionHandler
     {
         return app(ExceptionHandler::class);
+    }
+}
+
+if(!function_exists('inlineConfirmationKey')){
+    function inlineConfirmationKey(string $keyText, string $targetCallbackData, string $backCallbackData): Button|array|string
+    {
+        $inlineConfirmation = InlineConfirmation::create([
+            'callback_data' => $targetCallbackData,
+            'back_callback_data' => $backCallbackData
+        ]);
+
+        return Keyboard::inlineButton([
+            'text' => $keyText,
+            'callback_data' => encodeCallback(InlineConfirmationFeature::$type, ['load', $inlineConfirmation->id])
+        ]);
     }
 }
