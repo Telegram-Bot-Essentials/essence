@@ -5,6 +5,7 @@ namespace Elyar\TelegramBotEssentials\Telegram\StateAnswers;
 use Elyar\TelegramBotEssentials\Enums\AllowableFields;
 use Elyar\TelegramBotEssentials\Exceptions\TbeLogicException;
 use Elyar\TelegramBotEssentials\Models\MessageMeta;
+use Elyar\TelegramBotEssentials\Models\StateData;
 
 abstract class StateAnswer implements StateAnswerInterface
 {
@@ -12,6 +13,7 @@ abstract class StateAnswer implements StateAnswerInterface
     protected int $perm;
     protected array $params;
     protected ?MessageMeta $messageMeta = null;
+    protected ?StateData $stateData = null;
 
     protected array $allowedFields = [AllowableFields::TEXT->value];
 
@@ -47,6 +49,18 @@ abstract class StateAnswer implements StateAnswerInterface
         }
         $this->messageMeta = $messageMeta;
         return $messageMeta;
+    }
+
+    public function stateData(): ?StateData
+    {
+        if($this->stateData) return $this->stateData;
+        $stateData = StateData::find($this->params['state_data_id'] ?? $this->params['state_data']);
+        if (!$stateData) {
+            exceptionReport(new TbeLogicException('Trying to access state data, but it is not provided'));
+            return null;
+        }
+        $this->stateData = $stateData;
+        return $stateData;
     }
 
     abstract function cancel(): void;
