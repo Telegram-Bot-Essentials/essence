@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('inline_confirmations', function (Blueprint $table) {
             $table->id();
+            $table->string('confirmation_text')->nullable();
             $table->string('callback_data', 64);
             $table->string('back_callback_data', 64);
         });
