@@ -37,7 +37,7 @@ class MyWalletQuery extends CallbackQuery
     public function addCredit(): void
     {
         $messageMeta = MessageMeta::makeWithCurrentMessage();
-        $messageMeta->deleteMessage();
+        $messageMeta->lockAction();
         wHook()->user()->changeState(encodeAnswerState($this->type, "add_credit", [
             'message_meta_id' => $messageMeta->id
         ]));

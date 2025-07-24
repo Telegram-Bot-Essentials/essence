@@ -83,11 +83,5 @@ class MyWalletAnswer extends StateAnswer
     {
         // TODO: Implement cancel() method.
         // Logic to revert the process if user cancels action
-
-        // example:
-        $messageMeta = MessageMeta::find($this->params['message_meta_id']);
-        if ($messageMeta) {
-            $messageMeta->continueAction();
-        }
     }
 }
