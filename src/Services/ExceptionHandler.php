@@ -12,6 +12,7 @@ use Exception;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\ItemNotFoundException;
 use Illuminate\Validation\ValidationException;
 use Laravel\Telescope\Telescope;
 use Telegram\Bot\Exceptions\TelegramSDKException;
@@ -33,6 +34,8 @@ class ExceptionHandler
                 $this->cannotSetItAsDoneUserAlert($e);
             } catch (ModelNotFoundException $e) {
                 $this->modelNotFoundUserAlert($e);
+            } catch (ItemNotFoundException $e){
+                $this->itemNotFoundUserAlert($e);
             } catch (FeatureIsDisabled $e) {
                 $this->featureIsDisabledUserAlert($e);
             } catch (TbeLogicException $e) {
@@ -187,6 +190,27 @@ class ExceptionHandler
             wHook()->api()->sendMessage([
                 'chat_id' => wHook()->user()->telegramUser->peer_id,
                 'text' => $e->getMessage(),
+                'reply_markup' => wHook()->user()->getKeyboard(),
+            ]);
+        }
+    }
+
+    private function itemNotFoundUserAlert(ItemNotFoundException $e)
+    {
+        Log::error($e->getMessage() ?? 'error message is not provided');
+        Log::error(json_encode(wHook()->update(), JSON_PRETTY_PRINT) ?? 'Update is not provided');
+        Log::error($e->getTraceAsString() ?? 'Trace is not provided');
+        if (wHook()->update()->callbackQuery) {
+            wHook()->api()->answerCallbackQuery([
+                'callback_query_id' => wHook()->update()->callbackQuery->id,
+                'text' => 'Requested item not found.',
+                'show_alert' => true,
+                'cache_time' => 5,
+            ]);
+        } else {
+            wHook()->api()->sendMessage([
+                'chat_id' => wHook()->user()->telegramUser->peer_id,
+                'text' => 'Requested item not found.',
                 'reply_markup' => wHook()->user()->getKeyboard(),
             ]);
         }
