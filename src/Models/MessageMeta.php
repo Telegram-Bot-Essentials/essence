@@ -150,17 +150,16 @@ class MessageMeta extends Model
         $this->initializeModel($message->chat->id, $message->messageId, $message->text, $message->replyMarkup);
     }
 
-    /**
-     * @throws TelegramSDKException
-     */
     public function revertAction(): void
     {
-        wHook()->api()->editMessageText([
-            'chat_id' => $this->chat_id,
-            'message_id' => $this->message_id,
-            'text' => $this->message_text,
-            'reply_markup' => $this->message_reply_markup,
-        ]);
+        try{
+            wHook()->api()->editMessageText([
+                'chat_id' => $this->chat_id,
+                'message_id' => $this->message_id,
+                'text' => $this->message_text,
+                'reply_markup' => $this->message_reply_markup,
+            ]);
+        } catch (TelegramSDKException) {}
     }
 
     /**
