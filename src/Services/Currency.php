@@ -46,16 +46,7 @@ class Currency
 
     public function getCurrency(): string
     {
-        return $this->currency;
-    }
-
-    public function setCurrency(string $currency): void
-    {
-        if (!$this->isCurrencySupported($currency)) {
-            throw new InvalidArgumentException('Unsupported currency');
-        }
-
-        $this->currency = $currency;
+        return wHook()->bot()->currency;
     }
 
     function currencyFormat(string $amount, string $currencyCode = null, $significantDigits = null, $thousandSeparator = null): string
