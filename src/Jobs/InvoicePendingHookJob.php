@@ -49,6 +49,8 @@ class InvoicePendingHookJob implements ShouldQueue
 
         \App::setLocale(wHook()->bot()->settings->language);
 
+        if($this->invoice->status == 'pending') return;
+
         try {
             wHook()->api()->sendMessage([
                 'chat_id' => $this->invoice->botUser->telegramUser->peer_id,
