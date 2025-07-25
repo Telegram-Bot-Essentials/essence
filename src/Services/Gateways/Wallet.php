@@ -86,7 +86,7 @@ class Wallet
      */
     public function validateMethodAllowed(): void
     {
-        dependsOn(wHook()->bot()->settings->wallet);
+        dependsOn(wHook()->bot()->settings->wallet, __('tbe::general.alerts.disabledFeature', ['feature' => __('tbe::bot_settings.wallet.name')]));
     }
 
     private function validateAmount(BigDecimal|string &$amount): void
