@@ -96,7 +96,7 @@ class BotUsersAnswer extends StateAnswer
         $amount = wHook()->update()->message->text;
         Validator::validate(
             ['amount' => $amount],
-            ['amount' => "required|numeric|min:0.01|max:100000000"]
+            ['amount' => "required|numeric|min:0|max:100000000"]
         );
         $amount = floatval($amount);
 
