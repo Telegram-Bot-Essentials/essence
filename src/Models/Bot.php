@@ -75,6 +75,7 @@ class Bot extends BaseTenant
             'unique_id',
             'bot_token',
             'secret_token',
+            'currency',
             'bot_owner_peer_id',
             'activated_until',
             'suspended_at',
