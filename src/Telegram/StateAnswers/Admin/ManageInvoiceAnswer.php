@@ -40,7 +40,8 @@ class ManageInvoiceAnswer extends StateAnswer
     private function rejectReason(): void
     {
         $toCardAttempt = ToCardAttempt::findOrFail($this->params['to_card_attempt_id']);
-        $toCardAttempt->rejected_at = now();
+        $toCardAttempt->attemptFailed();
+
         $toCardAttempt->reject_reason = wHook()->update()->message->text;
         $toCardAttempt->save();
         wHook()->user()->changeState();

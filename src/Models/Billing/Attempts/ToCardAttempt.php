@@ -24,6 +24,7 @@ class ToCardAttempt extends PaymentAttempt
 
     protected function attemptFailedHook(): void
     {
-        // TODO: Implement attemptFailedHook() method.
+        $this->setAttribute('rejected_at', now());
+        $this->save();
     }
 }
