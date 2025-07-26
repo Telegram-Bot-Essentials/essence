@@ -106,8 +106,9 @@ class InvoiceAnswer extends StateAnswer
         $toCardAttempt->info_text = wHook()->update()->message?->photo ? wHook()->update()->message->caption : wHook()->update()->message->text;
 
         if (wHook()->update()->message?->photo[0] ?? null) {
+            $file = wHook()->api()->getFile(['file_id' => wHook()->update()->message->photo[0]->file_id]);
             $path = Storage::disk()->path(time() . '.jpg');
-            wHook()->api()->downloadFile(wHook()->update()->message->photo[0], $path);
+            wHook()->api()->downloadFile($file, $path);
             $base64EncodedPhoto = base64_encode(file_get_contents($path));
             Storage::delete($path);
             $toCardAttempt->info_photo = $base64EncodedPhoto;
