@@ -53,10 +53,10 @@ class CreditOrder extends Order
      */
     public function invoicePaidHook(): void
     {
-        wHook()->user()->balance += $this->amount;
-        wHook()->user()->save();
+        $this->botUser->balance += $this->amount;
+        $this->botUser->save();
         wHook()->api()->sendMessage([
-            'chat_id' => wHook()->user()->telegramUser->peer_id,
+            'chat_id' => $this->botUser->telegramUser->peer_id,
             'text' => 'Your total credit increased by ' . currency()->priceFormat($this->amount) . ' 💸',
             'reply_markup' => wHook()->user()->getKeyboard(),
         ]);
@@ -70,10 +70,10 @@ class CreditOrder extends Order
      */
     public function cancelOrderHook(): void
     {
-        wHook()->user()->balance -= $this->amount;
-        wHook()->user()->save();
+        $this->botUser->balance -= $this->amount;
+        $this->botUser->save();
         wHook()->api()->sendMessage([
-            'chat_id' => wHook()->user()->telegramUser->peer_id,
+            'chat_id' => $this->botUser->telegramUser->peer_id,
             'text' => 'Your total credit decreased by ' . currency()->priceFormat($this->amount) . ' 💸' . ' due to order cancellation',
             'reply_markup' => wHook()->user()->getKeyboard(),
         ]);
