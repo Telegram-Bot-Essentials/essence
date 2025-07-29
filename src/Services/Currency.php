@@ -2,7 +2,9 @@
 
 namespace Elyar\TelegramBotEssentials\Services;
 
-use InvalidArgumentException;
+use Brick\Math\BigDecimal;
+use Brick\Math\BigNumber;
+use Throwable;
 
 class Currency
 {
@@ -51,7 +53,7 @@ class Currency
 
     function currencyFormat(string $amount, string $currencyCode = null, $significantDigits = null, $thousandSeparator = null): string
     {
-        if($currencyCode === null){
+        if ($currencyCode === null) {
             $currencyCode = $this->getCurrency();
         }
 
@@ -79,5 +81,12 @@ class Currency
             return strtoupper($currency);
         });
         return array_unique(array_merge($currencies->toArray(), ['USD']));
+    }
+
+    public function multiply(BigNumber|int|float|string $amount, BigNumber|int|float|string $multiplier): BigDecimal
+    {
+        $amount = BigDecimal::of($amount);
+        $multiplier = BigDecimal::of($multiplier);
+        return $amount->multipliedBy($multiplier);
     }
 }
