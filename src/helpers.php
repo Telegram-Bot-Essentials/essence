@@ -246,10 +246,10 @@ if(!function_exists('exceptionReport')){
                     'text' => $e->getMessage(),
                 ]);
             }
-            if(wHook()->user()->state){
+            if(wHook()->requestState()){
                 wHook()->api()->sendMessage([
                     'chat_id' => config('telegram-bot-essentials.bug_report.telegram_chat_id'),
-                    'text' => wHook()->user()->state,
+                    'text' => wHook()->requestState(),
                 ]);
             }
             wHook()->api()->sendDocument([

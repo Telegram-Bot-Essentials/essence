@@ -15,6 +15,7 @@ class Webhook
     private static ?Update $update = null;
     private static ?Bot $bot = null;
     private static ?BotUser $user = null;
+    private static ?string $requestState = null;
 
     public static function setApi(?Api $api): void
     {
@@ -34,6 +35,7 @@ class Webhook
     public static function setUser(?BotUser $user): void
     {
         self::$user = $user;
+        self::$requestState = $user->state;
     }
 
     public static function api(): Api
@@ -71,6 +73,16 @@ class Webhook
         try {
             if (self::$user == null) throw new WebhookAuthException('Failed to retrieve telegram user.');
             return self::$user;
+        } catch (WebhookAuthException $e) {
+            abort(500, $e->getMessage());
+        }
+    }
+
+    public static function requestState(): string
+    {
+        try {
+            if (self::$requestState == null) throw new WebhookAuthException('Failed to retrieve request state.');
+            return self::$requestState;
         } catch (WebhookAuthException $e) {
             abort(500, $e->getMessage());
         }
