@@ -52,8 +52,8 @@ class InvoiceAnswer extends StateAnswer
         $invoice->paymentAttempt->received_at = now();
         $invoice->paymentAttempt->save();
 
-//        $invoice->messageMeta->lockAction(__('tbe::invoice.to_card.lock-keys.user-wait_for_payment_processing'));
-//        wHook()->user()->changeState();
+        $invoice->messageMeta->lockAction(__('tbe::invoice.to_card.lock-keys.user-wait_for_payment_processing'));
+        wHook()->user()->changeState();
         wHook()->api()->sendMessage([
             'chat_id' => wHook()->update()->message->from->id,
             'text' => __('tbe::invoice.to_card.text.user-payment_result'),
