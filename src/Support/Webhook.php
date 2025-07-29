@@ -2,6 +2,7 @@
 
 namespace Elyar\TelegramBotEssentials\Support;
 
+use Closure;
 use Elyar\TelegramBotEssentials\Exceptions\WebhookAuthException;
 use Elyar\TelegramBotEssentials\Models\Bot;
 use Elyar\TelegramBotEssentials\Models\BotUser;
@@ -81,5 +82,22 @@ class Webhook
             && self::$user !== null
             && self::$api !== null
             && self::$update !== null;
+    }
+
+    public static function runForUser(BotUser $user, Closure $callback): mixed
+    {
+        $originalBot = self::$bot;
+        $originalUser = self::$user;
+
+        self::setBot($user->bot);
+        self::setUser($user);
+
+        try {
+            \Log::error('yeah');
+            return $callback();
+        } finally {
+            self::setBot($originalBot);
+            self::setUser($originalUser);
+        }
     }
 }

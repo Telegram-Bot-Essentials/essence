@@ -63,16 +63,6 @@ class MyWalletAnswer extends StateAnswer
             'reply_markup' => wHook()->user()->getKeyboard(),
         ]);
 
-        $replyMarkup = Keyboard::make()->inline();
-        \Log::error(json_encode($replyMarkup->all()));
-        $replyMarkup->row([
-            Keyboard::inlineButton([
-                'text' => "test",
-                'callback_data' => encodeCallback('test', ['test', $invoice->id])
-            ])
-        ]);
-        \Log::error(json_encode($replyMarkup->all()));
-
         InvoiceFeature::invoice($invoice)->send();
     }
 
