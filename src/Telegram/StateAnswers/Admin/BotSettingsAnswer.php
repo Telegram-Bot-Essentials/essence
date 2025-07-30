@@ -106,13 +106,6 @@ class BotSettingsAnswer extends StateAnswer
     }
 
     /**
-     */
-    function cancel(): void
-    {
-        // TODO: Implement cancel() method.
-    }
-
-    /**
      * @throws TelegramSDKException
      * @throws BindingResolutionException
      * @throws LogicException

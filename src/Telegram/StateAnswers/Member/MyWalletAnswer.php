@@ -31,9 +31,6 @@ class MyWalletAnswer extends StateAnswer
             case "add_credit":
                 $this->addCredit();
                 break;
-            case "cancel":
-                $this->cancel();
-                break;
         }
     }
 

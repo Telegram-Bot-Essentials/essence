@@ -17,21 +17,7 @@ class ManageInvoicesAnswer extends StateAnswer
     public function handle(string $method): void
     {
         switch (strtolower($method)) {
-            case "cancel":
-                $this->cancel();
-                break;
+
         }
-    }
-
-    function cancel(): void
-    {
-        // TODO: Implement cancel() method.
-        // Logic to revert the process if user cancels action
-
-        // example:
-        // $messageMeta = MessageMeta::find($this->params['message_meta_id']);
-        // if($messageMeta){
-        //     $messageMeta->continueAction();
-        // }
     }
 }

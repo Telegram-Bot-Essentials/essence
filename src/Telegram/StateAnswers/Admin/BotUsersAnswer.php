@@ -32,9 +32,6 @@ class BotUsersAnswer extends StateAnswer
     public function handle(string $method): void
     {
         switch (strtolower($method)) {
-            case "cancel":
-                $this->cancel();
-                break;
             case "set_start_page":
                 $this->setStartPage();
                 break;

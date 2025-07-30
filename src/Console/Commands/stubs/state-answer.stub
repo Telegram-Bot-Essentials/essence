@@ -21,15 +21,8 @@ class {{ class_name }} extends StateAnswer
         }
     }
 
-    function cancel(): void
-    {
-        // TODO: Implement cancel() method.
-        // Logic to revert the process if user cancels action
-
-        // example:
-        // $messageMeta = MessageMeta::find($this->params['message_meta_id']);
-        // if($messageMeta){
-        //     $messageMeta->continueAction();
-        // }
-    }
+    // TODO: Implement cancel() method for custom cancellation logic
+    // function cancel(): void
+    // {
+    // }
 }

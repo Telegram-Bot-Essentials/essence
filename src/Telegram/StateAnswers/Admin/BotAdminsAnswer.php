@@ -56,9 +56,4 @@ class BotAdminsAnswer extends StateAnswer
         $data = BotAdminsFeature::menu();
         $messageMeta->updateAndContinueAction($data);
     }
-
-    function cancel(): void
-    {
-        // TODO: Implement cancel() method.
-    }
 }

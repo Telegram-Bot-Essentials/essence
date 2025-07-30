@@ -26,9 +26,6 @@ class ManageInvoiceAnswer extends StateAnswer
             case "reject_reason":
                 $this->rejectReason();
                 break;
-            case "cancel":
-                $this->cancel();
-                break;
         }
     }
 

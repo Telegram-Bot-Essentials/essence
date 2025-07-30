@@ -31,9 +31,6 @@ class InvoiceAnswer extends StateAnswer
             case "pay_to_card":
                 $this->payToCard();
                 break;
-            case "cancel":
-                $this->cancel();
-                break;
         }
     }
 

@@ -41,7 +41,7 @@ abstract class StateAnswer implements StateAnswerInterface
 
     public function messageMeta(): ?MessageMeta
     {
-        if($this->messageMeta) return $this->messageMeta;
+        if ($this->messageMeta) return $this->messageMeta;
         $messageMeta = MessageMeta::find($this->params['message_meta_id'] ?? ($this->params['message_meta'] ?? null));
         if (!$messageMeta) {
             exceptionReport(new TbeLogicException('Trying to access message meta, but it is not provided'));
@@ -53,7 +53,7 @@ abstract class StateAnswer implements StateAnswerInterface
 
     public function stateData(): ?StateData
     {
-        if($this->stateData) return $this->stateData;
+        if ($this->stateData) return $this->stateData;
         $stateData = StateData::find($this->params['state_data_id'] ?? $this->params['state_data']);
         if (!$stateData) {
             exceptionReport(new TbeLogicException('Trying to access state data, but it is not provided'));
@@ -63,5 +63,8 @@ abstract class StateAnswer implements StateAnswerInterface
         return $stateData;
     }
 
-    abstract function cancel(): void;
+    public function cancel(): void
+    {
+        $this->messageMeta()?->revertAction();
+    }
 }

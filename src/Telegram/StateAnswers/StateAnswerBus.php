@@ -115,7 +115,6 @@ class StateAnswerBus
         $resolvedStateAnswer->setParams($params);
         if($method == 'cancel') {
             $resolvedStateAnswer->cancel();
-            $resolvedStateAnswer->messageMeta()?->revertAction();
         }else{
             $resolvedStateAnswer->handle($method);
         }
