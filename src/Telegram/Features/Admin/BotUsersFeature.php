@@ -1,6 +1,6 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Telegram\Feature\Admin;
+namespace Elyar\TelegramBotEssentials\Telegram\Features\Admin;
 
 use Elyar\TelegramBotEssentials\Exceptions\InvalidPageNumber;
 use Elyar\TelegramBotEssentials\Models\BotUser;

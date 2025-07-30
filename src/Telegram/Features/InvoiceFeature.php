@@ -1,6 +1,6 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Telegram\Feature;
+namespace Elyar\TelegramBotEssentials\Telegram\Features;
 
 use Elyar\TelegramBotEssentials\Models\CreditOrder;
 use Elyar\TelegramBotEssentials\Models\Billing\Invoice;

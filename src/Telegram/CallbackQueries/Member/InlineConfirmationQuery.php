@@ -7,7 +7,7 @@ use Elyar\TelegramBotEssentials\Exceptions\LogicException;
 use Elyar\TelegramBotEssentials\Exceptions\TbeLogicException;
 use Elyar\TelegramBotEssentials\Models\InlineConfirmation;
 use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQuery;
-use Elyar\TelegramBotEssentials\Telegram\Feature\Member\InlineConfirmationFeature;
+use Elyar\TelegramBotEssentials\Telegram\Features\Member\InlineConfirmationFeature;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 

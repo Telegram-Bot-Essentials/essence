@@ -4,7 +4,7 @@ namespace Elyar\TelegramBotEssentials\Models\Abstract;
 
 use Elyar\TelegramBotEssentials\Exceptions\LogicException;
 use Elyar\TelegramBotEssentials\Models\BotUser;
-use Elyar\TelegramBotEssentials\Telegram\Feature\Member\MyWalletFeature;
+use Elyar\TelegramBotEssentials\Telegram\Features\Member\MyWalletFeature;
 use Elyar\TelegramBotEssentials\Traits\HasInvoice;
 use Elyar\TelegramBotEssentials\Traits\HasMessageMeta;
 use Illuminate\Contracts\Container\BindingResolutionException;

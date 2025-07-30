@@ -6,7 +6,7 @@ use Elyar\TelegramBotEssentials\Enums\Roles;
 use Elyar\TelegramBotEssentials\Exceptions\LogicException;
 use Elyar\TelegramBotEssentials\Models\MessageMeta;
 use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQuery;
-use Elyar\TelegramBotEssentials\Telegram\Feature\BotSettingsFeature;
+use Elyar\TelegramBotEssentials\Telegram\Features\BotSettingsFeature;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Facades\App;
 use Telegram\Bot\Exceptions\TelegramSDKException;

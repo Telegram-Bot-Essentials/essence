@@ -4,7 +4,7 @@ namespace Elyar\TelegramBotEssentials\Telegram\StateAnswers\Admin;
 
 use Elyar\TelegramBotEssentials\Enums\Roles;
 use Elyar\TelegramBotEssentials\Exceptions\LogicException;
-use Elyar\TelegramBotEssentials\Telegram\Feature\BotSettingsFeature;
+use Elyar\TelegramBotEssentials\Telegram\Features\BotSettingsFeature;
 use Elyar\TelegramBotEssentials\Telegram\StateAnswers\StateAnswer;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Telegram\Bot\Exceptions\TelegramSDKException;

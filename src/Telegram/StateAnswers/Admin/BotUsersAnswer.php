@@ -9,7 +9,7 @@ use Elyar\TelegramBotEssentials\Exceptions\LogicException;
 use Elyar\TelegramBotEssentials\Models\BotUser;
 use Elyar\TelegramBotEssentials\Models\MessageMeta;
 use Elyar\TelegramBotEssentials\Services\TelegramPaginator;
-use Elyar\TelegramBotEssentials\Telegram\Feature\Admin\BotUsersFeature;
+use Elyar\TelegramBotEssentials\Telegram\Features\Admin\BotUsersFeature;
 use Elyar\TelegramBotEssentials\Telegram\StateAnswers\StateAnswer;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Facades\Validator;

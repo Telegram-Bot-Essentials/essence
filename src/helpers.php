@@ -12,7 +12,7 @@ use Elyar\TelegramBotEssentials\Services\StateDataService;
 use Elyar\TelegramBotEssentials\Services\Gateways\Gateways;
 use Elyar\TelegramBotEssentials\Support\Webhook;
 use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQueryBus;
-use Elyar\TelegramBotEssentials\Telegram\Feature\Member\InlineConfirmationFeature;
+use Elyar\TelegramBotEssentials\Telegram\Features\Member\InlineConfirmationFeature;
 use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\ReplyKeyBus;
 use Elyar\TelegramBotEssentials\Telegram\StateAnswers\StateAnswerBus;
 use Illuminate\Support\Facades\Log;

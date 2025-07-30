@@ -3,7 +3,7 @@
 namespace Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Admin;
 
 use Elyar\TelegramBotEssentials\Enums\Roles;
-use Elyar\TelegramBotEssentials\Telegram\Feature\Admin\ManageInvoicesFeature;
+use Elyar\TelegramBotEssentials\Telegram\Features\Admin\ManageInvoicesFeature;
 use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\ReplyKey;
 
 class ManageInvoicesKey extends ReplyKey

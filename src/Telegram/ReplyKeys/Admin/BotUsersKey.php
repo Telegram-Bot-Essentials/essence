@@ -3,7 +3,7 @@
 namespace Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Admin;
 
 use Elyar\TelegramBotEssentials\Enums\Roles;
-use Elyar\TelegramBotEssentials\Telegram\Feature\Admin\BotUsersFeature;
+use Elyar\TelegramBotEssentials\Telegram\Features\Admin\BotUsersFeature;
 use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\ReplyKey;
 
 class BotUsersKey extends ReplyKey

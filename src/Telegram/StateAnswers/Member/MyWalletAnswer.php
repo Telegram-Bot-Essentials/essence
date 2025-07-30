@@ -8,7 +8,7 @@ use Elyar\TelegramBotEssentials\Enums\AllowableFields;
 use Elyar\TelegramBotEssentials\Enums\Roles;
 use Elyar\TelegramBotEssentials\Models\CreditOrder;
 use Elyar\TelegramBotEssentials\Models\MessageMeta;
-use Elyar\TelegramBotEssentials\Telegram\Feature\InvoiceFeature;
+use Elyar\TelegramBotEssentials\Telegram\Features\InvoiceFeature;
 use Elyar\TelegramBotEssentials\Telegram\StateAnswers\StateAnswer;
 use Illuminate\Support\Facades\Validator;
 use Telegram\Bot\Exceptions\TelegramSDKException;

@@ -3,7 +3,7 @@
 namespace Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Admin;
 
 use Elyar\TelegramBotEssentials\Enums\Roles;
-use Elyar\TelegramBotEssentials\Telegram\Feature\BotAdminsFeature;
+use Elyar\TelegramBotEssentials\Telegram\Features\BotAdminsFeature;
 use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\ReplyKey;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 

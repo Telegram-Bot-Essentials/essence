@@ -1,6 +1,6 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Telegram\Feature\Member;
+namespace Elyar\TelegramBotEssentials\Telegram\Features\Member;
 use Elyar\TelegramBotEssentials\Telegram\TelegramResponse;
 use Telegram\Bot\Keyboard\Keyboard;
 

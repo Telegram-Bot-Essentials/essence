@@ -5,7 +5,7 @@ namespace Elyar\TelegramBotEssentials\Jobs;
 use Elyar\TelegramBotEssentials\Models\Bot;
 use Elyar\TelegramBotEssentials\Models\BotUser;
 use Elyar\TelegramBotEssentials\Models\Billing\Invoice;
-use Elyar\TelegramBotEssentials\Telegram\Feature\InvoiceFeature;
+use Elyar\TelegramBotEssentials\Telegram\Features\InvoiceFeature;
 use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;

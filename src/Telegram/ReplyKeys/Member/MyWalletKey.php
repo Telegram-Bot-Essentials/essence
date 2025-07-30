@@ -3,7 +3,7 @@
 namespace Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Member;
 
 use Elyar\TelegramBotEssentials\Enums\Roles;
-use Elyar\TelegramBotEssentials\Telegram\Feature\Member\MyWalletFeature;
+use Elyar\TelegramBotEssentials\Telegram\Features\Member\MyWalletFeature;
 use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\ReplyKey;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 
