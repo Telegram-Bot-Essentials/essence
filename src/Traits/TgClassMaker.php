@@ -26,6 +26,7 @@ trait TgClassMaker
             '/feature/i',
             '/callback/i',
             '/key/i',
+            '/command/i',
         ], '', $name);
 
         return $this->nameValue;
@@ -59,8 +60,10 @@ trait TgClassMaker
     private function initializeValues(): void
     {
         $this->typeValue = strtoupper($this->nameValue);
-        $this->permValue = $this->option('admin') ? Roles::ADMIN->value : Roles::MEMBER->value;
-        $this->permEnumValue = $this->option('admin') ? 'Roles::ADMIN->value' : 'Roles::MEMBER->value';
+        if($this->hasOption('admin')){
+            $this->permValue = $this->option('admin') ? Roles::ADMIN->value : Roles::MEMBER->value;
+            $this->permEnumValue = $this->option('admin') ? 'Roles::ADMIN->value' : 'Roles::MEMBER->value';
+        }
     }
 
     protected function generateTextFromName(string $name): string

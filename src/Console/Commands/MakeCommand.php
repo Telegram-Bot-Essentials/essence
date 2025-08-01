@@ -37,7 +37,6 @@ class MakeCommand extends GeneratorCommand
         $namespace = $this->getNamespace($name);
 
         $commandName = $this->option('command-name') ?? strtolower(preg_replace('/Command$/', '', $className));
-        $pattern = $this->option('pattern') ?? '{username}';
         $description = $this->option('description') ?? 'Command to handle ' . $commandName;
 
         return str_replace(
@@ -45,14 +44,12 @@ class MakeCommand extends GeneratorCommand
                 '{{ namespace }}',
                 '{{ class_name }}',
                 '{{ command_name }}',
-                '{{ pattern }}',
                 '{{ description }}',
             ],
             [
                 $namespace,
                 $className,
                 $commandName,
-                $pattern,
                 $description,
             ],
             $stub
