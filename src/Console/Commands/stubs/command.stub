@@ -1,0 +1,17 @@
+<?php
+
+namespace {{ namespace }};
+
+use Telegram\Bot\Commands\Command;
+
+class {{ class_name }} extends Command
+{
+    protected string $name = '{{ command_name }}';
+    protected string $pattern = '{{ pattern }}';
+    protected string $description = '{{ description }}';
+
+    public function handle()
+    {
+        // TODO: Implement command logic here
+    }
+}
