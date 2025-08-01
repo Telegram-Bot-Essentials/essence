@@ -44,7 +44,8 @@ class Webhook
             if (self::$api == null) throw new WebhookAuthException('Failed to retrieve API service.');
             return self::$api;
         } catch (WebhookAuthException $e) {
-            abort(500, $e->getMessage());
+            exceptionHandler()->handle($e);
+            abort(200, $e->getMessage());
         }
     }
 
@@ -54,7 +55,8 @@ class Webhook
             if (self::$update == null) throw new WebhookAuthException('Failed to retrieve Updates.');
             return self::$update;
         } catch (WebhookAuthException $e) {
-            abort(500, $e->getMessage());
+            exceptionHandler()->handle($e);
+            abort(200, $e->getMessage());
         }
     }
 
@@ -64,7 +66,8 @@ class Webhook
             if (self::$bot == null) throw new WebhookAuthException('Failed to retrieve bot.');
             return self::$bot;
         } catch (WebhookAuthException $e) {
-            abort(500, $e->getMessage());
+            exceptionHandler()->handle($e);
+            abort(200, $e->getMessage());
         }
     }
 
@@ -74,7 +77,8 @@ class Webhook
             if (self::$user == null) throw new WebhookAuthException('Failed to retrieve telegram user.');
             return self::$user;
         } catch (WebhookAuthException $e) {
-            abort(500, $e->getMessage());
+            exceptionHandler()->handle($e);
+            abort(200, $e->getMessage());
         }
     }
 
@@ -84,7 +88,8 @@ class Webhook
             if (self::$requestState == null) throw new WebhookAuthException('Failed to retrieve request state.');
             return self::$requestState;
         } catch (WebhookAuthException $e) {
-            abort(500, $e->getMessage());
+            exceptionHandler()->handle($e);
+            abort(200, $e->getMessage());
         }
     }
 
