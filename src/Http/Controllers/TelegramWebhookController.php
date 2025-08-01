@@ -81,6 +81,8 @@ class TelegramWebhookController extends Controller
         $this->addUserReplyKeys(config('telegram-bot-essentials.keyboard.member') ?? []);
         $this->autoLoadReplyKeys(realpath(__DIR__ . '/../../Telegram/ReplyKeys/Member'));
         $this->autoLoadReplyKeys(realpath(__DIR__ . '/../../Telegram/ReplyKeys/Admin'));
+
+        $this->autoLoadCommands(realpath(__DIR__ . '/../../Telegram/Commands'));
     }
 
     /**
@@ -204,6 +206,22 @@ class TelegramWebhookController extends Controller
 
             if (class_exists($fqcn) && is_subclass_of($fqcn, ReplyKey::class)) {
                 replyKeyBus()->addReplyKey($fqcn);
+            }
+        }
+    }
+
+    /**
+     * @throws TelegramSDKException
+     */
+    private function autoLoadCommands(string $path)
+    {
+        $namespace = $this->resolveNamespace($path);
+
+        foreach (File::allFiles($path) as $file) {
+            $fqcn = $namespace . '\\' . $file->getFilenameWithoutExtension();
+
+            if (class_exists($fqcn) && is_subclass_of($fqcn, Command::class)) {
+                wHook()->api()->addCommand($fqcn);
             }
         }
     }
