@@ -82,15 +82,9 @@ class Webhook
         }
     }
 
-    public static function requestState(): string
+    public static function requestState(): ?string
     {
-        try {
-            if (self::$requestState == null) throw new WebhookAuthException('Failed to retrieve request state.');
-            return self::$requestState;
-        } catch (WebhookAuthException $e) {
-            exceptionHandler()->handle($e);
-            abort(200, $e->getMessage());
-        }
+        return self::$requestState;
     }
 
     public static function check(): bool
