@@ -42,6 +42,7 @@ return [
 
     'messages' => [
         'valueUpdatedSuccessfully' => '❕ Value updated successfully ✅',
+        'enterNewValueOfField' => '❓ Enter new value for :field:',
     ],
 
     'keys' => [
@@ -59,6 +60,7 @@ return [
     'answers' => [
         'updatedResourceField' => 'Updating ":resource"s :field...',
         'resourceFieldUpdatedSuccessfully' => ':resource Updated successfully.',
+        'resourceDeletedSuccessfully' => ':resource Deleted successfully.',
     ],
 
     'roles' => [
