@@ -42,7 +42,8 @@ return [
 
     'messages' => [
         'valueUpdatedSuccessfully' => '❕ Value updated successfully ✅',
-        'enterNewValueOfField' => '❓ Enter new value for :field:',
+        'enterNewValueOfField' => '❓ Enter value for :field:',
+        'deleteConfirmationQuestion' => 'Are you sure you want to delete :resource ":resourceName"?'
     ],
 
     'keys' => [
