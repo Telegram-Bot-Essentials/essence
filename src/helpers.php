@@ -2,6 +2,7 @@
 
 use Elyar\TelegramBotEssentials\Enums\Roles;
 use Elyar\TelegramBotEssentials\Exceptions\FeatureIsDisabled;
+use Elyar\TelegramBotEssentials\Exceptions\TbeLogicException;
 use Elyar\TelegramBotEssentials\Models\InlineConfirmation;
 use Elyar\TelegramBotEssentials\Services\Currency;
 use Elyar\TelegramBotEssentials\Services\CurrencyFather;
@@ -108,9 +109,14 @@ if (!function_exists('encodeCallback')) {
     {
         $safeParams = array_filter($params, fn($p) => is_scalar($p) && !is_null($p) && $p !== '');
 
-        return empty($safeParams)
+        $result = empty($safeParams)
             ? $type
             : $type . '?' . implode('&', array_map('strval', $safeParams));
+
+        if(strlen($result) > 64){
+            throw new TbeLogicException('Callback data is too long');
+        }
+        return $result;
     }
 }
 
