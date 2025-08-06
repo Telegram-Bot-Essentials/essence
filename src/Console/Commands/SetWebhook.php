@@ -3,12 +3,15 @@
 namespace Elyar\TelegramBotEssentials\Console\Commands;
 
 use Elyar\TelegramBotEssentials\Models\Bot;
+use Elyar\TelegramBotEssentials\Traits\CanResolveBotCommand;
 use Illuminate\Console\Command;
 use Telegram\Bot\Api;
+use Telegram\Bot\Commands\CommandInterface;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 
-class setWebhook extends Command
+class SetWebhook extends Command
 {
+    use CanResolveBotCommand;
     /**
      * The name and signature of the console command.
      *
@@ -38,7 +41,7 @@ class setWebhook extends Command
         $this->info('Webhook url: ' . $url);
         $bot = Bot::where('unique_id', $uniqueID)->first();
 
-        if(!$bot){
+        if (!$bot) {
             $this->error('Bot with unique id: ' . $uniqueID . ' not found');
             return;
         }
@@ -51,6 +54,22 @@ class setWebhook extends Command
             'url' => $url,
             'drop_pending_updates' => true,
             'secret_token' => $bot->secret_token,
+        ]);
+
+        $commands = [];
+        foreach(config('telegram-bot-essentials.commands') as $command){
+            $command = $this->resolveBotCommand($command);
+            $commands[] = [
+                'command' => $command->getName(),
+                'description' => $command->getDescription(),
+            ];
+        }
+
+        $telegram->setMyCommands([
+            'commands' => $commands,
+            'scope' => [
+                'type' => 'all_private_chats',
+            ],
         ]);
         $this->info('Telegram webhook has been set');
     }

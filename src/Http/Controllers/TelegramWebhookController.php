@@ -55,7 +55,6 @@ class TelegramWebhookController extends Controller
         $memberQueries = base_path('app/Telegram/CallbackQueries/Member');
         $adminStateAnswers = base_path('app/Telegram/StateAnswers/Admin');
         $memberStateAnswers = base_path('app/Telegram/StateAnswers/Member');
-        $commands = base_path('app/Telegram/Commands');
 //        $adminReplyKeys = base_path('app/Telegram/ReplyKeys/Admin');
 //        $memberReplyKeys = base_path('app/Telegram/ReplyKeys/Member');
         if (is_dir($adminQueries)) $this->autoLoadCallbackQueries($adminQueries);
@@ -72,8 +71,6 @@ class TelegramWebhookController extends Controller
         $this->addUserReplyKeys(config('telegram-bot-essentials.keyboard.member') ?? []);
         $this->autoLoadReplyKeys(realpath(__DIR__ . '/../../Telegram/ReplyKeys/Member'));
         $this->autoLoadReplyKeys(realpath(__DIR__ . '/../../Telegram/ReplyKeys/Admin'));
-
-        $this->autoLoadCommands($commands);
     }
 
     /**
@@ -161,22 +158,6 @@ class TelegramWebhookController extends Controller
 
             if (class_exists($fqcn) && is_subclass_of($fqcn, ReplyKey::class)) {
                 replyKeyBus()->addReplyKey($fqcn);
-            }
-        }
-    }
-
-    /**
-     * @throws TelegramSDKException
-     */
-    private function autoLoadCommands(string $path)
-    {
-        $namespace = $this->resolveNamespace($path);
-
-        foreach (File::allFiles($path) as $file) {
-            $fqcn = $namespace . '\\' . $file->getFilenameWithoutExtension();
-
-            if (class_exists($fqcn) && is_subclass_of($fqcn, Command::class)) {
-                wHook()->api()->addCommand($fqcn);
             }
         }
     }

@@ -8,7 +8,7 @@ use Elyar\TelegramBotEssentials\Console\Commands\MakeCommand;
 use Elyar\TelegramBotEssentials\Console\Commands\MakeFeature;
 use Elyar\TelegramBotEssentials\Console\Commands\MakeReplyKey;
 use Elyar\TelegramBotEssentials\Console\Commands\MakeStateAnswer;
-use Elyar\TelegramBotEssentials\Console\Commands\setWebhook;
+use Elyar\TelegramBotEssentials\Console\Commands\SetWebhook;
 use Elyar\TelegramBotEssentials\Services\ApiResponse;
 use Elyar\TelegramBotEssentials\Services\Billing;
 use Elyar\TelegramBotEssentials\Services\Currency;
@@ -96,7 +96,7 @@ class TelegramBotServiceProvider extends ServiceProvider
         PathTenantResolver::$tenantParameterName = 'bot';
 
         $this->commands([
-            setWebhook::class,
+            SetWebhook::class,
             BotManagementTokenCommand::class,
             MakeReplyKey::class,
             MakeCallbackQuery::class,
