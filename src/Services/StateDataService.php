@@ -6,7 +6,7 @@ use Elyar\TelegramBotEssentials\Models\StateData;
 
 class StateDataService
 {
-    public function store(array $data): StateData
+    public function store(array $data = []): StateData
     {
         return StateData::create([
             'data' => $data
