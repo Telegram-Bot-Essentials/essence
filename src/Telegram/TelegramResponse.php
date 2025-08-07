@@ -13,6 +13,7 @@ class TelegramResponse
 {
     private ?Model $modelForMessageMeta = null;
     private ?string $messageMetaTag = null;
+    private ?string $softAnswer = null;
 
     public function __construct(
         public ?string   $text = null,
@@ -57,6 +58,12 @@ class TelegramResponse
         return $this;
     }
 
+    public function softAnswer(string $answer): self
+    {
+        $this->softAnswer = $answer;
+        return $this;
+    }
+
     public function messageMetaModel(Model $model, ?string $tag = null): self
     {
         $this->modelForMessageMeta = $model;
@@ -98,15 +105,17 @@ class TelegramResponse
      */
     public function update(string|int|null $chatId = null, string|int|null $messageId = null): void
     {
-        $message = wHook()->api()->editMessageText(
-            array_filter([
-                'chat_id' => $chatId ?? wHook()->update()->callbackQuery->message->chat->id,
-                'message_id' => $messageId ?? wHook()->update()->callbackQuery->message->messageId,
-                'text' => $this->text,
-                'reply_markup' => $this->replyMarkup,
-                'parse_mode' => $this->parseMode,
-            ])
-        );
+        if($this->text){
+            $message = wHook()->api()->editMessageText(
+                array_filter([
+                    'chat_id' => $chatId ?? wHook()->update()->callbackQuery->message->chat->id,
+                    'message_id' => $messageId ?? wHook()->update()->callbackQuery->message->messageId,
+                    'text' => $this->text,
+                    'reply_markup' => $this->replyMarkup,
+                    'parse_mode' => $this->parseMode,
+                ])
+            );
+        }
 
         if($this->modelForMessageMeta) {
             $messageMeta = MessageMeta::makeWithMessage($message, $this->messageMetaTag);
@@ -114,7 +123,7 @@ class TelegramResponse
             $messageMeta->save();
         }
 
-        if($this->answer) {
+        if($this->answer ?? $this->softAnswer) {
             wHook()->api()->answerCallbackQuery([
                 'callback_query_id' => wHook()->update()->callbackQuery->id,
                 'text' => $this->answer,

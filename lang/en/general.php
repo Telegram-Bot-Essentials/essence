@@ -69,4 +69,14 @@ return [
         'moderator' => 'Moderator',
         'member' => 'Member',
     ],
+
+    'intervals' => [
+        'year' => 'year',
+        'month' => 'month',
+        'week' => 'week',
+        'day' => 'day',
+        'hour' => 'hour',
+        'minute' => 'minute',
+        'second' => 'second',
+    ],
 ];
