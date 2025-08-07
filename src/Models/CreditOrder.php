@@ -33,9 +33,9 @@ class CreditOrder extends Order
         return $this->invoice?->paid_at;
     }
 
-    public function getPriceAttribute(): float
+    public function getAmountAttribute(): string
     {
-        return currency()->currencyFormat($this->timePlan?->price + $this->quotaPlan?->price);
+        return $this->amount ?? 0;
     }
 
     public function getDescriptionAttribute(): string
