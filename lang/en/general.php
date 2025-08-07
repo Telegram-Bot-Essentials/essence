@@ -47,7 +47,7 @@ return [
     ],
 
     'keys' => [
-        'generateInvoiceAndPay' => 'Pay Now 💵 - :price$',
+        'generateInvoiceAndPay' => 'Pay Now 💵 - :price',
         'bunchDeletion' => "Bunch Deletion 🗑",
         'bunchActivation' => "Bunch Activation 🔥",
         'delete' => 'Delete 🗑',
