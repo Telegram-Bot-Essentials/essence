@@ -35,7 +35,7 @@ class CreditOrder extends Order
 
     public function getAmountAttribute(): string
     {
-        return $this->amount ?? 0;
+        return $this->attributes['amount'] ?? 0;
     }
 
     public function getDescriptionAttribute(): string
