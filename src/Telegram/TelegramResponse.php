@@ -3,8 +3,8 @@
 namespace Elyar\TelegramBotEssentials\Telegram;
 
 use Elyar\TelegramBotEssentials\Models\MessageMeta;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\Keyboard\Keyboard;
 use Telegram\Bot\Objects\Message;
@@ -91,7 +91,7 @@ class TelegramResponse
             ])
         );
 
-        if($this->modelForMessageMeta) {
+        if ($this->modelForMessageMeta) {
             $messageMeta = MessageMeta::makeWithMessage($message, $this->messageMetaTag);
             $messageMeta->action()->associate($this->modelForMessageMeta);
             $messageMeta->save();
@@ -105,29 +105,37 @@ class TelegramResponse
      */
     public function update(string|int|null $chatId = null, string|int|null $messageId = null): void
     {
-        if($this->text){
-            $message = wHook()->api()->editMessageText(
-                array_filter([
-                    'chat_id' => $chatId ?? wHook()->update()->callbackQuery->message->chat->id,
-                    'message_id' => $messageId ?? wHook()->update()->callbackQuery->message->messageId,
-                    'text' => $this->text,
-                    'reply_markup' => $this->replyMarkup,
-                    'parse_mode' => $this->parseMode,
-                ])
-            );
+        try {
+            if ($this->text) {
+                $message = wHook()->api()->editMessageText(
+                    array_filter([
+                        'chat_id' => $chatId ?? wHook()->update()->callbackQuery->message->chat->id,
+                        'message_id' => $messageId ?? wHook()->update()->callbackQuery->message->messageId,
+                        'text' => $this->text,
+                        'reply_markup' => $this->replyMarkup,
+                        'parse_mode' => $this->parseMode,
+                    ])
+                );
+
+                if ($this->modelForMessageMeta) {
+                    $messageMeta = MessageMeta::makeWithMessage($message, $this->messageMetaTag);
+                    $messageMeta->action()->associate($this->modelForMessageMeta);
+                    $messageMeta->save();
+                }
+            }
+        } catch (Exception $e) {
+            exceptionReport($e);
         }
 
-        if($this->modelForMessageMeta) {
-            $messageMeta = MessageMeta::makeWithMessage($message, $this->messageMetaTag);
-            $messageMeta->action()->associate($this->modelForMessageMeta);
-            $messageMeta->save();
-        }
-
-        if($this->answer ?? $this->softAnswer) {
-            wHook()->api()->answerCallbackQuery([
-                'callback_query_id' => wHook()->update()->callbackQuery->id,
-                'text' => $this->answer,
-            ]);
+        try {
+            if ($this->answer ?? $this->softAnswer) {
+                wHook()->api()->answerCallbackQuery([
+                    'callback_query_id' => wHook()->update()->callbackQuery->id,
+                    'text' => $this->answer,
+                ]);
+            }
+        } catch (Exception $e) {
+            exceptionReport($e);
         }
     }
 
