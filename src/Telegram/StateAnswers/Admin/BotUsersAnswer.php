@@ -2,10 +2,12 @@
 
 namespace Elyar\TelegramBotEssentials\Telegram\StateAnswers\Admin;
 
+use Brick\Math\BigDecimal;
 use Elyar\TelegramBotEssentials\Enums\AllowableFields;
 use Elyar\TelegramBotEssentials\Enums\Roles;
 use Elyar\TelegramBotEssentials\Exceptions\InvalidPageNumber;
 use Elyar\TelegramBotEssentials\Exceptions\LogicException;
+use Elyar\TelegramBotEssentials\Exceptions\TbeLogicException;
 use Elyar\TelegramBotEssentials\Models\BotUser;
 use Elyar\TelegramBotEssentials\Models\MessageMeta;
 use Elyar\TelegramBotEssentials\Services\TelegramPaginator;
@@ -35,20 +37,9 @@ class BotUsersAnswer extends StateAnswer
             case "set_start_page":
                 $this->setStartPage();
                 break;
-                case "balance":
+            case "balance":
                 $this->balance();
                 break;
-        }
-    }
-
-    /**
-     * @throws TelegramSDKException
-     */
-    function cancel(): void
-    {
-        $messageMeta = MessageMeta::find($this->params['message_meta_id']);
-        if($messageMeta){
-            $messageMeta->continueAction();
         }
     }
 
@@ -91,19 +82,34 @@ class BotUsersAnswer extends StateAnswer
         $lastPage = $this->params['last_page'];
 
         $amount = wHook()->update()->message->text;
-        Validator::validate(
-            ['amount' => $amount],
-            ['amount' => "required|numeric|min:0|max:100000000"]
-        );
-        $amount = floatval($amount);
+        $amount = BigDecimal::of($amount);
 
-        if($type == 'add'){
-            $botUser->balance = $botUser->balance + $amount;
+        if ($type == 'add') {
+            Validator::validate(
+                ['amount' => $amount],
+                ['amount' => "required|numeric|min:-100000000|max:100000000"]
+            );
+            if(BigDecimal::of($botUser->balance)->plus($amount)->compareTo(BigDecimal::zero()) < 0){
+                throw new TbeLogicException('User balance cannot be less than 0');
+            }
+            if ($amount->compareTo(BigDecimal::zero()) > 0) {
+                wHook()->runForUser($botUser, function () use ($amount) {
+                    gateways()->wallet()->addAmount($amount);
+                });
+            }else {
+                wHook()->runForUser($botUser, function () use ($amount) {
+                    gateways()->wallet()->takeAmount($amount);
+                });
+            }
+        } elseif ($type == 'set') {
+            Validator::validate(
+                ['amount' => $amount],
+                ['amount' => "required|numeric|min:0|max:100000000"]
+            );
+            wHook()->runForUser($botUser, function () use ($amount) {
+                gateways()->wallet()->setAmount($amount);
+            });
         }
-        elseif($type == 'set'){
-            $botUser->balance = $amount;
-        }
-        $botUser->save();
 
         $data = BotUsersFeature::show($botUser, $lastPage);
 
@@ -115,5 +121,16 @@ class BotUsersAnswer extends StateAnswer
         ]);
 
         $messageMeta->updateAndContinueAction($data);
+    }
+
+    /**
+     * @throws TelegramSDKException
+     */
+    function cancel(): void
+    {
+        $messageMeta = MessageMeta::find($this->params['message_meta_id']);
+        if ($messageMeta) {
+            $messageMeta->continueAction();
+        }
     }
 }

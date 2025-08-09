@@ -4,7 +4,6 @@ namespace Elyar\TelegramBotEssentials\Services\Gateways;
 
 
 use Brick\Math\BigDecimal;
-use Brick\Math\BigNumber;
 use Elyar\TelegramBotEssentials\Exceptions\FeatureIsDisabled;
 use Elyar\TelegramBotEssentials\Exceptions\LogicException;
 use Elyar\TelegramBotEssentials\Exceptions\TbeLogicException;
@@ -38,6 +37,40 @@ class Wallet
         ]);
     }
 
+    private function validateAmount(BigDecimal|string &$amount): void
+    {
+        if (!($amount instanceof BigDecimal)) {
+            $amount = BigDecimal::of($amount);
+        }
+    }
+
+    /**
+     * @throws FeatureIsDisabled
+     */
+    public function validateMethodAllowed(): void
+    {
+        dependsOn(wHook()->bot()->settings->wallet, __('tbe::general.alerts.disabledFeature', ['feature' => __('tbe::bot_settings.wallet.name')]));
+    }
+
+    /**
+     * @throws InsufficientBalanceException
+     */
+    private function validateUserBalanceIsSufficient(BigDecimal|string $amount): void
+    {
+        $this->validateAmount($amount);
+        if (BigDecimal::of($amount)->compareTo($this->currentUserBalance()) > 0) {
+            throw new InsufficientBalanceException(__('tbe::invoice.by_wallet.answers.creditIsNotEnough', [
+                'credit' => currency()->priceFormat($this->currentUserBalance()),
+                'neededCredit' => currency()->priceFormat($amount)
+            ]));
+        }
+    }
+
+    public function currentUserBalance(): BigDecimal
+    {
+        return BigDecimal::of(wHook()->user()->balance);
+    }
+
     /**
      * @param BigDecimal|string $amount
      * @throws FeatureIsDisabled
@@ -62,37 +95,19 @@ class Wallet
         ]);
     }
 
-    public function currentUserBalance(): BigDecimal
-    {
-        return BigDecimal::of(wHook()->user()->balance);
-    }
-
-    /**
-     * @throws InsufficientBalanceException
-     */
-    private function validateUserBalanceIsSufficient(BigDecimal|string $amount): void
+    public function setAmount(BigDecimal|string $amount): void
     {
         $this->validateAmount($amount);
-        if (BigDecimal::of($amount)->compareTo($this->currentUserBalance()) > 0) {
-            throw new InsufficientBalanceException(__('tbe::invoice.by_wallet.answers.creditIsNotEnough', [
-                'credit' => currency()->priceFormat($this->currentUserBalance()),
-                'neededCredit' => currency()->priceFormat($amount)
-            ]));
-        }
-    }
+        $this->validateMethodAllowed();
+        $this->validateUserBalanceIsSufficient($amount);
 
-    /**
-     * @throws FeatureIsDisabled
-     */
-    public function validateMethodAllowed(): void
-    {
-        dependsOn(wHook()->bot()->settings->wallet, __('tbe::general.alerts.disabledFeature', ['feature' => __('tbe::bot_settings.wallet.name')]));
-    }
+        wHook()->user()->balance = $amount;
+        wHook()->user()->save();
 
-    private function validateAmount(BigDecimal|string &$amount): void
-    {
-        if(!($amount instanceof BigDecimal)){
-            $amount = BigDecimal::of($amount);
-        }
+        wHook()->api()->sendMessage([
+            'chat_id' => wHook()->user()->telegramUser->peer_id,
+            'text' => "Your total credit set to " . currency()->priceFormat($amount) . " 💸",
+            'reply_markup' => wHook()->user()->getKeyboard(),
+        ]);
     }
 }
