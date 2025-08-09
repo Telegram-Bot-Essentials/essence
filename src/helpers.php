@@ -213,8 +213,10 @@ if (!function_exists('hasAccess')) {
 }
 
 if (!function_exists('getNextFromArray')) {
-    function getNextFromArray(array $array, $current)
+    function getNextFromArray(array $array, mixed $current)
     {
+        if(is_null($current)) return $array[0] ?? null;
+
         $index = array_search($current, $array);
 
         if ($index === false || empty($array)) {
