@@ -98,7 +98,7 @@ class BotUsersAnswer extends StateAnswer
                 });
             }else {
                 wHook()->runForUser($botUser, function () use ($amount) {
-                    gateways()->wallet()->takeAmount($amount);
+                    gateways()->wallet()->takeAmount($amount->multipliedBy(BigDecimal::of('-1')));
                 });
             }
         } elseif ($type == 'set') {
