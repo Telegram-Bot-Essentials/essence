@@ -2,7 +2,9 @@
 
 namespace Elyar\TelegramBotEssentials\Models;
 
+use Elyar\TelegramBotEssentials\Services\ExceptionHandler;
 use Elyar\TelegramBotEssentials\Telegram\TelegramResponse;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Telegram\Bot\Exceptions\TelegramSDKException;
@@ -120,11 +122,15 @@ class MessageMeta extends Model
      */
     private function lockingProcess(Keyboard $replyMarkup): void
     {
-        wHook()->api()->editMessageReplyMarkup([
-            'chat_id' => $this->chat_id,
-            'message_id' => $this->message_id,
-            'reply_markup' => $replyMarkup,
-        ]);
+        try{
+            wHook()->api()->editMessageReplyMarkup([
+                'chat_id' => $this->chat_id,
+                'message_id' => $this->message_id,
+                'reply_markup' => $replyMarkup,
+            ]);
+        } catch (Exception $e) {
+            exceptionReport($e);
+        }
     }
 
     /**
@@ -137,15 +143,19 @@ class MessageMeta extends Model
                 'chat_id' => $this->chat_id,
                 'message_id' => $this->message_id,
             ]);
-        } catch (\Exception $e) {
-            \Log::error($e->getMessage());
+        } catch (Exception $e) {
+            exceptionReport($e);
         }
 
-        $message = wHook()->api()->sendMessage([
-            'chat_id' => $this->chat_id,
-            'text' => $this->message_text,
-            'reply_markup' => $this->message_reply_markup,
-        ]);
+        try {
+            $message = wHook()->api()->sendMessage([
+                'chat_id' => $this->chat_id,
+                'text' => $this->message_text,
+                'reply_markup' => $this->message_reply_markup,
+            ]);
+        } catch (Exception $e) {
+            exceptionReport($e);
+        }
 
         $this->initializeModel($message->chat->id, $message->messageId, $message->text, $message->replyMarkup);
     }
@@ -159,7 +169,9 @@ class MessageMeta extends Model
                 'text' => $this->message_text,
                 'reply_markup' => $this->message_reply_markup,
             ]);
-        } catch (TelegramSDKException) {}
+        } catch (Exception $e) {
+            exceptionReport($e);
+        }
     }
 
     /**
@@ -170,13 +182,17 @@ class MessageMeta extends Model
         if ($data instanceof TelegramResponse) {
             $data->update($this->chat_id, $this->message_id);
         }else{
-            wHook()->api()->editMessageText([
-                'chat_id' => $this->chat_id,
-                'message_id' => $this->message_id,
-                'text' => $data['text'],
-                'reply_markup' => $data['reply_markup'],
-                'parse_mode' => $data['parse_mode'] ?? null,
-            ]);
+            try {
+                wHook()->api()->editMessageText([
+                    'chat_id' => $this->chat_id,
+                    'message_id' => $this->message_id,
+                    'text' => $data['text'],
+                    'reply_markup' => $data['reply_markup'],
+                    'parse_mode' => $data['parse_mode'] ?? null,
+                ]);
+            } catch (Exception $e) {
+                exceptionReport($e);
+            }
         }
     }
 
@@ -190,19 +206,23 @@ class MessageMeta extends Model
                 'chat_id' => $this->chat_id,
                 'message_id' => $this->message_id,
             ]);
-        } catch (\Exception $e) {
-            \Log::error($e->getMessage());
+        } catch (Exception $e) {
+            exceptionReport($e);
         }
 
         if ($data instanceof TelegramResponse) {
             $message = $data->send($this->chat_id);
         }else{
-            $message = wHook()->api()->sendMessage([
-                'chat_id' => $this->chat_id,
-                'text' => $data['text'],
-                'reply_markup' => $data['reply_markup'],
-                'parse_mode' => $data['parse_mode'] ?? null,
-            ]);
+            try{
+                $message = wHook()->api()->sendMessage([
+                    'chat_id' => $this->chat_id,
+                    'text' => $data['text'],
+                    'reply_markup' => $data['reply_markup'],
+                    'parse_mode' => $data['parse_mode'] ?? null,
+                ]);
+            } catch (Exception $e) {
+                exceptionReport($e);
+            }
         }
 
         $this->initializeModel($message->chat->id, $message->messageId, $message->text, $message->replyMarkup);
@@ -210,9 +230,13 @@ class MessageMeta extends Model
 
     public function deleteMessage(): void
     {
-        wHook()->api()->deleteMessage([
-            'chat_id' => $this->chat_id,
-            'message_id' => $this->message_id,
-        ]);
+        try{
+            wHook()->api()->deleteMessage([
+                'chat_id' => $this->chat_id,
+                'message_id' => $this->message_id,
+            ]);
+        } catch (Exception $e) {
+            exceptionReport($e);
+        }
     }
 }
