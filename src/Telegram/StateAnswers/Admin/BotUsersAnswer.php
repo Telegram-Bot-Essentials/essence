@@ -82,13 +82,13 @@ class BotUsersAnswer extends StateAnswer
         $lastPage = $this->params['last_page'];
 
         $amount = wHook()->update()->message->text;
-        $amount = BigDecimal::of($amount);
 
         if ($type == 'add') {
             Validator::validate(
                 ['amount' => $amount],
                 ['amount' => "required|numeric|min:-100000000|max:100000000"]
             );
+            $amount = BigDecimal::of($amount);
             if(BigDecimal::of($botUser->balance)->plus($amount)->compareTo(BigDecimal::zero()) < 0){
                 throw new TbeLogicException('User balance cannot be less than 0');
             }
@@ -106,6 +106,7 @@ class BotUsersAnswer extends StateAnswer
                 ['amount' => $amount],
                 ['amount' => "required|numeric|min:0|max:100000000"]
             );
+            $amount = BigDecimal::of($amount);
             wHook()->runForUser($botUser, function () use ($amount) {
                 gateways()->wallet()->setAmount($amount);
             });
