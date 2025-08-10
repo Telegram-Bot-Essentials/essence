@@ -11,7 +11,6 @@ trait CanBeActivated
     {
         $model = $query->getModel();
 
-        $query->where('bot_id', wHook()->bot()->id);
         $query->where('active', true);
 
         foreach ($model->requiredAttributes ?? [] as $attribute) {
