@@ -99,7 +99,6 @@ class Wallet
     {
         $this->validateAmount($amount);
         $this->validateMethodAllowed();
-        $this->validateUserBalanceIsSufficient($amount);
 
         wHook()->user()->balance = $amount;
         wHook()->user()->save();
