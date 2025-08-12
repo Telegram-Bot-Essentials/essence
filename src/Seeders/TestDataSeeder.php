@@ -26,6 +26,6 @@ class TestDataSeeder extends Seeder
         $this->bot->settings->pay_to_card_name = fake()->name();
         $this->bot->settings->pay_to_card_number = fake()->creditCardNumber();
         $this->bot->settings->transactions_chat_id = config('telegram-bot-essentials.main.admin_chat_id') ?? config('telegram-bot-essentials.develop.DEVELOPER_CHAT_ID') ?? null;
-        $this->bot->save();
+        $this->bot->settings->save();
     }
 }
