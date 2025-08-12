@@ -20,13 +20,13 @@ class CheckMissingTranslations extends Command
 
         if (!File::exists("$langPath/$baseLang")) {
             $this->error("Base language [$baseLang] not found in $langPath");
-            return Command::FAILURE;
+            return CommandAlias::FAILURE;
         }
 
         // Get all locales
         $locales = collect(File::directories($langPath))
             ->map(fn($dir) => basename($dir))
-            ->filter(fn($locale) => $locale !== $baseLang);
+            ->filter(fn($locale) => $locale !== $baseLang && $locale !== 'vendor');
 
         $baseKeys = $this->loadLanguageKeys("$langPath/$baseLang");
 
