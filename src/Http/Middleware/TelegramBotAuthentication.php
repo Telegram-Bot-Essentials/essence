@@ -10,8 +10,8 @@ use Elyar\TelegramBotEssentials\Models\TelegramUser;
 use GuzzleHttp\Psr7\ServerRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Response;
 use Telegram\Bot\Api;
 use Telegram\Bot\Exceptions\TelegramSDKException;
@@ -36,14 +36,14 @@ class TelegramBotAuthentication
 
         wHook()::setBot($bot);
 
-        if ($request->header('x-telegram-bot-api-secret-token') !== $bot->secret_token)
+        if (!Hash::check($request->header('x-telegram-bot-api-secret-token'), $bot->secret_token))
             return apiResponse()->error('Unauthorized', 403);
 
         try {
             $api = new Api(
                 token: $bot->bot_token,
-                baseBotUrl: config('telegram-bot-essentials.base_bot_url'
-                ));
+                baseBotUrl: config('telegram-bot-essentials.base_bot_url')
+            );
             wHook()::setApi($api);
             $update = wHook()->api()->getWebhookUpdate(request: new ServerRequest(
                 method: 'POST',
