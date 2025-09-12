@@ -107,7 +107,7 @@ if (!function_exists('encodeCallback')) {
             : $type . '?' . implode('&', array_map('strval', $safeParams));
 
         if(strlen($result) > 64){
-            throw new TbeLogicException('Callback data is too long');
+            return 'LONG_CALLBACK_DATA'; // TODO: handle this case
         }
         return $result;
     }
