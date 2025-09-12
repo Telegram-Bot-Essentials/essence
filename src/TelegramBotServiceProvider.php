@@ -55,10 +55,6 @@ class TelegramBotServiceProvider extends ServiceProvider
             return new StateAnswerBus();
         });
 
-        $this->app->singleton(ApiResponse::class, function ($app) {
-            return new ApiResponse();
-        });
-
         $this->app->singleton(Currency::class, function ($app) {
             return new Currency();
         });
