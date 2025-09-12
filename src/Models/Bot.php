@@ -79,6 +79,9 @@ class Bot extends BaseTenant
             'bot_owner_peer_id',
             'activated_until',
             'suspended_at',
+            'updated_at',
+            'created_at',
+            'deleted_at',
         ];
     }
 
