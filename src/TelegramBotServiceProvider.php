@@ -3,11 +3,14 @@
 namespace Elyar\TelegramBotEssentials;
 
 use Elyar\TelegramBotEssentials\Console\Commands\BotManagementTokenCommand;
+use Elyar\TelegramBotEssentials\Console\Commands\InitMainBotCommand;
+use Elyar\TelegramBotEssentials\Console\Commands\InstallCommand;
 use Elyar\TelegramBotEssentials\Console\Commands\MakeCallbackQuery;
 use Elyar\TelegramBotEssentials\Console\Commands\MakeCommand;
 use Elyar\TelegramBotEssentials\Console\Commands\MakeFeature;
 use Elyar\TelegramBotEssentials\Console\Commands\MakeReplyKey;
 use Elyar\TelegramBotEssentials\Console\Commands\MakeStateAnswer;
+use Elyar\TelegramBotEssentials\Console\Commands\PublishCommand;
 use Elyar\TelegramBotEssentials\Console\Commands\SetWebhook;
 use Elyar\TelegramBotEssentials\Services\ApiResponse;
 use Elyar\TelegramBotEssentials\Services\Billing;
@@ -88,22 +91,13 @@ class TelegramBotServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        if ($this->app->runningInConsole()) {
-            $this->loadConsoleRoutes();
-        }
+        $this->loadConsoleRoutes();
+
+        $this->registerCommands();
+        $this->registerPublishing();
 
         BelongsToTenant::$tenantIdColumn = 'bot_id';
         PathTenantResolver::$tenantParameterName = 'bot';
-
-        $this->commands([
-            SetWebhook::class,
-            BotManagementTokenCommand::class,
-            MakeReplyKey::class,
-            MakeCallbackQuery::class,
-            MakeStateAnswer::class,
-            MakeFeature::class,
-            MakeCommand::class
-        ]);
 
         Route::prefix('api')
             ->group(__DIR__ . '/../routes/api.php');
@@ -125,10 +119,61 @@ class TelegramBotServiceProvider extends ServiceProvider
 
     protected function loadConsoleRoutes(): void
     {
-        $consoleRoutes = __DIR__ . '/../routes/console.php';
+        if ($this->app->runningInConsole()) {
+            $consoleRoutes = __DIR__ . '/../routes/console.php';
 
-        if (file_exists($consoleRoutes)) {
-            require $consoleRoutes;
+            if (file_exists($consoleRoutes)) {
+                require $consoleRoutes;
+            }
+        }
+    }
+
+    /**
+     * Register the package's publishable resources.
+     *
+     * @return void
+     */
+    protected function registerPublishing(): void
+    {
+        if ($this->app->runningInConsole()) {
+            $publishesMigrationsMethod = method_exists($this, 'publishesMigrations')
+                ? 'publishesMigrations'
+                : 'publishes';
+
+            $this->{$publishesMigrationsMethod}([
+                __DIR__.'/../database/migrations' => database_path('migrations'),
+            ], 'tbe-migrations');
+
+            $this->publishes([
+                __DIR__.'/../config/telegram-bot-essentials.php' => config_path('telegram-bot-essentials.php'),
+            ], 'tbe-config');
+
+            $this->publishes([
+                __DIR__ . '/../lang' => resource_path('lang/vendor/telegram-bot-essentials'),
+            ], 'tbe-translations');
+        }
+    }
+
+    /**
+     * Register the package's commands.
+     *
+     * @return void
+     */
+    protected function registerCommands(): void
+    {
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                SetWebhook::class,
+                BotManagementTokenCommand::class,
+                MakeReplyKey::class,
+                MakeCallbackQuery::class,
+                MakeStateAnswer::class,
+                MakeFeature::class,
+                MakeCommand::class,
+                InstallCommand::class,
+                PublishCommand::class,
+                InitMainBotCommand::class
+            ]);
         }
     }
 }
