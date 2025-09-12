@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c31aff1a3cff2bfa98418971ac22890b",
+    "content-hash": "9a80f5c047b7dcb60ea135f37527a7be",
     "packages": [
         {
             "name": "brick/math",
@@ -509,6 +509,50 @@
                 }
             ],
             "time": "2025-03-06T22:45:56+00:00"
+        },
+        {
+            "name": "elyar/personal-laravel-helpers",
+            "version": "v0.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Elyar0/personal-laravel-helpers.git",
+                "reference": "add774b990e4c6d94bdbfa915890bac0454afcc4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Elyar0/personal-laravel-helpers/zipball/add774b990e4c6d94bdbfa915890bac0454afcc4",
+                "reference": "add774b990e4c6d94bdbfa915890bac0454afcc4",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "^12 || ^11",
+                "php": "^8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/helpers.php"
+                ],
+                "psr-4": {
+                    "Elyar\\LaravelHelpers\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Elyar",
+                    "email": "elyareranjbar@gmail.com"
+                }
+            ],
+            "description": "Personal Laravel helpers and services for my projects",
+            "support": {
+                "issues": "https://github.com/Elyar0/personal-laravel-helpers/issues",
+                "source": "https://github.com/Elyar0/personal-laravel-helpers/tree/v0.0.2"
+            },
+            "time": "2025-09-07T11:55:53+00:00"
         },
         {
             "name": "facade/ignition-contracts",

@@ -29,13 +29,6 @@ if (!function_exists('wHook')) {
     }
 }
 
-if (!function_exists('apiResponse')) {
-    function apiResponse(): ApiResponse
-    {
-        return app(ApiResponse::class);
-    }
-}
-
 if (!function_exists('currency')) {
     function currency(): Currency
     {
@@ -209,22 +202,6 @@ if (!function_exists('hasAccess')) {
     function hasAccess(?int $power = null): bool
     {
         return (wHook()->user()->power >= $power ?? Roles::ADMIN->value) || (wHook()->bot()->botOwner->id == wHook()->user()->telegramUser->id);
-    }
-}
-
-if (!function_exists('getNextFromArray')) {
-    function getNextFromArray(array $array, mixed $current)
-    {
-        if(is_null($current)) return $array[0] ?? null;
-
-        $index = array_search($current, $array);
-
-        if ($index === false || empty($array)) {
-            return null;
-        }
-
-        $nextIndex = ($index + 1) % count($array);
-        return $array[$nextIndex];
     }
 }
 
