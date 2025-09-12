@@ -136,13 +136,13 @@ class TelegramBotServiceProvider extends ServiceProvider
     protected function registerPublishing(): void
     {
         if ($this->app->runningInConsole()) {
-            $publishesMigrationsMethod = method_exists($this, 'publishesMigrations')
-                ? 'publishesMigrations'
-                : 'publishes';
+//            $publishesMigrationsMethod = method_exists($this, 'publishesMigrations')
+//                ? 'publishesMigrations'
+//                : 'publishes';
 
-            $this->{$publishesMigrationsMethod}([
-                __DIR__.'/../database/migrations' => database_path('migrations'),
-            ], 'tbe-migrations');
+//            $this->{$publishesMigrationsMethod}([
+//                __DIR__.'/../database/migrations' => database_path('migrations'),
+//            ], 'tbe-migrations');
 
             $this->publishes([
                 __DIR__.'/../config/telegram-bot-essentials.php' => config_path('telegram-bot-essentials.php'),
