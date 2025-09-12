@@ -1,5 +1,5 @@
 {
-    "name": "elyar/telegram-bot-essentials",
+    "name": "telegram-bot-essentials/essence",
     "description": "This is the how i like to develop my bots and handle different incoming requests",
     "version": "0.7.11",
     "type": "library",
@@ -16,7 +16,7 @@
     "autoload": {
         "psr-4": {
             "Elyar\\TelegramBotEssentials\\": "src/",
-            "Elyar\\TelegramBotEssentials\\Tests\\": "tests"
+            "TelegramBotEssentials\\Essence\\": "src/"
         },
         "files": [
             "src/helpers.php"
@@ -38,41 +38,5 @@
                 "Elyar\\TelegramBotEssentials\\TelegramBotServiceProvider"
             ]
         }
-    },
-    "require-dev": {
-        "pestphp/pest": "^3.8",
-        "pestphp/pest-plugin-laravel": "^3.2",
-        "orchestra/testbench": "^10.3",
-        "vlucas/phpdotenv": "^5.6"
-    },
-    "config": {
-        "allow-plugins": {
-            "pestphp/pest-plugin": true
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Workbench\\App\\": "workbench/app/",
-            "Workbench\\Database\\Factories\\": "workbench/database/factories/",
-            "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
-        }
-    },
-    "scripts": {
-        "post-autoload-dump": [
-            "@clear",
-            "@prepare"
-        ],
-        "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
-        "prepare": "@php vendor/bin/testbench package:discover --ansi",
-        "build": "@php vendor/bin/testbench workbench:build --ansi",
-        "serve": [
-            "Composer\\Config::disableProcessTimeout",
-            "@build",
-            "@php vendor/bin/testbench serve --ansi"
-        ],
-        "test": [
-            "@clear",
-            "@php vendor/bin/pest"
-        ]
     }
 }
