@@ -92,8 +92,6 @@ class TelegramBotServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->initializeOptions();
-
         $this->loadConsoleRoutes();
 
         $this->registerCommands();
@@ -111,6 +109,8 @@ class TelegramBotServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         $this->loadTranslationsFrom(__DIR__ . '/../lang', 'tbe');
         $this->loadTranslationsFrom(__DIR__ . '/../lang', 'tbe-essence');
+
+        $this->initializeOptions();
     }
 
     protected function loadConsoleRoutes(): void
