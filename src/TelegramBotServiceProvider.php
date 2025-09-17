@@ -3,10 +3,7 @@
 namespace TelegramBotEssentials\Essence;
 
 use Illuminate\Contracts\Container\BindingResolutionException;
-use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\File;
-use Telegram\Bot\Commands\Command;
-use Telegram\Bot\Exceptions\TelegramSDKException;
 use TelegramBotEssentials\Essence\Console\Commands\BotManagementTokenCommand;
 use TelegramBotEssentials\Essence\Console\Commands\InitMainBotCommand;
 use TelegramBotEssentials\Essence\Console\Commands\InstallCommand;
@@ -18,7 +15,6 @@ use TelegramBotEssentials\Essence\Console\Commands\MakeStateAnswer;
 use TelegramBotEssentials\Essence\Console\Commands\PublishCommand;
 use TelegramBotEssentials\Essence\Console\Commands\SetWebhook;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
-use TelegramBotEssentials\Essence\Services\ApiResponse;
 use TelegramBotEssentials\Essence\Services\Billing;
 use TelegramBotEssentials\Essence\Services\Currency;
 use TelegramBotEssentials\Essence\Services\Gateways\Gateways;
@@ -112,6 +108,9 @@ class TelegramBotServiceProvider extends ServiceProvider
             ->group(__DIR__ . '/../routes/web.php');
 
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'tbe');
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        $this->loadTranslationsFrom(__DIR__ . '/../lang', 'tbe');
+        $this->loadTranslationsFrom(__DIR__ . '/../lang', 'tbe-essence');
     }
 
     protected function loadConsoleRoutes(): void
