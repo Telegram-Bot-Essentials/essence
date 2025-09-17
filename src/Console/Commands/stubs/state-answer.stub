@@ -2,9 +2,9 @@
 
 namespace {{ namespace }};
 
-use Elyar\TelegramBotEssentials\Enums\AllowableFields;
-use Elyar\TelegramBotEssentials\Enums\Roles;
-use Elyar\TelegramBotEssentials\Telegram\StateAnswers\StateAnswer;
+use TelegramBotEssentials\Essence\Enums\AllowableFields;
+use TelegramBotEssentials\Essence\Enums\Roles;
+use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswer;
 
 class {{ class_name }} extends StateAnswer
 {

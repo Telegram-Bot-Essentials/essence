@@ -2,8 +2,8 @@
 
 namespace {{ namespace }};
 
-use Elyar\TelegramBotEssentials\Enums\Roles;
-use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\ReplyKey;
+use TelegramBotEssentials\Essence\Enums\Roles;
+use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKey;
 
 class {{ class_name }} extends ReplyKey
 {

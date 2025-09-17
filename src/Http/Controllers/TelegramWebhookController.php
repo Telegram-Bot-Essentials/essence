@@ -103,7 +103,7 @@ class TelegramWebhookController extends Controller
             $baseNamespace = app()->getNamespace();
         } else {
             $basePath = realpath(__DIR__ . '/../../');
-            $baseNamespace = 'Elyar\\TelegramBotEssentials';
+            $baseNamespace = 'TelegramBotEssentials\\Essence';
         }
 
         $relativePath = str_replace($basePath . DIRECTORY_SEPARATOR, '', $path);

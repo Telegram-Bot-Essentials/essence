@@ -2,7 +2,7 @@
 
 namespace {{ namespace }};
 use Telegram\Bot\Keyboard\Keyboard;
-use Elyar\TelegramBotEssentials\Telegram\TelegramResponse;
+use TelegramBotEssentials\Essence\Telegram\TelegramResponse;
 
 class {{ class_name }}
 {

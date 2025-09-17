@@ -2,8 +2,8 @@
 
 namespace {{ namespace }};
 
-use Elyar\TelegramBotEssentials\Enums\Roles;
-use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQuery;
+use TelegramBotEssentials\Essence\Enums\Roles;
+use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQuery;
 
 class {{ class_name }} extends CallbackQuery
 {
