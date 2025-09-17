@@ -1,8 +1,8 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Database\factories;
+namespace TelegramBotEssentials\Essence\Database\factories;
 
-use Elyar\TelegramBotEssentials\Models\TelegramUser;
+use TelegramBotEssentials\Essence\Models\TelegramUser;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class TelegramUserFactory extends Factory

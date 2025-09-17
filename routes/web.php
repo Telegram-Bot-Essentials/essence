@@ -1,8 +1,8 @@
 <?php
 
-use Elyar\TelegramBotEssentials\Http\Controllers\GatewayZarinpalController;
-use Elyar\TelegramBotEssentials\Http\Controllers\GatewayZibalController;
-use Elyar\TelegramBotEssentials\Http\Controllers\GatewayZirgozarController;
+use TelegramBotEssentials\Essence\Http\Controllers\GatewayZarinpalController;
+use TelegramBotEssentials\Essence\Http\Controllers\GatewayZibalController;
+use TelegramBotEssentials\Essence\Http\Controllers\GatewayZirgozarController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('invoice/{token}')->name('invoice.')->controller(GatewayZirgozarController::class)->group(function () {

@@ -1,6 +1,6 @@
 <?php
 
-use Elyar\TelegramBotEssentials\Models\Billing\Invoice;
+use TelegramBotEssentials\Essence\Models\Billing\Invoice;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

@@ -1,11 +1,11 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Database\factories;
+namespace TelegramBotEssentials\Essence\Database\factories;
 
-use Elyar\TelegramBotEssentials\Enums\Roles;
-use Elyar\TelegramBotEssentials\Models\Bot;
-use Elyar\TelegramBotEssentials\Models\BotUser;
-use Elyar\TelegramBotEssentials\Models\TelegramUser;
+use TelegramBotEssentials\Essence\Enums\Roles;
+use TelegramBotEssentials\Essence\Models\Bot;
+use TelegramBotEssentials\Essence\Models\BotUser;
+use TelegramBotEssentials\Essence\Models\TelegramUser;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class BotUserFactory extends Factory

@@ -6,7 +6,7 @@ use Stancl\Tenancy\Database\Models\Domain;
 use Stancl\Tenancy\Database\Models\Tenant;
 
 return [
-    'tenant_model' => \Elyar\TelegramBotEssentials\Models\Bot::class,
+    'tenant_model' => \TelegramBotEssentials\Essence\Models\Bot::class,
     'id_generator' => null,
     'domain_model' => Domain::class,
 

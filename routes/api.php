@@ -1,10 +1,10 @@
 <?php
 
-use Elyar\TelegramBotEssentials\Http\Controllers\BotController;
-use Elyar\TelegramBotEssentials\Http\Controllers\TelegramWebhookController;
-use Elyar\TelegramBotEssentials\Http\Middleware\AuthorizeAccessToBots;
-use Elyar\TelegramBotEssentials\Http\Middleware\InitializeTenancyByPath;
-use Elyar\TelegramBotEssentials\Http\Middleware\TelegramBotAuthentication;
+use TelegramBotEssentials\Essence\Http\Controllers\BotController;
+use TelegramBotEssentials\Essence\Http\Controllers\TelegramWebhookController;
+use TelegramBotEssentials\Essence\Http\Middleware\AuthorizeAccessToBots;
+use TelegramBotEssentials\Essence\Http\Middleware\InitializeTenancyByPath;
+use TelegramBotEssentials\Essence\Http\Middleware\TelegramBotAuthentication;
 use Illuminate\Support\Facades\Route;
 
 
@@ -30,11 +30,11 @@ Route::group([
 Route::get('test', function () {
 
     return apiResponse()->success();
-//    \Elyar\TelegramBotEssentials\Models\Billing\Invoice::factory()->count(40)->create();
+//    \TelegramBotEssentials\Essence\Models\Billing\Invoice::factory()->count(40)->create();
 //    return response('OK', 200);
-//    $bot = \Elyar\TelegramBotEssentials\Models\Bot::where('unique_id', config('telegram-bot-essentials.develop.DEVELOP_UNIQUE_ID'))->first();
-//    \Elyar\TelegramBotEssentials\Models\BotUser::factory()->count(200)->create([
+//    $bot = \TelegramBotEssentials\Essence\Models\Bot::where('unique_id', config('telegram-bot-essentials.develop.DEVELOP_UNIQUE_ID'))->first();
+//    \TelegramBotEssentials\Essence\Models\BotUser::factory()->count(200)->create([
 //        'bot_id' => $bot->id,
 //    ]);
-//    return response(\Elyar\TelegramBotEssentials\Models\BotUser::count(), 200);
+//    return response(\TelegramBotEssentials\Essence\Models\BotUser::count(), 200);
 });

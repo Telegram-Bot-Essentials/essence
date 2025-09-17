@@ -1,11 +1,11 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Database\factories;
+namespace TelegramBotEssentials\Essence\Database\factories;
 
-use Elyar\TelegramBotEssentials\Models\Bot;
-use Elyar\TelegramBotEssentials\Models\BotUser;
-use Elyar\TelegramBotEssentials\Models\CreditOrder;
-use Elyar\TelegramBotEssentials\Models\Billing\Invoice;
+use TelegramBotEssentials\Essence\Models\Bot;
+use TelegramBotEssentials\Essence\Models\BotUser;
+use TelegramBotEssentials\Essence\Models\CreditOrder;
+use TelegramBotEssentials\Essence\Models\Billing\Invoice;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class InvoiceFactory extends Factory
