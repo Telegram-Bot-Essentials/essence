@@ -1,12 +1,12 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Models\Abstract;
+namespace TelegramBotEssentials\Essence\Models\Abstract;
 
-use Elyar\TelegramBotEssentials\Exceptions\LogicException;
-use Elyar\TelegramBotEssentials\Models\BotUser;
-use Elyar\TelegramBotEssentials\Telegram\Features\Member\MyWalletFeature;
-use Elyar\TelegramBotEssentials\Traits\HasInvoice;
-use Elyar\TelegramBotEssentials\Traits\HasMessageMeta;
+use TelegramBotEssentials\Essence\Exceptions\LogicException;
+use TelegramBotEssentials\Essence\Models\BotUser;
+use TelegramBotEssentials\Essence\Telegram\Features\Member\MyWalletFeature;
+use TelegramBotEssentials\Essence\Traits\HasInvoice;
+use TelegramBotEssentials\Essence\Traits\HasMessageMeta;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

@@ -1,15 +1,15 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Telegram\StateAnswers\Member;
+namespace TelegramBotEssentials\Essence\Telegram\StateAnswers\Member;
 
 use App\Models\Order;
 use App\Telegram\Features\Member\BuyServiceFeature;
-use Elyar\TelegramBotEssentials\Enums\AllowableFields;
-use Elyar\TelegramBotEssentials\Enums\Roles;
-use Elyar\TelegramBotEssentials\Models\CreditOrder;
-use Elyar\TelegramBotEssentials\Models\MessageMeta;
-use Elyar\TelegramBotEssentials\Telegram\Features\InvoiceFeature;
-use Elyar\TelegramBotEssentials\Telegram\StateAnswers\StateAnswer;
+use TelegramBotEssentials\Essence\Enums\AllowableFields;
+use TelegramBotEssentials\Essence\Enums\Roles;
+use TelegramBotEssentials\Essence\Models\CreditOrder;
+use TelegramBotEssentials\Essence\Models\MessageMeta;
+use TelegramBotEssentials\Essence\Telegram\Features\InvoiceFeature;
+use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswer;
 use Illuminate\Support\Facades\Validator;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\Keyboard\Keyboard;

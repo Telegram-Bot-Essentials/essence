@@ -1,6 +1,6 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Telegram\ReplyKeys;
+namespace TelegramBotEssentials\Essence\Telegram\ReplyKeys;
 
 interface ReplyKeyInterface
 {

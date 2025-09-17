@@ -1,18 +1,18 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Telegram\StateAnswers\Admin;
+namespace TelegramBotEssentials\Essence\Telegram\StateAnswers\Admin;
 
 use Brick\Math\BigDecimal;
-use Elyar\TelegramBotEssentials\Enums\AllowableFields;
-use Elyar\TelegramBotEssentials\Enums\Roles;
-use Elyar\TelegramBotEssentials\Exceptions\InvalidPageNumber;
-use Elyar\TelegramBotEssentials\Exceptions\LogicException;
-use Elyar\TelegramBotEssentials\Exceptions\TbeLogicException;
-use Elyar\TelegramBotEssentials\Models\BotUser;
-use Elyar\TelegramBotEssentials\Models\MessageMeta;
-use Elyar\TelegramBotEssentials\Services\TelegramPaginator;
-use Elyar\TelegramBotEssentials\Telegram\Features\Admin\BotUsersFeature;
-use Elyar\TelegramBotEssentials\Telegram\StateAnswers\StateAnswer;
+use TelegramBotEssentials\Essence\Enums\AllowableFields;
+use TelegramBotEssentials\Essence\Enums\Roles;
+use TelegramBotEssentials\Essence\Exceptions\InvalidPageNumber;
+use TelegramBotEssentials\Essence\Exceptions\LogicException;
+use TelegramBotEssentials\Essence\Exceptions\TbeLogicException;
+use TelegramBotEssentials\Essence\Models\BotUser;
+use TelegramBotEssentials\Essence\Models\MessageMeta;
+use TelegramBotEssentials\Essence\Services\TelegramPaginator;
+use TelegramBotEssentials\Essence\Telegram\Features\Admin\BotUsersFeature;
+use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswer;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Facades\Validator;
 use Telegram\Bot\Exceptions\TelegramSDKException;

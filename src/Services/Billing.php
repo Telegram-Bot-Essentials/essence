@@ -1,10 +1,10 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Services;
+namespace TelegramBotEssentials\Essence\Services;
 
-use Elyar\TelegramBotEssentials\Models\Abstract\Order;
-use Elyar\TelegramBotEssentials\Models\Abstract\PaymentAttempt;
-use Elyar\TelegramBotEssentials\Models\Billing\Invoice;
+use TelegramBotEssentials\Essence\Models\Abstract\Order;
+use TelegramBotEssentials\Essence\Models\Abstract\PaymentAttempt;
+use TelegramBotEssentials\Essence\Models\Billing\Invoice;
 
 class Billing
 {

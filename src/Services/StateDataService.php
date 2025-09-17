@@ -1,8 +1,8 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Services;
+namespace TelegramBotEssentials\Essence\Services;
 
-use Elyar\TelegramBotEssentials\Models\StateData;
+use TelegramBotEssentials\Essence\Models\StateData;
 
 class StateDataService
 {

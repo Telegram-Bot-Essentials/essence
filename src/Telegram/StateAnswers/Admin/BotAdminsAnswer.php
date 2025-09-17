@@ -1,13 +1,13 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Telegram\StateAnswers\Admin;
+namespace TelegramBotEssentials\Essence\Telegram\StateAnswers\Admin;
 
-use Elyar\TelegramBotEssentials\Enums\Roles;
-use Elyar\TelegramBotEssentials\Exceptions\LogicException;
-use Elyar\TelegramBotEssentials\Models\MessageMeta;
-use Elyar\TelegramBotEssentials\Models\TelegramUser;
-use Elyar\TelegramBotEssentials\Telegram\Features\BotAdminsFeature;
-use Elyar\TelegramBotEssentials\Telegram\StateAnswers\StateAnswer;
+use TelegramBotEssentials\Essence\Enums\Roles;
+use TelegramBotEssentials\Essence\Exceptions\LogicException;
+use TelegramBotEssentials\Essence\Models\MessageMeta;
+use TelegramBotEssentials\Essence\Models\TelegramUser;
+use TelegramBotEssentials\Essence\Telegram\Features\BotAdminsFeature;
+use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswer;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 

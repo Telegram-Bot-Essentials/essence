@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Elyar\TelegramBotEssentials\Telegram\StateAnswers;
+namespace TelegramBotEssentials\Essence\Telegram\StateAnswers;
 
-use Elyar\TelegramBotEssentials\Exceptions\LogicException;
-use Elyar\TelegramBotEssentials\Traits\CanResolveStateAnswer;
+use TelegramBotEssentials\Essence\Exceptions\LogicException;
+use TelegramBotEssentials\Essence\Traits\CanResolveStateAnswer;
 use Exception;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Facades\Log;

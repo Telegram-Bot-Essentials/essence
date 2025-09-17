@@ -1,8 +1,8 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Traits;
+namespace TelegramBotEssentials\Essence\Traits;
 
-use Elyar\TelegramBotEssentials\Models\Billing\Invoice;
+use TelegramBotEssentials\Essence\Models\Billing\Invoice;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 trait HasInvoice

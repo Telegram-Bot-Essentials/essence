@@ -1,13 +1,13 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Services;
+namespace TelegramBotEssentials\Essence\Services;
 
-use Elyar\TelegramBotEssentials\Exceptions\CannotSetItActive;
-use Elyar\TelegramBotEssentials\Exceptions\CannotSetItAsDone;
-use Elyar\TelegramBotEssentials\Exceptions\FeatureIsDisabled;
-use Elyar\TelegramBotEssentials\Exceptions\InvalidPageNumber;
-use Elyar\TelegramBotEssentials\Exceptions\LogicException;
-use Elyar\TelegramBotEssentials\Exceptions\TbeLogicException;
+use TelegramBotEssentials\Essence\Exceptions\CannotSetItActive;
+use TelegramBotEssentials\Essence\Exceptions\CannotSetItAsDone;
+use TelegramBotEssentials\Essence\Exceptions\FeatureIsDisabled;
+use TelegramBotEssentials\Essence\Exceptions\InvalidPageNumber;
+use TelegramBotEssentials\Essence\Exceptions\LogicException;
+use TelegramBotEssentials\Essence\Exceptions\TbeLogicException;
 use Exception;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;

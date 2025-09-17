@@ -1,12 +1,12 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Services\Gateways\ZarinPal;
+namespace TelegramBotEssentials\Essence\Services\Gateways\ZarinPal;
 
-use Elyar\TelegramBotEssentials\Services\Gateways\ZarinPal\Methods\Inquiry;
-use Elyar\TelegramBotEssentials\Services\Gateways\ZarinPal\Methods\PaymentRequest;
-use Elyar\TelegramBotEssentials\Services\Gateways\ZarinPal\Methods\ReverseTransaction;
-use Elyar\TelegramBotEssentials\Services\Gateways\ZarinPal\Methods\UnVerified;
-use Elyar\TelegramBotEssentials\Services\Gateways\ZarinPal\Methods\Verify;
+use TelegramBotEssentials\Essence\Services\Gateways\ZarinPal\Methods\Inquiry;
+use TelegramBotEssentials\Essence\Services\Gateways\ZarinPal\Methods\PaymentRequest;
+use TelegramBotEssentials\Essence\Services\Gateways\ZarinPal\Methods\ReverseTransaction;
+use TelegramBotEssentials\Essence\Services\Gateways\ZarinPal\Methods\UnVerified;
+use TelegramBotEssentials\Essence\Services\Gateways\ZarinPal\Methods\Verify;
 
 class ZarinPal
 {

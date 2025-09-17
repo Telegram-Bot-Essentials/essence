@@ -1,8 +1,8 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Models\Billing;
+namespace TelegramBotEssentials\Essence\Models\Billing;
 
-use Elyar\TelegramBotEssentials\Traits\HasMessageMeta;
+use TelegramBotEssentials\Essence\Traits\HasMessageMeta;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;

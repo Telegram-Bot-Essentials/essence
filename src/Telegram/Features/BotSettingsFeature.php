@@ -1,8 +1,8 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Telegram\Features;
+namespace TelegramBotEssentials\Essence\Telegram\Features;
 
-use Elyar\TelegramBotEssentials\Telegram\TelegramResponse;
+use TelegramBotEssentials\Essence\Telegram\TelegramResponse;
 use Telegram\Bot\Keyboard\Keyboard;
 
 class BotSettingsFeature

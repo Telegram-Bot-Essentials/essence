@@ -1,15 +1,15 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Models\Billing;
+namespace TelegramBotEssentials\Essence\Models\Billing;
 
-use Elyar\TelegramBotEssentials\Database\factories\InvoiceFactory;
-use Elyar\TelegramBotEssentials\Jobs\CancelOrderHookJob;
-use Elyar\TelegramBotEssentials\Jobs\InvoiceFailedHookJob;
-use Elyar\TelegramBotEssentials\Jobs\InvoicePaidHookJob;
-use Elyar\TelegramBotEssentials\Jobs\InvoicePendingHookJob;
-use Elyar\TelegramBotEssentials\Models\Bot;
-use Elyar\TelegramBotEssentials\Models\BotUser;
-use Elyar\TelegramBotEssentials\Traits\HasMessageMeta;
+use TelegramBotEssentials\Essence\Database\factories\InvoiceFactory;
+use TelegramBotEssentials\Essence\Jobs\CancelOrderHookJob;
+use TelegramBotEssentials\Essence\Jobs\InvoiceFailedHookJob;
+use TelegramBotEssentials\Essence\Jobs\InvoicePaidHookJob;
+use TelegramBotEssentials\Essence\Jobs\InvoicePendingHookJob;
+use TelegramBotEssentials\Essence\Models\Bot;
+use TelegramBotEssentials\Essence\Models\BotUser;
+use TelegramBotEssentials\Essence\Traits\HasMessageMeta;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

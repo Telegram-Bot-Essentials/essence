@@ -1,8 +1,8 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Telegram\Features\Member;
-use Elyar\TelegramBotEssentials\Models\InlineConfirmation;
-use Elyar\TelegramBotEssentials\Telegram\TelegramResponse;
+namespace TelegramBotEssentials\Essence\Telegram\Features\Member;
+use TelegramBotEssentials\Essence\Models\InlineConfirmation;
+use TelegramBotEssentials\Essence\Telegram\TelegramResponse;
 use Telegram\Bot\Keyboard\Keyboard;
 
 class InlineConfirmationFeature

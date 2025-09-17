@@ -1,10 +1,10 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Admin;
+namespace TelegramBotEssentials\Essence\Telegram\ReplyKeys\Admin;
 
-use Elyar\TelegramBotEssentials\Enums\Roles;
-use Elyar\TelegramBotEssentials\Telegram\Features\BotSettingsFeature;
-use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\ReplyKey;
+use TelegramBotEssentials\Essence\Enums\Roles;
+use TelegramBotEssentials\Essence\Telegram\Features\BotSettingsFeature;
+use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKey;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 
 class BotSettingsKey extends ReplyKey

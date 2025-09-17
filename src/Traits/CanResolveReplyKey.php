@@ -1,9 +1,9 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Traits;
+namespace TelegramBotEssentials\Essence\Traits;
 
-use Elyar\TelegramBotEssentials\Exceptions\LogicException;
-use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\ReplyKeyInterface;
+use TelegramBotEssentials\Essence\Exceptions\LogicException;
+use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKeyInterface;
 use Illuminate\Contracts\Container\BindingResolutionException;
 
 trait CanResolveReplyKey

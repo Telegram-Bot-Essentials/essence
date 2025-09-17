@@ -1,10 +1,10 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Services\Gateways\Zibal;
+namespace TelegramBotEssentials\Essence\Services\Gateways\Zibal;
 
 
-use Elyar\TelegramBotEssentials\Services\Gateways\Zibal\Methods\PaymentRequest;
-use Elyar\TelegramBotEssentials\Services\Gateways\Zibal\Methods\Verify;
+use TelegramBotEssentials\Essence\Services\Gateways\Zibal\Methods\PaymentRequest;
+use TelegramBotEssentials\Essence\Services\Gateways\Zibal\Methods\Verify;
 
 class Zibal
 {

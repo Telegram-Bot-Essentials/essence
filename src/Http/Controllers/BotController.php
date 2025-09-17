@@ -1,11 +1,11 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Http\Controllers;
+namespace TelegramBotEssentials\Essence\Http\Controllers;
 
-use Elyar\TelegramBotEssentials\Http\Requests\BotRequest;
-use Elyar\TelegramBotEssentials\Http\Resources\BotResource;
-use Elyar\TelegramBotEssentials\Models\Bot;
-use Elyar\TelegramBotEssentials\Models\TelegramUser;
+use TelegramBotEssentials\Essence\Http\Requests\BotRequest;
+use TelegramBotEssentials\Essence\Http\Resources\BotResource;
+use TelegramBotEssentials\Essence\Models\Bot;
+use TelegramBotEssentials\Essence\Models\TelegramUser;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;

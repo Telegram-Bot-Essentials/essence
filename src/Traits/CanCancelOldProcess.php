@@ -1,9 +1,9 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Traits;
+namespace TelegramBotEssentials\Essence\Traits;
 
-use Elyar\TelegramBotEssentials\Exceptions\LogicException;
-use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Member\CancelProcessKey;
+use TelegramBotEssentials\Essence\Exceptions\LogicException;
+use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Member\CancelProcessKey;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 

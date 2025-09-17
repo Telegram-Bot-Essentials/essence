@@ -1,9 +1,9 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Console\Commands;
+namespace TelegramBotEssentials\Essence\Console\Commands;
 
-use Elyar\TelegramBotEssentials\Models\Bot;
-use Elyar\TelegramBotEssentials\Traits\CanResolveBotCommand;
+use TelegramBotEssentials\Essence\Models\Bot;
+use TelegramBotEssentials\Essence\Traits\CanResolveBotCommand;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
 use Telegram\Bot\Api;

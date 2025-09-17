@@ -1,12 +1,12 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Telegram\CallbackQueries\Member;
+namespace TelegramBotEssentials\Essence\Telegram\CallbackQueries\Member;
 
-use Elyar\TelegramBotEssentials\Enums\Roles;
-use Elyar\TelegramBotEssentials\Exceptions\LogicException;
-use Elyar\TelegramBotEssentials\Models\MessageMeta;
-use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQuery;
-use Elyar\TelegramBotEssentials\Traits\CanCancelOldProcess;
+use TelegramBotEssentials\Essence\Enums\Roles;
+use TelegramBotEssentials\Essence\Exceptions\LogicException;
+use TelegramBotEssentials\Essence\Models\MessageMeta;
+use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQuery;
+use TelegramBotEssentials\Essence\Traits\CanCancelOldProcess;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 

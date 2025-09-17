@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Elyar\TelegramBotEssentials\Telegram\ReplyKeys;
+namespace TelegramBotEssentials\Essence\Telegram\ReplyKeys;
 
-use Elyar\TelegramBotEssentials\Exceptions\LogicException;
-use Elyar\TelegramBotEssentials\Traits\CanCancelOldProcess;
-use Elyar\TelegramBotEssentials\Traits\CanResolveReplyKey;
+use TelegramBotEssentials\Essence\Exceptions\LogicException;
+use TelegramBotEssentials\Essence\Traits\CanCancelOldProcess;
+use TelegramBotEssentials\Essence\Traits\CanResolveReplyKey;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 

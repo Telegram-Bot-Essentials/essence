@@ -1,8 +1,8 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Exceptions\TbeLogicExceptions;
+namespace TelegramBotEssentials\Essence\Exceptions\TbeLogicExceptions;
 
-use Elyar\TelegramBotEssentials\Exceptions\TbeLogicException;
+use TelegramBotEssentials\Essence\Exceptions\TbeLogicException;
 
 class InsufficientBalanceException extends TbeLogicException
 {

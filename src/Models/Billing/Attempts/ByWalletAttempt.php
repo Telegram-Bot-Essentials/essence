@@ -1,10 +1,10 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Models\Billing\Attempts;
+namespace TelegramBotEssentials\Essence\Models\Billing\Attempts;
 
-use Elyar\TelegramBotEssentials\Models\Abstract\PaymentAttempt;
-use Elyar\TelegramBotEssentials\Models\Billing\Payment;
-use Elyar\TelegramBotEssentials\Traits\HasMessageMeta;
+use TelegramBotEssentials\Essence\Models\Abstract\PaymentAttempt;
+use TelegramBotEssentials\Essence\Models\Billing\Payment;
+use TelegramBotEssentials\Essence\Traits\HasMessageMeta;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Services\Gateways;
+namespace TelegramBotEssentials\Essence\Services\Gateways;
 
-use Elyar\TelegramBotEssentials\Exceptions\FeatureIsDisabled;
-use Elyar\TelegramBotEssentials\Services\Gateways\ZarinPal\ZarinPal;
-use Elyar\TelegramBotEssentials\Services\Gateways\Zibal\Zibal;
+use TelegramBotEssentials\Essence\Exceptions\FeatureIsDisabled;
+use TelegramBotEssentials\Essence\Services\Gateways\ZarinPal\ZarinPal;
+use TelegramBotEssentials\Essence\Services\Gateways\Zibal\Zibal;
 
 class Gateways
 {

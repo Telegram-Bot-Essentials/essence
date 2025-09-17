@@ -1,8 +1,8 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Traits;
+namespace TelegramBotEssentials\Essence\Traits;
 
-use Elyar\TelegramBotEssentials\Enums\Roles;
+use TelegramBotEssentials\Essence\Enums\Roles;
 use Illuminate\Support\Str;
 
 trait TgClassMaker

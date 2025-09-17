@@ -1,8 +1,8 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Models\Billing\Attempts;
+namespace TelegramBotEssentials\Essence\Models\Billing\Attempts;
 
-use Elyar\TelegramBotEssentials\Models\Abstract\PaymentAttempt;
+use TelegramBotEssentials\Essence\Models\Abstract\PaymentAttempt;
 
 class ToZibalAttempt extends PaymentAttempt
 {

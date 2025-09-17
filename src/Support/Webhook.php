@@ -1,11 +1,11 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Support;
+namespace TelegramBotEssentials\Essence\Support;
 
 use Closure;
-use Elyar\TelegramBotEssentials\Exceptions\WebhookAuthException;
-use Elyar\TelegramBotEssentials\Models\Bot;
-use Elyar\TelegramBotEssentials\Models\BotUser;
+use TelegramBotEssentials\Essence\Exceptions\WebhookAuthException;
+use TelegramBotEssentials\Essence\Models\Bot;
+use TelegramBotEssentials\Essence\Models\BotUser;
 use Telegram\Bot\Api;
 use Telegram\Bot\Objects\Update;
 

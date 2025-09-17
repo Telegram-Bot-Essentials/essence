@@ -1,8 +1,8 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Admin;
+namespace TelegramBotEssentials\Essence\Telegram\ReplyKeys\Admin;
 
-use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\ReplyKey;
+use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKey;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 
 class AdminPanelKey extends ReplyKey

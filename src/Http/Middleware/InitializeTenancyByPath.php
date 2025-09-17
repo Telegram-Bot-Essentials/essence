@@ -1,9 +1,9 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Http\Middleware;
+namespace TelegramBotEssentials\Essence\Http\Middleware;
 
 use Closure;
-use Elyar\TelegramBotEssentials\Models\Bot;
+use TelegramBotEssentials\Essence\Models\Bot;
 use Illuminate\Http\Request;
 use Stancl\Tenancy\Exceptions\TenantCouldNotBeIdentifiedById;
 use Symfony\Component\HttpFoundation\Response;

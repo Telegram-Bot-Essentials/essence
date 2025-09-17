@@ -1,6 +1,6 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Services;
+namespace TelegramBotEssentials\Essence\Services;
 
 use Cache;
 use Illuminate\Support\Facades\Http;

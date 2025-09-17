@@ -1,8 +1,8 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Traits;
+namespace TelegramBotEssentials\Essence\Traits;
 
-use Elyar\TelegramBotEssentials\Exceptions\TbeLogicException;
+use TelegramBotEssentials\Essence\Exceptions\TbeLogicException;
 use Illuminate\Support\Facades\Validator;
 
 trait ValidationOnModelLevel

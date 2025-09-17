@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Elyar\TelegramBotEssentials\Telegram\CallbackQueries;
+namespace TelegramBotEssentials\Essence\Telegram\CallbackQueries;
 
-use Elyar\TelegramBotEssentials\Exceptions\LogicException;
-use Elyar\TelegramBotEssentials\Exceptions\TbeLogicException;
-use Elyar\TelegramBotEssentials\Traits\CanResolveCallbackQuery;
+use TelegramBotEssentials\Essence\Exceptions\LogicException;
+use TelegramBotEssentials\Essence\Exceptions\TbeLogicException;
+use TelegramBotEssentials\Essence\Traits\CanResolveCallbackQuery;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Exceptions\TelegramSDKException;

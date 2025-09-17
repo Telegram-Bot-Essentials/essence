@@ -1,13 +1,13 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Telegram\StateAnswers\Member;
+namespace TelegramBotEssentials\Essence\Telegram\StateAnswers\Member;
 
-use Elyar\TelegramBotEssentials\Enums\AllowableFields;
-use Elyar\TelegramBotEssentials\Enums\Roles;
-use Elyar\TelegramBotEssentials\Exceptions\LogicException;
-use Elyar\TelegramBotEssentials\Models\Billing\Attempts\ToCardAttempt;
-use Elyar\TelegramBotEssentials\Models\Billing\Invoice;
-use Elyar\TelegramBotEssentials\Telegram\StateAnswers\StateAnswer;
+use TelegramBotEssentials\Essence\Enums\AllowableFields;
+use TelegramBotEssentials\Essence\Enums\Roles;
+use TelegramBotEssentials\Essence\Exceptions\LogicException;
+use TelegramBotEssentials\Essence\Models\Billing\Attempts\ToCardAttempt;
+use TelegramBotEssentials\Essence\Models\Billing\Invoice;
+use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswer;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Facades\Storage;
 use Telegram\Bot\Exceptions\TelegramSDKException;

@@ -1,19 +1,19 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Models;
+namespace TelegramBotEssentials\Essence\Models;
 
-use Elyar\TelegramBotEssentials\Database\factories\BotUserFactory;
-use Elyar\TelegramBotEssentials\Enums\Roles;
-use Elyar\TelegramBotEssentials\Exceptions\LogicException;
-use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Admin\AdminPanelKey;
-use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Admin\BotAdminsKey;
-use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Admin\BotSettingsKey;
-use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Admin\BotUsersKey;
-use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Admin\ManageInvoicesKey;
-use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Member\CancelProcessKey;
-use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Member\MainMenuKey;
-use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Member\MyWalletKey;
-use Elyar\TelegramBotEssentials\Traits\CanResolveReplyKey;
+use TelegramBotEssentials\Essence\Database\factories\BotUserFactory;
+use TelegramBotEssentials\Essence\Enums\Roles;
+use TelegramBotEssentials\Essence\Exceptions\LogicException;
+use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Admin\AdminPanelKey;
+use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Admin\BotAdminsKey;
+use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Admin\BotSettingsKey;
+use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Admin\BotUsersKey;
+use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Admin\ManageInvoicesKey;
+use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Member\CancelProcessKey;
+use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Member\MainMenuKey;
+use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Member\MyWalletKey;
+use TelegramBotEssentials\Essence\Traits\CanResolveReplyKey;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

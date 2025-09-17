@@ -1,6 +1,6 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Services;
+namespace TelegramBotEssentials\Essence\Services;
 
 use Brick\Math\BigDecimal;
 use Brick\Math\BigNumber;

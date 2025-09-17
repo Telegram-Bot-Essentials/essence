@@ -1,10 +1,10 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Telegram\ReplyKeys\Member;
+namespace TelegramBotEssentials\Essence\Telegram\ReplyKeys\Member;
 
-use Elyar\TelegramBotEssentials\Enums\Roles;
-use Elyar\TelegramBotEssentials\Telegram\Features\Member\MyWalletFeature;
-use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\ReplyKey;
+use TelegramBotEssentials\Essence\Enums\Roles;
+use TelegramBotEssentials\Essence\Telegram\Features\Member\MyWalletFeature;
+use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKey;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 
 class MyWalletKey extends ReplyKey

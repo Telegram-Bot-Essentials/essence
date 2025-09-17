@@ -1,8 +1,8 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Seeders;
+namespace TelegramBotEssentials\Essence\Seeders;
 
-use Elyar\TelegramBotEssentials\Models\Bot;
+use TelegramBotEssentials\Essence\Models\Bot;
 use Illuminate\Database\Seeder;
 
 class TestDataSeeder extends Seeder

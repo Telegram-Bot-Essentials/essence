@@ -1,8 +1,8 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Models;
+namespace TelegramBotEssentials\Essence\Models;
 
-use Elyar\TelegramBotEssentials\Database\factories\BotFactory;
+use TelegramBotEssentials\Essence\Database\factories\BotFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;

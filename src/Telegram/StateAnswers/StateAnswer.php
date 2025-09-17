@@ -1,11 +1,11 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Telegram\StateAnswers;
+namespace TelegramBotEssentials\Essence\Telegram\StateAnswers;
 
-use Elyar\TelegramBotEssentials\Enums\AllowableFields;
-use Elyar\TelegramBotEssentials\Exceptions\TbeLogicException;
-use Elyar\TelegramBotEssentials\Models\MessageMeta;
-use Elyar\TelegramBotEssentials\Models\StateData;
+use TelegramBotEssentials\Essence\Enums\AllowableFields;
+use TelegramBotEssentials\Essence\Exceptions\TbeLogicException;
+use TelegramBotEssentials\Essence\Models\MessageMeta;
+use TelegramBotEssentials\Essence\Models\StateData;
 
 abstract class StateAnswer implements StateAnswerInterface
 {

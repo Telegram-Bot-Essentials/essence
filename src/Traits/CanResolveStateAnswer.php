@@ -1,9 +1,9 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Traits;
+namespace TelegramBotEssentials\Essence\Traits;
 
-use Elyar\TelegramBotEssentials\Exceptions\LogicException;
-use Elyar\TelegramBotEssentials\Telegram\StateAnswers\StateAnswerInterface;
+use TelegramBotEssentials\Essence\Exceptions\LogicException;
+use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswerInterface;
 use Illuminate\Contracts\Container\BindingResolutionException;
 
 trait CanResolveStateAnswer

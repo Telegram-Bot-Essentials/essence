@@ -1,13 +1,13 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Telegram\CallbackQueries\Member;
+namespace TelegramBotEssentials\Essence\Telegram\CallbackQueries\Member;
 
-use Elyar\TelegramBotEssentials\Enums\Roles;
-use Elyar\TelegramBotEssentials\Exceptions\LogicException;
-use Elyar\TelegramBotEssentials\Exceptions\TbeLogicException;
-use Elyar\TelegramBotEssentials\Models\InlineConfirmation;
-use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQuery;
-use Elyar\TelegramBotEssentials\Telegram\Features\Member\InlineConfirmationFeature;
+use TelegramBotEssentials\Essence\Enums\Roles;
+use TelegramBotEssentials\Essence\Exceptions\LogicException;
+use TelegramBotEssentials\Essence\Exceptions\TbeLogicException;
+use TelegramBotEssentials\Essence\Models\InlineConfirmation;
+use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQuery;
+use TelegramBotEssentials\Essence\Telegram\Features\Member\InlineConfirmationFeature;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 

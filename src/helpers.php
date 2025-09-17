@@ -1,21 +1,21 @@
 <?php
 
-use Elyar\TelegramBotEssentials\Enums\Roles;
-use Elyar\TelegramBotEssentials\Exceptions\FeatureIsDisabled;
-use Elyar\TelegramBotEssentials\Exceptions\TbeLogicException;
-use Elyar\TelegramBotEssentials\Models\InlineConfirmation;
-use Elyar\TelegramBotEssentials\Services\Currency;
-use Elyar\TelegramBotEssentials\Services\CurrencyFather;
-use Elyar\TelegramBotEssentials\Services\ApiResponse;
-use Elyar\TelegramBotEssentials\Services\Billing;
-use Elyar\TelegramBotEssentials\Services\ExceptionHandler;
-use Elyar\TelegramBotEssentials\Services\StateDataService;
-use Elyar\TelegramBotEssentials\Services\Gateways\Gateways;
-use Elyar\TelegramBotEssentials\Support\Webhook;
-use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQueryBus;
-use Elyar\TelegramBotEssentials\Telegram\Features\Member\InlineConfirmationFeature;
-use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\ReplyKeyBus;
-use Elyar\TelegramBotEssentials\Telegram\StateAnswers\StateAnswerBus;
+use TelegramBotEssentials\Essence\Enums\Roles;
+use TelegramBotEssentials\Essence\Exceptions\FeatureIsDisabled;
+use TelegramBotEssentials\Essence\Exceptions\TbeLogicException;
+use TelegramBotEssentials\Essence\Models\InlineConfirmation;
+use TelegramBotEssentials\Essence\Services\Currency;
+use TelegramBotEssentials\Essence\Services\CurrencyFather;
+use TelegramBotEssentials\Essence\Services\ApiResponse;
+use TelegramBotEssentials\Essence\Services\Billing;
+use TelegramBotEssentials\Essence\Services\ExceptionHandler;
+use TelegramBotEssentials\Essence\Services\StateDataService;
+use TelegramBotEssentials\Essence\Services\Gateways\Gateways;
+use TelegramBotEssentials\Essence\Support\Webhook;
+use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQueryBus;
+use TelegramBotEssentials\Essence\Telegram\Features\Member\InlineConfirmationFeature;
+use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKeyBus;
+use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswerBus;
 use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\FileUpload\InputFile;

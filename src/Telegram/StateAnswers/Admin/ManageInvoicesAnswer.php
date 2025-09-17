@@ -1,10 +1,10 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Telegram\StateAnswers\Admin;
+namespace TelegramBotEssentials\Essence\Telegram\StateAnswers\Admin;
 
-use Elyar\TelegramBotEssentials\Enums\AllowableFields;
-use Elyar\TelegramBotEssentials\Enums\Roles;
-use Elyar\TelegramBotEssentials\Telegram\StateAnswers\StateAnswer;
+use TelegramBotEssentials\Essence\Enums\AllowableFields;
+use TelegramBotEssentials\Essence\Enums\Roles;
+use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswer;
 
 class ManageInvoicesAnswer extends StateAnswer
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Telegram\Features;
+namespace TelegramBotEssentials\Essence\Telegram\Features;
 
-use Elyar\TelegramBotEssentials\Models\CreditOrder;
-use Elyar\TelegramBotEssentials\Models\Billing\Invoice;
-use Elyar\TelegramBotEssentials\Telegram\TelegramResponse;
+use TelegramBotEssentials\Essence\Models\CreditOrder;
+use TelegramBotEssentials\Essence\Models\Billing\Invoice;
+use TelegramBotEssentials\Essence\Telegram\TelegramResponse;
 use Telegram\Bot\Keyboard\Keyboard;
 
 class InvoiceFeature

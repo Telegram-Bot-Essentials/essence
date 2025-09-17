@@ -1,6 +1,6 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Exceptions;
+namespace TelegramBotEssentials\Essence\Exceptions;
 
 use Exception;
 use Illuminate\Support\Facades\Log;

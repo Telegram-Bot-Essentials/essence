@@ -1,8 +1,8 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Services;
+namespace TelegramBotEssentials\Essence\Services;
 
-use Elyar\TelegramBotEssentials\Exceptions\InvalidPageNumber;
+use TelegramBotEssentials\Essence\Exceptions\InvalidPageNumber;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Validator;
 use Telegram\Bot\Keyboard\Keyboard;

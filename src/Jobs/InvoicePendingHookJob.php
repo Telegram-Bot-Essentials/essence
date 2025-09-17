@@ -1,11 +1,11 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Jobs;
+namespace TelegramBotEssentials\Essence\Jobs;
 
-use Elyar\TelegramBotEssentials\Models\Bot;
-use Elyar\TelegramBotEssentials\Models\BotUser;
-use Elyar\TelegramBotEssentials\Models\Billing\Invoice;
-use Elyar\TelegramBotEssentials\Telegram\Features\InvoiceFeature;
+use TelegramBotEssentials\Essence\Models\Bot;
+use TelegramBotEssentials\Essence\Models\BotUser;
+use TelegramBotEssentials\Essence\Models\Billing\Invoice;
+use TelegramBotEssentials\Essence\Telegram\Features\InvoiceFeature;
 use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;

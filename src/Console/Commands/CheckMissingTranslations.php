@@ -1,6 +1,6 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Console\Commands;
+namespace TelegramBotEssentials\Essence\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;

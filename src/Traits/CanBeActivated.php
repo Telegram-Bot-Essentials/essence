@@ -1,9 +1,9 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Traits;
+namespace TelegramBotEssentials\Essence\Traits;
 
 
-use Elyar\TelegramBotEssentials\Exceptions\CannotSetItActive;
+use TelegramBotEssentials\Essence\Exceptions\CannotSetItActive;
 
 trait CanBeActivated
 {

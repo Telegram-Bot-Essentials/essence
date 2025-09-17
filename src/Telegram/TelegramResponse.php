@@ -1,8 +1,8 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Telegram;
+namespace TelegramBotEssentials\Essence\Telegram;
 
-use Elyar\TelegramBotEssentials\Models\MessageMeta;
+use TelegramBotEssentials\Essence\Models\MessageMeta;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Telegram\Bot\Exceptions\TelegramSDKException;

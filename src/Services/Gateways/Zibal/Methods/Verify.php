@@ -1,8 +1,8 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Services\Gateways\Zibal\Methods;
+namespace TelegramBotEssentials\Essence\Services\Gateways\Zibal\Methods;
 
-use Elyar\TelegramBotEssentials\Services\Gateways\Zibal\ZibalMethod;
+use TelegramBotEssentials\Essence\Services\Gateways\Zibal\ZibalMethod;
 
 class Verify extends ZibalMethod
 {

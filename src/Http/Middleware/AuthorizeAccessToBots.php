@@ -1,6 +1,6 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Http\Middleware;
+namespace TelegramBotEssentials\Essence\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;

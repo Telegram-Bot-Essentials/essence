@@ -1,14 +1,14 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Telegram\CallbackQueries\Member;
+namespace TelegramBotEssentials\Essence\Telegram\CallbackQueries\Member;
 
-use Elyar\TelegramBotEssentials\Enums\Roles;
-use Elyar\TelegramBotEssentials\Exceptions\FeatureIsDisabled;
-use Elyar\TelegramBotEssentials\Exceptions\LogicException;
-use Elyar\TelegramBotEssentials\Models\Billing\Attempts\ByWalletAttempt;
-use Elyar\TelegramBotEssentials\Models\Billing\Attempts\ToCardAttempt;
-use Elyar\TelegramBotEssentials\Models\Billing\Invoice;
-use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQuery;
+use TelegramBotEssentials\Essence\Enums\Roles;
+use TelegramBotEssentials\Essence\Exceptions\FeatureIsDisabled;
+use TelegramBotEssentials\Essence\Exceptions\LogicException;
+use TelegramBotEssentials\Essence\Models\Billing\Attempts\ByWalletAttempt;
+use TelegramBotEssentials\Essence\Models\Billing\Attempts\ToCardAttempt;
+use TelegramBotEssentials\Essence\Models\Billing\Invoice;
+use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQuery;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 

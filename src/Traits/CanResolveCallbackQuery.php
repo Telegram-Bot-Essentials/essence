@@ -1,9 +1,9 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Traits;
+namespace TelegramBotEssentials\Essence\Traits;
 
-use Elyar\TelegramBotEssentials\Exceptions\LogicException;
-use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQueryInterface;
+use TelegramBotEssentials\Essence\Exceptions\LogicException;
+use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQueryInterface;
 use Illuminate\Contracts\Container\BindingResolutionException;
 
 trait CanResolveCallbackQuery

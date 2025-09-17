@@ -1,6 +1,6 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Telegram\CallbackQueries;
+namespace TelegramBotEssentials\Essence\Telegram\CallbackQueries;
 
 abstract class CallbackQuery implements CallbackQueryInterface
 {

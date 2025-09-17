@@ -1,13 +1,13 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Http\Controllers;
+namespace TelegramBotEssentials\Essence\Http\Controllers;
 
-use Elyar\TelegramBotEssentials\Exceptions\LogicException;
-use Elyar\TelegramBotEssentials\Exceptions\TbeLogicException;
-use Elyar\TelegramBotEssentials\Telegram\CallbackQueries\CallbackQuery;
-use Elyar\TelegramBotEssentials\Telegram\ReplyKeys\ReplyKey;
-use Elyar\TelegramBotEssentials\Telegram\StateAnswers\StateAnswer;
-use Elyar\TelegramBotEssentials\Traits\CanCancelOldProcess;
+use TelegramBotEssentials\Essence\Exceptions\LogicException;
+use TelegramBotEssentials\Essence\Exceptions\TbeLogicException;
+use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQuery;
+use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKey;
+use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswer;
+use TelegramBotEssentials\Essence\Traits\CanCancelOldProcess;
 use Exception;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\Request;
@@ -139,7 +139,7 @@ class TelegramWebhookController extends Controller
         foreach ($replyKeys as $replyKeyRow) {
             foreach ($replyKeyRow as $replyKey) {
                 if (!is_subclass_of($replyKey, ReplyKey::class))
-                    throw new LogicException("ReplyKey {$replyKey} is not a subclass of Elyar\TelegramBotEssentials\Telegram\ReplyKeys\ReplyKey");
+                    throw new LogicException("ReplyKey {$replyKey} is not a subclass of TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKey");
                 replyKeyBus()->addReplyKey($replyKey);
             }
         }

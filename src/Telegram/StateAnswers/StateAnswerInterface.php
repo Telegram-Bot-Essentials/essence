@@ -1,8 +1,8 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Telegram\StateAnswers;
+namespace TelegramBotEssentials\Essence\Telegram\StateAnswers;
 
-use Elyar\TelegramBotEssentials\Models\MessageMeta;
+use TelegramBotEssentials\Essence\Models\MessageMeta;
 
 interface StateAnswerInterface
 {

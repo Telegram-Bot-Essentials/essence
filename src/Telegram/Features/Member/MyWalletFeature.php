@@ -1,7 +1,7 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Telegram\Features\Member;
-use Elyar\TelegramBotEssentials\Telegram\TelegramResponse;
+namespace TelegramBotEssentials\Essence\Telegram\Features\Member;
+use TelegramBotEssentials\Essence\Telegram\TelegramResponse;
 use Telegram\Bot\Keyboard\Keyboard;
 
 class MyWalletFeature

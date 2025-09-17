@@ -1,8 +1,8 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Models;
+namespace TelegramBotEssentials\Essence\Models;
 
-use Elyar\TelegramBotEssentials\Traits\HasMessageMeta;
+use TelegramBotEssentials\Essence\Traits\HasMessageMeta;
 use Illuminate\Database\Eloquent\Model;
 
 class StateData extends Model

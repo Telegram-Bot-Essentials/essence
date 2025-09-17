@@ -1,8 +1,8 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Console\Commands;
+namespace TelegramBotEssentials\Essence\Console\Commands;
 
-use Elyar\TelegramBotEssentials\Traits\TgClassMaker;
+use TelegramBotEssentials\Essence\Traits\TgClassMaker;
 use Illuminate\Console\GeneratorCommand;
 
 class MakeFeature extends GeneratorCommand

@@ -1,8 +1,8 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Http\Resources;
+namespace TelegramBotEssentials\Essence\Http\Resources;
 
-use Elyar\TelegramBotEssentials\Models\Bot;
+use TelegramBotEssentials\Essence\Models\Bot;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use InvalidArgumentException;

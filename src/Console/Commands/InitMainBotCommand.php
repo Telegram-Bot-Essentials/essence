@@ -1,10 +1,10 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Console\Commands;
+namespace TelegramBotEssentials\Essence\Console\Commands;
 
-use Elyar\TelegramBotEssentials\Models\Bot;
-use Elyar\TelegramBotEssentials\Models\BotUser;
-use Elyar\TelegramBotEssentials\Models\TelegramUser;
+use TelegramBotEssentials\Essence\Models\Bot;
+use TelegramBotEssentials\Essence\Models\BotUser;
+use TelegramBotEssentials\Essence\Models\TelegramUser;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
 

@@ -1,12 +1,12 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Http\Middleware;
+namespace TelegramBotEssentials\Essence\Http\Middleware;
 
 use Closure;
-use Elyar\TelegramBotEssentials\Exceptions\WebhookAuthException;
-use Elyar\TelegramBotEssentials\Models\Bot;
-use Elyar\TelegramBotEssentials\Models\BotUser;
-use Elyar\TelegramBotEssentials\Models\TelegramUser;
+use TelegramBotEssentials\Essence\Exceptions\WebhookAuthException;
+use TelegramBotEssentials\Essence\Models\Bot;
+use TelegramBotEssentials\Essence\Models\BotUser;
+use TelegramBotEssentials\Essence\Models\TelegramUser;
 use GuzzleHttp\Psr7\ServerRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;

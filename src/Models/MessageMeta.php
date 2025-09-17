@@ -1,9 +1,9 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Models;
+namespace TelegramBotEssentials\Essence\Models;
 
-use Elyar\TelegramBotEssentials\Services\ExceptionHandler;
-use Elyar\TelegramBotEssentials\Telegram\TelegramResponse;
+use TelegramBotEssentials\Essence\Services\ExceptionHandler;
+use TelegramBotEssentials\Essence\Telegram\TelegramResponse;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;

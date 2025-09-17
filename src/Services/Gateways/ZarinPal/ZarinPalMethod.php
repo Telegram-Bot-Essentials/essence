@@ -1,6 +1,6 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Services\Gateways\ZarinPal;
+namespace TelegramBotEssentials\Essence\Services\Gateways\ZarinPal;
 
 use Illuminate\Support\Facades\Http;
 

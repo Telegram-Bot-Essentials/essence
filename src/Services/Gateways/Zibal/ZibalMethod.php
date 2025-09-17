@@ -1,6 +1,6 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Services\Gateways\Zibal;
+namespace TelegramBotEssentials\Essence\Services\Gateways\Zibal;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;

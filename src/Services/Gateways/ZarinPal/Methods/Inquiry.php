@@ -1,8 +1,8 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Services\Gateways\ZarinPal\Methods;
+namespace TelegramBotEssentials\Essence\Services\Gateways\ZarinPal\Methods;
 
-use Elyar\TelegramBotEssentials\Services\Gateways\ZarinPal\ZarinPalMethod;
+use TelegramBotEssentials\Essence\Services\Gateways\ZarinPal\ZarinPalMethod;
 
 class Inquiry extends ZarinPalMethod
 {

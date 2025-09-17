@@ -1,6 +1,6 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Enums;
+namespace TelegramBotEssentials\Essence\Enums;
 
 enum AllowableFields: string
 {

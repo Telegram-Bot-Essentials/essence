@@ -1,9 +1,9 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Traits;
+namespace TelegramBotEssentials\Essence\Traits;
 
 
-use Elyar\TelegramBotEssentials\Exceptions\CannotSetItAsDone;
+use TelegramBotEssentials\Essence\Exceptions\CannotSetItAsDone;
 
 trait DoneLimited
 {

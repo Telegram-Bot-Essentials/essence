@@ -1,11 +1,11 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Http\Controllers;
+namespace TelegramBotEssentials\Essence\Http\Controllers;
 
-use Elyar\TelegramBotEssentials\Models\Abstract\PaymentAttempt;
-use Elyar\TelegramBotEssentials\Models\Billing\Attempts\ToZirgozarAttempt;
-use Elyar\TelegramBotEssentials\Models\Billing\Invoice;
-use Elyar\TelegramBotEssentials\Services\CurrencyFather;
+use TelegramBotEssentials\Essence\Models\Abstract\PaymentAttempt;
+use TelegramBotEssentials\Essence\Models\Billing\Attempts\ToZirgozarAttempt;
+use TelegramBotEssentials\Essence\Models\Billing\Invoice;
+use TelegramBotEssentials\Essence\Services\CurrencyFather;
 use Exception;
 use Http;
 use Illuminate\Contracts\Routing\ResponseFactory;

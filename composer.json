@@ -15,7 +15,6 @@
     "license": "GPL-3.0",
     "autoload": {
         "psr-4": {
-            "Elyar\\TelegramBotEssentials\\": "src/",
             "TelegramBotEssentials\\Essence\\": "src/"
         },
         "files": [

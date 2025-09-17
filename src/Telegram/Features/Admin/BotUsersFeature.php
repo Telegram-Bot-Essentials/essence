@@ -1,11 +1,11 @@
 <?php
 
-namespace Elyar\TelegramBotEssentials\Telegram\Features\Admin;
+namespace TelegramBotEssentials\Essence\Telegram\Features\Admin;
 
-use Elyar\TelegramBotEssentials\Exceptions\InvalidPageNumber;
-use Elyar\TelegramBotEssentials\Models\BotUser;
-use Elyar\TelegramBotEssentials\Services\TelegramPaginator;
-use Elyar\TelegramBotEssentials\Telegram\TelegramResponse;
+use TelegramBotEssentials\Essence\Exceptions\InvalidPageNumber;
+use TelegramBotEssentials\Essence\Models\BotUser;
+use TelegramBotEssentials\Essence\Services\TelegramPaginator;
+use TelegramBotEssentials\Essence\Telegram\TelegramResponse;
 use Telegram\Bot\Keyboard\Keyboard;
 
 class BotUsersFeature
