@@ -262,7 +262,7 @@ if(!function_exists('exceptionHandler')){
 }
 
 if(!function_exists('inlineConfirmationKey')){
-    function inlineConfirmationKey(string $keyText, string $targetCallbackData, string $backCallbackData, string $confirmationText = null): Button|array|string
+    function inlineConfirmationKey(string $keyText, string $targetCallbackData, string $backCallbackData, ?string $confirmationText): Button|array|string
     {
         $inlineConfirmation = InlineConfirmation::create([
             'confirmation_text' => $confirmationText,
