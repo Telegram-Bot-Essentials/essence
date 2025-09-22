@@ -33,12 +33,12 @@ class SetWebhook extends Command
      */
     public function handle(): void
     {
-        $uniqueID = $this->option('unique-id') ?? config('telegram-bot-essentials.main.unique_id');
+        $uniqueID = $this->option('unique-id') ?? config('tbe-essence.main.unique_id');
         $this->info('Setting webhook for bot with unique id: ' . $uniqueID);
-        $this->info('Telegram bot api url: ' . config('telegram-bot-essentials.base_bot_url'));
+        $this->info('Telegram bot api url: ' . config('tbe-essence.base_bot_url'));
 
         $endpointTemplate = $this->option('endpoint')
-            ?? config('telegram-bot-essentials.webhook_endpoint', '/api/{unique_id}/telegram/bot/webhook');
+            ?? config('tbe-essence.webhook_endpoint', '/api/{unique_id}/telegram/bot/webhook');
 
         $url = rtrim(config('app.url'), '/') . str_replace('{unique_id}', $uniqueID, $endpointTemplate);
         $this->info('Webhook url: ' . $url);
@@ -52,7 +52,7 @@ class SetWebhook extends Command
 
         $telegram = new Api(
             token: $bot->bot_token,
-            baseBotUrl: config('telegram-bot-essentials.base_bot_url')
+            baseBotUrl: config('tbe-essence.base_bot_url')
         );
 
         $secretToken = rtrim(strtr(base64_encode(random_bytes(96)), '+/', '-_'), '=');
@@ -67,7 +67,7 @@ class SetWebhook extends Command
         ]);
 
         $commands = [];
-        foreach (config('telegram-bot-essentials.commands') as $command) {
+        foreach (config('tbe-essence.commands') as $command) {
             $command = $this->resolveBotCommand($command);
             $commands[] = [
                 'command' => $command->getName(),

@@ -29,7 +29,7 @@ class TelegramWebhookController extends Controller
         try {
             dependsOn(!wHook()->bot()->suspended && (is_null(wHook()->bot()->activated_until) || wHook()->bot()->activated_until->isFuture()), __('tbe::general.alerts.botIsOff'));
             if (!hasAccess()) dependsOn(wHook()->bot()->settings->bot_status, __('tbe::general.alerts.botIsOff'));
-            $commands = config('telegram-bot-essentials.commands') ?? [];
+            $commands = config('tbe-essence.commands') ?? [];
 
             foreach ($commands as $command) {
                 if (!is_subclass_of($command, Command::class))

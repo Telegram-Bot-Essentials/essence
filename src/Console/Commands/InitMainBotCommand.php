@@ -42,18 +42,18 @@ class InitMainBotCommand extends Command
         }
 
         $telegramUser = TelegramUser::firstOrCreate([
-            'peer_id' => config('telegram-bot-essentials.main.admin_chat_id'),
+            'peer_id' => config('tbe-essence.main.admin_chat_id'),
         ]);
 
-        $bot = Bot::where('unique_id', config('telegram-bot-essentials.main.unique_id'))->first();
+        $bot = Bot::where('unique_id', config('tbe-essence.main.unique_id'))->first();
 
         if ($bot && !$this->option('force')) {
             $this->warn("Bot already exists. Use --force to reinitialize.");
         } else {
             $bot = Bot::updateOrCreate([
-                'unique_id' => config('telegram-bot-essentials.main.unique_id'),
+                'unique_id' => config('tbe-essence.main.unique_id'),
             ], [
-                'bot_token' => config('telegram-bot-essentials.main.telegram_bot_token'),
+                'bot_token' => config('tbe-essence.main.telegram_bot_token'),
                 'bot_owner_peer_id' => $telegramUser->peer_id,
             ]);
 

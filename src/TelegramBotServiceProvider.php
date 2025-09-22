@@ -39,7 +39,6 @@ class TelegramBotServiceProvider extends ServiceProvider
         $this->app->register(TenancyServiceProvider::class);
         $this->app->register(\Stancl\Tenancy\TenancyServiceProvider::class);
 
-        $this->mergeConfigFrom(__DIR__ . '/../config/tbe-essence.php', 'telegram-bot-essentials');
         $this->mergeConfigFrom(__DIR__ . '/../config/tbe-essence.php', 'tbe-essence');
         $this->mergeConfigFrom(__DIR__ . '/../config/tenancy.php', 'tenancy');
         $this->mergeConfigFrom(__DIR__ . '/../config/telegram.php', 'telegram');
@@ -186,8 +185,8 @@ class TelegramBotServiceProvider extends ServiceProvider
         $this->autoLoadStateAnswers(realpath(__DIR__ . '/Telegram/StateAnswers/Member'));
         $this->autoLoadStateAnswers(realpath(__DIR__ . '/Telegram/StateAnswers/Admin'));
 
-        $this->addUserReplyKeys(config('telegram-bot-essentials.keyboard.admin') ?? []);
-        $this->addUserReplyKeys(config('telegram-bot-essentials.keyboard.member') ?? []);
+        $this->addUserReplyKeys(config('tbe-essence.keyboard.admin') ?? []);
+        $this->addUserReplyKeys(config('tbe-essence.keyboard.member') ?? []);
         $this->autoLoadReplyKeys(realpath(__DIR__ . '/Telegram/ReplyKeys/Member'));
         $this->autoLoadReplyKeys(realpath(__DIR__ . '/Telegram/ReplyKeys/Admin'));
     }

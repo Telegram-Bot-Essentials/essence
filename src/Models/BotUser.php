@@ -84,10 +84,10 @@ class BotUser extends Model
         if ($this->state) {
             $rows[] = [CancelProcessKey::class];
         } else if ($this->menu == 'main') {
-            $rows = array_merge($rows, config('telegram-bot-essentials.keyboard.member') ?? []);
+            $rows = array_merge($rows, config('tbe-essence.keyboard.member') ?? []);
             $rows[] = [AdminPanelKey::class];
         } elseif ($this->menu == 'admin') {
-            $rows = array_merge($rows, config('telegram-bot-essentials.keyboard.admin') ?? []);
+            $rows = array_merge($rows, config('tbe-essence.keyboard.admin') ?? []);
             $rows[] = [BotAdminsKey::class];
             $rows[] = [ManageInvoicesKey::class, BotSettingsKey::class];
             $rows[] = [MainMenuKey::class];

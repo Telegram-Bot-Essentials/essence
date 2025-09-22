@@ -227,22 +227,22 @@ if(!function_exists('exceptionReport')){
             $time = time();
             if($e->getMessage()){
                 wHook()->api()->sendMessage([
-                    'chat_id' => config('telegram-bot-essentials.bug_report.telegram_chat_id'),
+                    'chat_id' => config('tbe-essence.bug_report.telegram_chat_id'),
                     'text' => $e->getMessage(),
                 ]);
             }
             if(wHook()->requestState()){
                 wHook()->api()->sendMessage([
-                    'chat_id' => config('telegram-bot-essentials.bug_report.telegram_chat_id'),
+                    'chat_id' => config('tbe-essence.bug_report.telegram_chat_id'),
                     'text' => wHook()->requestState(),
                 ]);
             }
             wHook()->api()->sendDocument([
-                'chat_id' => config('telegram-bot-essentials.bug_report.telegram_chat_id'),
+                'chat_id' => config('tbe-essence.bug_report.telegram_chat_id'),
                 'document' => InputFile::createFromContents($e->getTraceAsString(), $time.'.trace'),
             ]);
             wHook()->api()->sendDocument([
-                'chat_id' => config('telegram-bot-essentials.bug_report.telegram_chat_id'),
+                'chat_id' => config('tbe-essence.bug_report.telegram_chat_id'),
                 'document' => InputFile::createFromContents(json_encode(wHook()->update(), JSON_PRETTY_PRINT), $time.'.update'),
             ]);
         } catch (TelegramSDKException $e) {

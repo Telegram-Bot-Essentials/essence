@@ -56,7 +56,7 @@ class GatewayZirgozarController extends Controller
     private function initializeWebPay(Invoice $invoice, string $token): array
     {
         try{
-            $url = config('telegram-bot-essentials.gateways.zirgozar.url') . '/api/index.php';
+            $url = config('tbe-essence.gateways.zirgozar.url') . '/api/index.php';
             $data = [
                 'key' => $invoice->bot->settings->zirgozar_token,
                 'action' => 'web_pay',
@@ -163,7 +163,7 @@ class GatewayZirgozarController extends Controller
     private function getWebPayResult(string $paymentToken): array
     {
         try{
-            $url = config('telegram-bot-essentials.gateways.zirgozar.url') . '/api/index.php';
+            $url = config('tbe-essence.gateways.zirgozar.url') . '/api/index.php';
             $data = [
                 'key' => wHook()->bot()->settings->zirgozar_token,
                 'action' => 'web_pay_status',

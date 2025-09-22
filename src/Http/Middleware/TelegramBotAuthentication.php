@@ -42,7 +42,7 @@ class TelegramBotAuthentication
         try {
             $api = new Api(
                 token: $bot->bot_token,
-                baseBotUrl: config('telegram-bot-essentials.base_bot_url')
+                baseBotUrl: config('tbe-essence.base_bot_url')
             );
             wHook()::setApi($api);
             $update = wHook()->api()->getWebhookUpdate(request: new ServerRequest(

@@ -14,27 +14,27 @@ class MainSeeder extends Seeder
      */
     public function run(): void
     {
-        if (!config('telegram-bot-essentials.main.unique_id') ||
-            !config('telegram-bot-essentials.main.telegram_bot_token') ||
-            !config('telegram-bot-essentials.main.admin_chat_id') ||
-            !config('telegram-bot-essentials.main.currency')
+        if (!config('tbe-essence.main.unique_id') ||
+            !config('tbe-essence.main.telegram_bot_token') ||
+            !config('tbe-essence.main.admin_chat_id') ||
+            !config('tbe-essence.main.currency')
         ) {
             $this->command->info('Main bot is not configured');
             return;
         }
 
         $telegramUser = TelegramUser::firstOrCreate([
-            'peer_id' => config('telegram-bot-essentials.main.admin_chat_id'),
+            'peer_id' => config('tbe-essence.main.admin_chat_id'),
         ]);
 
-        $bot = Bot::where('unique_id', config('telegram-bot-essentials.main.unique_id'))->first();
+        $bot = Bot::where('unique_id', config('tbe-essence.main.unique_id'))->first();
 
         if (!$bot) {
             $secretToken = rtrim(strtr(base64_encode(random_bytes(96)), '+/', '-_'), '=');
             $bot = Bot::factory()->create([
-                'bot_token' => config('telegram-bot-essentials.main.telegram_bot_token'),
-                'unique_id' => config('telegram-bot-essentials.main.unique_id'),
-                'currency' => config('telegram-bot-essentials.main.currency'),
+                'bot_token' => config('tbe-essence.main.telegram_bot_token'),
+                'unique_id' => config('tbe-essence.main.unique_id'),
+                'currency' => config('tbe-essence.main.currency'),
                 'secret_token' => $secretToken,
                 'bot_owner_peer_id' => $telegramUser->peer_id,
                 'activated_until' => null,

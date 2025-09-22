@@ -23,7 +23,7 @@ class Currency
 
     public function getCurrencySymbol(string $currency): string
     {
-        return collect(config('telegram-bot-essentials.supported_currencies') ?? [])
+        return collect(config('tbe-essence.supported_currencies') ?? [])
             ->where('name', $currency)->first()['symbol'] ?? '?';
     }
 
@@ -76,7 +76,7 @@ class Currency
 
     public function getSupportedCurrencies(): array
     {
-        $currencies = collect(config('telegram-bot-essentials.supported_currencies') ?? [])->pluck('name');
+        $currencies = collect(config('tbe-essence.supported_currencies') ?? [])->pluck('name');
         $currencies = $currencies->map(function ($currency) {
             return strtoupper($currency);
         });
