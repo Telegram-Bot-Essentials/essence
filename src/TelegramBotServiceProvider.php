@@ -109,8 +109,6 @@ class TelegramBotServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         $this->loadTranslationsFrom(__DIR__ . '/../lang', 'tbe');
         $this->loadTranslationsFrom(__DIR__ . '/../lang', 'tbe-essence');
-
-        $this->initializeOptions();
     }
 
     protected function loadConsoleRoutes(): void
@@ -162,121 +160,6 @@ class TelegramBotServiceProvider extends ServiceProvider
                 PublishCommand::class,
                 InitMainBotCommand::class
             ]);
-        }
-    }
-
-    /**
-     * @throws LogicException
-     * @throws BindingResolutionException
-     */
-    private function initializeOptions(): void
-    {
-        $adminQueries = base_path('app/Telegram/CallbackQueries/Admin');
-        $memberQueries = base_path('app/Telegram/CallbackQueries/Member');
-        $adminStateAnswers = base_path('app/Telegram/StateAnswers/Admin');
-        $memberStateAnswers = base_path('app/Telegram/StateAnswers/Member');
-        if (is_dir($adminQueries)) $this->autoLoadCallbackQueries($adminQueries);
-        if (is_dir($memberQueries)) $this->autoLoadCallbackQueries($memberQueries);
-        $this->autoLoadCallbackQueries(realpath(__DIR__ . '/Telegram/CallbackQueries/Member'));
-        $this->autoLoadCallbackQueries(realpath(__DIR__ . '/Telegram/CallbackQueries/Admin'));
-
-        if (is_dir($adminStateAnswers)) $this->autoLoadStateAnswers($adminStateAnswers);
-        if (is_dir($memberStateAnswers)) $this->autoLoadStateAnswers($memberStateAnswers);
-        $this->autoLoadStateAnswers(realpath(__DIR__ . '/Telegram/StateAnswers/Member'));
-        $this->autoLoadStateAnswers(realpath(__DIR__ . '/Telegram/StateAnswers/Admin'));
-
-        $this->addUserReplyKeys(config('tbe-essence.keyboard.admin') ?? []);
-        $this->addUserReplyKeys(config('tbe-essence.keyboard.member') ?? []);
-        $this->autoLoadReplyKeys(realpath(__DIR__ . '/Telegram/ReplyKeys/Member'));
-        $this->autoLoadReplyKeys(realpath(__DIR__ . '/Telegram/ReplyKeys/Admin'));
-    }
-
-    /**
-     * @param string $path
-     * @return void
-     * @throws BindingResolutionException
-     * @throws LogicException
-     */
-    private function autoLoadCallbackQueries(string $path): void
-    {
-        $namespace = $this->resolveNamespace($path);
-
-        foreach (File::allFiles($path) as $file) {
-            $fqcn = $namespace . '\\' . $file->getFilenameWithoutExtension();
-
-            if (class_exists($fqcn) && is_subclass_of($fqcn, CallbackQuery::class)) {
-                callbackQueryBus()->addCallbackQuery($fqcn);
-            }
-        }
-    }
-
-    /**
-     * @param string $path
-     * @return string
-     */
-    private function resolveNamespace(string $path): string
-    {
-        if (str_starts_with($path, base_path('app'))) {
-            $basePath = base_path('app');
-            $baseNamespace = app()->getNamespace();
-        } else {
-            $basePath = realpath(__DIR__ . '/');
-            $baseNamespace = 'TelegramBotEssentials\\Essence';
-        }
-
-        $relativePath = str_replace($basePath . DIRECTORY_SEPARATOR, '', $path);
-        $relativeNamespace = str_replace('/', '\\', $relativePath);
-
-        return trim(rtrim($baseNamespace, '\\') . '\\' . $relativeNamespace, '\\');
-    }
-
-    /**
-     * @param string $path
-     * @throws BindingResolutionException
-     * @throws LogicException
-     */
-    private function autoLoadStateAnswers(string $path): void
-    {
-        $namespace = $this->resolveNamespace($path);
-
-        foreach (File::allFiles($path) as $file) {
-            $fqcn = $namespace . '\\' . $file->getFilenameWithoutExtension();
-
-            if (class_exists($fqcn) && is_subclass_of($fqcn, StateAnswer::class)) {
-                stateAnswerBus()->addStateAnswer($fqcn);
-            }
-        }
-    }
-
-    /**
-     * @throws BindingResolutionException
-     * @throws LogicException
-     */
-    private function addUserReplyKeys(array $replyKeys): void
-    {
-        foreach ($replyKeys as $replyKeyRow) {
-            foreach ($replyKeyRow as $replyKey) {
-                if (!is_subclass_of($replyKey, ReplyKey::class))
-                    throw new LogicException("ReplyKey {$replyKey} is not a subclass of TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKey");
-                replyKeyBus()->addReplyKey($replyKey);
-            }
-        }
-    }
-
-    /**
-     * @throws BindingResolutionException
-     * @throws LogicException
-     */
-    private function autoLoadReplyKeys(string $path): void
-    {
-        $namespace = $this->resolveNamespace($path);
-
-        foreach (File::allFiles($path) as $file) {
-            $fqcn = $namespace . '\\' . $file->getFilenameWithoutExtension();
-
-            if (class_exists($fqcn) && is_subclass_of($fqcn, ReplyKey::class)) {
-                replyKeyBus()->addReplyKey($fqcn);
-            }
         }
     }
 }
