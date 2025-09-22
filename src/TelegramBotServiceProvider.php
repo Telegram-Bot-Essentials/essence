@@ -39,7 +39,8 @@ class TelegramBotServiceProvider extends ServiceProvider
         $this->app->register(TenancyServiceProvider::class);
         $this->app->register(\Stancl\Tenancy\TenancyServiceProvider::class);
 
-        $this->mergeConfigFrom(__DIR__ . '/../config/telegram-bot-essentials.php', 'telegram-bot-essentials');
+        $this->mergeConfigFrom(__DIR__ . '/../config/tbe-essence.php', 'telegram-bot-essentials');
+        $this->mergeConfigFrom(__DIR__ . '/../config/tbe-essence.php', 'tbe-essence');
         $this->mergeConfigFrom(__DIR__ . '/../config/tenancy.php', 'tenancy');
         $this->mergeConfigFrom(__DIR__ . '/../config/telegram.php', 'telegram');
 
