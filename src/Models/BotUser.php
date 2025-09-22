@@ -14,7 +14,6 @@ use TelegramBotEssentials\Essence\Exceptions\LogicException;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Admin\AdminPanelKey;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Admin\BotAdminsKey;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Admin\BotSettingsKey;
-use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Admin\BotUsersKey;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Admin\ManageInvoicesKey;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Member\CancelProcessKey;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Member\MainMenuKey;
@@ -89,7 +88,7 @@ class BotUser extends Model
             $rows[] = [AdminPanelKey::class];
         } elseif ($this->menu == 'admin') {
             $rows = array_merge($rows, config('telegram-bot-essentials.keyboard.admin') ?? []);
-            $rows[] = [BotUsersKey::class, BotAdminsKey::class];
+            $rows[] = [BotAdminsKey::class];
             $rows[] = [ManageInvoicesKey::class, BotSettingsKey::class];
             $rows[] = [MainMenuKey::class];
         }
