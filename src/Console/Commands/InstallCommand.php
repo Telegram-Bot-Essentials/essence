@@ -28,13 +28,10 @@ class InstallCommand extends Command
     public function handle()
     {
         $this->comment('Publishing TBE Translations...');
-        $this->callSilent('vendor:publish', ['--tag' => 'tbe-translations']);
+        $this->callSilent('vendor:publish', ['--tag' => 'tbe-essence-translations']);
 
         $this->comment('Publishing TBE Configuration...');
-        $this->callSilent('vendor:publish', ['--tag' => 'tbe-config']);
-
-        $this->comment('Publishing TBE Migrations...');
-        $this->callSilent('vendor:publish', ['--tag' => 'tbe-migrations']);
+        $this->callSilent('vendor:publish', ['--tag' => 'tbe-essence-config']);
 
         $this->info('TBE scaffolding installed successfully.');
     }

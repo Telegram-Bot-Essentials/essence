@@ -29,7 +29,7 @@ class PublishCommand extends Command
     public function handle()
     {
         $this->call('vendor:publish', [
-            '--tag' => 'tbe-config',
+            '--tag' => 'tbe-essence-config',
             '--force' => $this->option('force'),
         ]);
     }
