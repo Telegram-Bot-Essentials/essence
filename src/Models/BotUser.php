@@ -2,6 +2,12 @@
 
 namespace TelegramBotEssentials\Essence\Models;
 
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
+use Telegram\Bot\Keyboard\Keyboard;
 use TelegramBotEssentials\Essence\Database\factories\BotUserFactory;
 use TelegramBotEssentials\Essence\Enums\Roles;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
@@ -12,14 +18,7 @@ use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Admin\BotUsersKey;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Admin\ManageInvoicesKey;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Member\CancelProcessKey;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Member\MainMenuKey;
-use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Member\MyWalletKey;
 use TelegramBotEssentials\Essence\Traits\CanResolveReplyKey;
-use Illuminate\Contracts\Container\BindingResolutionException;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
-use Telegram\Bot\Keyboard\Keyboard;
 
 class BotUser extends Model
 {
@@ -87,7 +86,6 @@ class BotUser extends Model
             $rows[] = [CancelProcessKey::class];
         } else if ($this->menu == 'main') {
             $rows = array_merge($rows, config('telegram-bot-essentials.keyboard.member') ?? []);
-            $rows[] = [MyWalletKey::class];
             $rows[] = [AdminPanelKey::class];
         } elseif ($this->menu == 'admin') {
             $rows = array_merge($rows, config('telegram-bot-essentials.keyboard.admin') ?? []);
