@@ -2,8 +2,10 @@
 
 namespace TelegramBotEssentials\Essence;
 
-use Illuminate\Contracts\Container\BindingResolutionException;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\ServiceProvider;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
+use Stancl\Tenancy\Resolvers\PathTenantResolver;
 use TelegramBotEssentials\Essence\Console\Commands\BotManagementTokenCommand;
 use TelegramBotEssentials\Essence\Console\Commands\InitMainBotCommand;
 use TelegramBotEssentials\Essence\Console\Commands\InstallCommand;
@@ -14,23 +16,14 @@ use TelegramBotEssentials\Essence\Console\Commands\MakeReplyKey;
 use TelegramBotEssentials\Essence\Console\Commands\MakeStateAnswer;
 use TelegramBotEssentials\Essence\Console\Commands\PublishCommand;
 use TelegramBotEssentials\Essence\Console\Commands\SetWebhook;
-use TelegramBotEssentials\Essence\Exceptions\LogicException;
-use TelegramBotEssentials\Essence\Services\Billing;
 use TelegramBotEssentials\Essence\Services\Currency;
 use TelegramBotEssentials\Essence\Services\Gateways\Gateways;
 use TelegramBotEssentials\Essence\Services\Gateways\Wallet;
 use TelegramBotEssentials\Essence\Services\Gateways\ZarinPal\ZarinPal;
 use TelegramBotEssentials\Essence\Services\Gateways\Zibal\Zibal;
-use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQuery;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQueryBus;
-use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKey;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKeyBus;
-use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswer;
 use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswerBus;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\ServiceProvider;
-use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
-use Stancl\Tenancy\Resolvers\PathTenantResolver;
 
 class TelegramBotServiceProvider extends ServiceProvider
 {
@@ -62,10 +55,6 @@ class TelegramBotServiceProvider extends ServiceProvider
 
         $this->app->singleton(Currency::class, function ($app) {
             return new Currency();
-        });
-
-        $this->app->singleton(Billing::class, function ($app) {
-            return new Billing();
         });
 
         $this->initializeGatewaySingletons();

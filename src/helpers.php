@@ -10,8 +10,6 @@ use TelegramBotEssentials\Essence\Enums\Roles;
 use TelegramBotEssentials\Essence\Exceptions\FeatureIsDisabled;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
 use TelegramBotEssentials\Essence\Models\InlineConfirmation;
-use TelegramBotEssentials\Essence\Services\ApiResponse;
-use TelegramBotEssentials\Essence\Services\Billing;
 use TelegramBotEssentials\Essence\Services\Currency;
 use TelegramBotEssentials\Essence\Services\CurrencyFather;
 use TelegramBotEssentials\Essence\Services\ExceptionHandler;
@@ -33,20 +31,6 @@ if (!function_exists('wHook')) {
     }
 }
 
-if (!function_exists('currency')) {
-    function currency(): Currency
-    {
-        return app(Currency::class);
-    }
-}
-
-if (!function_exists('billing')) {
-    function billing(): Billing
-    {
-        return app(Billing::class);
-    }
-}
-
 if (!function_exists('replyKeyBus')) {
     function replyKeyBus(): ReplyKeyBus
     {
@@ -65,13 +49,6 @@ if (!function_exists('stateAnswerBus')) {
     function stateAnswerBus(): StateAnswerBus
     {
         return app(StateAnswerBus::class);
-    }
-}
-
-if (!function_exists('gateways')) {
-    function gateways(): Gateways
-    {
-        return app(Gateways::class);
     }
 }
 

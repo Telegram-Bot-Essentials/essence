@@ -11,12 +11,7 @@ use Telegram\Bot\Keyboard\Keyboard;
 use TelegramBotEssentials\Essence\Database\factories\BotUserFactory;
 use TelegramBotEssentials\Essence\Enums\Roles;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
-use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Admin\AdminPanelKey;
-use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Admin\BotAdminsKey;
-use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Admin\BotSettingsKey;
-use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Admin\ManageInvoicesKey;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Member\CancelProcessKey;
-use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Member\MainMenuKey;
 use TelegramBotEssentials\Essence\Traits\CanResolveReplyKey;
 
 class BotUser extends Model
@@ -82,6 +77,7 @@ class BotUser extends Model
     {
         $rows = [];
         if ($this->state) {
+            $rows[] = [CancelProcessKey::class];
         } else if ($this->menu == 'main') {
             $rows = array_merge($rows, config('tbe-essence.keyboard.member') ?? []);
         } elseif ($this->menu == 'admin') {
