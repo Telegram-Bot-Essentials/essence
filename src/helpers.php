@@ -1,26 +1,30 @@
 <?php
 
-use TelegramBotEssentials\Essence\Enums\Roles;
-use TelegramBotEssentials\Essence\Exceptions\FeatureIsDisabled;
-use TelegramBotEssentials\Essence\Exceptions\TbeLogicException;
-use TelegramBotEssentials\Essence\Models\InlineConfirmation;
-use TelegramBotEssentials\Essence\Services\Currency;
-use TelegramBotEssentials\Essence\Services\CurrencyFather;
-use TelegramBotEssentials\Essence\Services\ApiResponse;
-use TelegramBotEssentials\Essence\Services\Billing;
-use TelegramBotEssentials\Essence\Services\ExceptionHandler;
-use TelegramBotEssentials\Essence\Services\StateDataService;
-use TelegramBotEssentials\Essence\Services\Gateways\Gateways;
-use TelegramBotEssentials\Essence\Support\Webhook;
-use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQueryBus;
-use TelegramBotEssentials\Essence\Telegram\Features\Member\InlineConfirmationFeature;
-use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKeyBus;
-use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswerBus;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\FileUpload\InputFile;
 use Telegram\Bot\Keyboard\Button;
 use Telegram\Bot\Keyboard\Keyboard;
+use TelegramBotEssentials\Essence\Enums\Roles;
+use TelegramBotEssentials\Essence\Exceptions\FeatureIsDisabled;
+use TelegramBotEssentials\Essence\Exceptions\LogicException;
+use TelegramBotEssentials\Essence\Models\InlineConfirmation;
+use TelegramBotEssentials\Essence\Services\ApiResponse;
+use TelegramBotEssentials\Essence\Services\Billing;
+use TelegramBotEssentials\Essence\Services\Currency;
+use TelegramBotEssentials\Essence\Services\CurrencyFather;
+use TelegramBotEssentials\Essence\Services\ExceptionHandler;
+use TelegramBotEssentials\Essence\Services\Gateways\Gateways;
+use TelegramBotEssentials\Essence\Services\StateDataService;
+use TelegramBotEssentials\Essence\Support\Webhook;
+use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQuery;
+use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQueryBus;
+use TelegramBotEssentials\Essence\Telegram\Features\Member\InlineConfirmationFeature;
+use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKey;
+use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKeyBus;
+use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswer;
+use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswerBus;
 
 if (!function_exists('wHook')) {
     function wHook(): Webhook
@@ -106,7 +110,7 @@ if (!function_exists('encodeCallback')) {
             ? $type
             : $type . '?' . implode('&', array_map('strval', $safeParams));
 
-        if(strlen($result) > 64){
+        if (strlen($result) > 64) {
             return 'LONG_CALLBACK_DATA'; // TODO: handle this case
         }
         return $result;
@@ -212,7 +216,7 @@ if (!function_exists('priceIn')) {
     }
 }
 
-if(!function_exists('getResourceName')){
+if (!function_exists('getResourceName')) {
     function getResourceName(string $resource): string
     {
         $parts = explode('\\', $resource);
@@ -220,18 +224,18 @@ if(!function_exists('getResourceName')){
     }
 }
 
-if(!function_exists('exceptionReport')){
+if (!function_exists('exceptionReport')) {
     function exceptionReport(Exception $e): void
     {
         try {
             $time = time();
-            if($e->getMessage()){
+            if ($e->getMessage()) {
                 wHook()->api()->sendMessage([
                     'chat_id' => config('tbe-essence.bug_report.telegram_chat_id'),
                     'text' => $e->getMessage(),
                 ]);
             }
-            if(wHook()->requestState()){
+            if (wHook()->requestState()) {
                 wHook()->api()->sendMessage([
                     'chat_id' => config('tbe-essence.bug_report.telegram_chat_id'),
                     'text' => wHook()->requestState(),
@@ -239,11 +243,11 @@ if(!function_exists('exceptionReport')){
             }
             wHook()->api()->sendDocument([
                 'chat_id' => config('tbe-essence.bug_report.telegram_chat_id'),
-                'document' => InputFile::createFromContents($e->getTraceAsString(), $time.'.trace'),
+                'document' => InputFile::createFromContents($e->getTraceAsString(), $time . '.trace'),
             ]);
             wHook()->api()->sendDocument([
                 'chat_id' => config('tbe-essence.bug_report.telegram_chat_id'),
-                'document' => InputFile::createFromContents(json_encode(wHook()->update(), JSON_PRETTY_PRINT), $time.'.update'),
+                'document' => InputFile::createFromContents(json_encode(wHook()->update(), JSON_PRETTY_PRINT), $time . '.update'),
             ]);
         } catch (TelegramSDKException $e) {
 
@@ -254,14 +258,14 @@ if(!function_exists('exceptionReport')){
     }
 }
 
-if(!function_exists('exceptionHandler')){
+if (!function_exists('exceptionHandler')) {
     function exceptionHandler(): ExceptionHandler
     {
         return app(ExceptionHandler::class);
     }
 }
 
-if(!function_exists('inlineConfirmationKey')){
+if (!function_exists('inlineConfirmationKey')) {
     function inlineConfirmationKey(string $keyText, string $targetCallbackData, string $backCallbackData, ?string $confirmationText): Button|array|string
     {
         $inlineConfirmation = InlineConfirmation::create([
@@ -277,9 +281,85 @@ if(!function_exists('inlineConfirmationKey')){
     }
 }
 
-if(!function_exists('stateData')){
+if (!function_exists('stateData')) {
     function stateData(): StateDataService
     {
         return app(StateDataService::class);
+    }
+}
+
+if (!function_exists('autoLoadStateAnswers')) {
+    function autoLoadStateAnswers(string $path): void
+    {
+        $namespace = resolveNamespace($path);
+
+        foreach (File::allFiles($path) as $file) {
+            $fqcn = $namespace . '\\' . $file->getFilenameWithoutExtension();
+
+            if (class_exists($fqcn) && is_subclass_of($fqcn, StateAnswer::class)) {
+                stateAnswerBus()->addStateAnswer($fqcn);
+            }
+        }
+    }
+}
+
+if (!function_exists('autoLoadCallbackQueries')) {
+    function autoLoadCallbackQueries(string $path): void
+    {
+        $namespace = resolveNamespace($path);
+
+        foreach (File::allFiles($path) as $file) {
+            $fqcn = $namespace . '\\' . $file->getFilenameWithoutExtension();
+
+            if (class_exists($fqcn) && is_subclass_of($fqcn, CallbackQuery::class)) {
+                callbackQueryBus()->addCallbackQuery($fqcn);
+            }
+        }
+    }
+}
+
+if (!function_exists('addUserReplyKeys')) {
+    function addUserReplyKeys(array $replyKeys): void
+    {
+        foreach ($replyKeys as $replyKeyRow) {
+            foreach ($replyKeyRow as $replyKey) {
+                if (!is_subclass_of($replyKey, ReplyKey::class))
+                    throw new LogicException("ReplyKey {$replyKey} is not a subclass of TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKey");
+                replyKeyBus()->addReplyKey($replyKey);
+            }
+        }
+    }
+}
+
+if (!function_exists('autoLoadReplyKeys')) {
+    function autoLoadReplyKeys(string $path): void
+    {
+        $namespace = resolveNamespace($path);
+
+        foreach (File::allFiles($path) as $file) {
+            $fqcn = $namespace . '\\' . $file->getFilenameWithoutExtension();
+
+            if (class_exists($fqcn) && is_subclass_of($fqcn, ReplyKey::class)) {
+                replyKeyBus()->addReplyKey($fqcn);
+            }
+        }
+    }
+}
+
+if (!function_exists('resolveNamespace')) {
+    function resolveNamespace(string $path): string
+    {
+        if (str_starts_with($path, base_path('app'))) {
+            $basePath = base_path('app');
+            $baseNamespace = app()->getNamespace();
+        } else {
+            $basePath = realpath(__DIR__ . '/../../');
+            $baseNamespace = 'TelegramBotEssentials\\Essence';
+        }
+
+        $relativePath = str_replace($basePath . DIRECTORY_SEPARATOR, '', $path);
+        $relativeNamespace = str_replace(DIRECTORY_SEPARATOR, '\\', $relativePath);
+
+        return trim(rtrim($baseNamespace, '\\') . '\\' . $relativeNamespace, '\\');
     }
 }
