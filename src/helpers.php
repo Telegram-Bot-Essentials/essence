@@ -288,8 +288,8 @@ if (!function_exists('stateData')) {
     }
 }
 
-if (!function_exists('autoLoadStateAnswers')) {
-    function autoLoadStateAnswers(string $path): void
+if (!function_exists('loadStateAnswers')) {
+    function loadStateAnswers(string $path): void
     {
         $namespace = resolveNamespace($path);
 
@@ -303,8 +303,8 @@ if (!function_exists('autoLoadStateAnswers')) {
     }
 }
 
-if (!function_exists('autoLoadCallbackQueries')) {
-    function autoLoadCallbackQueries(string $path): void
+if (!function_exists('loadCallbackQueries')) {
+    function loadCallbackQueries(string $path): void
     {
         $namespace = resolveNamespace($path);
 
@@ -331,8 +331,8 @@ if (!function_exists('addUserReplyKeys')) {
     }
 }
 
-if (!function_exists('autoLoadReplyKeys')) {
-    function autoLoadReplyKeys(string $path): void
+if (!function_exists('loadReplyKeys')) {
+    function loadReplyKeys(string $path): void
     {
         $namespace = resolveNamespace($path);
 

@@ -58,22 +58,22 @@ class TelegramWebhookController extends Controller
         $memberStateAnswers = base_path('app/Telegram/StateAnswers/Member');
 //        $adminReplyKeys = base_path('app/Telegram/ReplyKeys/Admin');
 //        $memberReplyKeys = base_path('app/Telegram/ReplyKeys/Member');
-        if (is_dir($adminQueries)) autoLoadCallbackQueries($adminQueries);
-        if (is_dir($memberQueries)) autoLoadCallbackQueries($memberQueries);
-        autoLoadCallbackQueries(realpath(__DIR__ . '/../../Telegram/CallbackQueries/Member'));
-        autoLoadCallbackQueries(realpath(__DIR__ . '/../../Telegram/CallbackQueries/Admin'));
+        if (is_dir($adminQueries)) loadCallbackQueries($adminQueries);
+        if (is_dir($memberQueries)) loadCallbackQueries($memberQueries);
 
-        if (is_dir($adminStateAnswers)) autoLoadStateAnswers($adminStateAnswers);
-        if (is_dir($memberStateAnswers)) autoLoadStateAnswers($memberStateAnswers);
-        autoLoadStateAnswers(realpath(__DIR__ . '/../../Telegram/StateAnswers/Member'));
-        autoLoadStateAnswers(realpath(__DIR__ . '/../../Telegram/StateAnswers/Admin'));
+        if (is_dir($adminStateAnswers)) loadStateAnswers($adminStateAnswers);
+        if (is_dir($memberStateAnswers)) loadStateAnswers($memberStateAnswers);
 
         foreach (config('tbe-essence.keyboard') ?? [] as $values) {
             addUserReplyKeys($values);
         }
 
-        autoLoadReplyKeys(realpath(__DIR__ . '/../../Telegram/ReplyKeys/Member'));
-        autoLoadReplyKeys(realpath(__DIR__ . '/../../Telegram/ReplyKeys/Admin'));
+        loadCallbackQueries(realpath(__DIR__ . '/../../Telegram/CallbackQueries/Member'));
+        loadCallbackQueries(realpath(__DIR__ . '/../../Telegram/CallbackQueries/Admin'));
+        loadStateAnswers(realpath(__DIR__ . '/../../Telegram/StateAnswers/Member'));
+        loadStateAnswers(realpath(__DIR__ . '/../../Telegram/StateAnswers/Admin'));
+        loadReplyKeys(realpath(__DIR__ . '/../../Telegram/ReplyKeys/Member'));
+        loadReplyKeys(realpath(__DIR__ . '/../../Telegram/ReplyKeys/Admin'));
     }
 
     /**
