@@ -16,7 +16,6 @@ use TelegramBotEssentials\Essence\Console\Commands\MakeReplyKey;
 use TelegramBotEssentials\Essence\Console\Commands\MakeStateAnswer;
 use TelegramBotEssentials\Essence\Console\Commands\PublishCommand;
 use TelegramBotEssentials\Essence\Console\Commands\SetWebhook;
-use TelegramBotEssentials\Essence\Services\Currency;
 use TelegramBotEssentials\Essence\Services\Gateways\Gateways;
 use TelegramBotEssentials\Essence\Services\Gateways\Wallet;
 use TelegramBotEssentials\Essence\Services\Gateways\ZarinPal\ZarinPal;
@@ -53,30 +52,6 @@ class TelegramBotServiceProvider extends ServiceProvider
             return new StateAnswerBus();
         });
 
-        $this->app->singleton(Currency::class, function ($app) {
-            return new Currency();
-        });
-
-        $this->initializeGatewaySingletons();
-    }
-
-    private function initializeGatewaySingletons(): void
-    {
-        $this->app->singleton(Gateways::class, function ($app){
-            return new Gateways();
-        });
-
-        $this->app->singleton(Zibal::class, function ($app) {
-            return new Zibal();
-        });
-
-        $this->app->singleton(ZarinPal::class, function ($app) {
-            return new ZarinPal();
-        });
-
-        $this->app->singleton(Wallet::class, function (){
-            return new Wallet();
-        });
     }
 
     public function boot(): void
