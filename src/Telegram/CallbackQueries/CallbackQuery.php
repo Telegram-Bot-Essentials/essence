@@ -18,9 +18,27 @@ abstract class CallbackQuery implements CallbackQueryInterface
         return $this->perm;
     }
 
-    abstract public function handle(array $params): void;
+    public function setParams(?array $params): void
+    {
+        $this->params = $params ?? [];
+    }
 
-    protected function answer(string $text): void
+    public function handle(): void
+    {
+        $command = strtolower($this->params[0] ?? '');
+
+        $camel = lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $command))));
+
+        if (method_exists($this, $camel)) {
+            $this->{$camel}();
+        } elseif (method_exists($this, $command)) {
+            $this->{$command}();
+        } else {
+            $this->answer();
+        }
+    }
+
+    protected function answer(string $text = ""): void
     {
         wHook()->api()->answerCallbackQuery([
             'callback_query_id' => wHook()->update()->callbackQuery->id,

@@ -18,15 +18,13 @@ class MessageMetaQuery extends CallbackQuery
     protected int $perm = Roles::MEMBER->value;
 
     /**
-     * @param array $params
      * @throws BindingResolutionException
      * @throws LogicException
      * @throws TelegramSDKException
      */
-    public function handle(array $params): void
+    public function handle(): void
     {
-        $this->params = $params;
-        switch (strtolower($params[0])) {
+        switch (strtolower($this->params[0])) {
             case "action_is_locked":
                 $this->actionIsLocked();
                 break;

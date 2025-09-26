@@ -114,6 +114,7 @@ class CallbackQueryBus
     protected function handler(CallbackQueryInterface $resolvedCallbackQuery, array $params): void
     {
         if (!hasAccess($resolvedCallbackQuery->getPerm())) return;
-        $resolvedCallbackQuery->handle($params);
+        $resolvedCallbackQuery->setParams($params);
+        $resolvedCallbackQuery->handle();
     }
 }

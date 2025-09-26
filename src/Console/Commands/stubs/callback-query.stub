@@ -10,18 +10,6 @@ class {{ class_name }} extends CallbackQuery
     protected string $type = '{{ type }}';
     protected int $perm = {{ perm_power }};
 
-    public function handle(array $params): void
-    {
-        $this->params = $params;
-        switch (strtolower($params[0])) {
-            case "start":
-                // Use dependsOn() to give condition to check if the callback is allowed
-                // dependsOn(false);
-                $this->start();
-                break;
-        }
-    }
-
     public function start(): void
     {
         // Logic to execute

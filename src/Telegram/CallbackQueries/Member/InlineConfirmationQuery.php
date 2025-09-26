@@ -22,10 +22,9 @@ class InlineConfirmationQuery extends CallbackQuery
      * @throws TbeLogicException
      * @throws TelegramSDKException
      */
-    public function handle(array $params): void
+    public function handle(): void
     {
-        $this->params = $params;
-        switch (strtolower($params[0])) {
+        switch (strtolower($this->params[0])) {
             case "load":
                 $this->load();
                 break;

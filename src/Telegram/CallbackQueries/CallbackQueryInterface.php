@@ -8,5 +8,5 @@ interface CallbackQueryInterface
 
     public function getPerm(): int;
 
-    public function handle(array $params): void;
+    public function handle(): void;
 }
