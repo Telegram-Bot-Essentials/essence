@@ -35,8 +35,8 @@ class InitMainBotCommand extends Command
         ];
 
         foreach ($required as $key) {
-            if (!config("telegram-bot-essentials.main.$key")) {
-                $this->error("Missing configuration: telegram-bot-essentials.main.$key");
+            if (!config("tbe-essence.main.$key")) {
+                $this->error("Missing configuration: tbe-essence.main.$key");
                 return self::FAILURE;
             }
         }
