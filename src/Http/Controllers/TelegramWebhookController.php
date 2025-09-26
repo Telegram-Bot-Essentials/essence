@@ -25,11 +25,11 @@ class TelegramWebhookController extends Controller
     public function __invoke(Request $request)
     {
         $request->headers->set('Accept', 'application/json');
-        App::setLocale(wHook()->bot()->settings->language);
+//        App::setLocale(wHook()->bot()->settings->language);
 
         try {
             dependsOn(!wHook()->bot()->suspended && (is_null(wHook()->bot()->activated_until) || wHook()->bot()->activated_until->isFuture()), __('tbe::general.alerts.botIsOff'));
-            if (!hasAccess()) dependsOn(wHook()->bot()->settings->bot_status, __('tbe::general.alerts.botIsOff'));
+//            if (!hasAccess()) dependsOn(wHook()->bot()->settings->bot_status, __('tbe::general.alerts.botIsOff'));
             $this->initializeOptions();
             $this->processUpdate();
         } catch (Exception $e) {

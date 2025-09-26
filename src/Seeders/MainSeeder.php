@@ -42,8 +42,8 @@ class MainSeeder extends Seeder
             ]);
         }
 
-        $bot->settings->bot_status = true;
-        $bot->settings->save();
+//        $bot->settings->bot_status = true;
+//        $bot->settings->save();
 
         BotUser::firstOrCreate([
             'bot_id' => $bot->id,

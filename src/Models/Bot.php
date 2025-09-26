@@ -2,13 +2,12 @@
 
 namespace TelegramBotEssentials\Essence\Models;
 
-use TelegramBotEssentials\Essence\Database\factories\BotFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
 use Stancl\Tenancy\Database\Models\Tenant as BaseTenant;
+use TelegramBotEssentials\Essence\Database\factories\BotFactory;
 
 class Bot extends BaseTenant
 {
@@ -51,11 +50,6 @@ class Bot extends BaseTenant
     public function botUsers(): HasMany
     {
         return $this->hasMany(BotUser::class);
-    }
-
-    public function settings(): HasOne
-    {
-        return $this->hasOne(BotSettings::class)->withDefault();
     }
 
     public function botOwner(): HasOne

@@ -58,7 +58,8 @@ class GatewayZirgozarController extends Controller
         try{
             $url = config('tbe-essence.gateways.zirgozar.url') . '/api/index.php';
             $data = [
-                'key' => $invoice->bot->settings->zirgozar_token,
+//                'key' => $invoice->bot->settings->zirgozar_token,
+                'key' => 'x',
                 'action' => 'web_pay',
                 'mobile' => $invoice->botUser->telegramUser->tel,
                 'amount' => CurrencyFather::from($invoice->bot->currency)->amount($invoice->price)->toIRT(),
@@ -165,7 +166,8 @@ class GatewayZirgozarController extends Controller
         try{
             $url = config('tbe-essence.gateways.zirgozar.url') . '/api/index.php';
             $data = [
-                'key' => wHook()->bot()->settings->zirgozar_token,
+//                'key' => wHook()->bot()->settings->zirgozar_token,
+                'key' => "x",
                 'action' => 'web_pay_status',
                 'token' => $paymentToken,
             ];
