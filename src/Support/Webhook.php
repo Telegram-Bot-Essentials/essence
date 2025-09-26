@@ -3,6 +3,7 @@
 namespace TelegramBotEssentials\Essence\Support;
 
 use Closure;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Telegram\Bot\Api;
 use Telegram\Bot\Objects\Update;
 use TelegramBotEssentials\Essence\Exceptions\WebhookAuthException;
@@ -130,6 +131,6 @@ class Webhook
             return self::$update->chat->id;
         }
 
-        throw new WebhookAuthException('Failed to retrieve telegram peer id.');
+        throw new HttpResponseException(apiResponse()->error('Failed to retrieve telegram peer id.', 204));
     }
 }
