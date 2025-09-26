@@ -9,7 +9,7 @@ use Telegram\Bot\Exceptions\TelegramSDKException;
 
 class BotAdminsKey extends ReplyKey
 {
-    protected string $text = 'Bot Settings';
+    protected string $text = 'Bot Admins';
     protected int $perm = Roles::ADMIN->value;
 
     public function __construct()
