@@ -69,7 +69,6 @@ abstract class StateAnswer implements StateAnswerInterface
         if ($this->messageMeta) return $this->messageMeta;
         $messageMeta = MessageMeta::find($this->params['message_meta_id'] ?? ($this->params['message_meta'] ?? null));
         if (!$messageMeta) {
-            exceptionReport(new TbeLogicException('Trying to access message meta, but it is not provided'));
             return null;
         }
         $this->messageMeta = $messageMeta;

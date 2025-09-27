@@ -17,6 +17,7 @@ use TelegramBotEssentials\Essence\Console\Commands\MakeStateAnswer;
 use TelegramBotEssentials\Essence\Console\Commands\PublishCommand;
 use TelegramBotEssentials\Essence\Console\Commands\SetWebhook;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQueryBus;
+use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Member\CancelProcessKey;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKeyBus;
 use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswerBus;
 
@@ -69,6 +70,10 @@ class TelegramBotServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         $this->loadTranslationsFrom(__DIR__ . '/../lang', 'tbe');
         $this->loadTranslationsFrom(__DIR__ . '/../lang', 'tbe-essence');
+
+        replyKeyBus()->addReplyKeys([
+            CancelProcessKey::class
+        ]);
     }
 
     protected function loadConsoleRoutes(): void
@@ -79,24 +84,6 @@ class TelegramBotServiceProvider extends ServiceProvider
             if (file_exists($consoleRoutes)) {
                 require $consoleRoutes;
             }
-        }
-    }
-
-    /**
-     * Register the package's publishable resources.
-     *
-     * @return void
-     */
-    protected function registerPublishing(): void
-    {
-        if ($this->app->runningInConsole()) {
-            $this->publishes([
-                __DIR__.'/../config/tbe-essence.php' => config_path('tbe-essence.php'),
-            ], 'tbe-essence-config');
-
-            $this->publishes([
-                __DIR__ . '/../lang' => resource_path('lang/vendor/tbe-essence'),
-            ], 'tbe-essence-translations');
         }
     }
 
@@ -120,6 +107,24 @@ class TelegramBotServiceProvider extends ServiceProvider
                 PublishCommand::class,
                 InitMainBotCommand::class
             ]);
+        }
+    }
+
+    /**
+     * Register the package's publishable resources.
+     *
+     * @return void
+     */
+    protected function registerPublishing(): void
+    {
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__ . '/../config/tbe-essence.php' => config_path('tbe-essence.php'),
+            ], 'tbe-essence-config');
+
+            $this->publishes([
+                __DIR__ . '/../lang' => resource_path('lang/vendor/tbe-essence'),
+            ], 'tbe-essence-translations');
         }
     }
 }
