@@ -205,16 +205,10 @@ if (!function_exists('exceptionReport')) {
         try {
             $time = time();
             if ($e->getMessage()) {
-                wHook()->api()->sendMessage([
-                    'chat_id' => config('tbe-essence.bug_report.telegram_chat_id'),
-                    'text' => $e->getMessage(),
-                ]);
+                debugMessage($e->getMessage());
             }
             if (wHook()->requestState()) {
-                wHook()->api()->sendMessage([
-                    'chat_id' => config('tbe-essence.bug_report.telegram_chat_id'),
-                    'text' => wHook()->requestState(),
-                ]);
+                debugMessage(wHook()->requestState());
             }
             wHook()->api()->sendDocument([
                 'chat_id' => config('tbe-essence.bug_report.telegram_chat_id'),
@@ -230,6 +224,21 @@ if (!function_exists('exceptionReport')) {
         Log::error($e->getMessage() ?? 'error message is not provided');
         Log::error(json_encode(wHook()->update(), JSON_PRETTY_PRINT) ?? 'Update is not provided');
         Log::error($e->getTraceAsString() ?? 'Trace is not provided');
+    }
+}
+
+if (!function_exists('debugMessage')) {
+    function debugMessage(string $message): void
+    {
+        try {
+            Log::debug($message);
+            wHook()->api()->sendMessage([
+                'chat_id' => config('tbe-essence.bug_report.telegram_chat_id'),
+                'text' => $message,
+            ]);
+        } catch (Exception $e) {
+            Log::error('Failed to send debug message due: ' . $e->getMessage());
+        }
     }
 }
 

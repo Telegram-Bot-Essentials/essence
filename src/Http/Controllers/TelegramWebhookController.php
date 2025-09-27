@@ -2,21 +2,15 @@
 
 namespace TelegramBotEssentials\Essence\Http\Controllers;
 
-use Illuminate\Container\Attributes\Log;
-use TelegramBotEssentials\Essence\Exceptions\LogicException;
-use TelegramBotEssentials\Essence\Exceptions\TbeLogicException;
-use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQuery;
-use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKey;
-use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswer;
-use TelegramBotEssentials\Essence\Traits\CanCancelOldProcess;
 use Exception;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\File;
 use Telegram\Bot\Commands\Command;
 use Telegram\Bot\Exceptions\TelegramSDKException;
+use TelegramBotEssentials\Essence\Exceptions\LogicException;
+use TelegramBotEssentials\Essence\Exceptions\TbeLogicException;
+use TelegramBotEssentials\Essence\Traits\CanCancelOldProcess;
 
 class TelegramWebhookController extends Controller
 {
@@ -28,7 +22,11 @@ class TelegramWebhookController extends Controller
 //        App::setLocale(wHook()->bot()->settings->language);
 
         try {
-            dependsOn(!wHook()->bot()->suspended && (is_null(wHook()->bot()->activated_until) || wHook()->bot()->activated_until->isFuture()), __('tbe::general.alerts.botIsOff'));
+            dependsOn(!wHook()->bot()->suspended, ('tbe::general.alerts.botIsOff'));
+            dependsOn(
+                is_null(wHook()->bot()->activated_until) || wHook()->bot()->activated_until->isFuture(),
+                __('tbe::general.alerts.botIsOff'
+                ));
 //            if (!hasAccess()) dependsOn(wHook()->bot()->settings->bot_status, __('tbe::general.alerts.botIsOff'));
             $this->initializeOptions();
             $this->processUpdate();
