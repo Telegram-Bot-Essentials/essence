@@ -2,6 +2,9 @@
 
 namespace TelegramBotEssentials\Essence\Telegram\StateAnswers;
 
+use Illuminate\Container\Container;
+use Illuminate\Database\Eloquent\Model;
+use ReflectionMethod;
 use TelegramBotEssentials\Essence\Enums\AllowableFields;
 use TelegramBotEssentials\Essence\Exceptions\TbeLogicException;
 use TelegramBotEssentials\Essence\Models\MessageMeta;
@@ -15,6 +18,7 @@ abstract class StateAnswer implements StateAnswerInterface
     protected array $params;
     protected ?MessageMeta $messageMeta = null;
     protected ?StateData $stateData = null;
+    protected array $bindings = [];
 
     protected array $allowedFields = [AllowableFields::TEXT->value];
 
@@ -46,22 +50,57 @@ abstract class StateAnswer implements StateAnswerInterface
     public function handle(): void
     {
         $command = strtolower($this->method);
-
         $camel = lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $command))));
+        $method = method_exists($this, $camel) ? $camel : (method_exists($this, $command) ? $command : null);
 
-        if (method_exists($this, $camel)) {
-            $this->{$camel}();
-        } elseif (method_exists($this, $command)) {
-            $this->{$command}();
-        } else {
-            // TODO: Localize these messages
-            debugMessage("Method for {$this->method} is not provided");
+        if (!$method) {
             wHook()->api()->sendMessage([
                 'chat_id' => wHook()->peerId(),
                 'text' => "Unavailable",
                 'reply_markup' => wHook()->user()->getKeyboard()
             ]);
+            return;
         }
+
+        $reflection = new ReflectionMethod($this, $method);
+        $parameters = $reflection->getParameters();
+        $dependencies = [];
+
+        foreach ($parameters as $param) {
+            $paramName = $param->getName();
+            $type = $param->getType()?->getName();
+
+            if(!in_array($paramName, collect($this->params)->keys()->toArray()) && !$param->isDefaultValueAvailable()){
+                throw new \Exception("Missing binding value for {$type} (\$$paramName)");
+            }
+
+            if ($type && class_exists($type) && is_subclass_of($type, Model::class)) {
+                $column = $this->bindings[$type] ?? null;
+                $value = $this->params[$column ?? $paramName] ?? null;
+
+                $dependencies[] = $type::where($column ?? 'id', $value)->firstOrFail();
+                continue;
+            }
+
+            if ($type && class_exists($type)) {
+                $dependencies[] = Container::getInstance()->make($type);
+                continue;
+            }
+
+            if (isset($this->params[$paramName])) {
+                $dependencies[] = $this->params[$paramName];
+                continue;
+            }
+
+            if ($param->isDefaultValueAvailable()) {
+                $dependencies[] = $param->getDefaultValue();
+                continue;
+            }
+
+            throw new \Exception("Unable to resolve parameter {$paramName} for method {$method}");
+        }
+
+        $this->{$method}(...$dependencies);
     }
 
     public function messageMeta(): ?MessageMeta
