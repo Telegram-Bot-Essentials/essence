@@ -20,6 +20,7 @@ trait CanCancelOldProcess
     {
         if (wHook()->user()->state) {
             $CancelProcessKey = $this->resolveReplyKey(CancelProcessKey::class);
+            wHook()->user()->changeState();
             if(wHook()->update()?->message?->text !== $CancelProcessKey->getText()){
                 wHook()->api()->sendMessage([
                     'chat_id' => wHook()->user()->telegramUser->peer_id,
@@ -27,7 +28,6 @@ trait CanCancelOldProcess
                     'reply_markup' => wHook()->user()->getKeyboard()
                 ]);
             }
-            wHook()->user()->changeState();
         }
     }
 }

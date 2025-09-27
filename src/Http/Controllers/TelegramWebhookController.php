@@ -93,7 +93,7 @@ class TelegramWebhookController extends Controller
                 $commandProcessed = true;
             } else {
                 $keyProcessed = replyKeyBus()->processReplyKey();
-                if (wHook()->user()->state)
+                if (!$keyProcessed && wHook()->user()->state)
                     $answerProcessed = stateAnswerBus()->processStateAnswers();
             }
 

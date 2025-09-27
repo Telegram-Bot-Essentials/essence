@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace TelegramBotEssentials\Essence\Telegram\StateAnswers;
 
-use TelegramBotEssentials\Essence\Exceptions\LogicException;
-use TelegramBotEssentials\Essence\Traits\CanResolveStateAnswer;
 use Exception;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Exceptions\TelegramSDKException;
+use TelegramBotEssentials\Essence\Exceptions\LogicException;
+use TelegramBotEssentials\Essence\Traits\CanResolveStateAnswer;
 
 /**
  * Class CommandBus.
@@ -69,6 +69,21 @@ class StateAnswerBus
     }
 
     /**
+     * @param string|null $state
+     * @return bool
+     * @throws BindingResolutionException
+     * @throws LogicException
+     * @throws TelegramSDKException
+     */
+    public function cancelHandler(?string $state): bool
+    {
+        if (!$state) return false;
+        $decodedState = decodeAnswerState($state);
+        $decodedState['method'] = 'cancel';
+        return $this->handleStateAnswer($decodedState);
+    }
+
+    /**
      * @throws BindingResolutionException
      * @throws LogicException|TelegramSDKException
      */
@@ -114,35 +129,20 @@ class StateAnswerBus
         if (!hasAccess($resolvedStateAnswer->getPerm())) return;
         $resolvedStateAnswer->setParams($params);
         $resolvedStateAnswer->setMethod($method);
-        if($method == 'cancel') {
+        if ($method == 'cancel') {
             $resolvedStateAnswer->cancel();
-        }else{
+        } else {
             $resolvedStateAnswer->handle();
         }
     }
 
     /**
-     * @param string|null $state
      * @return bool
      * @throws BindingResolutionException
      * @throws LogicException
      * @throws TelegramSDKException
      */
-    public function cancelHandler(?string $state): bool
-    {
-        if (!$state) return false;
-        $decodedState = decodeAnswerState($state);
-        $decodedState['method'] = 'cancel';
-        return $this->handleStateAnswer($decodedState);
-    }
-
-    /**
-     * @return bool
-     * @throws BindingResolutionException
-     * @throws LogicException
-     * @throws TelegramSDKException
-     */
-    public function processStateAnswers(): bool
+    public function processStateAnswers(bool $cancelOldProcess = false): bool
     {
         $answerState = decodeAnswerState(wHook()->user()->state);
         return $this->handleStateAnswer($answerState);
