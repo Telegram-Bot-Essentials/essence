@@ -14,13 +14,6 @@ class {{ class_name }} extends StateAnswer
         AllowableFields::TEXT->value
     ];
 
-    public function handle(string $method): void
-    {
-        switch (strtolower($method)) {
-            // Route methods to their handlers
-        }
-    }
-
     // TODO: Implement cancel() method for custom cancellation logic
     // function cancel(): void
     // {

@@ -11,6 +11,7 @@ abstract class StateAnswer implements StateAnswerInterface
 {
     protected string $type;
     protected int $perm;
+    protected string $method;
     protected array $params;
     protected ?MessageMeta $messageMeta = null;
     protected ?StateData $stateData = null;
@@ -32,12 +33,36 @@ abstract class StateAnswer implements StateAnswerInterface
         $this->params = $params ?? [];
     }
 
+    public function setMethod(string $method): void
+    {
+        $this->method = $method;
+    }
+
     public function getAllowedFields(): array
     {
         return $this->allowedFields;
     }
 
-    abstract public function handle(string $method): void;
+    public function handle(): void
+    {
+        $command = strtolower($this->method);
+
+        $camel = lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $command))));
+
+        if (method_exists($this, $camel)) {
+            $this->{$camel}();
+        } elseif (method_exists($this, $command)) {
+            $this->{$command}();
+        } else {
+            // TODO: Localize these messages
+            debugMessage("Method for {$this->method} is not provided");
+            wHook()->api()->sendMessage([
+                'chat_id' => wHook()->peerId(),
+                'text' => "Unavailable",
+                'reply_markup' => wHook()->user()->getKeyboard()
+            ]);
+        }
+    }
 
     public function messageMeta(): ?MessageMeta
     {

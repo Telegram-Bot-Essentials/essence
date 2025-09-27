@@ -17,22 +17,6 @@ class BotAdminsAnswer extends StateAnswer
     protected int $perm = Roles::ADMIN->value;
 
     /**
-     * @param string $method
-     * @return void
-     * @throws BindingResolutionException
-     * @throws LogicException
-     * @throws TelegramSDKException
-     */
-    public function handle(string $method): void
-    {
-        switch (strtolower($method)) {
-            case "add_admin":
-                $this->addAdmin();
-                break;
-        }
-    }
-
-    /**
      * @throws TelegramSDKException
      * @throws BindingResolutionException
      * @throws LogicException

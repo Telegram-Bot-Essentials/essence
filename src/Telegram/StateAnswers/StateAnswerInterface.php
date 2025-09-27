@@ -12,7 +12,7 @@ interface StateAnswerInterface
 
     public function setParams(?array $params): void;
 
-    public function handle(string $method): void;
+    public function handle(): void;
     public function messageMeta(): ?MessageMeta;
     function cancel(): void;
 }
