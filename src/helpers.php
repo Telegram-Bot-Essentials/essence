@@ -218,8 +218,8 @@ if (!function_exists('exceptionReport')) {
                 'chat_id' => config('tbe-essence.bug_report.telegram_chat_id'),
                 'document' => InputFile::createFromContents(json_encode(wHook()->update(), JSON_PRETTY_PRINT), $time . '.update'),
             ]);
-        } catch (TelegramSDKException $e) {
-
+        } catch (Exception $err) {
+            Log::error('Failed to report exception due: ' . $err->getMessage());
         }
         Log::error($e->getMessage() ?? 'error message is not provided');
         Log::error(json_encode(wHook()->update(), JSON_PRETTY_PRINT) ?? 'Update is not provided');
@@ -275,6 +275,7 @@ if (!function_exists('stateData')) {
 if (!function_exists('loadStateAnswers')) {
     function loadStateAnswers(string $path): void
     {
+        if(!$path) return;
         $namespace = resolveNamespace($path);
 
         foreach (File::allFiles($path) as $file) {
@@ -290,6 +291,7 @@ if (!function_exists('loadStateAnswers')) {
 if (!function_exists('loadCallbackQueries')) {
     function loadCallbackQueries(string $path): void
     {
+        if(!$path) return;
         $namespace = resolveNamespace($path);
 
         foreach (File::allFiles($path) as $file) {
@@ -318,6 +320,7 @@ if (!function_exists('addUserReplyKeys')) {
 if (!function_exists('loadReplyKeys')) {
     function loadReplyKeys(string $path): void
     {
+        if(!$path) return;
         $namespace = resolveNamespace($path);
 
         foreach (File::allFiles($path) as $file) {
