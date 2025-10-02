@@ -17,8 +17,9 @@ return new class extends Migration {
             $table->string('last_name')->nullable();
             $table->string('username')->nullable();
             $table->string('tel')->nullable();
-            $table->softDeletes();
+            $table->timestamp('last_interaction')->useCurrent();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

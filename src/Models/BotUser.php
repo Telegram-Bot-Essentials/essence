@@ -124,4 +124,11 @@ class BotUser extends Model
         $this->attributes['state'] = encodeAnswerState($state['type'], $state['method'], array_merge($state['params'], $params));
         $this->save();
     }
+
+    public function interact(): void
+    {
+        $this->attributes['last_interaction'] = now();
+        $this->save();
+        $this->telegramUser->interact();
+    }
 }

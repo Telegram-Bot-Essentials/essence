@@ -40,4 +40,10 @@ class TelegramUser extends Model
     {
         return $this->hasMany(BotUser::class);
     }
+
+    public function interact(): void
+    {
+        $this->attributes['last_interaction'] = now();
+        $this->save();
+    }
 }
