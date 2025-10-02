@@ -6,4 +6,5 @@ enum AllowableFields: string
 {
     case TEXT = 'text';
     case PHOTO = 'photo';
+    case DOCUMENT = 'document';
 }
