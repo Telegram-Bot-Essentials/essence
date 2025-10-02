@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
-use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\FileUpload\InputFile;
 use Telegram\Bot\Keyboard\Button;
 use Telegram\Bot\Keyboard\Keyboard;
@@ -77,13 +76,13 @@ if (!function_exists('decodeAnswerState')) {
 }
 
 if (!function_exists('encodeCallback')) {
-    function encodeCallback(string $type, array $params = []): string
+    function encodeCallback(string $type, string $method, array $params = []): string
     {
         $safeParams = array_filter($params, fn($p) => is_scalar($p) && !is_null($p) && $p !== '');
 
         $result = empty($safeParams)
-            ? $type
-            : $type . '?' . implode('&', array_map('strval', $safeParams));
+            ? $type . '#' . $method
+            : $type . '#' . $method . '?' . implode('&', array_map('strval', $safeParams));
 
         if (strlen($result) > 64) {
             return 'LONG_CALLBACK_DATA'; // TODO: handle this case
@@ -95,16 +94,33 @@ if (!function_exists('encodeCallback')) {
 if (!function_exists('decodeCallback')) {
     function decodeCallback(string $input): array
     {
-        if (str_contains($input, '?')) {
-            [$type, $raw] = explode('?', $input, 2);
-            $params = explode('&', $raw);
+        $type = null;
+        $method = null;
+        $params = [];
+
+        if (str_contains($input, '#')) {
+            [$typePart, $rest] = explode('#', $input, 2);
+            $type = $typePart;
+
+            if (str_contains($rest, '?')) {
+                [$methodPart, $raw] = explode('?', $rest, 2);
+                $method = $methodPart;
+                $params = $raw !== '' ? explode('&', $raw) : [];
+            } else {
+                $method = $rest;
+            }
         } else {
-            $type = $input;
-            $params = null;
+            if (str_contains($input, '?')) {
+                [$type, $raw] = explode('?', $input, 2);
+                $params = $raw !== '' ? explode('&', $raw) : [];
+            } else {
+                $type = $input;
+            }
         }
 
         return [
             'type' => $type,
+            'method' => $method,
             'params' => $params,
         ];
     }
@@ -275,7 +291,7 @@ if (!function_exists('stateData')) {
 if (!function_exists('loadStateAnswers')) {
     function loadStateAnswers(string $path): void
     {
-        if(!$path) return;
+        if (!$path) return;
         $namespace = resolveNamespace($path);
 
         foreach (File::allFiles($path) as $file) {
@@ -291,7 +307,7 @@ if (!function_exists('loadStateAnswers')) {
 if (!function_exists('loadCallbackQueries')) {
     function loadCallbackQueries(string $path): void
     {
-        if(!$path) return;
+        if (!$path) return;
         $namespace = resolveNamespace($path);
 
         foreach (File::allFiles($path) as $file) {
@@ -320,7 +336,7 @@ if (!function_exists('addUserReplyKeys')) {
 if (!function_exists('loadReplyKeys')) {
     function loadReplyKeys(string $path): void
     {
-        if(!$path) return;
+        if (!$path) return;
         $namespace = resolveNamespace($path);
 
         foreach (File::allFiles($path) as $file) {
