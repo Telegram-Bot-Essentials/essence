@@ -21,7 +21,7 @@ class BotAdminsAnswer extends StateAnswer
      * @throws BindingResolutionException
      * @throws LogicException
      */
-    private function addAdmin(): void
+    public function addAdmin(): void
     {
         $telegramUser = str_starts_with(wHook()->update()->message->text, '@') ?
             TelegramUser::where('username', str_replace('@', '', wHook()->update()->message->text))->firstOrFail():
