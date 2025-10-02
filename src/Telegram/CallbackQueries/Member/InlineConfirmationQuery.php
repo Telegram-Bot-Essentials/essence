@@ -20,31 +20,9 @@ class InlineConfirmationQuery extends CallbackQuery
      * @throws BindingResolutionException
      * @throws LogicException
      * @throws TbeLogicException
-     * @throws TelegramSDKException
      */
-    public function handle(): void
+    private function accept(InlineConfirmation $inlineConfirmation): void
     {
-        switch (strtolower($this->params[0])) {
-            case "load":
-                $this->load();
-                break;
-            case "accept":
-                $this->accept();
-                break;
-            case 'decline':
-                $this->decline();
-                break;
-        }
-    }
-
-    /**
-     * @throws BindingResolutionException
-     * @throws LogicException
-     * @throws TbeLogicException
-     */
-    private function accept(): void
-    {
-        $inlineConfirmation = InlineConfirmation::findOrFail($this->params[1]);
         callbackQueryBus()->routeQuery($inlineConfirmation->callback_data);
         $inlineConfirmation->delete();
     }
@@ -54,9 +32,8 @@ class InlineConfirmationQuery extends CallbackQuery
      * @throws LogicException
      * @throws TbeLogicException
      */
-    private function decline(): void
+    private function decline(InlineConfirmation $inlineConfirmation): void
     {
-        $inlineConfirmation = InlineConfirmation::findOrFail($this->params[1]);
         callbackQueryBus()->routeQuery($inlineConfirmation->back_callback_data);
         $inlineConfirmation->delete();
     }
@@ -64,9 +41,8 @@ class InlineConfirmationQuery extends CallbackQuery
     /**
      * @throws TelegramSDKException
      */
-    private function load(): void
+    private function load(InlineConfirmation $inlineConfirmation): void
     {
-        $inlineConfirmation = InlineConfirmation::findOrFail($this->params[1]);
         InlineConfirmationFeature::load($inlineConfirmation)->update();
     }
 }

@@ -4,6 +4,7 @@ namespace TelegramBotEssentials\Essence\Telegram\CallbackQueries\Admin;
 
 use TelegramBotEssentials\Essence\Enums\Roles;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
+use TelegramBotEssentials\Essence\Models\BotUser;
 use TelegramBotEssentials\Essence\Models\MessageMeta;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQuery;
 use TelegramBotEssentials\Essence\Telegram\Features\BotAdminsFeature;
@@ -14,26 +15,6 @@ class BotAdminsQuery extends CallbackQuery
 {
     protected string $type = 'BOTADMNS';
     protected int $perm = Roles::ADMIN->value;
-
-    /**
-     * @throws BindingResolutionException
-     * @throws LogicException
-     * @throws TelegramSDKException
-     */
-    public function handle(): void
-    {
-        switch (strtolower($this->params[0])) {
-            case 'add_admin':
-                $this->addAdmin();
-                break;
-            case "owner_info":
-                $this->ownerInfo();
-                break;
-            case "delete_admin":
-                $this->deleteAdmin();
-                break;
-        }
-    }
 
     /**
      * @throws TelegramSDKException
@@ -74,15 +55,14 @@ class BotAdminsQuery extends CallbackQuery
     /**
      * @throws TelegramSDKException
      */
-    private function deleteAdmin(): void
+    private function deleteAdmin(BotUser $botUser): void
     {
-        $botUserAsAdmin = wHook()->bot()->botUsers()->where('id', $this->params[1])->first();
-        $botUserAsAdmin->power = 0;
-        $botUserAsAdmin->save();
+        $botUser->power = 0;
+        $botUser->save();
 
         BotAdminsFeature::menu()
             ->answer(__('tbe::bot_admins.main.answers.adminRemoved', [
-                'adminName' => $botUserAsAdmin->telegramUser->full_name
+                'adminName' => $botUser->telegramUser->full_name
             ]))
             ->update();
     }

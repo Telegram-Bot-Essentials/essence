@@ -276,7 +276,7 @@ if (!function_exists('inlineConfirmationKey')) {
 
         return Keyboard::inlineButton([
             'text' => $keyText,
-            'callback_data' => encodeCallback(InlineConfirmationFeature::$type, ['load', $inlineConfirmation->id])
+            'callback_data' => encodeCallback(InlineConfirmationFeature::$type, 'load', [$inlineConfirmation->id])
         ]);
     }
 }

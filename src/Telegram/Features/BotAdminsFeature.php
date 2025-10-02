@@ -27,14 +27,14 @@ class BotAdminsFeature
         $replyMarkup->row([
             Keyboard::inlineButton([
                 'text' => __('tbe::bot_admins.main.keys.addNewAdmin'),
-                'callback_data' => encodeCallback(self::$type, ['add_admin'])
+                'callback_data' => encodeCallback(self::$type, 'add_admin')
             ])
         ]);
 
         $replyMarkup->row([
             Keyboard::inlineButton([
                 'text' => __('tbe::bot_admins.main.keys.owner', ['ownerName' => wHook()->bot()->botOwner->full_name]),
-                'callback_data' => encodeCallback(self::$type, ['owner_info'])
+                'callback_data' => encodeCallback(self::$type, 'owner_info')
             ])
         ]);
 
@@ -42,7 +42,7 @@ class BotAdminsFeature
             $replyMarkup->row([
                 Keyboard::inlineButton([
                     'text' => __('tbe::bot_admins.main.keys.removeAdmin', ['adminName' => $admin->telegramUser->full_name]),
-                    'callback_data' => encodeCallback(self::$type, ['delete_admin', $admin->id])
+                    'callback_data' => encodeCallback(self::$type, 'delete_admin', [$admin->id])
                 ])
             ]);
         }

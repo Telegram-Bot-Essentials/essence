@@ -10,6 +10,7 @@ abstract class CallbackQuery implements CallbackQueryInterface
 {
     protected string $type;
     protected int $perm;
+    protected string $method;
     protected array $params;
 
     public function getType(): string
@@ -22,6 +23,11 @@ abstract class CallbackQuery implements CallbackQueryInterface
         return $this->perm;
     }
 
+    public function setMethod(string $method): void
+    {
+        $this->method = $method;
+    }
+
     public function setParams(?array $params): void
     {
         $this->params = $params ?? [];
@@ -29,7 +35,7 @@ abstract class CallbackQuery implements CallbackQueryInterface
 
     public function handle(): void
     {
-        $command = strtolower($this->params[0] ?? '');
+        $command = strtolower($this->method);
 
         $camel = lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $command))));
         $method = method_exists($this, $camel) ? $camel : (method_exists($this, $command) ? $command : null);

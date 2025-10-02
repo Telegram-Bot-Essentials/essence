@@ -2,10 +2,10 @@
 
 namespace TelegramBotEssentials\Essence\Services;
 
-use TelegramBotEssentials\Essence\Exceptions\InvalidPageNumber;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Validator;
 use Telegram\Bot\Keyboard\Keyboard;
+use TelegramBotEssentials\Essence\Exceptions\InvalidPageNumber;
 
 class TelegramPaginator
 {
@@ -31,11 +31,11 @@ class TelegramPaginator
     public static function makeNavigationButtonsRow(string $callbackType, int $page, int $lastPage, $callbackMethod = 'start', $customPageMethod = 'set_start_page'): array
     {
         return [
-            Keyboard::inlineButton(['text' => '<<', 'callback_data' => encodeCallback($callbackType, [$callbackMethod, 1, $page])]),
-            Keyboard::inlineButton(['text' => '<', 'callback_data' => encodeCallback($callbackType, [$callbackMethod, $page - 1, $page])]),
-            Keyboard::inlineButton(['text' => "$page/{$lastPage}", 'callback_data' => encodeCallback($callbackType, [$customPageMethod])]),
-            Keyboard::inlineButton(['text' => '>', 'callback_data' => encodeCallback($callbackType, [$callbackMethod, $page + 1, $page])]),
-            Keyboard::inlineButton(['text' => '>>', 'callback_data' => encodeCallback($callbackType, [$callbackMethod, $lastPage, $page])]),
+            Keyboard::inlineButton(['text' => '<<', 'callback_data' => encodeCallback($callbackType, $callbackMethod, [1, $page])]),
+            Keyboard::inlineButton(['text' => '<', 'callback_data' => encodeCallback($callbackType, $callbackMethod, [$page - 1, $page])]),
+            Keyboard::inlineButton(['text' => "$page/{$lastPage}", 'callback_data' => encodeCallback($callbackType, $customPageMethod)]),
+            Keyboard::inlineButton(['text' => '>', 'callback_data' => encodeCallback($callbackType, $callbackMethod, [$page + 1, $page])]),
+            Keyboard::inlineButton(['text' => '>>', 'callback_data' => encodeCallback($callbackType, $callbackMethod, [$lastPage, $page])]),
         ];
     }
 
@@ -44,9 +44,9 @@ class TelegramPaginator
      */
     public static function validatePageNumber(int $targetPage, int $currentPage, LengthAwarePaginator $models): void
     {
-        if($targetPage == $currentPage)
+        if ($targetPage == $currentPage)
             throw new InvalidPageNumber(__('tbe::general.alerts.samePageNumber'));
-        if($targetPage < 1 || $targetPage > $models->lastPage())
+        if ($targetPage < 1 || $targetPage > $models->lastPage())
             throw new InvalidPageNumber(__('tbe::general.alerts.outOfBoundPageNumber'));
     }
 }

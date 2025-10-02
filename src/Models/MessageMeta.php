@@ -2,8 +2,6 @@
 
 namespace TelegramBotEssentials\Essence\Models;
 
-use TelegramBotEssentials\Essence\Services\ExceptionHandler;
-use TelegramBotEssentials\Essence\Telegram\TelegramResponse;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -11,6 +9,7 @@ use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\Keyboard\Keyboard;
 use Telegram\Bot\Objects\Message;
 use Telegram\Bot\Objects\TelegramObject;
+use TelegramBotEssentials\Essence\Telegram\TelegramResponse;
 
 class MessageMeta extends Model
 {
@@ -28,6 +27,21 @@ class MessageMeta extends Model
         $messageMeta->tag = $tag;
         $messageMeta->save();
         return $messageMeta;
+    }
+
+    public function initializeModel(?int $chat_id = null, ?int $message_id = null, ?string $message_text = null, ?string $message_reply_markup = null, ?string $tag = null): void
+    {
+        if (
+            wHook()->update()->callbackQuery ||
+            (isset($chat_id) && isset($message_id) && isset($message_text) && isset($message_reply_markup))
+        ) {
+            $this->chat_id = $chat_id ?? wHook()->update()->callbackQuery->message->chat->id;
+            $this->message_id = $message_id ?? wHook()->update()->callbackQuery->message->messageId;
+            $this->message_text = $message_text ?? wHook()->update()->callbackQuery->message->text;
+            $this->message_reply_markup = $message_reply_markup ?? wHook()->update()->callbackQuery->message->replyMarkup;
+        }
+        $this->tag = $tag;
+        $this->save();
     }
 
     public static function makeWithMessage(Message $message, ?string $tag = null)
@@ -73,11 +87,27 @@ class MessageMeta extends Model
             ->row([
                 Keyboard::inlineButton([
                     'text' => $customEmoji . " " . ($lockMessage ?? "Locked For Action"),
-                    'callback_data' => encodeCallback(self::$type, ['action_is_locked', $this->id]),
+                    'callback_data' => encodeCallback(self::$type, 'action_is_locked', [$this->id]),
                 ])
             ]);
 
         $this->lockingProcess($replyMarkup);
+    }
+
+    /**
+     * @throws TelegramSDKException
+     */
+    private function lockingProcess(Keyboard $replyMarkup): void
+    {
+        try {
+            wHook()->api()->editMessageReplyMarkup([
+                'chat_id' => $this->chat_id,
+                'message_id' => $this->message_id,
+                'reply_markup' => $replyMarkup,
+            ]);
+        } catch (Exception $e) {
+            exceptionReport($e);
+        }
     }
 
     public function cancelableLockAction(?string $lockMessage = null): void
@@ -89,48 +119,17 @@ class MessageMeta extends Model
             ->row([
                 Keyboard::inlineButton([
                     'text' => "🔒 " . ($lockMessage ?? "Locked For Action"),
-                    'callback_data' => encodeCallback(self::$type, ['action_is_locked', $this->id]),
+                    'callback_data' => encodeCallback(self::$type, 'action_is_locked', [$this->id]),
                 ])
             ])
             ->row([
                 Keyboard::inlineButton([
                     'text' => "🗑️ Cancel",
-                    'callback_data' => encodeCallback(self::$type, ['cancel_action', $this->id]),
+                    'callback_data' => encodeCallback(self::$type, 'cancel_action', [$this->id]),
                 ])
             ]);
 
         $this->lockingProcess($replyMarkup);
-    }
-
-    public function initializeModel(?int $chat_id = null, ?int $message_id = null, ?string $message_text = null, ?string $message_reply_markup = null, ?string $tag = null): void
-    {
-        if (
-            wHook()->update()->callbackQuery ||
-            (isset($chat_id) && isset($message_id) && isset($message_text) && isset($message_reply_markup))
-        ) {
-            $this->chat_id = $chat_id ?? wHook()->update()->callbackQuery->message->chat->id;
-            $this->message_id = $message_id ?? wHook()->update()->callbackQuery->message->messageId;
-            $this->message_text = $message_text ?? wHook()->update()->callbackQuery->message->text;
-            $this->message_reply_markup = $message_reply_markup ?? wHook()->update()->callbackQuery->message->replyMarkup;
-        }
-        $this->tag = $tag;
-        $this->save();
-    }
-
-    /**
-     * @throws TelegramSDKException
-     */
-    private function lockingProcess(Keyboard $replyMarkup): void
-    {
-        try{
-            wHook()->api()->editMessageReplyMarkup([
-                'chat_id' => $this->chat_id,
-                'message_id' => $this->message_id,
-                'reply_markup' => $replyMarkup,
-            ]);
-        } catch (Exception $e) {
-            exceptionReport($e);
-        }
     }
 
     /**
@@ -138,7 +137,7 @@ class MessageMeta extends Model
      */
     public function continueAction(): void
     {
-        try{
+        try {
             wHook()->api()->deleteMessage([
                 'chat_id' => $this->chat_id,
                 'message_id' => $this->message_id,
@@ -160,9 +159,21 @@ class MessageMeta extends Model
         $this->initializeModel($message->chat->id, $message->messageId, $message->text, $message->replyMarkup);
     }
 
+    public function deleteMessage(): void
+    {
+        try {
+            wHook()->api()->deleteMessage([
+                'chat_id' => $this->chat_id,
+                'message_id' => $this->message_id,
+            ]);
+        } catch (Exception $e) {
+            exceptionReport($e);
+        }
+    }
+
     public function revertAction(): void
     {
-        try{
+        try {
             wHook()->api()->editMessageText([
                 'chat_id' => $this->chat_id,
                 'message_id' => $this->message_id,
@@ -181,7 +192,7 @@ class MessageMeta extends Model
     {
         if ($data instanceof TelegramResponse) {
             $data->update($this->chat_id, $this->message_id);
-        }else{
+        } else {
             try {
                 wHook()->api()->editMessageText([
                     'chat_id' => $this->chat_id,
@@ -201,7 +212,7 @@ class MessageMeta extends Model
      */
     public function updateAndContinueAction(TelegramResponse|array $data): void
     {
-        try{
+        try {
             wHook()->api()->deleteMessage([
                 'chat_id' => $this->chat_id,
                 'message_id' => $this->message_id,
@@ -212,8 +223,8 @@ class MessageMeta extends Model
 
         if ($data instanceof TelegramResponse) {
             $message = $data->send($this->chat_id);
-        }else{
-            try{
+        } else {
+            try {
                 $message = wHook()->api()->sendMessage([
                     'chat_id' => $this->chat_id,
                     'text' => $data['text'],
@@ -226,17 +237,5 @@ class MessageMeta extends Model
         }
 
         $this->initializeModel($message->chat->id, $message->messageId, $message->text, $message->replyMarkup);
-    }
-
-    public function deleteMessage(): void
-    {
-        try{
-            wHook()->api()->deleteMessage([
-                'chat_id' => $this->chat_id,
-                'message_id' => $this->message_id,
-            ]);
-        } catch (Exception $e) {
-            exceptionReport($e);
-        }
     }
 }

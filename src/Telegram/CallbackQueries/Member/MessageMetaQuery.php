@@ -18,23 +18,6 @@ class MessageMetaQuery extends CallbackQuery
     protected int $perm = Roles::MEMBER->value;
 
     /**
-     * @throws BindingResolutionException
-     * @throws LogicException
-     * @throws TelegramSDKException
-     */
-    public function handle(): void
-    {
-        switch (strtolower($this->params[0])) {
-            case "action_is_locked":
-                $this->actionIsLocked();
-                break;
-            case "cancel_action":
-                $this->cancelAction();
-                break;
-        }
-    }
-
-    /**
      * @throws TelegramSDKException
      */
     private function actionIsLocked(): void
@@ -50,10 +33,9 @@ class MessageMetaQuery extends CallbackQuery
      * @throws LogicException
      * @throws BindingResolutionException
      */
-    private function cancelAction(): void
+    private function cancelAction(MessageMeta $messageMeta): void
     {
         $this->cancelOldProcess();
-        $messageMeta = MessageMeta::findOrFail($this->params[1]);
         $messageMeta->revertAction();
     }
 }
