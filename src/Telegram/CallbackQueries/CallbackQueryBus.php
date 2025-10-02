@@ -99,6 +99,7 @@ class CallbackQueryBus
      */
     private function route(array $callbackQueryData): void
     {
+        $method = $callbackQueryData['method'];
         $type = $callbackQueryData['type'];
 
         $key = $this->callbackQueryTypes[$type] ?? null;
@@ -108,13 +109,14 @@ class CallbackQueryBus
         }
 
         $resolvedCallbackQuery = $this->resolveCallbackQuery($key);
-        $this->handler($resolvedCallbackQuery, $callbackQueryData['params']);
+        $this->handler($resolvedCallbackQuery, $method, $callbackQueryData['params']);
     }
 
-    protected function handler(CallbackQueryInterface $resolvedCallbackQuery, array $params): void
+    protected function handler(CallbackQueryInterface $resolvedCallbackQuery, string $method, array $params): void
     {
         if (!hasAccess($resolvedCallbackQuery->getPerm())) return;
         $resolvedCallbackQuery->setParams($params);
+        $resolvedCallbackQuery->setMethod($method);
         $resolvedCallbackQuery->handle();
     }
 }

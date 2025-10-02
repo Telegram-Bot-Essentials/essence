@@ -356,7 +356,7 @@ if (!function_exists('resolveNamespace')) {
             $basePath = base_path('app');
             $baseNamespace = app()->getNamespace();
         } else {
-            $basePath = realpath(__DIR__ . '/../../');
+            $basePath = realpath(__DIR__);
             $baseNamespace = 'TelegramBotEssentials\\Essence';
         }
 
