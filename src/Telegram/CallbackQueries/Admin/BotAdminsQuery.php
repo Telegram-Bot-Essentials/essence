@@ -21,7 +21,7 @@ class BotAdminsQuery extends CallbackQuery
      * @throws BindingResolutionException
      * @throws LogicException
      */
-    private function addAdmin(): void
+    public function addAdmin(): void
     {
         $messageMeta = MessageMeta::makeWithCurrentMessage();
         $messageMeta->lockAction(__('tbe::bot_admins.main.lock-keys.addingNewAdmin'));
@@ -37,7 +37,7 @@ class BotAdminsQuery extends CallbackQuery
     /**
      * @throws TelegramSDKException
      */
-    private function ownerInfo(): void
+    public function ownerInfo(): void
     {
         $text = __('tbe::bot_admins.main.answers.ownerInfo', [
             'ownerName' => wHook()->bot()->botOwner->full_name,
@@ -55,7 +55,7 @@ class BotAdminsQuery extends CallbackQuery
     /**
      * @throws TelegramSDKException
      */
-    private function deleteAdmin(BotUser $botUser): void
+    public function deleteAdmin(BotUser $botUser): void
     {
         $botUser->power = 0;
         $botUser->save();

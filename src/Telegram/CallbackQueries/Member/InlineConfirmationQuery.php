@@ -21,7 +21,7 @@ class InlineConfirmationQuery extends CallbackQuery
      * @throws LogicException
      * @throws TbeLogicException
      */
-    private function accept(InlineConfirmation $inlineConfirmation): void
+    public function accept(InlineConfirmation $inlineConfirmation): void
     {
         callbackQueryBus()->routeQuery($inlineConfirmation->callback_data);
         $inlineConfirmation->delete();
@@ -32,7 +32,7 @@ class InlineConfirmationQuery extends CallbackQuery
      * @throws LogicException
      * @throws TbeLogicException
      */
-    private function decline(InlineConfirmation $inlineConfirmation): void
+    public function decline(InlineConfirmation $inlineConfirmation): void
     {
         callbackQueryBus()->routeQuery($inlineConfirmation->back_callback_data);
         $inlineConfirmation->delete();
@@ -41,7 +41,7 @@ class InlineConfirmationQuery extends CallbackQuery
     /**
      * @throws TelegramSDKException
      */
-    private function load(InlineConfirmation $inlineConfirmation): void
+    public function load(InlineConfirmation $inlineConfirmation): void
     {
         InlineConfirmationFeature::load($inlineConfirmation)->update();
     }

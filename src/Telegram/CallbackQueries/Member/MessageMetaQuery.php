@@ -20,7 +20,7 @@ class MessageMetaQuery extends CallbackQuery
     /**
      * @throws TelegramSDKException
      */
-    private function actionIsLocked(): void
+    public function actionIsLocked(): void
     {
         wHook()->api()->answerCallbackQuery([
             'callback_query_id' => wHook()->update()->callbackQuery->id,
@@ -33,7 +33,7 @@ class MessageMetaQuery extends CallbackQuery
      * @throws LogicException
      * @throws BindingResolutionException
      */
-    private function cancelAction(MessageMeta $messageMeta): void
+    public function cancelAction(MessageMeta $messageMeta): void
     {
         $this->cancelOldProcess();
         $messageMeta->revertAction();

@@ -53,7 +53,7 @@ abstract class CallbackQuery implements CallbackQueryInterface
         $parameters = $reflection->getParameters();
         $dependencies = [];
 
-        for($i = 0; $i < $parameters->count(); $i++){
+        for($i = 0; $i < count($parameters); $i++){
             $param = $parameters[$i];
             $paramData = $this->params[$i] ?? null;
             $paramName = $param->getName();
