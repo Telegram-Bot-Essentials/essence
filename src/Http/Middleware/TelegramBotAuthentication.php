@@ -56,7 +56,7 @@ class TelegramBotAuthentication
         } catch (TelegramSDKException $e) {
             Log::error($e->getMessage() ?? 'error message is not provided');
             Log::error($e->getTraceAsString() ?? 'Trace is not provided');
-            return apiResponse()->error('Failed to initialize API service', 204);
+            return apiResponse()->error('Failed to initialize API service', 503);
         }
 
         wHook()::setUser($this->fetchUserData());
