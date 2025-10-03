@@ -32,12 +32,12 @@ class TelegramBotAuthentication
         $bot = tenancy()->tenant;
 
         if (empty($bot) || !($bot instanceof Bot))
-            return apiResponse()->error('Invalid Bot ID', 404);
+            return apiResponse()->error('Invalid Bot ID', 204);
 
         wHook()::setBot($bot);
 
         if (!Hash::check($request->header('x-telegram-bot-api-secret-token'), $bot->secret_token))
-            return apiResponse()->error('Unauthorized', 403);
+            return apiResponse()->error('Unauthorized', 204);
 
         try {
             $api = new Api(
@@ -56,7 +56,7 @@ class TelegramBotAuthentication
         } catch (TelegramSDKException $e) {
             Log::error($e->getMessage() ?? 'error message is not provided');
             Log::error($e->getTraceAsString() ?? 'Trace is not provided');
-            return apiResponse()->error('Failed to initialize API service', 503);
+            return apiResponse()->error('Failed to initialize API service', 204);
         }
 
         wHook()::setUser($this->fetchUserData());
