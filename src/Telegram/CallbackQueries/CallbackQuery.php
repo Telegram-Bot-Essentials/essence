@@ -61,7 +61,7 @@ abstract class CallbackQuery implements CallbackQueryInterface
 
             if ($type && class_exists($type) && is_subclass_of($type, Model::class)) {
                 $column = $this->bindings[$type] ?? null;
-                $value = $this->params[$column ?? $paramName] ?? null;
+                $value = $this->params[$i] ?? null;
 
                 $dependencies[] = $type::where($column ?? 'id', $value)->firstOrFail();
                 continue;
