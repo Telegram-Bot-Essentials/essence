@@ -55,6 +55,7 @@ class InitMainBotCommand extends Command
             ], [
                 'bot_token' => config('tbe-essence.main.telegram_bot_token'),
                 'bot_owner_peer_id' => $telegramUser->peer_id,
+                'activated_until' => null,
             ]);
 
             $this->info("Bot created successfully");
