@@ -89,9 +89,8 @@ class TelegramBotAuthentication
             ]
         );
 
-        $telegramUser->touch();
         $botUser = BotUser::firstOrCreate(['telegram_user_peer_id' => $telegramUser->peer_id]);
-        $botUser->touch();
+        $botUser->interact();
         return $botUser;
     }
 }
