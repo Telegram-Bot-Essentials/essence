@@ -53,7 +53,7 @@ class ExceptionHandler
                 Log::error($e->getMessage());
             }
             exceptionReport($e);
-            abort(200, 'Something went wrong');
+            abort(203, 'Something went wrong');
         }
     }
 
