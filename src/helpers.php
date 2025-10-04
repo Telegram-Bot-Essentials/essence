@@ -145,6 +145,40 @@ if (!function_exists('inlineSorter')) {
     }
 }
 
+if (!function_exists('smartInlineKeysSorter')) {
+    function smartInlineKeysSorter(array $array, ?int $step = null, int $limit = 15): array
+    {
+        collect($array)->each(function ($data) {
+            if (!($data instanceof Button)) {
+                throw new InvalidArgumentException('Items must be instance of Button');
+            }
+        });
+
+
+        if (empty($step)) {
+            if (count($array) < 6) $step = 1;
+            else $step = 2;
+        }
+
+        $list = [];
+        $num = 0;
+        $scope = 0;
+        foreach ($array as $data) {
+            $keyLen = strlen($data['text'] ?? '');
+            if (($scope + $keyLen) > $limit) {
+                if ($num % $step != 0) $num = ($num + $step) - ($num % $step);
+                $scope = 0;
+            }
+            $row = floor($num / $step);
+            $list[$row][] = $data;
+            $num++;
+            $scope += $keyLen;
+        }
+
+        return $list;
+    }
+}
+
 if (!function_exists('addInlineKeysSorted')) {
     /**
      * @param Keyboard $keyboard
@@ -155,6 +189,22 @@ if (!function_exists('addInlineKeysSorted')) {
     function addInlineKeysSorted(Keyboard $keyboard, array $keys, ?int $step = null): void
     {
         $rows = inlineSorter($keys, $step);
+        foreach ($rows as $row) {
+            $keyboard->row($row);
+        }
+    }
+}
+
+if (!function_exists('addInlineKeysSmartSorted')) {
+    /**
+     * @param Keyboard $keyboard
+     * @param array $keys
+     * @param int|null $step
+     * @return void
+     */
+    function addInlineKeysSmartSorted(Keyboard $keyboard, array $keys, ?int $step = null): void
+    {
+        $rows = smartInlineKeysSorter($keys, $step);
         foreach ($rows as $row) {
             $keyboard->row($row);
         }
