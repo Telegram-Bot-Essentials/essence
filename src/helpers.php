@@ -270,6 +270,7 @@ if (!function_exists('exceptionReport')) {
     {
         try {
             $time = time();
+            debugMessage(get_class($e));
             if ($e->getMessage()) {
                 debugMessage($e->getMessage());
             }
@@ -287,6 +288,7 @@ if (!function_exists('exceptionReport')) {
         } catch (Exception $err) {
             Log::error('Failed to report exception due: ' . $err->getMessage());
         }
+        Log::error(get_class($e));
         Log::error($e->getMessage() ?? 'error message is not provided');
         Log::error(json_encode(wHook()->update(), JSON_PRETTY_PRINT) ?? 'Update is not provided');
         Log::error($e->getTraceAsString() ?? 'Trace is not provided');

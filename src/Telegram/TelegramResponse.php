@@ -107,15 +107,23 @@ class TelegramResponse
     {
         try {
             if ($this->text) {
-                $message = wHook()->api()->editMessageText(
-                    array_filter([
-                        'chat_id' => $chatId ?? wHook()->update()->callbackQuery->message->chat->id,
-                        'message_id' => $messageId ?? wHook()->update()->callbackQuery->message->messageId,
-                        'text' => $this->text,
-                        'reply_markup' => $this->replyMarkup,
-                        'parse_mode' => $this->parseMode,
-                    ])
-                );
+                try {
+                    $message = wHook()->api()->editMessageText(
+                        array_filter([
+                            'chat_id' => $chatId ?? wHook()->update()->callbackQuery->message->chat->id,
+                            'message_id' => $messageId ?? wHook()->update()->callbackQuery->message->messageId,
+                            'text' => $this->text,
+                            'reply_markup' => $this->replyMarkup,
+                            'parse_mode' => $this->parseMode,
+                        ])
+                    );
+                } catch (Exception $e) {
+                    wHook()->api()->answerCallbackQuery([
+                        'callback_query_id' => wHook()->update()->callbackQuery->id,
+                    ]);
+                }
+
+
 
                 if ($this->modelForMessageMeta) {
                     $messageMeta = MessageMeta::makeWithMessage($message, $this->messageMetaTag);
