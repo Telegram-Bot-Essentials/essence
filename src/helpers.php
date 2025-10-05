@@ -146,7 +146,7 @@ if (!function_exists('inlineSorter')) {
 }
 
 if (!function_exists('smartInlineKeysSorter')) {
-    function smartInlineKeysSorter(array $array, ?int $step = null, int $limit = 15): array
+    function smartInlineKeysSorter(array $array, ?int $step = null, int $limit = 18): array
     {
         collect($array)->each(function ($data) {
             if (!($data instanceof Button)) {
@@ -154,6 +154,18 @@ if (!function_exists('smartInlineKeysSorter')) {
             }
         });
 
+        $charLen = function (string $s): int {
+            if (function_exists('grapheme_strlen')) {
+                return grapheme_strlen($s);
+            }
+            if (preg_match_all('/\X/u', $s, $matches)) {
+                return count($matches[0]);
+            }
+            if (function_exists('mb_strlen')) {
+                return mb_strlen($s, 'UTF-8');
+            }
+            return strlen($s);
+        };
 
         if (empty($step)) {
             if (count($array) < 6) $step = 1;
@@ -164,7 +176,9 @@ if (!function_exists('smartInlineKeysSorter')) {
         $num = 0;
         $scope = 0;
         foreach ($array as $data) {
-            $keyLen = strlen($data['text'] ?? '');
+            $keyText = $data['text'] ?? '';
+            $keyLen = $charLen($keyText);
+
             if (($scope + $keyLen) > $limit) {
                 if ($num % $step != 0) $num = ($num + $step) - ($num % $step);
                 $scope = 0;
