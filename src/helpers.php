@@ -146,7 +146,7 @@ if (!function_exists('inlineSorter')) {
 }
 
 if (!function_exists('smartInlineKeysSorter')) {
-    function smartInlineKeysSorter(array $array, ?int $step = null, int $limit = 18): array
+    function smartInlineKeysSorter(array $array, ?int $step = null, int $limit = 22): array
     {
         collect($array)->each(function ($data) {
             if (!($data instanceof Button)) {
