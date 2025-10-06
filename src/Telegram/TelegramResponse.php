@@ -124,6 +124,7 @@ class TelegramResponse
                         $messageMeta->save();
                     }
                 } catch (Exception $e) {
+                    exceptionReport($e);
                     wHook()->api()->answerCallbackQuery([
                         'callback_query_id' => wHook()->update()->callbackQuery->id,
                     ]);
