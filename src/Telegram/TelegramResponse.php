@@ -117,18 +117,16 @@ class TelegramResponse
                             'parse_mode' => $this->parseMode,
                         ])
                     );
+
+                    if ($this->modelForMessageMeta) {
+                        $messageMeta = MessageMeta::makeWithMessage($message, $this->messageMetaTag);
+                        $messageMeta->action()->associate($this->modelForMessageMeta);
+                        $messageMeta->save();
+                    }
                 } catch (Exception $e) {
                     wHook()->api()->answerCallbackQuery([
                         'callback_query_id' => wHook()->update()->callbackQuery->id,
                     ]);
-                }
-
-
-
-                if ($this->modelForMessageMeta) {
-                    $messageMeta = MessageMeta::makeWithMessage($message, $this->messageMetaTag);
-                    $messageMeta->action()->associate($this->modelForMessageMeta);
-                    $messageMeta->save();
                 }
             }
         } catch (Exception $e) {
