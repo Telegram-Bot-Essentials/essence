@@ -129,11 +129,7 @@ class StateAnswerBus
         if (!hasAccess($resolvedStateAnswer->getPerm())) return;
         $resolvedStateAnswer->setParams($params);
         $resolvedStateAnswer->setMethod($method);
-        if ($method == 'cancel') {
-            $resolvedStateAnswer->cancel();
-        } else {
-            $resolvedStateAnswer->handle();
-        }
+        $resolvedStateAnswer->handle();
     }
 
     /**

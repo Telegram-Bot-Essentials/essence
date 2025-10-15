@@ -88,6 +88,7 @@ class TelegramWebhookController extends Controller
 
         if (wHook()->update()->message) {
             if (str_starts_with(wHook()->update()->message->text, '/')) {
+                stateAnswerBus()->cancelHandler(wHook()->requestState());
                 $this->cancelOldProcess();
                 wHook()->api()->processCommand(wHook()->update());
                 $commandProcessed = true;
