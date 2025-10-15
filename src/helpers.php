@@ -228,20 +228,35 @@ if (!function_exists('addInlineKeysSmartSorted')) {
 if (!function_exists('getInputInlineKeyText')) {
     function getInputInlineKeyText(): ?string
     {
-        $result = null;
-        $data = wHook()->update()->callbackQuery?->data;
-        $inlineKeys = wHook()->update()->callbackQuery?->message?->replyMarkup['inline_keyboard'];
+        $callbackQuery = wHook()->update()->callbackQuery;
+
+        if (!$callbackQuery?->data) {
+            return null;
+        }
+
+        $inlineKeys = $callbackQuery->message?->replyMarkup['inline_keyboard'] ?? null;
+
+        if (!is_iterable($inlineKeys)) {
+            return null;
+        }
 
         foreach ($inlineKeys as $rows) {
+            if (!is_iterable($rows)) {
+                continue;
+            }
+
             foreach ($rows as $key) {
-                if ($key['callback_data'] ?? null === $data) {
-                    $result = $key['text'];
-                    break;
+                if (!is_array($key) && !($key instanceof \ArrayAccess)) {
+                    continue;
+                }
+
+                if (($key['callback_data'] ?? null) === $callbackQuery->data) {
+                    return $key['text'] ?? null;
                 }
             }
         }
 
-        return $result;
+        return null;
     }
 }
 
