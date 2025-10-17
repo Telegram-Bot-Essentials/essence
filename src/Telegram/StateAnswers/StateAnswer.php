@@ -5,6 +5,7 @@ namespace TelegramBotEssentials\Essence\Telegram\StateAnswers;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use ReflectionMethod;
+use TelegramBotEssentials\Essence\Support\ResolvesParameters;
 use TelegramBotEssentials\Essence\Enums\AllowableFields;
 use TelegramBotEssentials\Essence\Exceptions\TbeLogicException;
 use TelegramBotEssentials\Essence\Models\MessageMeta;
@@ -12,10 +13,12 @@ use TelegramBotEssentials\Essence\Models\StateData;
 
 abstract class StateAnswer implements StateAnswerInterface
 {
+    use ResolvesParameters;
+
     protected string $type;
     protected int $perm;
     protected string $method;
-    protected array $params;
+    protected array $params = [];
     protected ?MessageMeta $messageMeta = null;
     protected ?StateData $stateData = null;
     protected array $bindings = [];
@@ -70,13 +73,12 @@ abstract class StateAnswer implements StateAnswerInterface
             $paramName = $param->getName();
             $type = $param->getType()?->getName();
 
-            if(!in_array($paramName, collect($this->params)->keys()->toArray()) && !$param->isDefaultValueAvailable()){
-                throw new \Exception("Missing binding value for {$type} (\$$paramName)");
-            }
-
             if ($type && class_exists($type) && is_subclass_of($type, Model::class)) {
                 $column = $this->bindings[$type] ?? null;
-                $value = $this->params[$column ?? $paramName] ?? null;
+                [$value, $found] = $this->resolveParamValue($column ?? $paramName, $paramName);
+                if (!$found) {
+                    throw new \Exception("Missing binding value for {$type} (\$$paramName)");
+                }
 
                 $dependencies[] = $type::where($column ?? 'id', $value)->firstOrFail();
                 continue;
@@ -87,8 +89,9 @@ abstract class StateAnswer implements StateAnswerInterface
                 continue;
             }
 
-            if (isset($this->params[$paramName])) {
-                $dependencies[] = $this->params[$paramName];
+            [$value, $found] = $this->resolveParamValue($paramName);
+            if ($found) {
+                $dependencies[] = $value;
                 continue;
             }
 
@@ -129,5 +132,24 @@ abstract class StateAnswer implements StateAnswerInterface
     public function cancel(): void
     {
         $this->messageMeta()?->revertAction();
+    }
+
+    protected function resolveParamValue(string $primary, ?string $secondary = null): array
+    {
+        $keys = array_keys($this->params);
+
+        $matchedKey = $this->findMatchingKey($keys, $primary);
+        if ($matchedKey !== null && array_key_exists($matchedKey, $this->params)) {
+            return [$this->params[$matchedKey], true];
+        }
+
+        if ($secondary && $secondary !== $primary) {
+            $matchedKey = $this->findMatchingKey($keys, $secondary);
+            if ($matchedKey !== null && array_key_exists($matchedKey, $this->params)) {
+                return [$this->params[$matchedKey], true];
+            }
+        }
+
+        return [null, false];
     }
 }
