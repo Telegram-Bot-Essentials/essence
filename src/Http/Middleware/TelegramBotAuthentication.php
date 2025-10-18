@@ -34,7 +34,7 @@ class TelegramBotAuthentication
         if (empty($bot) || !($bot instanceof Bot))
             return apiResponse()->error('Invalid Bot ID', 204);
 
-        wHook()::setBot($bot);
+        wHook()->setBot($bot);
 
         if (!Hash::check($request->header('x-telegram-bot-api-secret-token'), $bot->secret_token))
             return apiResponse()->error('Unauthorized', 204);
@@ -44,7 +44,7 @@ class TelegramBotAuthentication
                 token: $bot->bot_token,
                 baseBotUrl: config('tbe-essence.base_bot_url')
             );
-            wHook()::setApi($api);
+            wHook()->setApi($api);
             $update = wHook()->api()->getWebhookUpdate(request: new ServerRequest(
                 method: 'POST',
                 uri: $request->url(),
@@ -52,14 +52,14 @@ class TelegramBotAuthentication
                 body: $request->getContent(),
                 serverParams: $request->server->all()
             ));
-            wHook()::setUpdate($update);
+            wHook()->setUpdate($update);
         } catch (TelegramSDKException $e) {
             Log::error($e->getMessage() ?? 'error message is not provided');
             Log::error($e->getTraceAsString() ?? 'Trace is not provided');
             return apiResponse()->error('Failed to initialize API service', 503);
         }
 
-        wHook()::setUser($this->fetchUserData());
+        wHook()->setUser($this->fetchUserData());
 
         return $next($request);
     }

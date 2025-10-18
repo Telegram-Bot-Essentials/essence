@@ -12,92 +12,92 @@ use TelegramBotEssentials\Essence\Models\BotUser;
 
 class Webhook
 {
-    private static ?Api $api = null;
-    private static ?Update $update = null;
-    private static ?Bot $bot = null;
-    private static ?BotUser $user = null;
-    private static ?string $requestState = null;
+    private ?Api $api = null;
+    private ?Update $update = null;
+    private ?Bot $bot = null;
+    private ?BotUser $user = null;
+    private ?string $requestState = null;
 
-    public static function clear(): void
+    public function clear(): void
     {
-        self::$api = null;
-        self::$update = null;
-        self::$bot = null;
-        self::$user = null;
-        self::$requestState = null;
+        $this->api = null;
+        $this->update = null;
+        $this->bot = null;
+        $this->user = null;
+        $this->requestState = null;
     }
 
-    public static function setApi(?Api $api): void
+    public function setApi(?Api $api): void
     {
-        self::$api = $api;
+        $this->api = $api;
     }
 
-    public static function setUpdate(?Update $update): void
+    public function setUpdate(?Update $update): void
     {
-        self::$update = $update;
+        $this->update = $update;
     }
 
-    public static function api(): Api
+    public function api(): Api
     {
         try {
-            if (self::$api == null) throw new WebhookAuthException('Failed to retrieve API service.');
-            return self::$api;
+            if ($this->api == null) throw new WebhookAuthException('Failed to retrieve API service.');
+            return $this->api;
         } catch (WebhookAuthException $e) {
             exceptionHandler()->handle($e);
             abort(200, $e->getMessage());
         }
     }
 
-    public static function update(): Update
+    public function update(): Update
     {
         try {
-            if (self::$update == null) throw new WebhookAuthException('Failed to retrieve Updates.');
-            return self::$update;
+            if ($this->update == null) throw new WebhookAuthException('Failed to retrieve Updates.');
+            return $this->update;
         } catch (WebhookAuthException $e) {
             exceptionHandler()->handle($e);
             abort(200, $e->getMessage());
         }
     }
 
-    public static function bot(): Bot
+    public function bot(): Bot
     {
         try {
-            if (self::$bot == null) throw new WebhookAuthException('Failed to retrieve bot.');
-            return self::$bot;
+            if ($this->bot == null) throw new WebhookAuthException('Failed to retrieve bot.');
+            return $this->bot;
         } catch (WebhookAuthException $e) {
             exceptionHandler()->handle($e);
             abort(200, $e->getMessage());
         }
     }
 
-    public static function user(): BotUser
+    public function user(): BotUser
     {
         try {
-            if (self::$user == null) throw new WebhookAuthException('Failed to retrieve telegram user.');
-            return self::$user;
+            if ($this->user == null) throw new WebhookAuthException('Failed to retrieve telegram user.');
+            return $this->user;
         } catch (WebhookAuthException $e) {
             exceptionHandler()->handle($e);
             abort(200, $e->getMessage());
         }
     }
 
-    public static function requestState(): ?string
+    public function requestState(): ?string
     {
-        return self::$requestState;
+        return $this->requestState;
     }
 
-    public static function check(): bool
+    public function check(): bool
     {
-        return self::$bot !== null
-            && self::$user !== null
-            && self::$api !== null
-            && self::$update !== null;
+        return $this->bot !== null
+            && $this->user !== null
+            && $this->api !== null
+            && $this->update !== null;
     }
 
-    public static function runForUser(BotUser $user, Closure $callback): mixed
+    public function runForUser(BotUser $user, Closure $callback): mixed
     {
-        $originalBot = self::$bot;
-        $originalUser = self::$user;
+        $originalBot = $this->bot;
+        $originalUser = $this->user;
 
         self::setBot($user->bot);
         self::setUser($user);
@@ -111,34 +111,34 @@ class Webhook
         }
     }
 
-    public static function setBot(?Bot $bot): void
+    public function setBot(?Bot $bot): void
     {
-        self::$bot = $bot;
+        $this->bot = $bot;
     }
 
-    public static function setUser(?BotUser $user): void
+    public function setUser(?BotUser $user): void
     {
-        self::$user = $user;
-        self::$requestState = $user->state;
+        $this->user = $user;
+        $this->requestState = $user->state;
     }
 
-    public static function exportContext(): ?WebhookContext
+    public function exportContext(): ?WebhookContext
     {
         if (!self::check()) {
             return null;
         }
 
         return new WebhookContext(
-            botId: self::$bot?->getKey(),
-            botUserId: self::$user?->getKey(),
-            updatePayload: self::$update?->toArray() ?? [],
-            botToken: self::$bot?->bot_token,
-            bot: self::$bot,
-            botUser: self::$user,
+            botId: $this->bot?->getKey(),
+            botUserId: $this->user?->getKey(),
+            updatePayload: $this->update?->toArray() ?? [],
+            botToken: $this->bot?->bot_token,
+            bot: $this->bot,
+            botUser: $this->user,
         );
     }
 
-    public static function importContext(WebhookContext|array|null $context): bool
+    public function importContext(WebhookContext|array|null $context): bool
     {
         if (empty($context)) {
             return false;
@@ -199,22 +199,22 @@ class Webhook
         return self::check();
     }
 
-    public static function peerId(): int
+    public function peerId(): int
     {
-        if (self::$update->isType('callback_query')) {
-            return self::$update->callbackQuery->from->id;
+        if ($this->update->isType('callback_query')) {
+            return $this->update->callbackQuery->from->id;
         }
 
-        if (self::$update->isType('message')) {
-            return self::$update->message->from->id;
+        if ($this->update->isType('message')) {
+            return $this->update->message->from->id;
         }
 
-        if (self::$update->isType('inline_query')) {
-            return self::$update->inlineQuery->from->id;
+        if ($this->update->isType('inline_query')) {
+            return $this->update->inlineQuery->from->id;
         }
 
-        if (isset(self::$update->chat)) {
-            return self::$update->chat->id;
+        if (isset($this->update->chat)) {
+            return $this->update->chat->id;
         }
 
         throw new HttpResponseException(apiResponse()->error('Failed to retrieve telegram peer id.', 204));

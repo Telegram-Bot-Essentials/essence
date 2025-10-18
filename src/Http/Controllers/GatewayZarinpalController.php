@@ -52,9 +52,9 @@ class GatewayZarinpalController extends Controller
     private function initializeWHookByInvoice(Invoice $invoice): void
     {
         tenancy()->initialize($invoice->bot);
-        wHook()::setBot($invoice->bot);
-        wHook()::setApi(new Api($invoice->bot->bot_token));
-        wHook()::setUser($invoice->botUser);
-        wHook()::setUpdate(Update::make(request()->all()));
+        wHook()->setBot($invoice->bot);
+        wHook()->setApi(new Api($invoice->bot->bot_token));
+        wHook()->setUser($invoice->botUser);
+        wHook()->setUpdate(Update::make(request()->all()));
     }
 }

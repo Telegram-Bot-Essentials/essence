@@ -16,6 +16,7 @@ use TelegramBotEssentials\Essence\Console\Commands\MakeReplyKey;
 use TelegramBotEssentials\Essence\Console\Commands\MakeStateAnswer;
 use TelegramBotEssentials\Essence\Console\Commands\PublishCommand;
 use TelegramBotEssentials\Essence\Console\Commands\SetWebhook;
+use TelegramBotEssentials\Essence\Support\Webhook;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQueryBus;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Member\CancelProcessKey;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKeyBus;
@@ -37,6 +38,8 @@ class TelegramBotServiceProvider extends ServiceProvider
 
     private function initializeSingletons(): void
     {
+        $this->app->singleton(Webhook::class, fn() => new Webhook());
+
         $this->app->singleton(ReplyKeyBus::class, function ($app) {
             return new ReplyKeyBus();
         });
