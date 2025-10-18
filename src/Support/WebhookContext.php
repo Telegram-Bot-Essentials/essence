@@ -21,14 +21,14 @@ class WebhookContext
 
     public static function capture(): ?self
     {
-        if (!Webhook::check()) {
+        if (!wHook()->check()) {
             return null;
         }
 
         try {
-            $bot = Webhook::bot();
-            $botUser = Webhook::user();
-            $update = Webhook::update();
+            $bot = wHook()->bot();
+            $botUser = wHook()->user();
+            $update = wHook()->update();
         } catch (\Throwable) {
             return null;
         }
@@ -108,11 +108,9 @@ class WebhookContext
 
     public function apply(): bool
     {
-        if (method_exists(Webhook::class, 'clear')) {
-            Webhook::clear();
-        }
+        wHook()->clear();
 
-        return Webhook::importContext($this);
+        return wHook()->importContext($this);
     }
 
     public function apiToken(): ?string
