@@ -18,6 +18,15 @@ class Webhook
     private static ?BotUser $user = null;
     private static ?string $requestState = null;
 
+    public static function clear(): void
+    {
+        self::$api = null;
+        self::$update = null;
+        self::$bot = null;
+        self::$user = null;
+        self::$requestState = null;
+    }
+
     public static function setApi(?Api $api): void
     {
         self::$api = $api;
@@ -111,6 +120,83 @@ class Webhook
     {
         self::$user = $user;
         self::$requestState = $user->state;
+    }
+
+    public static function exportContext(): ?WebhookContext
+    {
+        if (!self::check()) {
+            return null;
+        }
+
+        return new WebhookContext(
+            botId: self::$bot?->getKey(),
+            botUserId: self::$user?->getKey(),
+            updatePayload: self::$update?->toArray() ?? [],
+            botToken: self::$bot?->bot_token,
+            bot: self::$bot,
+            botUser: self::$user,
+        );
+    }
+
+    public static function importContext(WebhookContext|array|null $context): bool
+    {
+        if (empty($context)) {
+            return false;
+        }
+
+        if ($context instanceof WebhookContext) {
+            $snapshot = $context;
+        } else {
+            $snapshot = WebhookContext::fromArray($context);
+        }
+
+        $bot = $snapshot->bot ?? $snapshot->resolveBot();
+
+        if (!$bot) {
+            return false;
+        }
+
+        $botUser = $snapshot->botUser ?? $snapshot->resolveBotUser();
+
+        if (!$botUser) {
+            return false;
+        }
+
+        self::setBot($bot);
+        self::setUser($botUser);
+
+        $providedApi = null;
+
+        if (is_array($context) && isset($context['api']) && $context['api'] instanceof Api) {
+            $providedApi = $context['api'];
+        }
+
+        if ($providedApi) {
+            self::setApi($providedApi);
+        } else {
+            $token = $snapshot->botToken ?? $bot->bot_token;
+
+            if (!$token) {
+                return false;
+            }
+            self::setApi(new Api($token));
+        }
+
+        $updatePayload = $snapshot->updatePayload;
+
+        if (is_array($context) && array_key_exists('update', $context)) {
+            $updatePayload = $context['update'];
+        }
+
+        if ($updatePayload instanceof Update) {
+            self::setUpdate($updatePayload);
+        } elseif (is_array($updatePayload)) {
+            self::setUpdate(new Update($updatePayload));
+        } else {
+            self::setUpdate($snapshot->resolveUpdate());
+        }
+
+        return self::check();
     }
 
     public static function peerId(): int
