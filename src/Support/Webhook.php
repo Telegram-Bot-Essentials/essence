@@ -103,7 +103,6 @@ class Webhook
         self::setUser($user);
 
         try {
-            \Log::error('yeah');
             return $callback();
         } finally {
             self::setBot($originalBot);
