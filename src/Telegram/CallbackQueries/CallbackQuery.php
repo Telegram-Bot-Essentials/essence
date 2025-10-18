@@ -88,11 +88,11 @@ abstract class CallbackQuery implements CallbackQueryInterface
         $this->{$method}(...$dependencies);
     }
 
-    protected function answer(string $text = ""): void
+    protected function answer(?string $text = null): void
     {
-        wHook()->api()->answerCallbackQuery([
+        wHook()->api()->answerCallbackQuery(array_filter([
             'callback_query_id' => wHook()->update()->callbackQuery->id,
             'text' => $text
-        ]);
+        ]));
     }
 }
