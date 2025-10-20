@@ -5,11 +5,11 @@ use Illuminate\Support\Facades\Log;
 use Telegram\Bot\FileUpload\InputFile;
 use Telegram\Bot\Keyboard\Button;
 use Telegram\Bot\Keyboard\Keyboard;
+use TelegramBotEssentials\Billing\Services\CurrencyFather;
 use TelegramBotEssentials\Essence\Enums\Roles;
 use TelegramBotEssentials\Essence\Exceptions\FeatureIsDisabled;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
 use TelegramBotEssentials\Essence\Models\InlineConfirmation;
-use TelegramBotEssentials\Essence\Services\CurrencyFather;
 use TelegramBotEssentials\Essence\Services\ExceptionHandler;
 use TelegramBotEssentials\Essence\Services\StateDataService;
 use TelegramBotEssentials\Essence\Support\Webhook;
@@ -276,13 +276,6 @@ if (!function_exists('hasAccess')) {
     function hasAccess(?int $power = null): bool
     {
         return (wHook()->user()->power >= $power ?? Roles::ADMIN->value) || (wHook()->bot()->botOwner->id == wHook()->user()->telegramUser->id);
-    }
-}
-
-if (!function_exists('priceIn')) {
-    function priceIn(string $price): CurrencyFather
-    {
-        return CurrencyFather::from(wHook()->bot()->currency)->amount($price);
     }
 }
 

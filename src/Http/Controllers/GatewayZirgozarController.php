@@ -2,18 +2,12 @@
 
 namespace TelegramBotEssentials\Essence\Http\Controllers;
 
-use TelegramBotEssentials\Essence\Exceptions\FeatureIsDisabled;
-use TelegramBotEssentials\Essence\Models\Abstract\PaymentAttempt;
-use TelegramBotEssentials\Essence\Models\Billing\Attempts\ToZirgozarAttempt;
-use TelegramBotEssentials\Essence\Models\Billing\Invoice;
-use TelegramBotEssentials\Essence\Services\CurrencyFather;
 use Exception;
 use Http;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
-use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -25,6 +19,10 @@ use Stancl\Tenancy\Exceptions\TenantCouldNotBeIdentifiedById;
 use Telegram\Bot\Api;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\Objects\Update;
+use TelegramBotEssentials\Billing\Services\CurrencyFather;
+use TelegramBotEssentials\Essence\Models\Abstract\PaymentAttempt;
+use TelegramBotEssentials\Essence\Models\Billing\Attempts\ToZirgozarAttempt;
+use TelegramBotEssentials\Essence\Models\Billing\Invoice;
 
 class GatewayZirgozarController extends Controller
 {
