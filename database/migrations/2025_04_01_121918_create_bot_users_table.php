@@ -16,17 +16,16 @@ return new class extends Migration {
             $table->id();
             $table->foreignIdFor(Bot::class)->constrained();
             $table->unsignedBigInteger('telegram_user_peer_id');
-            $table->foreign('telegram_user_peer_id')
-                ->references('peer_id')
-                ->on('telegram_users');
             $table->integer('power')->default(0);
-            $table->decimal('balance', 65, 30)->default(0);
             $table->string('state')->nullable();
             $table->enum('menu', ['main', 'admin'])->default('main');
             $table->timestamp('suspended_at')->nullable();
             $table->timestamp('last_interaction')->useCurrent();
             $table->timestamps();
 
+            $table->foreign('telegram_user_peer_id')
+                ->references('peer_id')
+                ->on('telegram_users');
             $table->unique(['telegram_user_peer_id', 'bot_id']);
         });
     }
