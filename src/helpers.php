@@ -314,7 +314,7 @@ if (!function_exists('exceptionReport')) {
                 'chat_id' => config('tbe-essence.bug_report.telegram_chat_id'),
                 'document' => InputFile::createFromContents(json_encode(wHook()->update(), JSON_PRETTY_PRINT), $time . '.update'),
             ]);
-        } catch (Exception $err) {
+        } catch (Throwable $err) {
             Log::error('Failed to report exception due: ' . $err->getMessage());
         }
         Log::error(get_class($e));

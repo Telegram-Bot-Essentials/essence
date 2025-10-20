@@ -16,6 +16,7 @@ use Illuminate\Support\ItemNotFoundException;
 use Illuminate\Validation\ValidationException;
 use Laravel\Telescope\Telescope;
 use Telegram\Bot\Exceptions\TelegramSDKException;
+use Throwable;
 
 class ExceptionHandler
 {
@@ -41,7 +42,7 @@ class ExceptionHandler
             } catch (TbeLogicException $e) {
                 $this->generalAlert($e);
             }
-        } catch (TelegramSDKException|Exception $e) {
+        } catch (Throwable $e) {
             Telescope::tag(fn() => ['BUG']);
             try {
                 wHook()->api()->sendMessage([
@@ -49,7 +50,7 @@ class ExceptionHandler
                     'text' => "😭 Something went wrong, please contact the bot support",
                     'reply_markup' => wHook()->user()->getKeyboard(),
                 ]);
-            } catch (Exception $e) {
+            } catch (Throwable $e) {
                 Log::error($e->getMessage());
             }
             exceptionReport($e);
