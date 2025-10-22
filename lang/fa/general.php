@@ -10,6 +10,7 @@ return [
         'enabled' => 'فعال شد',
         'disabled' => 'غیرفعال شد',
         'notSet' => 'تنظیم نشده است',
+        'unavailable' => 'در دسترس نیست',
         'enabledEmoji' => '✅',
         'disabledEmoji' => '🛑',
         'xEmoji' => '❌',

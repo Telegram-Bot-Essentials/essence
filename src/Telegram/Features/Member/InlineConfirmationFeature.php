@@ -12,17 +12,17 @@ class InlineConfirmationFeature
 
     public static function load(InlineConfirmation $inlineConfirmation): TelegramResponse
     {
-        $text = $inlineConfirmation->confirmation_text ?? "Do you confirm this action?";
+        $text = $inlineConfirmation->confirmation_text ?? __('tbe::inline_confirmation.main.text.confirmationQuestion');
 
         $replyMarkup = Keyboard::make()->inline();
 
         $replyMarkup->row([
             Keyboard::inlineButton([
-                'text' => "Accept",
+                'text' => __('tbe::inline_confirmation.main.keys.accept'),
                 'callback_data' => encodeCallback(self::$type, 'accept', [$inlineConfirmation->id])
             ]),
             Keyboard::inlineButton([
-                'text' => "Decline",
+                'text' => __('tbe::inline_confirmation.main.keys.decline'),
                 'callback_data' => encodeCallback(self::$type, 'decline', [$inlineConfirmation->id])
             ])
         ]);

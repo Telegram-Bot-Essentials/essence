@@ -10,6 +10,7 @@ return [
         'enabled' => 'Enabled',
         'disabled' => 'Disabled',
         'notSet' => 'Is not set',
+        'unavailable' => 'Unavailable',
         'enabledEmoji' => '✅',
         'disabledEmoji' => '🛑',
         'xEmoji' => '❌',

@@ -59,7 +59,7 @@ abstract class StateAnswer implements StateAnswerInterface
         if (!$method) {
             wHook()->api()->sendMessage([
                 'chat_id' => wHook()->peerId(),
-                'text' => "Unavailable",
+                'text' => __('tbe::general.status.unavailable'),
                 'reply_markup' => wHook()->user()->getKeyboard()
             ]);
             return;
