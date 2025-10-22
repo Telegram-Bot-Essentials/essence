@@ -2,14 +2,15 @@
 
 namespace TelegramBotEssentials\Essence\Telegram\CallbackQueries\Member;
 
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Support\Carbon;
+use Telegram\Bot\Exceptions\TelegramSDKException;
 use TelegramBotEssentials\Essence\Enums\Roles;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
 use TelegramBotEssentials\Essence\Exceptions\TbeLogicException;
 use TelegramBotEssentials\Essence\Models\InlineConfirmation;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQuery;
 use TelegramBotEssentials\Essence\Telegram\Features\Member\InlineConfirmationFeature;
-use Illuminate\Contracts\Container\BindingResolutionException;
-use Telegram\Bot\Exceptions\TelegramSDKException;
 
 class InlineConfirmationQuery extends CallbackQuery
 {
@@ -23,8 +24,11 @@ class InlineConfirmationQuery extends CallbackQuery
      */
     public function accept(InlineConfirmation $inlineConfirmation): void
     {
-        callbackQueryBus()->routeQuery($inlineConfirmation->callback_data);
+        $done = callbackQueryBus()->routeQuery($inlineConfirmation->callback_data);
+        if (!$done) return;
+
         $inlineConfirmation->delete();
+        InlineConfirmation::where('updated_at', '<', Carbon::now()->subHours(6))->delete();
     }
 
     /**
@@ -34,8 +38,11 @@ class InlineConfirmationQuery extends CallbackQuery
      */
     public function decline(InlineConfirmation $inlineConfirmation): void
     {
-        callbackQueryBus()->routeQuery($inlineConfirmation->back_callback_data);
+        $done = callbackQueryBus()->routeQuery($inlineConfirmation->back_callback_data);
+        if (!$done) return;
+
         $inlineConfirmation->delete();
+        InlineConfirmation::where('updated_at', '<', Carbon::now()->subHours(6))->delete();
     }
 
     /**

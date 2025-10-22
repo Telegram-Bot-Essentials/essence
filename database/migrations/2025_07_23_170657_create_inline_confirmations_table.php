@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('confirmation_text')->nullable();
             $table->string('callback_data', 64);
             $table->string('back_callback_data', 64);
+            $table->timestamps();
         });
     }
 
