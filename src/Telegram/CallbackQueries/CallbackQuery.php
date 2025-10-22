@@ -5,6 +5,8 @@ namespace TelegramBotEssentials\Essence\Telegram\CallbackQueries;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use ReflectionMethod;
+use Telegram\Bot\Exceptions\TelegramSDKException;
+use Throwable;
 
 abstract class CallbackQuery implements CallbackQueryInterface
 {
@@ -41,11 +43,8 @@ abstract class CallbackQuery implements CallbackQueryInterface
         $method = method_exists($this, $camel) ? $camel : (method_exists($this, $command) ? $command : null);
 
         if (!$method) {
-            wHook()->api()->sendMessage([
-                'chat_id' => wHook()->peerId(),
-                'text' => "Unavailable",
-                'reply_markup' => wHook()->user()->getKeyboard()
-            ]);
+            debugMessage("Method {$this->method} is not available in {$this->getType()} callback query");
+            $this->answer('Method is not available');
             return false;
         }
 
@@ -91,9 +90,12 @@ abstract class CallbackQuery implements CallbackQueryInterface
 
     protected function answer(?string $text = null): void
     {
-        wHook()->api()->answerCallbackQuery(array_filter([
-            'callback_query_id' => wHook()->update()->callbackQuery->id,
-            'text' => $text
-        ]));
+        try{
+            wHook()->api()->answerCallbackQuery(array_filter([
+                'callback_query_id' => wHook()->update()->callbackQuery->id,
+                'text' => $text
+            ]));
+        } catch (TelegramSDKException){
+        }
     }
 }
