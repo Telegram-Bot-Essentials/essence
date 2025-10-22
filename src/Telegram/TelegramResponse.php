@@ -123,8 +123,7 @@ class TelegramResponse
                         $messageMeta->action()->associate($this->modelForMessageMeta);
                         $messageMeta->save();
                     }
-                } catch (Exception $e) {
-                    exceptionReport($e);
+                } catch (Exception) {
                     wHook()->api()->answerCallbackQuery([
                         'callback_query_id' => wHook()->update()->callbackQuery->id,
                     ]);
