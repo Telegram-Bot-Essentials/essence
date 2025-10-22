@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace TelegramBotEssentials\Essence\Telegram\CallbackQueries;
 
-use TelegramBotEssentials\Essence\Exceptions\LogicException;
-use TelegramBotEssentials\Essence\Exceptions\TbeLogicException;
-use TelegramBotEssentials\Essence\Traits\CanResolveCallbackQuery;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Exceptions\TelegramSDKException;
+use TelegramBotEssentials\Essence\Exceptions\LogicException;
+use TelegramBotEssentials\Essence\Exceptions\TbeLogicException;
+use TelegramBotEssentials\Essence\Traits\CanResolveCallbackQuery;
 
 /**
  * Class CommandBus.
@@ -66,38 +66,27 @@ class CallbackQueryBus
     }
 
     /**
+     * @param string $callbackQuery
+     * @return bool
      * @throws BindingResolutionException
      * @throws LogicException
      * @throws TbeLogicException
      */
-    public function routeQuery(string $callbackQuery): void
+    public function routeQuery(string $callbackQuery): bool
     {
         $callbackQueryData = decodeCallback($callbackQuery);
 
-        $this->route($callbackQueryData);
+        return $this->route($callbackQueryData);
     }
 
     /**
+     * @param array $callbackQueryData
+     * @return bool
      * @throws BindingResolutionException
      * @throws LogicException
      * @throws TbeLogicException
      */
-    public function processCallbackQueries(): void
-    {
-        $update = wHook()->update();
-
-        if (!$update->isType('callback_query')) return;
-        $callbackQueryData = decodeCallback($update->callbackQuery->data);
-
-        $this->route($callbackQueryData);
-    }
-
-    /**
-     * @throws BindingResolutionException
-     * @throws LogicException
-     * @throws TbeLogicException
-     */
-    private function route(array $callbackQueryData): void
+    private function route(array $callbackQueryData): bool
     {
         $method = $callbackQueryData['method'];
         $type = $callbackQueryData['type'];
@@ -109,14 +98,29 @@ class CallbackQueryBus
         }
 
         $resolvedCallbackQuery = $this->resolveCallbackQuery($key);
-        $this->handler($resolvedCallbackQuery, $method, $callbackQueryData['params']);
+        return $this->handler($resolvedCallbackQuery, $method, $callbackQueryData['params']);
     }
 
-    protected function handler(CallbackQueryInterface $resolvedCallbackQuery, string $method, array $params): void
+    protected function handler(CallbackQueryInterface $resolvedCallbackQuery, string $method, array $params): bool
     {
-        if (!hasAccess($resolvedCallbackQuery->getPerm())) return;
+        if (!hasAccess($resolvedCallbackQuery->getPerm())) return false;
         $resolvedCallbackQuery->setParams($params);
         $resolvedCallbackQuery->setMethod($method);
-        $resolvedCallbackQuery->handle();
+        return $resolvedCallbackQuery->handle() ?? true;
+    }
+
+    /**
+     * @throws BindingResolutionException
+     * @throws LogicException
+     * @throws TbeLogicException
+     */
+    public function processCallbackQueries(): bool
+    {
+        $update = wHook()->update();
+
+        if (!$update->isType('callback_query')) return false;
+        $callbackQueryData = decodeCallback($update->callbackQuery->data);
+
+        return $this->route($callbackQueryData);
     }
 }

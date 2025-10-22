@@ -33,7 +33,7 @@ abstract class CallbackQuery implements CallbackQueryInterface
         $this->params = $params ?? [];
     }
 
-    public function handle(): void
+    public function handle(): ?bool
     {
         $command = strtolower($this->method);
 
@@ -46,7 +46,7 @@ abstract class CallbackQuery implements CallbackQueryInterface
                 'text' => "Unavailable",
                 'reply_markup' => wHook()->user()->getKeyboard()
             ]);
-            return;
+            return false;
         }
 
         $reflection = new ReflectionMethod($this, $method);
@@ -86,6 +86,7 @@ abstract class CallbackQuery implements CallbackQueryInterface
         }
 
         $this->{$method}(...$dependencies);
+        return true;
     }
 
     protected function answer(?string $text = null): void
