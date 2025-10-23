@@ -146,7 +146,7 @@ if (!function_exists('inlineSorter')) {
 }
 
 if (!function_exists('smartInlineKeysSorter')) {
-    function smartInlineKeysSorter(array $array, ?int $step = null, int $limit = 22): array
+    function smartInlineKeysSorter(array $array, ?int $step = null, int $limit = 40): array
     {
         collect($array)->each(function ($data) {
             if (!($data instanceof Button)) {
@@ -155,15 +155,43 @@ if (!function_exists('smartInlineKeysSorter')) {
         });
 
         $charLen = function (string $s): int {
+            if ($s === '') {
+                return 0;
+            }
+
+            $pattern = '/\X/u';
+            if (defined('SYMFONY_GRAPHEME_CLUSTER_RX')) {
+                $pattern = '/' . SYMFONY_GRAPHEME_CLUSTER_RX . '/u';
+            }
+
+            $length = preg_match_all($pattern, $s, $matches);
+            if ($length !== false) {
+                return $length;
+            }
+
             if (function_exists('grapheme_strlen')) {
-                return grapheme_strlen($s);
+                $length = grapheme_strlen($s);
+                if (is_int($length)) {
+                    return $length;
+                }
             }
-            if (preg_match_all('/\X/u', $s, $matches)) {
-                return count($matches[0]);
-            }
+
             if (function_exists('mb_strlen')) {
                 return mb_strlen($s, 'UTF-8');
             }
+
+            if (function_exists('iconv_strlen')) {
+                $length = iconv_strlen($s, 'UTF-8');
+                if ($length !== false) {
+                    return $length;
+                }
+            }
+
+            $split = preg_split('//u', $s, -1, PREG_SPLIT_NO_EMPTY);
+            if ($split !== false) {
+                return count($split);
+            }
+
             return strlen($s);
         };
 
@@ -216,9 +244,9 @@ if (!function_exists('addInlineKeysSmartSorted')) {
      * @param int|null $step
      * @return void
      */
-    function addInlineKeysSmartSorted(Keyboard $keyboard, array $keys, ?int $step = null): void
+    function addInlineKeysSmartSorted(Keyboard $keyboard, array $keys, ?int $step = null, int $limit = 30): void
     {
-        $rows = smartInlineKeysSorter($keys, $step);
+        $rows = smartInlineKeysSorter($keys, $step, $limit);
         foreach ($rows as $row) {
             $keyboard->row($row);
         }
