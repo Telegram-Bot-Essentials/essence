@@ -316,7 +316,7 @@ if (!function_exists('getResourceName')) {
 }
 
 if (!function_exists('exceptionReport')) {
-    function exceptionReport(Exception $e): void
+    function exceptionReport(Throwable $e): void
     {
         try {
             $time = time();
