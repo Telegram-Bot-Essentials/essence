@@ -15,4 +15,5 @@ interface StateAnswerInterface
     public function handle(): void;
     public function messageMeta(): ?MessageMeta;
     function cancel(): void;
+    public function isEnabled(): bool;
 }

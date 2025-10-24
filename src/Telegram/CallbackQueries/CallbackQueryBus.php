@@ -6,7 +6,6 @@ namespace TelegramBotEssentials\Essence\Telegram\CallbackQueries;
 
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Facades\Log;
-use Telegram\Bot\Exceptions\TelegramSDKException;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
 use TelegramBotEssentials\Essence\Exceptions\TbeLogicException;
 use TelegramBotEssentials\Essence\Traits\CanResolveCallbackQuery;
@@ -45,6 +44,7 @@ class CallbackQueryBus
     public function addCallbackQuery(CallbackQueryInterface|string $callbackQuery): void
     {
         $callbackQuery = $this->resolveCallbackQuery($callbackQuery);
+        if (!$callbackQuery->isEnabled()) return;
 
         $this->callbackQueryTypes[$callbackQuery->getType()] = $callbackQuery;
     }

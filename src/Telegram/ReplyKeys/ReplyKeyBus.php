@@ -44,6 +44,7 @@ class ReplyKeyBus
     public function addReplyKey(ReplyKeyInterface|string $replyKey): void
     {
         $replyKey = $this->resolveReplyKey($replyKey);
+        if(!$replyKey->isEnabled()) return;
 
         $this->replyKeys[$replyKey->getText()] = $replyKey;
     }

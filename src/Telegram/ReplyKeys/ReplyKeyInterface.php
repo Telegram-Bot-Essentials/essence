@@ -11,4 +11,6 @@ interface ReplyKeyInterface
     public function getResponse(): string;
 
     public function handle(): void;
+
+    public function isEnabled(): bool;
 }

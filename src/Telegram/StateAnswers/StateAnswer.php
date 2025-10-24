@@ -152,4 +152,9 @@ abstract class StateAnswer implements StateAnswerInterface
 
         return [null, false];
     }
+
+    public function isEnabled(): bool
+    {
+        return true;
+    }
 }

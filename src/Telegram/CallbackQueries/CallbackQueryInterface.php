@@ -9,4 +9,5 @@ interface CallbackQueryInterface
     public function getPerm(): int;
     public function setParams(?array $params): void;
     public function handle(): ?bool;
+    public function isEnabled(): bool;
 }

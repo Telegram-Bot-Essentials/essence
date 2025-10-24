@@ -48,6 +48,7 @@ class StateAnswerBus
     public function addStateAnswer(StateAnswerInterface|string $stateAnswer): void
     {
         $stateAnswer = $this->resolveStateAnswer($stateAnswer);
+        if (!$stateAnswer->isEnabled()) return;
 
         $this->stateAnswerTypes[$stateAnswer->getType()] = $stateAnswer;
     }

@@ -24,4 +24,9 @@ abstract class ReplyKey implements ReplyKeyInterface
     }
 
     abstract public function handle(): void;
+
+    public function isEnabled(): bool
+    {
+        return true;
+    }
 }

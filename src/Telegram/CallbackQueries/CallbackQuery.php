@@ -98,4 +98,9 @@ abstract class CallbackQuery implements CallbackQueryInterface
         } catch (TelegramSDKException){
         }
     }
+
+    public function isEnabled(): bool
+    {
+        return true;
+    }
 }
