@@ -28,12 +28,8 @@ class BotRequest extends FormRequest
             'bot_owner_peer_id' => 'required|integer',
             'activated_until' => 'nullable|date',
             'suspended_at' => 'nullable|date',
-            'currency' => 'nullable|string|max:10',
         ];
 
-        if(currency()->isCurrencySupported($this->input('currency'))){
-            throw new HttpResponseException(apiResponse()->error('Unsupported currency', 403));
-        }
 
         if($this->isMethod('PUT')){
             $rules['bot_owner_peer_id'] = 'nullable|integer';
