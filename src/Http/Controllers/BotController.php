@@ -2,19 +2,20 @@
 
 namespace TelegramBotEssentials\Essence\Http\Controllers;
 
-use TelegramBotEssentials\Essence\Http\Requests\BotRequest;
-use TelegramBotEssentials\Essence\Http\Resources\BotResource;
-use TelegramBotEssentials\Essence\Models\Bot;
-use TelegramBotEssentials\Essence\Models\TelegramUser;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Hash;
 use Log;
 use Ramsey\Uuid\Uuid;
 use Random\RandomException;
 use Telegram\Bot\Api;
 use Telegram\Bot\Exceptions\TelegramSDKException;
+use TelegramBotEssentials\Essence\Http\Requests\BotRequest;
+use TelegramBotEssentials\Essence\Http\Resources\BotResource;
+use TelegramBotEssentials\Essence\Models\Bot;
+use TelegramBotEssentials\Essence\Models\TelegramUser;
 
 class BotController extends Controller
 {
@@ -36,8 +37,8 @@ class BotController extends Controller
     public function store(BotRequest $request)
     {
         try {
-            $data = $this->initializeData($request->validated());
-            $this->setWebhook($data);
+            [$data, $secretTokenPlain] = $this->initializeData($request->validated());
+            $this->setWebhook($data['bot_token'], $data['unique_id'], $secretTokenPlain);
 
             TelegramUser::firstOrCreate(['peer_id' => $data['bot_owner_peer_id']]);
             $bot = Bot::create($data);
@@ -54,29 +55,43 @@ class BotController extends Controller
     }
 
     /**
+     * @return array{0: array<string, mixed>, 1: string}
      * @throws RandomException
      */
-    function initializeData(array $data): array
+    private function initializeData(array $data): array
     {
-        $data['secret_token'] = rtrim(strtr(base64_encode(random_bytes(96)), '+/', '-_'), '=');
+        $secretToken = $this->generateSecretToken();
+        $data['secret_token'] = Hash::make($secretToken);
         $data['unique_id'] = Uuid::uuid4()->toString();
-        if (key_exists('activated_until', $data))
-            $data['activated_until'] = $data['activated_until'] ? Carbon::parse($data['activated_until'])->format('Y-m-d H:i:s') : null;
 
-        return $data;
+        if (key_exists('activated_until', $data)) {
+            $data['activated_until'] = $data['activated_until']
+                ? Carbon::parse($data['activated_until'])->format('Y-m-d H:i:s')
+                : null;
+        }
+
+        return [$data, $secretToken];
     }
 
     /**
      * @throws TelegramSDKException
      */
-    function setWebhook(array $data): void
+    private function setWebhook(string $botToken, string $uniqueId, string $secretToken): void
     {
-        $telegram = new Api($data['bot_token']);
+        $telegram = new Api($botToken);
         $telegram->setWebhook([
-            'url' => config('app.url') . "/api/{$data['unique_id']}/telegram/bot/webhook",
+            'url' => config('app.url') . "/api/{$uniqueId}/telegram/bot/webhook",
             'drop_pending_updates' => true,
-            'secret_token' => $data['secret_token'],
+            'secret_token' => $secretToken,
         ]);
+    }
+
+    /**
+     * @throws RandomException
+     */
+    private function generateSecretToken(): string
+    {
+        return rtrim(strtr(base64_encode(random_bytes(96)), '+/', '-_'), '=');
     }
 
     /**
@@ -96,17 +111,31 @@ class BotController extends Controller
     {
         $bot = Bot::where('unique_id', $id)->firstOrFail();
         $data = $request->validated();
-        if (key_exists('activated_until', $data))
-            $data['activated_until'] = $data['activated_until'] ? Carbon::parse($data['activated_until'])->format('Y-m-d H:i:s') : null;
-        $bot->update($data);
-        if ($request->has('bot_token')) {
+        if (key_exists('activated_until', $data)) {
+            $data['activated_until'] = $data['activated_until']
+                ? Carbon::parse($data['activated_until'])->format('Y-m-d H:i:s')
+                : null;
+        }
+
+        $shouldRefreshSecret = $request->has('bot_token');
+        $secretTokenPlain = null;
+
+        if ($shouldRefreshSecret) {
             try {
-                $telegram = new Api($data['bot_token']);
-                $telegram->setWebhook([
-                    'url' => config('app.url') . "/api/{$bot->unique_id}/telegram/bot/webhook",
-                    'drop_pending_updates' => true,
-                    'secret_token' => $bot->secret_token,
-                ]);
+                $secretTokenPlain = $this->generateSecretToken();
+            } catch (RandomException $e) {
+                Log::error($e->getMessage(), $e->getTrace());
+                return apiResponse()->error('failed to refresh bot secret', 500);
+            }
+
+            $data['secret_token'] = Hash::make($secretTokenPlain);
+        }
+
+        $bot->update($data);
+
+        if ($shouldRefreshSecret && $secretTokenPlain) {
+            try {
+                $this->setWebhook($bot->bot_token, $bot->unique_id, $secretTokenPlain);
             } catch (TelegramSDKException $e) {
                 Log::error($e->getMessage());
             }

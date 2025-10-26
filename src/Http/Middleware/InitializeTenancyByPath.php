@@ -21,7 +21,8 @@ class InitializeTenancyByPath
     public function handle(Request $request, Closure $next): Response
     {
         $botUniqueId = $request->route()->parameter('bot');
-        $bot = Bot::where('unique_id', $botUniqueId)->firstOrFail();
+        $bot = Bot::where('unique_id', $botUniqueId)->first();
+        if(!$bot) return apiResponse()->error('Invalid Bot Unique ID', 204);
         tenancy()->initialize($bot);
         return $next($request);
     }
