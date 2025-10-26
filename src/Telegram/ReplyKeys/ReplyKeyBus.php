@@ -44,7 +44,6 @@ class ReplyKeyBus
     public function addReplyKey(ReplyKeyInterface|string $replyKey): void
     {
         $replyKey = $this->resolveReplyKey($replyKey);
-        if(!$replyKey->isEnabled()) return;
 
         $this->replyKeys[$replyKey->getText()] = $replyKey;
     }
@@ -97,6 +96,7 @@ class ReplyKeyBus
      */
     protected function handler(ReplyKeyInterface $resolvedKey): void
     {
+        if(!$resolvedKey->isEnabled()) return;
         if (!hasAccess($resolvedKey->getPerm())) return;
         $currentState = wHook()->user()->state;
         $this->cancelOldProcess();

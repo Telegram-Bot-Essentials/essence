@@ -44,7 +44,6 @@ class CallbackQueryBus
     public function addCallbackQuery(CallbackQueryInterface|string $callbackQuery): void
     {
         $callbackQuery = $this->resolveCallbackQuery($callbackQuery);
-        if (!$callbackQuery->isEnabled()) return;
 
         $this->callbackQueryTypes[$callbackQuery->getType()] = $callbackQuery;
     }
@@ -103,6 +102,7 @@ class CallbackQueryBus
 
     protected function handler(CallbackQueryInterface $resolvedCallbackQuery, string $method, array $params): bool
     {
+        if (!$resolvedCallbackQuery->isEnabled()) return false;
         if (!hasAccess($resolvedCallbackQuery->getPerm())) return false;
         $resolvedCallbackQuery->setParams($params);
         $resolvedCallbackQuery->setMethod($method);

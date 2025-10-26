@@ -48,7 +48,6 @@ class StateAnswerBus
     public function addStateAnswer(StateAnswerInterface|string $stateAnswer): void
     {
         $stateAnswer = $this->resolveStateAnswer($stateAnswer);
-        if (!$stateAnswer->isEnabled()) return;
 
         $this->stateAnswerTypes[$stateAnswer->getType()] = $stateAnswer;
     }
@@ -127,6 +126,7 @@ class StateAnswerBus
      */
     protected function handler(StateAnswerInterface $resolvedStateAnswer, string $method, array $params): void
     {
+        if (!$resolvedStateAnswer->isEnabled()) return;
         if (!hasAccess($resolvedStateAnswer->getPerm())) return;
         $resolvedStateAnswer->setParams($params);
         $resolvedStateAnswer->setMethod($method);
