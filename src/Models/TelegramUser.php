@@ -31,6 +31,12 @@ class TelegramUser extends Model
         'password',
     ];
 
+    protected $casts = [
+        'peer_id' => 'integer',
+        'last_interaction' => 'datetime',
+        'deleted_at' => 'datetime',
+    ];
+
     public function getFullNameAttribute(): string
     {
         return trim("{$this->first_name} {$this->last_name}");

@@ -35,6 +35,8 @@ class Bot extends BaseTenant
         'suspended' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
+        'data' => 'array',
     ];
 
     public function getSuspendedAttribute(): bool

@@ -29,6 +29,7 @@ class BotUser extends Model
 
     protected $casts = [
         'suspended_at' => 'datetime',
+        'last_interaction' => 'datetime',
     ];
 
     public static function newFactory(): BotUserFactory
