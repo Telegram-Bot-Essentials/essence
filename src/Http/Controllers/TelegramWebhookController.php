@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Laravel\Telescope\Telescope;
 use Telegram\Bot\Commands\Command;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
@@ -19,7 +20,11 @@ class TelegramWebhookController extends Controller
     public function __invoke(Request $request)
     {
         $request->headers->set('Accept', 'application/json');
-//        App::setLocale(wHook()->bot()->settings->language);
+
+        Telescope::tag(function () {
+            if (!wHook()->check()) return [];
+            return ['BOT:' . wHook()->bot()->id, 'USER:' . wHook()->user()->id];
+        });
 
         try {
             dependsOn(!wHook()->bot()->suspended, ('tbe::general.alerts.botIsOff'));
@@ -27,7 +32,6 @@ class TelegramWebhookController extends Controller
                 is_null(wHook()->bot()->activated_until) || wHook()->bot()->activated_until->isFuture(),
                 __('tbe::general.alerts.botIsOff'
                 ));
-//            if (!hasAccess()) dependsOn(wHook()->bot()->settings->bot_status, __('tbe::general.alerts.botIsOff'));
             $this->initializeOptions();
             $this->processUpdate();
         } catch (Exception $e) {
