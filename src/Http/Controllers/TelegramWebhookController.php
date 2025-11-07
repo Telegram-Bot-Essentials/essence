@@ -6,12 +6,14 @@ use Exception;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Log;
 use Laravel\Telescope\Telescope;
 use Telegram\Bot\Commands\Command;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
 use TelegramBotEssentials\Essence\Exceptions\TbeLogicException;
 use TelegramBotEssentials\Essence\Traits\CanCancelOldProcess;
+use Throwable;
 
 class TelegramWebhookController extends Controller
 {
@@ -21,16 +23,20 @@ class TelegramWebhookController extends Controller
     {
         $request->headers->set('Accept', 'application/json');
 
-        Telescope::tag(function () {
-            if (!wHook()->check()) return [];
-            $tags = [
-                'bot:' . wHook()->bot()->id,
-                'user:' . wHook()->user()->id,
-            ];
+        try {
+            Telescope::tag(function () {
+                if (!wHook()->check()) return [];
+                $tags = [
+                    'bot:' . wHook()->bot()->id,
+                    'user:' . wHook()->user()->id,
+                ];
 
-            if (wHook()->user()->telegramUser->username) $tags[] = 'user:' . mb_strtolower(wHook()->user()->telegramUser->username);
-            return $tags;
-        });
+                if (wHook()->user()->telegramUser->username) $tags[] = 'user:' . mb_strtolower(wHook()->user()->telegramUser->username);
+                return $tags;
+            });
+        } catch (Throwable $e) {
+            Log::error('failed to tag telescope request: ' . $e->getMessage());
+        }
 
         try {
             dependsOn(!wHook()->bot()->suspended, ('tbe::general.alerts.botIsOff'));
