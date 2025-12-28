@@ -40,7 +40,7 @@ class TelegramResponse
             'chat_id' => $chatId,
             'message_id' => $messageId,
             'text' => $this->text,
-            'reply_markup' => $this->replyMarkup,
+            'reply_markup' => $this->replyMarkup?->isEmpty() ? null : $this->replyMarkup,
             'parse_mode' => $this->parseMode,
         ]);
     }
@@ -86,7 +86,7 @@ class TelegramResponse
             array_filter([
                 'chat_id' => $chatId ?? wHook()->user()->telegramUser->peer_id,
                 'text' => $this->text,
-                'reply_markup' => $this->replyMarkup,
+                'reply_markup' => $this->replyMarkup?->isEmpty() ? null : $this->replyMarkup,
                 'parse_mode' => $this->parseMode,
             ])
         );
@@ -113,7 +113,7 @@ class TelegramResponse
                             'chat_id' => $chatId ?? wHook()->update()->callbackQuery->message->chat->id,
                             'message_id' => $messageId ?? wHook()->update()->callbackQuery->message->messageId,
                             'text' => $this->text,
-                            'reply_markup' => $this->replyMarkup,
+                            'reply_markup' => $this->replyMarkup?->isEmpty() ? null : $this->replyMarkup,
                             'parse_mode' => $this->parseMode,
                         ])
                     );
@@ -149,7 +149,7 @@ class TelegramResponse
     {
         return array_filter([
             'text' => $this->text,
-            'replyMarkup' => $this->replyMarkup,
+            'replyMarkup' => $this->replyMarkup?->isEmpty() ? null : $this->replyMarkup,
             'answer' => $this->answer,
             'parseMode' => $this->parseMode,
         ]);
