@@ -23,13 +23,7 @@ class TelegramWebhookController extends Controller
 
         Telescope::tag(function () {
             if (!wHook()->check()) return [];
-            $tags = [
-                'BOT:' . wHook()->bot()->id,
-                'USER:' . wHook()->user()->id,
-            ];
-
-            if (wHook()->user()->telegramUser->username) $tags[] = 'USER:' . wHook()->user()->telegramUser->username;
-            return $tags;
+            return ['BOT:' . wHook()->bot()->id, 'USER:' . wHook()->user()->id];
         });
 
         try {
