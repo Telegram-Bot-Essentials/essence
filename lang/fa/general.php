@@ -7,8 +7,8 @@ return [
     ],
 
     'status' => [
-        'enabled' => 'فعال شد',
-        'disabled' => 'غیرفعال شد',
+        'enabled' => 'فعال',
+        'disabled' => 'غیرفعال',
         'notSet' => 'تنظیم نشده است',
         'unavailable' => 'در دسترس نیست',
         'enabledEmoji' => '✅',
