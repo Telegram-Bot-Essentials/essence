@@ -30,6 +30,7 @@ class InlineConfirmationFeature
         return (new TelegramResponse(
             text: $text,
             replyMarkup: $replyMarkup,
+            parseMode: 'HTML',
         ));
     }
 }
