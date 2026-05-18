@@ -9,7 +9,7 @@
         "ramsey/uuid": "^4.7",
         "stancl/tenancy": "^3.9",
         "laravel/telescope": "*",
-        "elyar/personal-laravel-helpers": "^0.0.2"
+        "elyar/personal-laravel-helpers": "*"
     },
     "license": "GPL-3.0",
     "autoload": {
