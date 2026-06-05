@@ -6,6 +6,7 @@ use TelegramBotEssentials\Essence\Models\MessageMeta;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Telegram\Bot\Exceptions\TelegramSDKException;
+use Telegram\Bot\FileUpload\InputFile;
 use Telegram\Bot\Keyboard\Keyboard;
 use Telegram\Bot\Objects\Message;
 
@@ -16,10 +17,11 @@ class TelegramResponse
     private ?string $softAnswer = null;
 
     public function __construct(
-        public ?string   $text = null,
-        public ?Keyboard $replyMarkup = null,
-        public ?string   $answer = null,
-        public ?string   $parseMode = null,
+        public ?string            $text = null,
+        public ?Keyboard          $replyMarkup = null,
+        public ?string            $answer = null,
+        public ?string            $parseMode = null,
+        public string|InputFile|null $photo = null,
     )
     {
     }
@@ -31,11 +33,21 @@ class TelegramResponse
             replyMarkup: $data['reply_markup'] ?? null,
             answer: $data['answer'] ?? null,
             parseMode: $data['parse_mode'] ?? null,
+            photo: $data['photo'] ?? null,
         );
     }
 
     public function toEditMessageArray(int|string $chatId, int $messageId): array
     {
+        if ($this->photo) {
+            return array_filter([
+                'chat_id' => $chatId,
+                'message_id' => $messageId,
+                'media' => $this->buildInputMedia(),
+                'reply_markup' => $this->replyMarkup?->isEmpty() ? null : $this->replyMarkup,
+            ]);
+        }
+
         return array_filter([
             'chat_id' => $chatId,
             'message_id' => $messageId,
@@ -64,6 +76,12 @@ class TelegramResponse
         return $this;
     }
 
+    public function photo(string|InputFile $photo): self
+    {
+        $this->photo = $photo;
+        return $this;
+    }
+
     public function messageMetaModel(Model $model, ?string $tag = null): self
     {
         $this->modelForMessageMeta = $model;
@@ -82,20 +100,24 @@ class TelegramResponse
      */
     public function send(string|int|null $chatId = null): Message
     {
-        $message = wHook()->api()->sendMessage(
-            array_filter([
-                'chat_id' => $chatId ?? wHook()->user()->telegramUser->peer_id,
-                'text' => $this->text,
-                'reply_markup' => $this->replyMarkup?->isEmpty() ? null : $this->replyMarkup,
-                'parse_mode' => $this->parseMode,
-            ])
-        );
+        $params = array_filter([
+            'chat_id' => $chatId ?? wHook()->user()->telegramUser->peer_id,
+            'reply_markup' => $this->replyMarkup?->isEmpty() ? null : $this->replyMarkup,
+            'parse_mode' => $this->parseMode,
+        ]);
 
-        if ($this->modelForMessageMeta) {
-            $messageMeta = MessageMeta::makeWithMessage($message, $this->messageMetaTag);
-            $messageMeta->action()->associate($this->modelForMessageMeta);
-            $messageMeta->save();
+        if ($this->photo) {
+            $message = wHook()->api()->sendPhoto(array_merge($params, array_filter([
+                'photo' => $this->photo,
+                'caption' => $this->text,
+            ])));
+        } else {
+            $message = wHook()->api()->sendMessage(array_merge($params, array_filter([
+                'text' => $this->text,
+            ])));
         }
+
+        $this->saveMessageMeta($message);
 
         return $message;
     }
@@ -106,7 +128,20 @@ class TelegramResponse
     public function update(string|int|null $chatId = null, string|int|null $messageId = null): void
     {
         try {
-            if ($this->text) {
+            if ($this->photo) {
+                try {
+                    $message = $this->editMessageMedia(
+                        $chatId ?? wHook()->update()->callbackQuery->message->chat->id,
+                        $messageId ?? wHook()->update()->callbackQuery->message->messageId,
+                    );
+
+                    $this->saveMessageMeta($message);
+                } catch (Exception) {
+                    wHook()->api()->answerCallbackQuery([
+                        'callback_query_id' => wHook()->update()->callbackQuery->id,
+                    ]);
+                }
+            } elseif ($this->text) {
                 try {
                     $message = wHook()->api()->editMessageText(
                         array_filter([
@@ -118,15 +153,25 @@ class TelegramResponse
                         ])
                     );
 
-                    if ($this->modelForMessageMeta) {
-                        $messageMeta = MessageMeta::makeWithMessage($message, $this->messageMetaTag);
-                        $messageMeta->action()->associate($this->modelForMessageMeta);
-                        $messageMeta->save();
-                    }
+                    $this->saveMessageMeta($message);
                 } catch (Exception) {
-                    wHook()->api()->answerCallbackQuery([
-                        'callback_query_id' => wHook()->update()->callbackQuery->id,
-                    ]);
+                    try {
+                        $message = wHook()->api()->editMessageCaption(
+                            array_filter([
+                                'chat_id' => $chatId ?? wHook()->update()->callbackQuery->message->chat->id,
+                                'message_id' => $messageId ?? wHook()->update()->callbackQuery->message->messageId,
+                                'caption' => $this->text,
+                                'reply_markup' => $this->replyMarkup?->isEmpty() ? null : $this->replyMarkup,
+                                'parse_mode' => $this->parseMode,
+                            ])
+                        );
+
+                        $this->saveMessageMeta($message);
+                    } catch (Exception) {
+                        wHook()->api()->answerCallbackQuery([
+                            'callback_query_id' => wHook()->update()->callbackQuery->id,
+                        ]);
+                    }
                 }
             }
         } catch (Exception $e) {
@@ -152,6 +197,84 @@ class TelegramResponse
             'replyMarkup' => $this->replyMarkup?->isEmpty() ? null : $this->replyMarkup,
             'answer' => $this->answer,
             'parseMode' => $this->parseMode,
+            'photo' => $this->photo,
         ]);
+    }
+
+    private function buildInputMedia(): string
+    {
+        $attachName = 'photo';
+
+        return json_encode(array_filter([
+            'type' => 'photo',
+            'media' => $this->photo instanceof InputFile
+                ? "attach://{$attachName}"
+                : $this->photo,
+            'caption' => $this->text,
+            'parse_mode' => $this->parseMode,
+        ]), JSON_THROW_ON_ERROR);
+    }
+
+    /**
+     * @throws TelegramSDKException
+     */
+    private function editMessageMedia(int|string $chatId, int $messageId): Message
+    {
+        $attachName = 'photo';
+
+        $params = array_filter([
+            'chat_id' => $chatId,
+            'message_id' => $messageId,
+            'media' => $this->buildInputMedia(),
+            'reply_markup' => $this->replyMarkup?->isEmpty() ? null : $this->replyMarkup,
+        ]);
+
+        if (! $this->photo instanceof InputFile) {
+            return wHook()->api()->editMessageMedia($params);
+        }
+
+        $params[$attachName] = $this->photo;
+
+        $response = wHook()->api()->post(
+            'editMessageMedia',
+            $this->toMultipartParams($params),
+            true,
+        );
+
+        return new Message($response->getDecodedBody());
+    }
+
+    private function toMultipartParams(array $params): array
+    {
+        return collect($params)
+            ->reject(static fn ($value): bool => $value === null)
+            ->map(function ($contents, $name) {
+                if ($contents instanceof InputFile) {
+                    return [
+                        'name' => $name,
+                        'contents' => $contents->getContents(),
+                        'filename' => $contents->getFilename(),
+                    ];
+                }
+
+                if ($name === 'reply_markup') {
+                    return ['name' => $name, 'contents' => (string) $contents];
+                }
+
+                return ['name' => $name, 'contents' => $contents];
+            })
+            ->values()
+            ->all();
+    }
+
+    private function saveMessageMeta(Message $message): void
+    {
+        if (!$this->modelForMessageMeta) {
+            return;
+        }
+
+        $messageMeta = MessageMeta::makeWithMessage($message, $this->messageMetaTag);
+        $messageMeta->action()->associate($this->modelForMessageMeta);
+        $messageMeta->save();
     }
 }
