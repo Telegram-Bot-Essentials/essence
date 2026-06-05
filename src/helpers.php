@@ -360,6 +360,22 @@ if (!function_exists('debugMessage')) {
     }
 }
 
+if (!function_exists('mixedDebugMessage')) {
+    function mixedDebugMessage(mixed $data): void
+    {
+        try {
+            $text = json_encode($data, JSON_PRETTY_PRINT);
+            Log::debug($text);
+            wHook()->api()->sendMessage([
+                'chat_id' => config('tbe-essence.bug_report.telegram_chat_id'),
+                'text' => $text,
+            ]);
+        } catch (Exception $e) {
+            Log::error('Failed to send debug message due: ' . $e->getMessage());
+        }
+    }
+}
+
 if (!function_exists('exceptionHandler')) {
     function exceptionHandler(): ExceptionHandler
     {
