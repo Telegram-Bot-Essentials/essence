@@ -16,7 +16,6 @@ use Illuminate\Routing\Controller;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Log;
 use Stancl\Tenancy\Exceptions\TenantCouldNotBeIdentifiedById;
-use Telegram\Bot\Api;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\Objects\Update;
 use TelegramBotEssentials\Billing\Services\CurrencyFather;
@@ -91,7 +90,7 @@ class GatewayZirgozarController extends Controller
 
         if ($invoice->status == 'paid') {
             try {
-                $api = new Api($invoice->bot->bot_token);
+                $api = telegramApi($invoice->bot->bot_token);
                 $me = $api->getMe();
                 $username = $me->username;
             } catch (TelegramSDKException $e) {
@@ -129,7 +128,7 @@ class GatewayZirgozarController extends Controller
         }
 
         try {
-            $api = new Api($invoice->bot->bot_token);
+            $api = telegramApi($invoice->bot->bot_token);
             $me = $api->getMe();
             $username = $me->username;
         } catch (TelegramSDKException $e) {
@@ -154,7 +153,7 @@ class GatewayZirgozarController extends Controller
     {
         tenancy()->initialize($invoice->bot);
         wHook()->setBot($invoice->bot);
-        wHook()->setApi(new Api($invoice->bot->bot_token));
+        wHook()->setApi(telegramApi($invoice->bot->bot_token));
         wHook()->setUser($invoice->botUser);
         wHook()->setUpdate(Update::make(request()->all()));
     }

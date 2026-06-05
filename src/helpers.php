@@ -2,7 +2,9 @@
 
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
+use Telegram\Bot\Api;
 use Telegram\Bot\FileUpload\InputFile;
+use TelegramBotEssentials\Essence\Telegram\HttpClients\LaravelHttpClient;
 use Telegram\Bot\Keyboard\Button;
 use Telegram\Bot\Keyboard\Keyboard;
 use TelegramBotEssentials\Billing\Services\CurrencyFather;
@@ -25,6 +27,17 @@ if (!function_exists('wHook')) {
     function wHook(): Webhook
     {
         return app(Webhook::class);
+    }
+}
+
+if (!function_exists('telegramApi')) {
+    function telegramApi(string $token, ?string $baseBotUrl = null): Api
+    {
+        return new Api(
+            token: $token,
+            httpClientHandler: app(LaravelHttpClient::class),
+            baseBotUrl: $baseBotUrl ?? config('tbe-essence.base_bot_url'),
+        );
     }
 }
 

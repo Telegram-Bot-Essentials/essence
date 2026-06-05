@@ -6,7 +6,6 @@ use TelegramBotEssentials\Essence\Models\Bot;
 use TelegramBotEssentials\Essence\Traits\CanResolveBotCommand;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
-use Telegram\Bot\Api;
 
 class SetWebhook extends Command
 {
@@ -50,10 +49,7 @@ class SetWebhook extends Command
             return;
         }
 
-        $telegram = new Api(
-            token: $bot->bot_token,
-            baseBotUrl: config('tbe-essence.base_bot_url')
-        );
+        $telegram = telegramApi($bot->bot_token);
 
         $secretToken = rtrim(strtr(base64_encode(random_bytes(96)), '+/', '-_'), '=');
 

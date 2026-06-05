@@ -5,7 +5,6 @@ namespace TelegramBotEssentials\Essence\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Stancl\Tenancy\Exceptions\TenantCouldNotBeIdentifiedById;
-use Telegram\Bot\Api;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\Objects\Update;
 use TelegramBotEssentials\Billing\Services\CurrencyFather;
@@ -42,7 +41,7 @@ class GatewayZarinpalController extends Controller
     {
         tenancy()->initialize($invoice->bot);
         wHook()->setBot($invoice->bot);
-        wHook()->setApi(new Api($invoice->bot->bot_token));
+        wHook()->setApi(telegramApi($invoice->bot->bot_token));
         wHook()->setUser($invoice->botUser);
         wHook()->setUpdate(Update::make(request()->all()));
     }

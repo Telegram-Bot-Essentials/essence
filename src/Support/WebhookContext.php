@@ -126,6 +126,6 @@ class WebhookContext
     {
         $token = $this->apiToken();
 
-        return $token ? new Api($token) : null;
+        return $token ? telegramApi($token) : null;
     }
 }

@@ -178,7 +178,7 @@ class Webhook
             if (!$token) {
                 return false;
             }
-            self::setApi(new Api($token));
+            self::setApi(telegramApi($token));
         }
 
         $updatePayload = $snapshot->updatePayload;

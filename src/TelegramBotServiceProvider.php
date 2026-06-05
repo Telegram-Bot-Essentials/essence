@@ -20,6 +20,7 @@ use TelegramBotEssentials\Essence\Support\Webhook;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQueryBus;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Member\CancelProcessKey;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKeyBus;
+use TelegramBotEssentials\Essence\Telegram\HttpClients\LaravelHttpClient;
 use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswerBus;
 
 class TelegramBotServiceProvider extends ServiceProvider
@@ -28,6 +29,8 @@ class TelegramBotServiceProvider extends ServiceProvider
     {
         $this->app->register(TenancyServiceProvider::class);
         $this->app->register(\Stancl\Tenancy\TenancyServiceProvider::class);
+
+        $this->app->singleton(LaravelHttpClient::class);
 
         $this->mergeConfigFrom(__DIR__ . '/../config/tbe-essence.php', 'tbe-essence');
         $this->mergeConfigFrom(__DIR__ . '/../config/tenancy.php', 'tenancy');
@@ -56,6 +59,8 @@ class TelegramBotServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        config(['telegram.http_client_handler' => $this->app->make(LaravelHttpClient::class)]);
+
         $this->loadConsoleRoutes();
 
         $this->registerCommands();

@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Hash;
 use Log;
 use Ramsey\Uuid\Uuid;
 use Random\RandomException;
-use Telegram\Bot\Api;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use TelegramBotEssentials\Essence\Http\Requests\BotRequest;
 use TelegramBotEssentials\Essence\Http\Resources\BotResource;
@@ -78,7 +77,7 @@ class BotController extends Controller
      */
     private function setWebhook(string $botToken, string $uniqueId, string $secretToken): void
     {
-        $telegram = new Api($botToken);
+        $telegram = telegramApi($botToken);
         $telegram->setWebhook([
             'url' => config('app.url') . "/api/{$uniqueId}/telegram/bot/webhook",
             'drop_pending_updates' => true,

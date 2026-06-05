@@ -13,7 +13,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
-use Telegram\Bot\Api;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\Objects\User;
 
@@ -40,10 +39,7 @@ class TelegramBotAuthentication
             return apiResponse()->error('Unauthorized', 204);
 
         try {
-            $api = new Api(
-                token: $bot->bot_token,
-                baseBotUrl: config('tbe-essence.base_bot_url')
-            );
+            $api = telegramApi($bot->bot_token);
             wHook()->setApi($api);
             $update = wHook()->api()->getWebhookUpdate(request: new ServerRequest(
                 method: 'POST',
