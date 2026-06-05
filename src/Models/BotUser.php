@@ -103,6 +103,7 @@ class BotUser extends Model
             foreach ($keys as $key) {
                 $resolvedKey = $this->resolveReplyKey($key);
                 if (!hasAccess($resolvedKey->getPerm())) continue;
+                if (!$resolvedKey->isEnabled()) continue;
                 if (in_array($resolvedKey->getText(), $addedKeys)) continue;
                 $addedKeys[] = $resolvedKey->getText();
                 $processedRow[] = $resolvedKey->getText();
