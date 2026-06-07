@@ -4,6 +4,8 @@ namespace TelegramBotEssentials\Essence;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Telegram\Bot\Api;
+use Telegram\Bot\BotsManager;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 use Stancl\Tenancy\Resolvers\PathTenantResolver;
 use TelegramBotEssentials\Essence\Console\Commands\BotManagementTokenCommand;
@@ -36,6 +38,7 @@ class TelegramBotServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/tenancy.php', 'tenancy');
         $this->mergeConfigFrom(__DIR__ . '/../config/telegram.php', 'telegram');
 
+        $this->registerBotsManager();
         $this->initializeSingletons();
     }
 
@@ -57,10 +60,25 @@ class TelegramBotServiceProvider extends ServiceProvider
 
     }
 
+    private function registerBotsManager(): void
+    {
+        $this->app->singleton(BotsManager::class, function ($app) {
+            $config = $app['config']->get('telegram');
+            $handler = $config['http_client_handler'] ?? null;
+
+            if (is_string($handler) && class_exists($handler)) {
+                $config['http_client_handler'] = $app->make($handler);
+            }
+
+            return (new BotsManager($config))->setContainer($app);
+        });
+        $this->app->alias(BotsManager::class, 'telegram');
+        $this->app->bind(Api::class, fn ($app) => $app[BotsManager::class]->bot());
+        $this->app->alias(Api::class, 'telegram.bot');
+    }
+
     public function boot(): void
     {
-        config(['telegram.http_client_handler' => $this->app->make(LaravelHttpClient::class)]);
-
         $this->loadConsoleRoutes();
 
         $this->registerCommands();

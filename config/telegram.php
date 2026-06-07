@@ -1,6 +1,7 @@
 <?php
 
 use Telegram\Bot\Commands\HelpCommand;
+use TelegramBotEssentials\Essence\Telegram\HttpClients\LaravelHttpClient;
 
 return [
     /*
@@ -86,7 +87,7 @@ return [
     | Default: GuzzlePHP
     |
     */
-    'http_client_handler' => null,
+    'http_client_handler' => LaravelHttpClient::class,
 
     /*
     |--------------------------------------------------------------------------
