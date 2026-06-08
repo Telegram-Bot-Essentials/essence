@@ -20,7 +20,7 @@ use Throwable;
 
 class ExceptionHandler
 {
-    public function handle(Exception $e): void
+    public function handle(Throwable $e): void
     {
         try {
             try {
