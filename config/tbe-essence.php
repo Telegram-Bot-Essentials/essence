@@ -34,4 +34,8 @@ return [
     'bug_report' => [
         'telegram_chat_id' => env('BUG_REPORT_TELEGRAM_CHAT_ID'),
     ],
+
+    'developer' => [
+        'peer_id' => env('DEVELOPER_PEER_ID'),
+    ]
 ];

