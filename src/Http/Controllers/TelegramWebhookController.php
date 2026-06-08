@@ -11,6 +11,7 @@ use Telegram\Bot\Exceptions\TelegramSDKException;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
 use TelegramBotEssentials\Essence\Exceptions\TbeLogicException;
 use TelegramBotEssentials\Essence\Traits\CanCancelOldProcess;
+use Throwable;
 
 class TelegramWebhookController extends Controller
 {
@@ -30,7 +31,7 @@ class TelegramWebhookController extends Controller
 //            if (!hasAccess()) dependsOn(wHook()->bot()->settings->bot_status, __('tbe::general.alerts.botIsOff'));
             $this->initializeOptions();
             $this->processUpdate();
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             exceptionHandler()->handle($e);
         }
     }
