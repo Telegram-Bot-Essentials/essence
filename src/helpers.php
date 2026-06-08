@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Api;
 use Telegram\Bot\FileUpload\InputFile;
-use TelegramBotEssentials\Essence\Telegram\HttpClients\LaravelHttpClient;
 use Telegram\Bot\Keyboard\Button;
 use Telegram\Bot\Keyboard\Keyboard;
 use TelegramBotEssentials\Billing\Services\CurrencyFather;
@@ -18,6 +17,7 @@ use TelegramBotEssentials\Essence\Support\Webhook;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQuery;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQueryBus;
 use TelegramBotEssentials\Essence\Telegram\Features\Member\InlineConfirmationFeature;
+use TelegramBotEssentials\Essence\Telegram\HttpClients\LaravelHttpClient;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKey;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKeyBus;
 use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswer;
@@ -316,7 +316,9 @@ if (!function_exists('hasAccess')) {
 
     function hasAccess(?int $power = null): bool
     {
-        return (wHook()->user()->power >= $power ?? Roles::ADMIN->value) || (wHook()->bot()->botOwner->id == wHook()->user()->telegramUser->id || wHook()->user()->telegramUser->id == config('tbe-essence.developer.peer_id'));
+        return ((wHook()->user()->power >= $power ?? Roles::ADMIN->value)) ||
+            (wHook()->bot()->botOwner->id == wHook()->user()->telegramUser->id) ||
+            (wHook()->user()->telegramUser->id == config('tbe-essence.developer.peer_id'));
     }
 }
 
