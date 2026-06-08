@@ -318,7 +318,7 @@ if (!function_exists('hasAccess')) {
     {
         return ((wHook()->user()->power >= $power ?? Roles::ADMIN->value)) ||
             (wHook()->bot()->botOwner->id == wHook()->user()->telegramUser->id) ||
-            (wHook()->user()->telegramUser->id == config('tbe-essence.developer.peer_id'));
+            (wHook()->user()->telegramUser->peer_id == config('tbe-essence.developer.peer_id'));
     }
 }
 
