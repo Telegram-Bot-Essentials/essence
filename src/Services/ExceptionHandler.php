@@ -87,7 +87,7 @@ class ExceptionHandler
     private function validationExceptionUserAlert(ValidationException $e): void
     {
         Log::error($e->getMessage() ?? 'error message is not provided');
-        Log::error(json_encode(wHook()->update(), JSON_PRETTY_PRINT) ?? 'Update is not provided');
+        Log::error(json_encode(wHook()->update(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) ?? 'Update is not provided');
         Log::error($e->getTraceAsString() ?? 'Trace is not provided');
         wHook()->api()->sendMessage([
             'chat_id' => wHook()->user()->telegramUser->peer_id,
@@ -102,7 +102,7 @@ class ExceptionHandler
     private function cannotSetItActiveUserAlert(CannotSetItActive $e): void
     {
         Log::error($e->getMessage() ?? 'error message is not provided');
-        Log::error(json_encode(wHook()->update(), JSON_PRETTY_PRINT) ?? 'Update is not provided');
+        Log::error(json_encode(wHook()->update(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) ?? 'Update is not provided');
         Log::error($e->getTraceAsString() ?? 'Trace is not provided');
         wHook()->api()->sendMessage([
             'chat_id' => wHook()->user()->telegramUser->peer_id,
@@ -116,7 +116,7 @@ class ExceptionHandler
     private function cannotSetItAsDoneUserAlert(CannotSetItAsDone $e): void
     {
         Log::error($e->getMessage() ?? 'error message is not provided');
-        Log::error(json_encode(wHook()->update(), JSON_PRETTY_PRINT) ?? 'Update is not provided');
+        Log::error(json_encode(wHook()->update(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) ?? 'Update is not provided');
         Log::error($e->getTraceAsString() ?? 'Trace is not provided');
         wHook()->api()->sendMessage([
             'chat_id' => wHook()->user()->telegramUser->peer_id,
@@ -132,7 +132,7 @@ class ExceptionHandler
     public function modelNotFoundUserAlert(ModelNotFoundException $e): void
     {
         Log::error($e->getMessage() ?? 'error message is not provided');
-        Log::error(json_encode(wHook()->update(), JSON_PRETTY_PRINT) ?? 'Update is not provided');
+        Log::error(json_encode(wHook()->update(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) ?? 'Update is not provided');
         Log::error($e->getTraceAsString() ?? 'Trace is not provided');
         $resourceName = getResourceName($e->getModel());
         if (wHook()->update()->callbackQuery) {
@@ -179,7 +179,7 @@ class ExceptionHandler
     private function generalAlert(Exception $e): void
     {
         Log::error($e->getMessage() ?? 'error message is not provided');
-        Log::error(json_encode(wHook()->update(), JSON_PRETTY_PRINT) ?? 'Update is not provided');
+        Log::error(json_encode(wHook()->update(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) ?? 'Update is not provided');
         Log::error($e->getTraceAsString() ?? 'Trace is not provided');
         if (wHook()->update()->callbackQuery) {
             wHook()->api()->answerCallbackQuery([
@@ -200,7 +200,7 @@ class ExceptionHandler
     private function itemNotFoundUserAlert(ItemNotFoundException $e)
     {
         Log::error($e->getMessage() ?? 'error message is not provided');
-        Log::error(json_encode(wHook()->update(), JSON_PRETTY_PRINT) ?? 'Update is not provided');
+        Log::error(json_encode(wHook()->update(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) ?? 'Update is not provided');
         Log::error($e->getTraceAsString() ?? 'Trace is not provided');
         if (wHook()->update()->callbackQuery) {
             wHook()->api()->answerCallbackQuery([

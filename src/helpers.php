@@ -348,14 +348,14 @@ if (!function_exists('exceptionReport')) {
             ]);
             wHook()->api()->sendDocument([
                 'chat_id' => config('tbe-essence.bug_report.telegram_chat_id'),
-                'document' => InputFile::createFromContents(json_encode(wHook()->update(), JSON_PRETTY_PRINT), $time . '.update'),
+                'document' => InputFile::createFromContents(json_encode(wHook()->update(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE), $time . '.update'),
             ]);
         } catch (Throwable $err) {
             Log::error('Failed to report exception due: ' . $err->getMessage());
         }
         Log::error(get_class($e));
         Log::error($e->getMessage() ?? 'error message is not provided');
-        Log::error(json_encode(wHook()->update(), JSON_PRETTY_PRINT) ?? 'Update is not provided');
+        Log::error(json_encode(wHook()->update(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) ?? 'Update is not provided');
         Log::error($e->getTraceAsString() ?? 'Trace is not provided');
     }
 }
@@ -379,7 +379,7 @@ if (!function_exists('mixedDebugMessage')) {
     function mixedDebugMessage(mixed $data): void
     {
         try {
-            $text = json_encode($data, JSON_PRETTY_PRINT);
+            $text = jsonEncodeForLog($data);
             Log::debug($text);
             wHook()->api()->sendMessage([
                 'chat_id' => config('tbe-essence.bug_report.telegram_chat_id'),
