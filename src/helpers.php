@@ -379,7 +379,7 @@ if (!function_exists('mixedDebugMessage')) {
     function mixedDebugMessage(mixed $data): void
     {
         try {
-            $text = jsonEncodeForLog($data);
+            $text = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
             Log::debug($text);
             wHook()->api()->sendMessage([
                 'chat_id' => config('tbe-essence.bug_report.telegram_chat_id'),
