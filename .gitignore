@@ -5,4 +5,5 @@
 /.nova
 /.vscode
 /.zed
+/graphify-out
 .env.testing

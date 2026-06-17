@@ -57,11 +57,15 @@ class TelegramWebhookController extends Controller
         $memberStateAnswers = base_path('app/Telegram/StateAnswers/Member');
 //        $adminReplyKeys = base_path('app/Telegram/ReplyKeys/Admin');
 //        $memberReplyKeys = base_path('app/Telegram/ReplyKeys/Member');
+        $inlineQueriesPath = base_path('app/Telegram/InlineQueries');
+
         if (is_dir($adminQueries)) loadCallbackQueries($adminQueries);
         if (is_dir($memberQueries)) loadCallbackQueries($memberQueries);
 
         if (is_dir($adminStateAnswers)) loadStateAnswers($adminStateAnswers);
         if (is_dir($memberStateAnswers)) loadStateAnswers($memberStateAnswers);
+
+        if (is_dir($inlineQueriesPath)) loadInlineQueries($inlineQueriesPath);
 
         foreach (config('tbe-essence.keyboard') ?? [] as $values) {
             addUserReplyKeys($values);
@@ -109,6 +113,8 @@ class TelegramWebhookController extends Controller
             }
         } elseif (wHook()->update()->callbackQuery) {
             callbackQueryBus()->processCallbackQueries();
+        } elseif (wHook()->update()->inlineQuery) {
+            inlineQueryBus()->processInlineQuery();
         }
     }
 }
