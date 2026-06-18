@@ -69,6 +69,8 @@ class TelegramBotAuthentication
             $from = wHook()->update()->message->from;
         } elseif (wHook()->update()->callbackQuery) {
             $from = wHook()->update()->callbackQuery->from;
+        } elseif (wHook()->update()->inlineQuery) {
+            $from = wHook()->update()->inlineQuery->from;
         } else {
             throw new HttpResponseException(apiResponse()->error('Invalid update', 204));
         }

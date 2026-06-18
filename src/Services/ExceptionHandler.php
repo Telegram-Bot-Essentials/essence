@@ -45,11 +45,15 @@ class ExceptionHandler
         } catch (Throwable $e) {
             Telescope::tag(fn() => ['BUG']);
             try {
-                wHook()->api()->sendMessage([
-                    'chat_id' => wHook()->user()->telegramUser->peer_id,
-                    'text' => "😭 Something went wrong, please contact the bot support",
-                    'reply_markup' => wHook()->user()->getKeyboard(),
-                ]);
+                if (wHook()->update()->inlineQuery) {
+                    $this->answerInlineQueryWithError();
+                } else {
+                    wHook()->api()->sendMessage([
+                        'chat_id' => wHook()->user()->telegramUser->peer_id,
+                        'text' => "😭 Something went wrong, please contact the bot support",
+                        'reply_markup' => wHook()->user()->getKeyboard(),
+                    ]);
+                }
             } catch (Throwable $e) {
                 Log::error($e->getMessage());
             }
@@ -70,6 +74,8 @@ class ExceptionHandler
                 'show_alert' => true,
                 'cache_time' => 5,
             ]);
+        } elseif (wHook()->update()->inlineQuery) {
+            $this->answerInlineQueryWithError();
         } else {
             wHook()->api()->sendMessage([
                 'chat_id' => wHook()->user()->telegramUser->peer_id,
@@ -89,6 +95,10 @@ class ExceptionHandler
         Log::error($e->getMessage() ?? 'error message is not provided');
         Log::error(json_encode(wHook()->update(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) ?? 'Update is not provided');
         Log::error($e->getTraceAsString() ?? 'Trace is not provided');
+        if (wHook()->update()->inlineQuery) {
+            $this->answerInlineQueryWithError();
+            return;
+        }
         wHook()->api()->sendMessage([
             'chat_id' => wHook()->user()->telegramUser->peer_id,
             'text' => $e->getMessage(),
@@ -104,6 +114,10 @@ class ExceptionHandler
         Log::error($e->getMessage() ?? 'error message is not provided');
         Log::error(json_encode(wHook()->update(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) ?? 'Update is not provided');
         Log::error($e->getTraceAsString() ?? 'Trace is not provided');
+        if (wHook()->update()->inlineQuery) {
+            $this->answerInlineQueryWithError();
+            return;
+        }
         wHook()->api()->sendMessage([
             'chat_id' => wHook()->user()->telegramUser->peer_id,
             'text' => $e->getMessage(),
@@ -118,6 +132,10 @@ class ExceptionHandler
         Log::error($e->getMessage() ?? 'error message is not provided');
         Log::error(json_encode(wHook()->update(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) ?? 'Update is not provided');
         Log::error($e->getTraceAsString() ?? 'Trace is not provided');
+        if (wHook()->update()->inlineQuery) {
+            $this->answerInlineQueryWithError();
+            return;
+        }
         wHook()->api()->sendMessage([
             'chat_id' => wHook()->user()->telegramUser->peer_id,
             'text' => $e->getMessage(),
@@ -142,6 +160,8 @@ class ExceptionHandler
                 'show_alert' => true,
                 'cache_time' => 5,
             ]);
+        } elseif (wHook()->update()->inlineQuery) {
+            $this->answerInlineQueryWithError();
         } else {
             wHook()->api()->sendMessage([
                 'chat_id' => wHook()->user()->telegramUser->peer_id,
@@ -163,6 +183,8 @@ class ExceptionHandler
                 'show_alert' => true,
                 'cache_time' => 5,
             ]);
+        } elseif (wHook()->update()->inlineQuery) {
+            $this->answerInlineQueryWithError();
         } else {
             wHook()->api()->sendMessage([
                 'chat_id' => wHook()->user()->telegramUser->peer_id,
@@ -188,12 +210,26 @@ class ExceptionHandler
                 'show_alert' => true,
                 'cache_time' => 5,
             ]);
+        } elseif (wHook()->update()->inlineQuery) {
+            $this->answerInlineQueryWithError();
         } else {
             wHook()->api()->sendMessage([
                 'chat_id' => wHook()->user()->telegramUser->peer_id,
                 'text' => $e->getMessage(),
                 'reply_markup' => wHook()->user()->getKeyboard(),
             ]);
+        }
+    }
+
+    private function answerInlineQueryWithError(): void
+    {
+        try {
+            wHook()->api()->answerInlineQuery([
+                'inline_query_id' => wHook()->update()->inlineQuery->id,
+                'results' => '[]',
+                'cache_time' => 0,
+            ]);
+        } catch (Throwable) {
         }
     }
 
@@ -209,6 +245,8 @@ class ExceptionHandler
                 'show_alert' => true,
                 'cache_time' => 5,
             ]);
+        } elseif (wHook()->update()->inlineQuery) {
+            $this->answerInlineQueryWithError();
         } else {
             wHook()->api()->sendMessage([
                 'chat_id' => wHook()->user()->telegramUser->peer_id,

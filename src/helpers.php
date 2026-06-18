@@ -17,6 +17,8 @@ use TelegramBotEssentials\Essence\Services\StateDataService;
 use TelegramBotEssentials\Essence\Support\Webhook;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQuery;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQueryBus;
+use TelegramBotEssentials\Essence\Telegram\InlineQueries\InlineQuery;
+use TelegramBotEssentials\Essence\Telegram\InlineQueries\InlineQueryBus;
 use TelegramBotEssentials\Essence\Telegram\Features\Member\InlineConfirmationFeature;
 use TelegramBotEssentials\Essence\Telegram\HttpClients\LaravelHttpClient;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKey;
@@ -67,6 +69,13 @@ if (!function_exists('botEventBus')) {
     function botEventBus(): BotEventBus
     {
         return app(BotEventBus::class);
+    }
+}
+
+if (!function_exists('inlineQueryBus')) {
+    function inlineQueryBus(): InlineQueryBus
+    {
+        return app(InlineQueryBus::class);
     }
 }
 
@@ -371,31 +380,29 @@ if (!function_exists('exceptionReport')) {
 if (!function_exists('debugMessage')) {
     function debugMessage(string $message): void
     {
+        error_log('[TBE] ' . $message);
+        try { Log::info($message); } catch (Throwable) {}
         try {
-            Log::debug($message);
             wHook()->api()->sendMessage([
                 'chat_id' => config('tbe-essence.bug_report.telegram_chat_id'),
                 'text' => $message,
             ]);
-        } catch (Exception $e) {
-            Log::error('Failed to send debug message due: ' . $e->getMessage());
-        }
+        } catch (Throwable) {}
     }
 }
 
 if (!function_exists('mixedDebugMessage')) {
     function mixedDebugMessage(mixed $data): void
     {
+        $text = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        error_log('[TBE] ' . $text);
+        try { Log::info($text); } catch (Throwable) {}
         try {
-            $text = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-            Log::debug($text);
             wHook()->api()->sendMessage([
                 'chat_id' => config('tbe-essence.bug_report.telegram_chat_id'),
                 'text' => $text,
             ]);
-        } catch (Exception $e) {
-            Log::error('Failed to send debug message due: ' . $e->getMessage());
-        }
+        } catch (Throwable) {}
     }
 }
 
@@ -456,6 +463,23 @@ if (!function_exists('loadCallbackQueries')) {
 
             if (class_exists($fqcn) && is_subclass_of($fqcn, CallbackQuery::class)) {
                 callbackQueryBus()->addCallbackQuery($fqcn);
+            }
+        }
+    }
+}
+
+if (!function_exists('loadInlineQueries')) {
+    function loadInlineQueries(string $path): void
+    {
+        if (!$path) return;
+        $namespace = resolveNamespace($path);
+
+        foreach (File::allFiles($path) as $file) {
+            $fqcn = $namespace . '\\' . $file->getFilenameWithoutExtension();
+
+            if (class_exists($fqcn) && is_subclass_of($fqcn, InlineQuery::class)) {
+                inlineQueryBus()->setHandler($fqcn);
+                return;
             }
         }
     }

@@ -12,6 +12,7 @@ use TelegramBotEssentials\Essence\Console\Commands\BotManagementTokenCommand;
 use TelegramBotEssentials\Essence\Console\Commands\InitMainBotCommand;
 use TelegramBotEssentials\Essence\Console\Commands\InstallCommand;
 use TelegramBotEssentials\Essence\Console\Commands\MakeCallbackQuery;
+use TelegramBotEssentials\Essence\Console\Commands\MakeInlineQuery;
 use TelegramBotEssentials\Essence\Console\Commands\MakeCommand;
 use TelegramBotEssentials\Essence\Console\Commands\MakeFeature;
 use TelegramBotEssentials\Essence\Console\Commands\MakeReplyKey;
@@ -21,6 +22,7 @@ use TelegramBotEssentials\Essence\Console\Commands\SetWebhook;
 use TelegramBotEssentials\Essence\Events\BotEventBus;
 use TelegramBotEssentials\Essence\Support\Webhook;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQueryBus;
+use TelegramBotEssentials\Essence\Telegram\InlineQueries\InlineQueryBus;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Member\CancelProcessKey;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKeyBus;
 use TelegramBotEssentials\Essence\Telegram\HttpClients\LaravelHttpClient;
@@ -60,6 +62,10 @@ class TelegramBotServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(BotEventBus::class, fn() => new BotEventBus());
+
+        $this->app->singleton(InlineQueryBus::class, function ($app) {
+            return new InlineQueryBus();
+        });
     }
 
     private function registerBotsManager(): void
@@ -127,6 +133,7 @@ class TelegramBotServiceProvider extends ServiceProvider
                 BotManagementTokenCommand::class,
                 MakeReplyKey::class,
                 MakeCallbackQuery::class,
+                MakeInlineQuery::class,
                 MakeStateAnswer::class,
                 MakeFeature::class,
                 MakeCommand::class,
