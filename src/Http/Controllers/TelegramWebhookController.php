@@ -10,6 +10,14 @@ use Telegram\Bot\Commands\Command;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
 use TelegramBotEssentials\Essence\Exceptions\TbeLogicException;
+use TelegramBotEssentials\Essence\Events\BotCallbackQueryHandled;
+use TelegramBotEssentials\Essence\Events\BotCommandHandled;
+use TelegramBotEssentials\Essence\Events\BotDeepLinkReceived;
+use TelegramBotEssentials\Essence\Events\BotReplyKeyHandled;
+use TelegramBotEssentials\Essence\Events\BotStateAnswerHandled;
+use TelegramBotEssentials\Essence\Events\BotUpdateReceived;
+use TelegramBotEssentials\Essence\Events\BotUpdateUnhandled;
+use TelegramBotEssentials\Essence\Support\WebhookContext;
 use TelegramBotEssentials\Essence\Traits\CanCancelOldProcess;
 use Throwable;
 
@@ -83,32 +91,59 @@ class TelegramWebhookController extends Controller
      */
     private function processUpdate()
     {
+        $context = WebhookContext::capture();
+
+        $update = wHook()->update();
+        $updateType = $update->detectType() ?? 'unknown';
+
+        botEventBus()->fire(new BotUpdateReceived($context, $updateType));
+
         $commandProcessed = false;
         $keyProcessed = false;
         $answerProcessed = false;
 
-        if (wHook()->update()->message) {
-            if (str_starts_with(wHook()->update()->message->text, '/')) {
+        if ($update->message) {
+            if (str_starts_with($update->message->text, '/')) {
+                [$command, $payload] = array_pad(explode(' ', $update->message->text, 2), 2, null);
+
                 stateAnswerBus()->cancelHandler(wHook()->requestState());
                 $this->cancelOldProcess();
-                wHook()->api()->processCommand(wHook()->update());
+                wHook()->api()->processCommand($update);
                 $commandProcessed = true;
+
+                botEventBus()->fire(new BotCommandHandled($context, $command));
+
+                if ($payload !== null && strtolower($command) === '/start') {
+                    botEventBus()->fire(new BotDeepLinkReceived($context, $payload));
+                }
             } else {
                 $keyProcessed = replyKeyBus()->processReplyKey();
-                if (!$keyProcessed && wHook()->user()->state)
+                if ($keyProcessed) {
+                    botEventBus()->fire(new BotReplyKeyHandled($context, $update->message->text));
+                } elseif (wHook()->user()->state) {
                     $answerProcessed = stateAnswerBus()->processStateAnswers();
+                    if ($answerProcessed) {
+                        botEventBus()->fire(new BotStateAnswerHandled($context, wHook()->requestState()));
+                    }
+                }
             }
 
             $requestIsInvalid = !($commandProcessed || $keyProcessed || $answerProcessed);
             if ($requestIsInvalid) {
+                botEventBus()->fire(new BotUpdateUnhandled($context));
+
                 wHook()->api()->sendMessage([
                     'chat_id' => wHook()->user()->telegramUser->peer_id,
                     'text' => __('tbe::general.alerts.requestIsInvalid'),
                     'reply_markup' => wHook()->user()->getKeyboard(),
                 ]);
             }
-        } elseif (wHook()->update()->callbackQuery) {
-            callbackQueryBus()->processCallbackQueries();
+        } elseif ($update->callbackQuery) {
+            $callbackData = decodeCallback($update->callbackQuery->data);
+            $handled = callbackQueryBus()->processCallbackQueries();
+            if ($handled) {
+                botEventBus()->fire(new BotCallbackQueryHandled($context, $callbackData['type'], $callbackData['method']));
+            }
         }
     }
 }

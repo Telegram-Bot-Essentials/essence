@@ -8,6 +8,7 @@ use Telegram\Bot\Keyboard\Button;
 use Telegram\Bot\Keyboard\Keyboard;
 use TelegramBotEssentials\Billing\Services\CurrencyFather;
 use TelegramBotEssentials\Essence\Enums\Roles;
+use TelegramBotEssentials\Essence\Events\BotEventBus;
 use TelegramBotEssentials\Essence\Exceptions\FeatureIsDisabled;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
 use TelegramBotEssentials\Essence\Models\InlineConfirmation;
@@ -59,6 +60,13 @@ if (!function_exists('stateAnswerBus')) {
     function stateAnswerBus(): StateAnswerBus
     {
         return app(StateAnswerBus::class);
+    }
+}
+
+if (!function_exists('botEventBus')) {
+    function botEventBus(): BotEventBus
+    {
+        return app(BotEventBus::class);
     }
 }
 
