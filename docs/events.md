@@ -163,6 +163,27 @@ botEventBus()->listen(BotCallbackQueryHandled::class, function (BotCallbackQuery
 
 ---
 
+### `BotInlineQueryHandled`
+
+Fires after an inline query handler runs successfully. The `$query` is the text the user typed in the inline search box.
+
+```
+Properties:
+  WebhookContext $context
+  string         $query   // e.g. "iphone 14" (may be empty string for open-ended queries)
+```
+
+```php
+botEventBus()->listen(BotInlineQueryHandled::class, function (BotInlineQueryHandled $event) {
+    SearchLog::record(
+        userId: $event->context->botUserId,
+        query:  $event->query,
+    );
+});
+```
+
+---
+
 ### `BotUpdateUnhandled`
 
 Fires when an incoming message does not match any command, reply key, or state answer. The "request is invalid" message to the user is sent **after** this event.
@@ -289,4 +310,11 @@ For a **callback_query** update:
 ```
 BotUpdateReceived
   └── handled           → BotCallbackQueryHandled
+```
+
+For an **inline_query** update:
+
+```
+BotUpdateReceived
+  └── handled           → BotInlineQueryHandled
 ```

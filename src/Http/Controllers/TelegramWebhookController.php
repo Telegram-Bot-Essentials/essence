@@ -11,6 +11,7 @@ use Telegram\Bot\Exceptions\TelegramSDKException;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
 use TelegramBotEssentials\Essence\Exceptions\TbeLogicException;
 use TelegramBotEssentials\Essence\Events\BotCallbackQueryHandled;
+use TelegramBotEssentials\Essence\Events\BotInlineQueryHandled;
 use TelegramBotEssentials\Essence\Events\BotCommandHandled;
 use TelegramBotEssentials\Essence\Events\BotDeepLinkReceived;
 use TelegramBotEssentials\Essence\Events\BotReplyKeyHandled;
@@ -149,7 +150,10 @@ class TelegramWebhookController extends Controller
                 botEventBus()->fire(new BotCallbackQueryHandled($context, $callbackData['type'], $callbackData['method']));
             }
         } elseif ($update->inlineQuery) {
-            inlineQueryBus()->processInlineQuery();
+            $handled = inlineQueryBus()->processInlineQuery();
+            if ($handled) {
+                botEventBus()->fire(new BotInlineQueryHandled($context, $update->inlineQuery->query ?? ''));
+            }
         }
     }
 }
