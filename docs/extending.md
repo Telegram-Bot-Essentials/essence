@@ -324,3 +324,20 @@ public function boot(): void
 ```
 
 Place package defaults under `src/Telegram/CallbackQueries/` — they load automatically alongside app classes.
+
+## Reacting to Bot Activity
+
+To run logic when the bot handles an update — without modifying handler classes — register event listeners in `boot()`:
+
+```php
+use TelegramBotEssentials\Essence\Events\BotDeepLinkReceived;
+use TelegramBotEssentials\Essence\Events\BotCallbackQueryHandled;
+
+public function boot(): void
+{
+    botEventBus()->listen(BotDeepLinkReceived::class, AffiliateListener::class);
+    botEventBus()->listen(BotCallbackQueryHandled::class, UserActivityListener::class);
+}
+```
+
+See [Events & Listeners](events.md) for all available events and queued listener support.

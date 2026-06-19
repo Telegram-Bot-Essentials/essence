@@ -1,0 +1,20 @@
+<?php
+
+namespace {{ namespace }};
+
+use TelegramBotEssentials\Essence\Enums\Roles;
+use TelegramBotEssentials\Essence\Telegram\InlineQueries\InlineQuery;
+
+class {{ class_name }} extends InlineQuery
+{
+    protected int $perm = {{ perm_power }};
+
+    public function handle(): void
+    {
+        $query = $this->query();
+
+        $this->answer([
+            // InlineQueryResult objects go here
+        ]);
+    }
+}

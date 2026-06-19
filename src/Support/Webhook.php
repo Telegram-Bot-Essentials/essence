@@ -9,6 +9,7 @@ use Telegram\Bot\Objects\Update;
 use TelegramBotEssentials\Essence\Exceptions\WebhookAuthException;
 use TelegramBotEssentials\Essence\Models\Bot;
 use TelegramBotEssentials\Essence\Models\BotUser;
+use Throwable;
 
 class Webhook
 {
@@ -103,11 +104,15 @@ class Webhook
         self::setUser($user);
 
         try {
-            return $callback();
-        } finally {
-            self::setBot($originalBot);
-            self::setUser($originalUser);
+            $result = $callback();
+        } catch (Throwable $e) {
+            exceptionHandler()->handle($e);
         }
+
+        self::setBot($originalBot);
+        self::setUser($originalUser);
+
+        return $result ?? null;
     }
 
     public function setBot(?Bot $bot): void

@@ -17,11 +17,18 @@ TelegramBotAuthentication (middleware)
       ▼
 TelegramWebhookController
       │
-      ├── message + starts with "/"  →  Commands  (+ cancel active state)
-      ├── message + keyboard text    →  ReplyKeyBus
-      ├── message + user has state   →  StateAnswerBus
-      └── callback_query             →  CallbackQueryBus
+      ├── fires BotUpdateReceived
+      │
+      ├── message + starts with "/"  →  Commands  →  fires BotCommandHandled
+      │                                               └── /start <x>  →  fires BotDeepLinkReceived
+      ├── message + keyboard text    →  ReplyKeyBus    →  fires BotReplyKeyHandled
+      ├── message + user has state   →  StateAnswerBus →  fires BotStateAnswerHandled
+      ├── nothing matched            →  fires BotUpdateUnhandled
+      ├── callback_query             →  CallbackQueryBus  →  fires BotCallbackQueryHandled
+      └── inline_query               →  InlineQueryBus    →  fires BotInlineQueryHandled
 ```
+
+See [Events & Listeners](events.md) for the full event reference.
 
 Source: `src/Http/Controllers/TelegramWebhookController.php`
 
