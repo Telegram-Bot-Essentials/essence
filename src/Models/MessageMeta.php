@@ -36,10 +36,12 @@ class MessageMeta extends Model
             $this->message_id = $message_id ?? wHook()->update()->callbackQuery->message->messageId;
             $this->message_text = $message_text ?? wHook()->update()->callbackQuery->message->text;
             $this->message_reply_markup = $message_reply_markup ?? wHook()->update()->callbackQuery->message->replyMarkup;
-        } elseif (isset($chat_id) && isset($message_id) && isset($message_text)) {
+        } elseif (isset($chat_id) && isset($message_id)) {
             $this->chat_id = $chat_id;
             $this->message_id = $message_id;
-            $this->message_text = $message_text;
+            if (isset($message_text)) {
+                $this->message_text = $message_text;
+            }
             if (isset($message_reply_markup)) {
                 $this->message_reply_markup = $message_reply_markup;
             }
@@ -189,6 +191,10 @@ class MessageMeta extends Model
 
     public function revertAction(): void
     {
+        if (empty($this->message_text)) {
+            return;
+        }
+
         try {
             wHook()->api()->editMessageText([
                 'chat_id' => $this->chat_id,
