@@ -10,7 +10,6 @@ use TelegramBotEssentials\Essence\Enums\AllowableFields;
 use TelegramBotEssentials\Essence\Exceptions\TbeLogicException;
 use TelegramBotEssentials\Essence\Models\MessageMeta;
 use TelegramBotEssentials\Essence\Models\StateData;
-use Throwable;
 
 abstract class StateAnswer implements StateAnswerInterface
 {
@@ -132,9 +131,7 @@ abstract class StateAnswer implements StateAnswerInterface
 
     public function cancel(): void
     {
-        try{
-            $this->messageMeta()?->revertAction();
-        } catch (Throwable){}
+        $this->messageMeta()?->revertAction();
     }
 
     protected function resolveParamValue(string $primary, ?string $secondary = null): array
