@@ -75,6 +75,13 @@ class MessageMeta extends Model
         return $this->morphTo();
     }
 
+    private function isIgnorableError(Exception $e): bool
+    {
+        $message = $e->getMessage();
+        return str_contains($message, 'message is not modified') ||
+               str_contains($message, 'query is too old and response timeout expired or query ID is invalid');
+    }
+
     /**
      * @param string|null $lockMessage
      */
@@ -113,7 +120,9 @@ class MessageMeta extends Model
                 'reply_markup' => $replyMarkup,
             ]);
         } catch (Exception $e) {
-            exceptionReport($e);
+            if (!$this->isIgnorableError($e)) {
+                exceptionReport($e);
+            }
         }
     }
 
@@ -150,7 +159,9 @@ class MessageMeta extends Model
                 'message_id' => $this->message_id,
             ]);
         } catch (Exception $e) {
-            exceptionReport($e);
+            if (!$this->isIgnorableError($e)) {
+                exceptionReport($e);
+            }
         }
 
         try {
@@ -160,7 +171,9 @@ class MessageMeta extends Model
                 'reply_markup' => $this->message_reply_markup,
             ]);
         } catch (Exception $e) {
-            exceptionReport($e);
+            if (!$this->isIgnorableError($e)) {
+                exceptionReport($e);
+            }
         }
 
         $this->initializeModel($message->chat->id, $message->messageId, $message->text, $message->replyMarkup);
@@ -174,7 +187,9 @@ class MessageMeta extends Model
                 'message_id' => $this->message_id,
             ]);
         } catch (Exception $e) {
-            exceptionReport($e);
+            if (!$this->isIgnorableError($e)) {
+                exceptionReport($e);
+            }
         }
     }
 
@@ -188,7 +203,9 @@ class MessageMeta extends Model
                 'reply_markup' => $this->message_reply_markup,
             ]);
         } catch (Exception $e) {
-            exceptionReport($e);
+            if (!$this->isIgnorableError($e)) {
+                exceptionReport($e);
+            }
         }
     }
 
@@ -209,7 +226,9 @@ class MessageMeta extends Model
                     'parse_mode' => $data['parse_mode'] ?? null,
                 ]);
             } catch (Exception $e) {
-                exceptionReport($e);
+                if (!$this->isIgnorableError($e)) {
+                    exceptionReport($e);
+                }
             }
         }
     }
@@ -225,7 +244,9 @@ class MessageMeta extends Model
                 'message_id' => $this->message_id,
             ]);
         } catch (Exception $e) {
-            exceptionReport($e);
+            if (!$this->isIgnorableError($e)) {
+                exceptionReport($e);
+            }
         }
 
         if ($data instanceof TelegramResponse) {
@@ -239,7 +260,9 @@ class MessageMeta extends Model
                     'parse_mode' => $data['parse_mode'] ?? null,
                 ]);
             } catch (Exception $e) {
-                exceptionReport($e);
+                if (!$this->isIgnorableError($e)) {
+                    exceptionReport($e);
+                }
             }
         }
 
