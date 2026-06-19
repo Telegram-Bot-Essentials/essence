@@ -87,12 +87,7 @@ class MessageMeta extends Model
      */
     public function lockAction(?string $lockMessage = null, string $customEmoji = "🔒"): void
     {
-        if (
-            empty($this->chat_id) ||
-            empty($this->message_id) ||
-            empty($this->message_text) ||
-            empty($this->message_reply_markup)
-        ) {
+        if (empty($this->chat_id) || empty($this->message_id) || empty($this->message_text)) {
             $this->initializeModel();
         }
 
@@ -170,13 +165,12 @@ class MessageMeta extends Model
                 'text' => $this->message_text,
                 'reply_markup' => $this->message_reply_markup,
             ]);
+            $this->initializeModel($message->chat->id, $message->messageId, $message->text, $message->replyMarkup);
         } catch (Exception $e) {
             if (!$this->isIgnorableError($e)) {
                 exceptionReport($e);
             }
         }
-
-        $this->initializeModel($message->chat->id, $message->messageId, $message->text, $message->replyMarkup);
     }
 
     public function deleteMessage(): void
@@ -249,23 +243,20 @@ class MessageMeta extends Model
             }
         }
 
-        if ($data instanceof TelegramResponse) {
-            $message = $data->send($this->chat_id);
-        } else {
-            try {
-                $message = wHook()->api()->sendMessage([
+        try {
+            $message = $data instanceof TelegramResponse
+                ? $data->send($this->chat_id)
+                : wHook()->api()->sendMessage([
                     'chat_id' => $this->chat_id,
                     'text' => $data['text'],
                     'reply_markup' => $data['reply_markup'],
                     'parse_mode' => $data['parse_mode'] ?? null,
                 ]);
-            } catch (Exception $e) {
-                if (!$this->isIgnorableError($e)) {
-                    exceptionReport($e);
-                }
+            $this->initializeModel($message->chat->id, $message->messageId, $message->text, $message->replyMarkup);
+        } catch (Exception $e) {
+            if (!$this->isIgnorableError($e)) {
+                exceptionReport($e);
             }
         }
-
-        $this->initializeModel($message->chat->id, $message->messageId, $message->text, $message->replyMarkup);
     }
 }
