@@ -31,14 +31,18 @@ class MessageMeta extends Model
 
     public function initializeModel(?int $chat_id = null, ?int $message_id = null, ?string $message_text = null, ?string $message_reply_markup = null, ?string $tag = null): void
     {
-        if (
-            wHook()->update()->callbackQuery ||
-            (isset($chat_id) && isset($message_id) && isset($message_text) && isset($message_reply_markup))
-        ) {
+        if (wHook()->update()->callbackQuery) {
             $this->chat_id = $chat_id ?? wHook()->update()->callbackQuery->message->chat->id;
             $this->message_id = $message_id ?? wHook()->update()->callbackQuery->message->messageId;
             $this->message_text = $message_text ?? wHook()->update()->callbackQuery->message->text;
             $this->message_reply_markup = $message_reply_markup ?? wHook()->update()->callbackQuery->message->replyMarkup;
+        } elseif (isset($chat_id) && isset($message_id) && isset($message_text)) {
+            $this->chat_id = $chat_id;
+            $this->message_id = $message_id;
+            $this->message_text = $message_text;
+            if (isset($message_reply_markup)) {
+                $this->message_reply_markup = $message_reply_markup;
+            }
         }
         $this->tag = $tag;
         $this->save();
@@ -53,13 +57,16 @@ class MessageMeta extends Model
         return $messageMeta;
     }
 
-    public function setMessageReplyMarkupAttribute(TelegramObject|array|string $replyMarkup): void
+    public function setMessageReplyMarkupAttribute(TelegramObject|array|string|null $replyMarkup): void
     {
-        $this->attributes['message_reply_markup'] = is_string($replyMarkup) ? $replyMarkup : json_encode($replyMarkup);
+        $this->attributes['message_reply_markup'] = $replyMarkup === null ? null : (is_string($replyMarkup) ? $replyMarkup : json_encode($replyMarkup));
     }
 
-    public function getMessageReplyMarkupAttribute($value): Keyboard
+    public function getMessageReplyMarkupAttribute($value): ?Keyboard
     {
+        if ($value === null) {
+            return null;
+        }
         return Keyboard::make(json_decode($value, true));
     }
 
