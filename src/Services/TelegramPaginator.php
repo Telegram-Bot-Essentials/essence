@@ -31,11 +31,11 @@ class TelegramPaginator
     public static function makeNavigationButtonsRow(string $callbackType, int $page, int $lastPage, $callbackMethod = 'start', $customPageMethod = 'set_start_page', array $extraParams = []): array
     {
         return [
-            Keyboard::inlineButton(['text' => '<<', 'callback_data' => encodeCallback($callbackType, $callbackMethod, array_merge($extraParams, [1, $page]))]),
-            Keyboard::inlineButton(['text' => '<', 'callback_data' => encodeCallback($callbackType, $callbackMethod, array_merge($extraParams, [$page - 1, $page]))]),
+            Keyboard::inlineButton(['text' => '<<', 'callback_data' => encodeCallback($callbackType, $callbackMethod, array_merge([1, $page], $extraParams))]),
+            Keyboard::inlineButton(['text' => '<', 'callback_data' => encodeCallback($callbackType, $callbackMethod, array_merge([$page - 1, $page], $extraParams))]),
             Keyboard::inlineButton(['text' => "$page/{$lastPage}", 'callback_data' => encodeCallback($callbackType, $customPageMethod, $extraParams)]),
-            Keyboard::inlineButton(['text' => '>', 'callback_data' => encodeCallback($callbackType, $callbackMethod, array_merge($extraParams, [$page + 1, $page]))]),
-            Keyboard::inlineButton(['text' => '>>', 'callback_data' => encodeCallback($callbackType, $callbackMethod, array_merge($extraParams, [$lastPage, $page]))]),
+            Keyboard::inlineButton(['text' => '>', 'callback_data' => encodeCallback($callbackType, $callbackMethod, array_merge([$page + 1, $page], $extraParams))]),
+            Keyboard::inlineButton(['text' => '>>', 'callback_data' => encodeCallback($callbackType, $callbackMethod, array_merge([$lastPage, $page], $extraParams))]),
         ];
     }
 
