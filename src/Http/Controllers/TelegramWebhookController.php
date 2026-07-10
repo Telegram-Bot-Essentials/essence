@@ -99,7 +99,7 @@ class TelegramWebhookController extends Controller
         $context = WebhookContext::capture();
 
         $update = wHook()->update();
-        $updateType = $update->detectType() ?? 'unknown';
+        $updateType = $update->objectType() ?? 'unknown';
 
         botEventBus()->fire(new BotUpdateReceived($context, $updateType));
 
