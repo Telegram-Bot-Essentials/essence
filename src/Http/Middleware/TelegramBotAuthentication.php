@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\Objects\User;
+use TelegramBotEssentials\Essence\Events\BotWebhookInitialized;
+use TelegramBotEssentials\Essence\Support\WebhookContext;
 
 class TelegramBotAuthentication
 {
@@ -56,6 +58,10 @@ class TelegramBotAuthentication
         }
 
         wHook()->setUser($this->fetchUserData());
+
+        if ($context = WebhookContext::capture()) {
+            botEventBus()->fire(new BotWebhookInitialized($context));
+        }
 
         return $next($request);
     }
