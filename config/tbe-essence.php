@@ -37,5 +37,11 @@ return [
 
     'developer' => [
         'peer_id' => env('DEVELOPER_PEER_ID'),
-    ]
+    ],
+
+    'translation_stats' => [
+        'base_locale' => 'en',
+        'cache_key' => 'tbe.translation_stats',
+        'ttl' => 86400,
+    ],
 ];
