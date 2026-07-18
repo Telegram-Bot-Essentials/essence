@@ -35,14 +35,14 @@ class TelegramBotServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/tbe-essence.php', 'tbe-essence');
-        $this->mergeConfigFrom(__DIR__ . '/../config/tenancy.php', 'tenancy');
-        $this->mergeConfigFrom(__DIR__ . '/../config/telegram.php', 'telegram');
-
         $this->app->register(TenancyServiceProvider::class);
         $this->app->register(\Stancl\Tenancy\TenancyServiceProvider::class);
 
         $this->app->singleton(LaravelHttpClient::class);
+
+        $this->mergeConfigFrom(__DIR__ . '/../config/tbe-essence.php', 'tbe-essence');
+        $this->mergeConfigFrom(__DIR__ . '/../config/tenancy.php', 'tenancy');
+        $this->mergeConfigFrom(__DIR__ . '/../config/telegram.php', 'telegram');
 
         $this->registerBotsManager();
         $this->initializeSingletons();
@@ -92,6 +92,17 @@ class TelegramBotServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        // Stancl\Tenancy\TenancyServiceProvider is auto-discovered as its own
+        // package and always registers before ours, so its config/config.php
+        // defaults (tenant_model => Stancl's Tenant) win over our mergeConfigFrom
+        // call in register() regardless of call order there. Force our values
+        // back on top here, since boot() is guaranteed to run after every
+        // provider's register() phase has completed.
+        $this->app['config']->set('tenancy', array_merge(
+            $this->app['config']->get('tenancy', []),
+            require __DIR__ . '/../config/tenancy.php'
+        ));
+
         $this->loadConsoleRoutes();
 
         $this->registerCommands();
