@@ -94,13 +94,24 @@ class TelegramBotServiceProvider extends ServiceProvider
     {
         // Stancl\Tenancy\TenancyServiceProvider is auto-discovered as its own
         // package and always registers before ours, so its config/config.php
-        // defaults (tenant_model => Stancl's Tenant) win over our mergeConfigFrom
-        // call in register() regardless of call order there. Force our values
-        // back on top here, since boot() is guaranteed to run after every
-        // provider's register() phase has completed.
+        // defaults (tenant_model => Stancl's Tenant, bootstrappers including
+        // DatabaseTenancyBootstrapper) win over our mergeConfigFrom call in
+        // register() regardless of call order there. Force our values back on
+        // top here, since boot() is guaranteed to run after every provider's
+        // register() phase has completed.
+        //
+        // Read the raw file rather than hardcoding the override inline so this
+        // stays a single source of truth, but replace central_connection: the
+        // file resolves it via env('DB_CONNECTION'), and env() is unsafe to
+        // call here once config is cached (production disables .env loading
+        // on cached requests), so pull it from the already-cache-safe
+        // database.default instead.
+        $tenancyConfig = require __DIR__ . '/../config/tenancy.php';
+        $tenancyConfig['database']['central_connection'] = $this->app['config']->get('database.default');
+
         $this->app['config']->set('tenancy', array_merge(
             $this->app['config']->get('tenancy', []),
-            require __DIR__ . '/../config/tenancy.php'
+            $tenancyConfig
         ));
 
         $this->loadConsoleRoutes();
