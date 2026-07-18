@@ -43,9 +43,12 @@ return [
 
     'messages' => [
         'valueUpdatedSuccessfully' => '❕ مقدار با موفقیت به روزرسانی شد ✅',
+        'enterNewValueOfField' => '❓ مقدار :field را وارد کنید:',
+        'deleteConfirmationQuestion' => 'مطمئنید می‌خواهید :resource ":resourceName" را حذف کنید؟',
     ],
 
     'keys' => [
+        'generateInvoiceAndPay' => 'پرداخت 💵 - :price',
         'bunchDeletion' => "حذف دسته ای 🗑",
         'bunchActivation' => "فعالسازی دسته ای 🔥",
         'delete' => 'حذف 🗑',
@@ -58,11 +61,23 @@ return [
 
     'answers' => [
         'updatedResourceField' => 'در حال به روزرسانی فیلد :field برای ":resource"...',
+        'resourceFieldUpdatedSuccessfully' => ':resource با موفقیت به‌روزرسانی شد.',
+        'resourceDeletedSuccessfully' => ':resource با موفقیت حذف شد.',
     ],
 
     'roles' => [
         'admin' => 'مدیر',
         'moderator' => 'ناظر',
         'member' => 'عضو',
+    ],
+
+    'intervals' => [
+        'year' => 'سال',
+        'month' => 'ماه',
+        'week' => 'هفته',
+        'day' => 'روز',
+        'hour' => 'ساعت',
+        'minute' => 'دقیقه',
+        'second' => 'ثانیه',
     ],
 ];
