@@ -35,14 +35,14 @@ class TelegramBotServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->mergeConfigFrom(__DIR__ . '/../config/tbe-essence.php', 'tbe-essence');
+        $this->mergeConfigFrom(__DIR__ . '/../config/tenancy.php', 'tenancy');
+        $this->mergeConfigFrom(__DIR__ . '/../config/telegram.php', 'telegram');
+
         $this->app->register(TenancyServiceProvider::class);
         $this->app->register(\Stancl\Tenancy\TenancyServiceProvider::class);
 
         $this->app->singleton(LaravelHttpClient::class);
-
-        $this->mergeConfigFrom(__DIR__ . '/../config/tbe-essence.php', 'tbe-essence');
-        $this->mergeConfigFrom(__DIR__ . '/../config/tenancy.php', 'tenancy');
-        $this->mergeConfigFrom(__DIR__ . '/../config/telegram.php', 'telegram');
 
         $this->registerBotsManager();
         $this->initializeSingletons();
