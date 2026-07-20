@@ -13,10 +13,10 @@ class TelegramPaginator
     {
         return match ($target) {
             'first' => 1,
-            'prev' => max(1, $currentPage - 1),
-            'next' => min($lastPage, $currentPage + 1),
+            'prev' => $currentPage > 1 ? $currentPage - 1 : $lastPage,
+            'next' => $currentPage < $lastPage ? $currentPage + 1 : 1,
             'last' => $lastPage,
-            default => $currentPage,
+            default => max(1, min($currentPage, $lastPage)),
         };
     }
 
@@ -28,15 +28,26 @@ class TelegramPaginator
         );
     }
 
-    public static function makeNavigationButtonsRow(string $callbackType, int $page, int $lastPage, $callbackMethod = 'start', $customPageMethod = 'set_start_page', array $extraParams = []): array
+    public static function makeNavigationButtonsRow(string $callbackType, int $page, int $lastPage, $callbackMethod = 'start', $customPageMethod = 'set_start_page', array $extraParams = [], bool $showFirstLast = true): array
     {
-        return [
-            Keyboard::inlineButton(['text' => '<<', 'callback_data' => encodeCallback($callbackType, $callbackMethod, array_merge([1, $page], $extraParams))]),
-            Keyboard::inlineButton(['text' => '<', 'callback_data' => encodeCallback($callbackType, $callbackMethod, array_merge([$page - 1, $page], $extraParams))]),
-            Keyboard::inlineButton(['text' => "$page/{$lastPage}", 'callback_data' => encodeCallback($callbackType, $customPageMethod, $extraParams)]),
-            Keyboard::inlineButton(['text' => '>', 'callback_data' => encodeCallback($callbackType, $callbackMethod, array_merge([$page + 1, $page], $extraParams))]),
-            Keyboard::inlineButton(['text' => '>>', 'callback_data' => encodeCallback($callbackType, $callbackMethod, array_merge([$lastPage, $page], $extraParams))]),
-        ];
+        $prevPage = $page > 1 ? $page - 1 : $lastPage;
+        $nextPage = $page < $lastPage ? $page + 1 : 1;
+
+        $buttons = [];
+
+        if ($showFirstLast) {
+            $buttons[] = Keyboard::inlineButton(['text' => '<<', 'callback_data' => encodeCallback($callbackType, $callbackMethod, array_merge([1, $page], $extraParams))]);
+        }
+
+        $buttons[] = Keyboard::inlineButton(['text' => '<', 'callback_data' => encodeCallback($callbackType, $callbackMethod, array_merge([$prevPage, $page], $extraParams))]);
+        $buttons[] = Keyboard::inlineButton(['text' => "$page/{$lastPage}", 'callback_data' => encodeCallback($callbackType, $customPageMethod, $extraParams)]);
+        $buttons[] = Keyboard::inlineButton(['text' => '>', 'callback_data' => encodeCallback($callbackType, $callbackMethod, array_merge([$nextPage, $page], $extraParams))]);
+
+        if ($showFirstLast) {
+            $buttons[] = Keyboard::inlineButton(['text' => '>>', 'callback_data' => encodeCallback($callbackType, $callbackMethod, array_merge([$lastPage, $page], $extraParams))]);
+        }
+
+        return $buttons;
     }
 
     /**
