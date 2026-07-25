@@ -22,6 +22,7 @@ use TelegramBotEssentials\Essence\Console\Commands\SetWebhook;
 use TelegramBotEssentials\Essence\Console\Commands\CheckMissingTranslations;
 use TelegramBotEssentials\Essence\Console\Commands\TranslationStats;
 use TelegramBotEssentials\Essence\Events\BotEventBus;
+use TelegramBotEssentials\Essence\Services\NavState;
 use TelegramBotEssentials\Essence\Services\TranslationScanner;
 use TelegramBotEssentials\Essence\Support\Webhook;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQueryBus;
@@ -71,6 +72,8 @@ class TelegramBotServiceProvider extends ServiceProvider
         $this->app->singleton(InlineQueryBus::class, function ($app) {
             return new InlineQueryBus();
         });
+
+        $this->app->singleton(NavState::class, fn() => new NavState());
     }
 
     private function registerBotsManager(): void

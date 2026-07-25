@@ -15,6 +15,7 @@ class TelegramResponse
     private ?Model $modelForMessageMeta = null;
     private ?string $messageMetaTag = null;
     private ?string $softAnswer = null;
+    private ?array $navStateData = null;
 
     public function __construct(
         public ?string            $text = null,
@@ -95,6 +96,12 @@ class TelegramResponse
         return $this;
     }
 
+    public function navState(array $data): self
+    {
+        $this->navStateData = $data;
+        return $this;
+    }
+
     /**
      * @throws TelegramSDKException
      */
@@ -118,6 +125,7 @@ class TelegramResponse
         }
 
         $this->saveMessageMeta($message);
+        $this->saveNavState($message);
 
         return $message;
     }
@@ -136,6 +144,7 @@ class TelegramResponse
                     );
 
                     $this->saveMessageMeta($message);
+                    $this->saveNavState($message);
                 } catch (Exception) {
                     wHook()->api()->answerCallbackQuery([
                         'callback_query_id' => wHook()->update()->callbackQuery->id,
@@ -154,6 +163,7 @@ class TelegramResponse
                     );
 
                     $this->saveMessageMeta($message);
+                    $this->saveNavState($message);
                 } catch (Exception) {
                     try {
                         $message = wHook()->api()->editMessageCaption(
@@ -167,6 +177,7 @@ class TelegramResponse
                         );
 
                         $this->saveMessageMeta($message);
+                        $this->saveNavState($message);
                     } catch (Exception) {
                         wHook()->api()->answerCallbackQuery([
                             'callback_query_id' => wHook()->update()->callbackQuery->id,
@@ -276,5 +287,14 @@ class TelegramResponse
         $messageMeta = MessageMeta::makeWithMessage($message, $this->messageMetaTag);
         $messageMeta->action()->associate($this->modelForMessageMeta);
         $messageMeta->save();
+    }
+
+    private function saveNavState(Message $message): void
+    {
+        if ($this->navStateData === null) {
+            return;
+        }
+
+        navState()->put($message->chat->id, $message->messageId, $this->navStateData);
     }
 }

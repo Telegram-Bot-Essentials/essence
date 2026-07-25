@@ -13,6 +13,7 @@ use TelegramBotEssentials\Essence\Exceptions\FeatureIsDisabled;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
 use TelegramBotEssentials\Essence\Models\InlineConfirmation;
 use TelegramBotEssentials\Essence\Services\ExceptionHandler;
+use TelegramBotEssentials\Essence\Services\NavState;
 use TelegramBotEssentials\Essence\Services\StateDataService;
 use TelegramBotEssentials\Essence\Support\Webhook;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQuery;
@@ -433,6 +434,13 @@ if (!function_exists('stateData')) {
     function stateData(): StateDataService
     {
         return app(StateDataService::class);
+    }
+}
+
+if (!function_exists('navState')) {
+    function navState(): NavState
+    {
+        return app(NavState::class);
     }
 }
 
