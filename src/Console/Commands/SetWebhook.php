@@ -56,6 +56,9 @@ class SetWebhook extends Command
         $bot->secret_token = Hash::make($secretToken);
         $bot->save();
 
+        $telegram->deleteWebhook();
+        telegramApi($bot->bot_token, 'https://api.telegram.org/bot')->deleteWebhook();
+
         $telegram->setWebhook([
             'url' => $url,
             'drop_pending_updates' => true,
