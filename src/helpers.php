@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Api;
 use Telegram\Bot\FileUpload\InputFile;
 use Telegram\Bot\Keyboard\Button;
@@ -359,38 +358,50 @@ if (!function_exists('getResourceName')) {
 if (!function_exists('exceptionReport')) {
     function exceptionReport(Throwable $e): void
     {
+        tbeLog('essence')->error(
+            get_class($e) . ': ' . ($e->getMessage() ?: 'error message is not provided'),
+            ['exception' => $e],
+        );
+
+        $chatId = config('tbe-essence.bug_report.telegram_chat_id');
+        if (!$chatId || !config('tbe-essence.logging.telegram_notify')) {
+            return;
+        }
+
         try {
             $time = time();
-            debugMessage(get_class($e));
+            $summary = get_class($e);
             if ($e->getMessage()) {
-                debugMessage($e->getMessage());
+                $summary .= "\n" . $e->getMessage();
             }
             if (wHook()->requestState()) {
-                debugMessage(wHook()->requestState());
+                $summary .= "\nstate: " . wHook()->requestState();
             }
+            wHook()->api()->sendMessage([
+                'chat_id' => $chatId,
+                'text' => $summary,
+            ]);
             wHook()->api()->sendDocument([
-                'chat_id' => config('tbe-essence.bug_report.telegram_chat_id'),
+                'chat_id' => $chatId,
                 'document' => InputFile::createFromContents($e->getTraceAsString(), $time . '.trace'),
             ]);
             wHook()->api()->sendDocument([
-                'chat_id' => config('tbe-essence.bug_report.telegram_chat_id'),
+                'chat_id' => $chatId,
                 'document' => InputFile::createFromContents(json_encode(wHook()->update(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE), $time . '.update'),
             ]);
         } catch (Throwable $err) {
-            Log::error('Failed to report exception due: ' . $err->getMessage());
+            tbeLog('essence')->warning('Failed to report exception to Telegram: ' . $err->getMessage());
         }
-        Log::error(get_class($e));
-        Log::error($e->getMessage() ?? 'error message is not provided');
-        Log::error(json_encode(wHook()->update(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) ?? 'Update is not provided');
-        Log::error($e->getTraceAsString() ?? 'Trace is not provided');
     }
 }
 
 if (!function_exists('debugMessage')) {
     function debugMessage(string $message): void
     {
-        error_log('[TBE] ' . $message);
-        try { Log::info($message); } catch (Throwable) {}
+        tbeLog('essence')->warning($message);
+        if (!config('tbe-essence.logging.telegram_notify')) {
+            return;
+        }
         try {
             wHook()->api()->sendMessage([
                 'chat_id' => config('tbe-essence.bug_report.telegram_chat_id'),
@@ -404,8 +415,10 @@ if (!function_exists('mixedDebugMessage')) {
     function mixedDebugMessage(mixed $data): void
     {
         $text = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        error_log('[TBE] ' . $text);
-        try { Log::info($text); } catch (Throwable) {}
+        tbeLog('essence')->warning($text);
+        if (!config('tbe-essence.logging.telegram_notify')) {
+            return;
+        }
         try {
             wHook()->api()->sendMessage([
                 'chat_id' => config('tbe-essence.bug_report.telegram_chat_id'),

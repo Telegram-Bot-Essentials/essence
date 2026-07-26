@@ -6,7 +6,6 @@ namespace TelegramBotEssentials\Essence\Telegram\StateAnswers;
 
 use Exception;
 use Illuminate\Contracts\Container\BindingResolutionException;
-use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
 use TelegramBotEssentials\Essence\Traits\CanResolveStateAnswer;
@@ -97,11 +96,11 @@ class StateAnswerBus
 
         $key = $this->stateAnswerTypes[$type] ?? null;
         if (empty($key)) {
-            Log::error('answer "' . $type . '" is not registered');
+            tbeLog('essence')->warning('State answer "' . $type . '" is not registered');
             try {
                 wHook()->user()->changeState();
             } catch (Exception $e) {
-                Log::error($e->getMessage());
+                tbeLog('essence')->error('Failed to reset user state: ' . $e->getMessage(), ['exception' => $e]);
             }
             return false;
         }

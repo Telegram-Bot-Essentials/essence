@@ -6,7 +6,6 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Carbon;
-use Log;
 use Ramsey\Uuid\Uuid;
 use Random\RandomException;
 use Telegram\Bot\Exceptions\TelegramSDKException;
@@ -44,10 +43,10 @@ class BotController extends Controller
             $botResource = new BotResource($bot);
             return apiResponse()->success($botResource, 201);
         } catch (TelegramSDKException $e) {
-            Log::error($e->getMessage(), $e->getTrace());
+            tbeLog('essence')->error('Failed to set webhook while creating bot: ' . $e->getMessage(), ['exception' => $e]);
             return apiResponse()->error('failed to set webhook', 503);
         } catch (Exception $e) {
-            Log::error($e->getMessage(), $e->getTrace());
+            tbeLog('essence')->error('Failed to create bot: ' . $e->getMessage(), ['exception' => $e]);
             return apiResponse()->error('failed to create bot', 500);
         }
     }
@@ -122,7 +121,7 @@ class BotController extends Controller
             try {
                 $secretTokenPlain = $this->generateSecretToken();
             } catch (RandomException $e) {
-                Log::error($e->getMessage(), $e->getTrace());
+                tbeLog('essence')->error('Failed to refresh bot secret: ' . $e->getMessage(), ['exception' => $e]);
                 return apiResponse()->error('failed to refresh bot secret', 500);
             }
 
@@ -135,7 +134,7 @@ class BotController extends Controller
             try {
                 $this->setWebhook($bot->bot_token, $bot->unique_id, $secretTokenPlain);
             } catch (TelegramSDKException $e) {
-                Log::error($e->getMessage());
+                tbeLog('essence')->error('Failed to set webhook after bot token update: ' . $e->getMessage(), ['exception' => $e, 'bot_unique_id' => $bot->unique_id]);
             }
         }
         $data = new BotResource($bot);

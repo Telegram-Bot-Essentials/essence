@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace TelegramBotEssentials\Essence\Telegram\CallbackQueries;
 
 use Illuminate\Contracts\Container\BindingResolutionException;
-use Illuminate\Support\Facades\Log;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
 use TelegramBotEssentials\Essence\Exceptions\TbeLogicException;
 use TelegramBotEssentials\Essence\Traits\CanResolveCallbackQuery;
@@ -92,7 +91,7 @@ class CallbackQueryBus
 
         $key = $this->callbackQueryTypes[$type] ?? null;
         if (empty($key)) {
-            Log::error('query "' . $type . '" is not registered');
+            tbeLog('essence')->warning('Callback query "' . $type . '" is not registered');
             throw new TbeLogicException(__('tbe::general.callbackQuery.willBeAddedInTheFuture'));
         }
 

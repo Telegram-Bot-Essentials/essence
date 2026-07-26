@@ -10,7 +10,6 @@ use TelegramBotEssentials\Essence\Models\TelegramUser;
 use GuzzleHttp\Psr7\ServerRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\Objects\User;
@@ -51,8 +50,7 @@ class TelegramBotAuthentication
             ));
             wHook()->setUpdate($update);
         } catch (TelegramSDKException $e) {
-            Log::error($e->getMessage() ?? 'error message is not provided');
-            Log::error($e->getTraceAsString() ?? 'Trace is not provided');
+            tbeLog('essence')->error('Failed to initialize Telegram API service: ' . $e->getMessage(), ['exception' => $e]);
             return apiResponse()->error('Failed to initialize API service', 503);
         }
 

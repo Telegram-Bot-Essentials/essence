@@ -14,7 +14,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Routing\Redirector;
-use Illuminate\Support\Facades\Log;
 use Stancl\Tenancy\Exceptions\TenantCouldNotBeIdentifiedById;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\Objects\Update;
@@ -67,7 +66,7 @@ class GatewayZirgozarController extends Controller
             $response = Http::post($url, $data);
             $response = $response->json();
             if(!$response || !$response['result']) {
-                \Log::error($response['error_desc'] ?? 'error is not provided');
+                tbeLog('essence')->warning('Zirgozar rejected web_pay request: ' . ($response['error_desc'] ?? 'error is not provided'), ['invoice_id' => $invoice->id]);
                 throw new HttpResponseException(apiResponse()->error('Failed to initialize web payment', 503));
             }
             return $response;
@@ -94,7 +93,7 @@ class GatewayZirgozarController extends Controller
                 $me = $api->getMe();
                 $username = $me->username;
             } catch (TelegramSDKException $e) {
-                Log::error($e->getMessage());
+                tbeLog('essence')->error('Failed to resolve bot username for invoice redirect: ' . $e->getMessage(), ['exception' => $e, 'invoice_id' => $invoice->id]);
                 return response('Failed to redirect', 503);
             }
             $botLink = 'https://t.me/' . $username . '?start=invoice_' . $invoice->id;
@@ -132,7 +131,7 @@ class GatewayZirgozarController extends Controller
             $me = $api->getMe();
             $username = $me->username;
         } catch (TelegramSDKException $e) {
-            Log::error($e->getMessage());
+            tbeLog('essence')->error('Failed to resolve bot username for invoice redirect: ' . $e->getMessage(), ['exception' => $e, 'invoice_id' => $invoice->id]);
             return response('Failed to redirect', 503);
         }
 
@@ -172,7 +171,7 @@ class GatewayZirgozarController extends Controller
             $response = Http::post($url, $data);
             $response = $response->json();
             if(!$response || !$response['result']) {
-                \Log::error($response['error_desc'] ?? 'error is not provided');
+                tbeLog('essence')->warning('Zirgozar rejected web_pay_status request: ' . ($response['error_desc'] ?? 'error is not provided'));
                 throw new HttpResponseException(apiResponse()->error('Failed to handle payment', 503));
             }
             return $response;
