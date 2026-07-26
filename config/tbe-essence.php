@@ -35,6 +35,13 @@ return [
         'telegram_chat_id' => env('BUG_REPORT_TELEGRAM_CHAT_ID'),
     ],
 
+    'logging' => [
+        // Log channel for all TBE packages; null uses the app's default channel.
+        'channel' => env('TBE_LOG_CHANNEL'),
+        // Also push debug/bug reports to the bug_report Telegram chat.
+        'telegram_notify' => env('TBE_LOG_TELEGRAM_NOTIFY', true),
+    ],
+
     'developer' => [
         'peer_id' => env('DEVELOPER_PEER_ID'),
     ],

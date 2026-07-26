@@ -15,6 +15,7 @@ use TelegramBotEssentials\Essence\Models\InlineConfirmation;
 use TelegramBotEssentials\Essence\Services\ExceptionHandler;
 use TelegramBotEssentials\Essence\Services\NavState;
 use TelegramBotEssentials\Essence\Services\StateDataService;
+use TelegramBotEssentials\Essence\Support\TbeLogger;
 use TelegramBotEssentials\Essence\Support\Webhook;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQuery;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQueryBus;
@@ -31,6 +32,13 @@ if (!function_exists('wHook')) {
     function wHook(): Webhook
     {
         return app(Webhook::class);
+    }
+}
+
+if (!function_exists('tbeLog')) {
+    function tbeLog(?string $package = null): TbeLogger
+    {
+        return new TbeLogger($package);
     }
 }
 
