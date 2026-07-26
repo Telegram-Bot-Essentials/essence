@@ -6,7 +6,6 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Hash;
 use Log;
 use Ramsey\Uuid\Uuid;
 use Random\RandomException;
@@ -60,7 +59,7 @@ class BotController extends Controller
     private function initializeData(array $data): array
     {
         $secretToken = $this->generateSecretToken();
-        $data['secret_token'] = Hash::make($secretToken);
+        $data['secret_token'] = $secretToken;
         $data['unique_id'] = Uuid::uuid4()->toString();
 
         if (key_exists('activated_until', $data)) {
@@ -127,7 +126,7 @@ class BotController extends Controller
                 return apiResponse()->error('failed to refresh bot secret', 500);
             }
 
-            $data['secret_token'] = Hash::make($secretTokenPlain);
+            $data['secret_token'] = $secretTokenPlain;
         }
 
         $bot->update($data);

@@ -10,7 +10,6 @@ use TelegramBotEssentials\Essence\Models\TelegramUser;
 use GuzzleHttp\Psr7\ServerRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 use Telegram\Bot\Exceptions\TelegramSDKException;
@@ -37,7 +36,7 @@ class TelegramBotAuthentication
 
         wHook()->setBot($bot);
 
-        if (!Hash::check($request->header('x-telegram-bot-api-secret-token'), $bot->secret_token))
+        if (!hash_equals((string) $bot->secret_token, (string) $request->header('x-telegram-bot-api-secret-token')))
             return apiResponse()->error('Unauthorized', 204);
 
         try {

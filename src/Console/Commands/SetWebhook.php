@@ -5,7 +5,6 @@ namespace TelegramBotEssentials\Essence\Console\Commands;
 use TelegramBotEssentials\Essence\Models\Bot;
 use TelegramBotEssentials\Essence\Traits\CanResolveBotCommand;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Hash;
 
 class SetWebhook extends Command
 {
@@ -53,7 +52,7 @@ class SetWebhook extends Command
 
         $secretToken = rtrim(strtr(base64_encode(random_bytes(96)), '+/', '-_'), '=');
 
-        $bot->secret_token = Hash::make($secretToken);
+        $bot->secret_token = $secretToken;
         $bot->save();
 
         $telegram->deleteWebhook();
