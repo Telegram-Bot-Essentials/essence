@@ -51,7 +51,13 @@ class TelegramBotServiceProvider extends ServiceProvider
 
     private function initializeSingletons(): void
     {
-        $this->app->singleton(Webhook::class, fn() => new Webhook());
+        // Scoped rather than singleton: this holds per-request state (bot,
+        // api client, update, user). Under classic PHP-FPM the container is
+        // rebuilt every request anyway so this is a no-op change, but under
+        // Octane's persistent workers, scoped() bindings get reset between
+        // requests automatically while a singleton would leak the previous
+        // request's bot/user into whatever runs next on that worker.
+        $this->app->scoped(Webhook::class, fn() => new Webhook());
 
         $this->app->singleton(ReplyKeyBus::class, function ($app) {
             return new ReplyKeyBus();
