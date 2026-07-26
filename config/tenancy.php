@@ -26,11 +26,20 @@ return [
      *
      * To configure their behavior, see the config keys below.
      */
+    // This app uses row-scoping (BelongsToTenant + bot_id) as its only tenancy
+    // mechanism - one shared database, filesystem, cache and queue for every
+    // bot. These bootstrappers were configured but never actually invoked
+    // (their trigger, the BootstrapTenancy listener, was never wired to the
+    // TenancyInitialized event - see git history on TenancyServiceProvider),
+    // so they've been dark since introduction. Left enabled, they'd start
+    // running for the first time under Octane's persistent workers without
+    // ever having been exercised in production, so they're disabled here
+    // rather than switched on untested.
     'bootstrappers' => [
 //        Stancl\Tenancy\Bootstrappers\DatabaseTenancyBootstrapper::class,
-        Stancl\Tenancy\Bootstrappers\CacheTenancyBootstrapper::class,
-        Stancl\Tenancy\Bootstrappers\FilesystemTenancyBootstrapper::class,
-        Stancl\Tenancy\Bootstrappers\QueueTenancyBootstrapper::class,
+//        Stancl\Tenancy\Bootstrappers\CacheTenancyBootstrapper::class,
+//        Stancl\Tenancy\Bootstrappers\FilesystemTenancyBootstrapper::class,
+//        Stancl\Tenancy\Bootstrappers\QueueTenancyBootstrapper::class,
         // Stancl\Tenancy\Bootstrappers\RedisTenancyBootstrapper::class, // Note: phpredis is needed
     ],
 
