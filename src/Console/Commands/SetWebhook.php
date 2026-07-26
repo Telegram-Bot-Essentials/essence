@@ -17,7 +17,8 @@ class SetWebhook extends Command
      */
     protected $signature = 'tbe:set-webhook
          {--unique-id= : Enter the target bot unique id}
-         {--endpoint= : Custom webhook endpoint (use {unique_id} placeholder)}';
+         {--endpoint= : Custom webhook endpoint (use {unique_id} placeholder)}
+         {--all : Rotate the webhook secret for every bot}';
 
     /**
      * The console command description.
@@ -31,15 +32,25 @@ class SetWebhook extends Command
      */
     public function handle(): void
     {
-        $uniqueID = $this->option('unique-id') ?? config('tbe-essence.main.unique_id');
-        $this->info('Setting webhook for bot with unique id: ' . $uniqueID);
-        $this->info('Telegram bot api url: ' . config('tbe-essence.base_bot_url'));
-
         $endpointTemplate = $this->option('endpoint')
             ?? config('tbe-essence.webhook_endpoint', '/api/{unique_id}/telegram/bot/webhook');
 
-        $url = rtrim(config('app.url'), '/') . str_replace('{unique_id}', $uniqueID, $endpointTemplate);
-        $this->info('Webhook url: ' . $url);
+        if ($this->option('all')) {
+            $bots = Bot::all();
+
+            if ($bots->isEmpty()) {
+                $this->error('No bots found');
+                return;
+            }
+
+            foreach ($bots as $bot) {
+                $this->rotateWebhook($bot, $endpointTemplate);
+            }
+
+            return;
+        }
+
+        $uniqueID = $this->option('unique-id') ?? config('tbe-essence.main.unique_id');
 
         $bot = Bot::where('unique_id', $uniqueID)->first();
 
@@ -47,6 +58,17 @@ class SetWebhook extends Command
             $this->error('Bot with unique id: ' . $uniqueID . ' not found');
             return;
         }
+
+        $this->rotateWebhook($bot, $endpointTemplate);
+    }
+
+    private function rotateWebhook(Bot $bot, string $endpointTemplate): void
+    {
+        $this->info('Setting webhook for bot with unique id: ' . $bot->unique_id);
+        $this->info('Telegram bot api url: ' . config('tbe-essence.base_bot_url'));
+
+        $url = rtrim(config('app.url'), '/') . str_replace('{unique_id}', $bot->unique_id, $endpointTemplate);
+        $this->info('Webhook url: ' . $url);
 
         $telegram = telegramApi($bot->bot_token);
 
@@ -80,6 +102,6 @@ class SetWebhook extends Command
             ],
         ]);
 
-        $this->info('Telegram webhook has been set');
+        $this->info('Telegram webhook has been set for ' . $bot->unique_id);
     }
 }
