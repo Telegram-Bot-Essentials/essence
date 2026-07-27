@@ -167,6 +167,15 @@ class ExceptionHandler
      */
     private function featureIsDisabledUserAlert(FeatureIsDisabled|Exception $e): void
     {
+        if ($e instanceof FeatureIsDisabled && ($response = $e->getResponse())) {
+            if (wHook()->update()->callbackQuery) {
+                $response->update();
+            } else {
+                $response->send();
+            }
+            return;
+        }
+
         if (wHook()->update()->callbackQuery) {
             wHook()->api()->answerCallbackQuery([
                 'callback_query_id' => wHook()->update()->callbackQuery->id,

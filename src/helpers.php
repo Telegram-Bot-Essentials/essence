@@ -26,6 +26,7 @@ use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKey;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKeyBus;
 use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswer;
 use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswerBus;
+use TelegramBotEssentials\Essence\Telegram\TelegramResponse;
 
 if (!function_exists('wHook')) {
     function wHook(): Webhook
@@ -330,7 +331,7 @@ if (!function_exists('dependsOn')) {
     /**
      * @throws FeatureIsDisabled
      */
-    function dependsOn(?bool $condition, ?string $message = null): void
+    function dependsOn(?bool $condition, string|TelegramResponse|null $message = null): void
     {
         if (!$condition)
             throw new FeatureIsDisabled($message);
