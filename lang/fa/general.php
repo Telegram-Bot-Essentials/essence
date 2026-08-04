@@ -29,6 +29,12 @@ return [
         'willBeAddedInTheFuture' => '❕ این قابلیت در آینده اضافه خواهد شد.',
     ],
 
+    'command' => [
+        'notFound' => '❕ دستور مورد نظر یافت نشد.',
+        'helpDescription' => 'دریافت لیست دستورات موجود',
+        'availableCommands' => 'دستورات موجود:',
+    ],
+
     'alerts' => [
         'unableToActivateAttributeMissing' => 'امکان فعالسازی وجود ندارد، ویژگی مورد نیاز ":attribute" موجود نیست یا خالی است.',
         'unableToSetDoneAttributeMissing' => 'ویژگی مورد نیاز ":attribute" موجود نیست یا مقدار ندارد.',

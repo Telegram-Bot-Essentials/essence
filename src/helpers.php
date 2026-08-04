@@ -18,6 +18,8 @@ use TelegramBotEssentials\Essence\Support\TbeLogger;
 use TelegramBotEssentials\Essence\Support\Webhook;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQuery;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQueryBus;
+use TelegramBotEssentials\Essence\Telegram\Commands\Command;
+use TelegramBotEssentials\Essence\Telegram\Commands\CommandBus;
 use TelegramBotEssentials\Essence\Telegram\InlineQueries\InlineQuery;
 use TelegramBotEssentials\Essence\Telegram\InlineQueries\InlineQueryBus;
 use TelegramBotEssentials\Essence\Telegram\Features\Member\InlineConfirmationFeature;
@@ -85,6 +87,13 @@ if (!function_exists('inlineQueryBus')) {
     function inlineQueryBus(): InlineQueryBus
     {
         return app(InlineQueryBus::class);
+    }
+}
+
+if (!function_exists('commandBus')) {
+    function commandBus(): CommandBus
+    {
+        return app(CommandBus::class);
     }
 }
 
@@ -493,6 +502,22 @@ if (!function_exists('loadCallbackQueries')) {
 
             if (class_exists($fqcn) && is_subclass_of($fqcn, CallbackQuery::class)) {
                 callbackQueryBus()->addCallbackQuery($fqcn);
+            }
+        }
+    }
+}
+
+if (!function_exists('loadCommands')) {
+    function loadCommands(string $path): void
+    {
+        if (!$path) return;
+        $namespace = resolveNamespace($path);
+
+        foreach (File::allFiles($path) as $file) {
+            $fqcn = $namespace . '\\' . $file->getFilenameWithoutExtension();
+
+            if (class_exists($fqcn) && is_subclass_of($fqcn, Command::class)) {
+                commandBus()->addCommand($fqcn);
             }
         }
     }

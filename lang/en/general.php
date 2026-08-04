@@ -29,6 +29,12 @@ return [
         'willBeAddedInTheFuture' => '❕ Will be added in the future.',
     ],
 
+    'command' => [
+        'notFound' => '❕ Command not found.',
+        'helpDescription' => 'Get a list of available commands',
+        'availableCommands' => 'Available commands:',
+    ],
+
     'alerts' => [
         'unableToActivateAttributeMissing' => 'Unable to activate, required attribute :attribute is missing or empty.',
         'unableToSetDoneAttributeMissing' => 'Required attribute \':attribute\' is missing or empty.',

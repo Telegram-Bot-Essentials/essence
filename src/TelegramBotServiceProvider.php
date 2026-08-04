@@ -26,6 +26,7 @@ use TelegramBotEssentials\Essence\Services\NavState;
 use TelegramBotEssentials\Essence\Services\TranslationScanner;
 use TelegramBotEssentials\Essence\Support\Webhook;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQueryBus;
+use TelegramBotEssentials\Essence\Telegram\Commands\CommandBus;
 use TelegramBotEssentials\Essence\Telegram\InlineQueries\InlineQueryBus;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Member\CancelProcessKey;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKeyBus;
@@ -77,6 +78,10 @@ class TelegramBotServiceProvider extends ServiceProvider
 
         $this->app->singleton(InlineQueryBus::class, function ($app) {
             return new InlineQueryBus();
+        });
+
+        $this->app->singleton(CommandBus::class, function ($app) {
+            return new CommandBus();
         });
 
         $this->app->singleton(NavState::class, fn() => new NavState());
