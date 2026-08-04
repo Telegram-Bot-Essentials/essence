@@ -6,13 +6,11 @@ use Exception;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Telegram\Bot\Commands\Command;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
 use TelegramBotEssentials\Essence\Exceptions\TbeLogicException;
 use TelegramBotEssentials\Essence\Events\BotCallbackQueryHandled;
 use TelegramBotEssentials\Essence\Events\BotInlineQueryHandled;
-use TelegramBotEssentials\Essence\Events\BotCommandHandled;
 use TelegramBotEssentials\Essence\Events\BotDeepLinkReceived;
 use TelegramBotEssentials\Essence\Events\BotReplyKeyHandled;
 use TelegramBotEssentials\Essence\Events\BotStateAnswerHandled;
@@ -52,18 +50,12 @@ class TelegramWebhookController extends Controller
      */
     private function initializeOptions()
     {
-        $commands = config('tbe-essence.commands') ?? [];
-
-        foreach ($commands as $command) {
-            if (!is_subclass_of($command, Command::class))
-                throw new LogicException("ReplyKey {$command} is not a subclass of namespace Telegram\Bot\Commands\Command");
-            wHook()->api()->addCommand($command);
-        }
-
         $adminQueries = base_path('app/Telegram/CallbackQueries/Admin');
         $memberQueries = base_path('app/Telegram/CallbackQueries/Member');
         $adminStateAnswers = base_path('app/Telegram/StateAnswers/Admin');
         $memberStateAnswers = base_path('app/Telegram/StateAnswers/Member');
+        $adminCommands = base_path('app/Telegram/Commands/Admin');
+        $memberCommands = base_path('app/Telegram/Commands/Member');
 //        $adminReplyKeys = base_path('app/Telegram/ReplyKeys/Admin');
 //        $memberReplyKeys = base_path('app/Telegram/ReplyKeys/Member');
         $inlineQueriesPath = base_path('app/Telegram/InlineQueries');
@@ -73,6 +65,9 @@ class TelegramWebhookController extends Controller
 
         if (is_dir($adminStateAnswers)) loadStateAnswers($adminStateAnswers);
         if (is_dir($memberStateAnswers)) loadStateAnswers($memberStateAnswers);
+
+        if (is_dir($adminCommands)) loadCommands($adminCommands);
+        if (is_dir($memberCommands)) loadCommands($memberCommands);
 
         if (is_dir($inlineQueriesPath)) loadInlineQueries($inlineQueriesPath);
 
@@ -86,6 +81,8 @@ class TelegramWebhookController extends Controller
         loadStateAnswers(realpath(__DIR__ . '/../../Telegram/StateAnswers/Admin'));
         loadReplyKeys(realpath(__DIR__ . '/../../Telegram/ReplyKeys/Member'));
         loadReplyKeys(realpath(__DIR__ . '/../../Telegram/ReplyKeys/Admin'));
+        loadCommands(realpath(__DIR__ . '/../../Telegram/Commands/Member'));
+        loadCommands(realpath(__DIR__ . '/../../Telegram/Commands/Admin'));
     }
 
     /**
@@ -113,10 +110,7 @@ class TelegramWebhookController extends Controller
 
                 stateAnswerBus()->cancelHandler(wHook()->requestState());
                 $this->cancelOldProcess();
-                wHook()->api()->processCommand($update);
-                $commandProcessed = true;
-
-                botEventBus()->fire(new BotCommandHandled($context, $command));
+                $commandProcessed = commandBus()->processCommands();
 
                 if ($payload !== null && strtolower($command) === '/start') {
                     botEventBus()->fire(new BotDeepLinkReceived($context, $payload));
