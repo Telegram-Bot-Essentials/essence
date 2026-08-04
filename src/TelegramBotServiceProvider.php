@@ -60,15 +60,22 @@ class TelegramBotServiceProvider extends ServiceProvider
         // request's bot/user into whatever runs next on that worker.
         $this->app->scoped(Webhook::class, fn() => new Webhook());
 
-        $this->app->singleton(ReplyKeyBus::class, function ($app) {
+        // Same reasoning as Webhook::class above: these buses are repopulated
+        // from scratch every request (loadCommands(), loadCallbackQueries(),
+        // ...) and were never designed to accumulate registrations across
+        // requests. As singletons under Octane, the previous request's
+        // entries survived into the next one on the same worker — CommandBus
+        // then threw a LogicException the second time any command with an
+        // alias (e.g. StartCommand's "menu") got re-registered against itself.
+        $this->app->scoped(ReplyKeyBus::class, function ($app) {
             return new ReplyKeyBus();
         });
 
-        $this->app->singleton(CallbackQueryBus::class, function ($app) {
+        $this->app->scoped(CallbackQueryBus::class, function ($app) {
             return new CallbackQueryBus();
         });
 
-        $this->app->singleton(StateAnswerBus::class, function ($app) {
+        $this->app->scoped(StateAnswerBus::class, function ($app) {
             return new StateAnswerBus();
         });
 
@@ -76,11 +83,11 @@ class TelegramBotServiceProvider extends ServiceProvider
 
         $this->app->singleton(TranslationScanner::class, fn() => new TranslationScanner());
 
-        $this->app->singleton(InlineQueryBus::class, function ($app) {
+        $this->app->scoped(InlineQueryBus::class, function ($app) {
             return new InlineQueryBus();
         });
 
-        $this->app->singleton(CommandBus::class, function ($app) {
+        $this->app->scoped(CommandBus::class, function ($app) {
             return new CommandBus();
         });
 
