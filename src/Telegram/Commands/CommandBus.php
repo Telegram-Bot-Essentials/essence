@@ -44,14 +44,27 @@ class CommandBus
     }
 
     /**
+     * Registering the same command name twice (e.g. TelegramWebhookController
+     * re-scanning app/Telegram/Commands/* on every request against a
+     * singleton bus) replaces the prior registration rather than conflicting
+     * with it: this command's own previous aliases are freed first, so only
+     * a genuinely different command claiming one of them still conflicts.
+     *
      * @throws LogicException
      * @throws BindingResolutionException
      */
     public function addCommand(CommandInterface|string $command): void
     {
         $command = $this->resolveCommand($command);
+        $name = $command->getName();
 
-        $this->commands[$command->getName()] = $command;
+        if (isset($this->commands[$name])) {
+            foreach ($this->commands[$name]->getAliases() as $alias) {
+                unset($this->aliases[$alias]);
+            }
+        }
+
+        $this->commands[$name] = $command;
 
         foreach ($command->getAliases() as $alias) {
             $this->checkForConflicts($command, $alias);

@@ -60,22 +60,28 @@ class TelegramBotServiceProvider extends ServiceProvider
         // request's bot/user into whatever runs next on that worker.
         $this->app->scoped(Webhook::class, fn() => new Webhook());
 
-        // Same reasoning as Webhook::class above: these buses are repopulated
-        // from scratch every request (loadCommands(), loadCallbackQueries(),
-        // ...) and were never designed to accumulate registrations across
-        // requests. As singletons under Octane, the previous request's
-        // entries survived into the next one on the same worker — CommandBus
-        // then threw a LogicException the second time any command with an
-        // alias (e.g. StartCommand's "menu") got re-registered against itself.
-        $this->app->scoped(ReplyKeyBus::class, function ($app) {
+        // These buses must stay singletons, not scoped: package service
+        // providers (affiliates, announcements, billing, ...) each register
+        // their commands/queries/keys/answers exactly once, in their own
+        // boot(), which Octane runs once per worker rather than once per
+        // request. A scoped() bus would reset to empty before every request
+        // after the first and only get repopulated by the per-request
+        // directory scan in TelegramWebhookController (loadCommands(),
+        // loadCallbackQueries(), ...), silently losing every package's
+        // boot()-time registrations for the rest of that worker's life.
+        //
+        // The one bus that genuinely needs the per-request scan to be
+        // idempotent is CommandBus, since it validates alias uniqueness:
+        // see addCommand()'s handling of re-registering the same command.
+        $this->app->singleton(ReplyKeyBus::class, function ($app) {
             return new ReplyKeyBus();
         });
 
-        $this->app->scoped(CallbackQueryBus::class, function ($app) {
+        $this->app->singleton(CallbackQueryBus::class, function ($app) {
             return new CallbackQueryBus();
         });
 
-        $this->app->scoped(StateAnswerBus::class, function ($app) {
+        $this->app->singleton(StateAnswerBus::class, function ($app) {
             return new StateAnswerBus();
         });
 
@@ -83,11 +89,11 @@ class TelegramBotServiceProvider extends ServiceProvider
 
         $this->app->singleton(TranslationScanner::class, fn() => new TranslationScanner());
 
-        $this->app->scoped(InlineQueryBus::class, function ($app) {
+        $this->app->singleton(InlineQueryBus::class, function ($app) {
             return new InlineQueryBus();
         });
 
-        $this->app->scoped(CommandBus::class, function ($app) {
+        $this->app->singleton(CommandBus::class, function ($app) {
             return new CommandBus();
         });
 
