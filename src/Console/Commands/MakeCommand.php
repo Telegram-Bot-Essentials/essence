@@ -11,8 +11,8 @@ class MakeCommand extends GeneratorCommand
 
     protected $signature = 'tbe:make:command
         {name : The class name}
+        {--admin : Make command for admin}
         {--command-name= : The Telegram command name (default: snake_case of name)}
-        {--p|pattern="{username}" : The pattern for arguments}
         {--d|description= : Command description}';
 
     protected $description = 'Create a new Telegram Bot Command class';
@@ -24,7 +24,8 @@ class MakeCommand extends GeneratorCommand
 
     protected function getDefaultNamespace($rootNamespace): string
     {
-        return $rootNamespace . '\\Telegram\\Commands';
+        $perm = $this->option('admin') ? 'Admin' : 'Member';
+        return $rootNamespace . '\\Telegram\\Commands\\' . $perm;
     }
 
     protected function buildClass($name): string
@@ -45,12 +46,14 @@ class MakeCommand extends GeneratorCommand
                 '{{ class_name }}',
                 '{{ command_name }}',
                 '{{ description }}',
+                '{{ perm_power }}',
             ],
             [
                 $namespace,
                 $className,
                 $commandName,
                 $description,
+                $this->permEnumValue,
             ],
             $stub
         );

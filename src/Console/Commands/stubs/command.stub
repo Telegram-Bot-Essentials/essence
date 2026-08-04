@@ -2,15 +2,19 @@
 
 namespace {{ namespace }};
 
-use Telegram\Bot\Commands\Command;
+use TelegramBotEssentials\Essence\Enums\Roles;
+use TelegramBotEssentials\Essence\Telegram\Commands\Command;
 
 class {{ class_name }} extends Command
 {
     protected string $name = '{{ command_name }}';
     protected string $description = '{{ description }}';
+    protected int $perm = {{ perm_power }};
 
-    public function handle()
+    public function handle(): ?bool
     {
         // TODO: Implement command logic here
+
+        return true;
     }
 }
