@@ -11,6 +11,7 @@ use TelegramBotEssentials\Essence\Events\BotEventBus;
 use TelegramBotEssentials\Essence\Exceptions\FeatureIsDisabled;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
 use TelegramBotEssentials\Essence\Models\InlineConfirmation;
+use TelegramBotEssentials\Essence\Services\BotUserStatus;
 use TelegramBotEssentials\Essence\Services\ExceptionHandler;
 use TelegramBotEssentials\Essence\Services\NavState;
 use TelegramBotEssentials\Essence\Services\StateDataService;
@@ -472,6 +473,13 @@ if (!function_exists('navState')) {
     function navState(): NavState
     {
         return app(NavState::class);
+    }
+}
+
+if (!function_exists('botUserStatus')) {
+    function botUserStatus(): BotUserStatus
+    {
+        return app(BotUserStatus::class);
     }
 }
 

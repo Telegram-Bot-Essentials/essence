@@ -54,7 +54,17 @@ class TelegramBotAuthentication
             return apiResponse()->error('Failed to initialize API service', 503);
         }
 
-        wHook()->setUser($this->fetchUserData());
+        $botUser = $this->fetchUserData();
+        wHook()->setUser($botUser);
+
+        // An update can only reach us from someone who has not blocked the bot
+        // and whose account still exists, so any inbound update other than the
+        // membership change itself proves the user is reachable. This is what
+        // recovers a user whose unblock event was lost to drop_pending_updates,
+        // and what undoes a deactivation recorded by mistake.
+        if (!wHook()->update()->myChatMember) {
+            botUserStatus()->markActive($botUser);
+        }
 
         if ($context = WebhookContext::capture()) {
             botEventBus()->fire(new BotWebhookInitialized($context));
@@ -74,6 +84,8 @@ class TelegramBotAuthentication
             $from = wHook()->update()->callbackQuery->from;
         } elseif (wHook()->update()->inlineQuery) {
             $from = wHook()->update()->inlineQuery->from;
+        } elseif (self::isPrivateChatMemberUpdate()) {
+            $from = wHook()->update()->myChatMember->from;
         } else {
             throw new HttpResponseException(apiResponse()->error('Invalid update', 204));
         }
@@ -93,5 +105,24 @@ class TelegramBotAuthentication
         $botUser = BotUser::firstOrCreate(['telegram_user_peer_id' => $telegramUser->peer_id]);
         $botUser->interact();
         return $botUser;
+    }
+
+    /**
+     * my_chat_member also fires when the bot is added to or removed from a
+     * group or channel, where "from" is the admin who did it rather than
+     * someone in a conversation with the bot. Nothing here models group
+     * membership, so those keep the old behaviour of being rejected outright
+     * instead of minting a BotUser or rewriting that admin's status.
+     */
+    public static function isPrivateChatMemberUpdate(): bool
+    {
+        $chatMember = wHook()->update()->myChatMember;
+
+        if (!$chatMember) {
+            return false;
+        }
+
+        return $chatMember->chat?->type === 'private'
+            && (int) $chatMember->chat?->id === (int) $chatMember->from?->id;
     }
 }

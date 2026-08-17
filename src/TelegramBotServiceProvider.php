@@ -22,6 +22,7 @@ use TelegramBotEssentials\Essence\Console\Commands\SetWebhook;
 use TelegramBotEssentials\Essence\Console\Commands\CheckMissingTranslations;
 use TelegramBotEssentials\Essence\Console\Commands\TranslationStats;
 use TelegramBotEssentials\Essence\Events\BotEventBus;
+use TelegramBotEssentials\Essence\Services\BotUserStatus;
 use TelegramBotEssentials\Essence\Services\NavState;
 use TelegramBotEssentials\Essence\Services\TranslationScanner;
 use TelegramBotEssentials\Essence\Support\Webhook;
@@ -98,6 +99,8 @@ class TelegramBotServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(NavState::class, fn() => new NavState());
+
+        $this->app->singleton(BotUserStatus::class, fn() => new BotUserStatus());
     }
 
     private function registerBotsManager(): void

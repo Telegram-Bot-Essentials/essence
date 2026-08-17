@@ -31,10 +31,18 @@ class TelegramUser extends Model
         'password',
     ];
 
+    /**
+     * deactivated_at is intentionally absent from $fillable: it must only ever
+     * be written by BotUserStatus, off an exact Telegram "user is deactivated"
+     * response, since it silences the user across every bot at once.
+     *
+     * @see \TelegramBotEssentials\Essence\Services\BotUserStatus
+     */
     protected $casts = [
         'peer_id' => 'integer',
         'last_interaction' => 'datetime',
         'deleted_at' => 'datetime',
+        'deactivated_at' => 'datetime',
     ];
 
     public function getFullNameAttribute(): string

@@ -2,8 +2,10 @@
 
 namespace TelegramBotEssentials\Essence\Telegram;
 
+use TelegramBotEssentials\Essence\Models\BotUser;
 use TelegramBotEssentials\Essence\Models\MessageMeta;
 use Exception;
+use Throwable;
 use Illuminate\Database\Eloquent\Model;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\FileUpload\InputFile;
@@ -113,21 +115,51 @@ class TelegramResponse
             'parse_mode' => $this->parseMode,
         ]);
 
-        if ($this->photo) {
-            $message = wHook()->api()->sendPhoto(array_merge($params, array_filter([
-                'photo' => $this->photo,
-                'caption' => $this->text,
-            ])));
-        } else {
-            $message = wHook()->api()->sendMessage(array_merge($params, array_filter([
-                'text' => $this->text,
-            ])));
+        $statusTarget = $this->statusTarget($chatId);
+
+        try {
+            if ($this->photo) {
+                $message = wHook()->api()->sendPhoto(array_merge($params, array_filter([
+                    'photo' => $this->photo,
+                    'caption' => $this->text,
+                ])));
+            } else {
+                $message = wHook()->api()->sendMessage(array_merge($params, array_filter([
+                    'text' => $this->text,
+                ])));
+            }
+        } catch (Throwable $e) {
+            $statusTarget && botUserStatus()->reportFailure($statusTarget, $e);
+
+            throw $e;
         }
+
+        $statusTarget && botUserStatus()->reportSuccess($statusTarget);
 
         $this->saveMessageMeta($message);
         $this->saveNavState($message);
 
         return $message;
+    }
+
+    /**
+     * The bot user whose reachability this send tells us about, or null when it
+     * tells us nothing: a send aimed at another chat (an admin group, a
+     * channel) says nothing about the user currently in context.
+     */
+    private function statusTarget(string|int|null $chatId): ?BotUser
+    {
+        if (!wHook()->check()) {
+            return null;
+        }
+
+        $user = wHook()->user();
+
+        if ($chatId !== null && (int) $chatId !== (int) $user->telegramUser?->peer_id) {
+            return null;
+        }
+
+        return $user;
     }
 
     /**

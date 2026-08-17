@@ -16,6 +16,7 @@ use TelegramBotEssentials\Essence\Events\BotReplyKeyHandled;
 use TelegramBotEssentials\Essence\Events\BotStateAnswerHandled;
 use TelegramBotEssentials\Essence\Events\BotUpdateReceived;
 use TelegramBotEssentials\Essence\Events\BotUpdateUnhandled;
+use TelegramBotEssentials\Essence\Http\Middleware\TelegramBotAuthentication;
 use TelegramBotEssentials\Essence\Support\WebhookContext;
 use TelegramBotEssentials\Essence\Traits\CanCancelOldProcess;
 use Throwable;
@@ -36,6 +37,13 @@ class TelegramWebhookController extends Controller
                 __('tbe::general.alerts.botIsOff'
                 ));
 //            if (!hasAccess()) dependsOn(wHook()->bot()->settings->bot_status, __('tbe::general.alerts.botIsOff'));
+            // Blocking or unblocking the bot cannot use any command, key,
+            // answer or query, so it is answered before initializeOptions()
+            // scans all of those off disk.
+            if ($this->processChatMemberUpdate()) {
+                return;
+            }
+
             $this->initializeOptions();
             $this->processUpdate();
         } catch (Throwable $e) {
@@ -83,6 +91,35 @@ class TelegramWebhookController extends Controller
         loadReplyKeys(realpath(__DIR__ . '/../../Telegram/ReplyKeys/Admin'));
         loadCommands(realpath(__DIR__ . '/../../Telegram/Commands/Member'));
         loadCommands(realpath(__DIR__ . '/../../Telegram/Commands/Admin'));
+    }
+
+    /**
+     * Record a block or unblock of the bot, and report whether this update was
+     * one. Only private chats get here: TelegramBotAuthentication rejects
+     * group and channel membership changes before the controller runs.
+     *
+     * BotUpdateReceived still fires, so listeners see the update, but nothing
+     * further is routed.
+     */
+    private function processChatMemberUpdate(): bool
+    {
+        if (!TelegramBotAuthentication::isPrivateChatMemberUpdate()) {
+            return false;
+        }
+
+        if ($context = WebhookContext::capture()) {
+            botEventBus()->fire(new BotUpdateReceived($context, 'my_chat_member'));
+        }
+
+        $status = wHook()->update()->myChatMember->newChatMember?->status;
+
+        if ($status === 'kicked') {
+            botUserStatus()->markBlocked(wHook()->user());
+        } elseif (in_array($status, ['member', 'administrator', 'creator'], true)) {
+            botUserStatus()->markActive(wHook()->user());
+        }
+
+        return true;
     }
 
     /**

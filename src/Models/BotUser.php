@@ -3,6 +3,7 @@
 namespace TelegramBotEssentials\Essence\Models;
 
 use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -19,6 +20,32 @@ class BotUser extends Model
     use HasFactory;
     use CanResolveReplyKey;
     use BelongsToTenant;
+
+    /** Telegram delivers to this user. */
+    public const STATUS_ACTIVE = 'active';
+
+    /** The user blocked the bot: my_chat_member "kicked", or 403 "bot was blocked by the user". */
+    public const STATUS_BLOCKED = 'blocked';
+
+    /** The chat cannot be opened: 400 "chat not found", 403 "bot can't initiate conversation". */
+    public const STATUS_UNREACHABLE = 'unreachable';
+
+    /** Valid values of the status column. */
+    public const STATUSES = [
+        self::STATUS_ACTIVE,
+        self::STATUS_BLOCKED,
+        self::STATUS_UNREACHABLE,
+    ];
+
+    /**
+     * Not a value of the status column: the Telegram account itself is gone,
+     * which is global to the peer rather than per bot, so it is stored on
+     * telegram_users.deactivated_at. Named here because it is the fourth
+     * reachability state that consumers filter and report on.
+     *
+     * @see \TelegramBotEssentials\Essence\Services\BotUserStatus
+     */
+    public const STATUS_DEACTIVATED = 'deactivated';
 
     protected $appends = ['role', 'suspend'];
     protected $guarded = [
@@ -68,6 +95,55 @@ class BotUser extends Model
     public function telegramUser(): BelongsTo
     {
         return $this->belongsTo(TelegramUser::class, 'telegram_user_peer_id', 'peer_id');
+    }
+
+    /**
+     * Users Telegram will actually deliver to. Deliberately says nothing about
+     * suspension, which is a policy decision rather than a transport one: use
+     * ->reachable()->notSuspended() when both matter.
+     */
+    public function scopeReachable(Builder $query): Builder
+    {
+        return $query
+            ->where('status', self::STATUS_ACTIVE)
+            ->whereHas('telegramUser', fn (Builder $telegramUser) => $telegramUser->whereNull('deactivated_at'));
+    }
+
+    public function scopeWithStatus(Builder $query, string|array $status): Builder
+    {
+        return $query->whereIn('status', (array) $status);
+    }
+
+    /**
+     * Users whose Telegram account is gone. Independent of the status column,
+     * since deactivation is discovered per bot but is true for every bot.
+     */
+    public function scopeDeactivated(Builder $query): Builder
+    {
+        return $query->whereHas('telegramUser', fn (Builder $telegramUser) => $telegramUser->whereNotNull('deactivated_at'));
+    }
+
+    public function scopeNotSuspended(Builder $query): Builder
+    {
+        return $query->whereNull('suspended_at');
+    }
+
+    public function isReachable(): bool
+    {
+        return $this->reachability() === self::STATUS_ACTIVE;
+    }
+
+    /**
+     * The single reachability state of this user, folding the global
+     * deactivated flag over the per-bot status column.
+     */
+    public function reachability(): string
+    {
+        if ($this->telegramUser?->deactivated_at) {
+            return self::STATUS_DEACTIVATED;
+        }
+
+        return $this->status ?? self::STATUS_ACTIVE;
     }
 
     /**
