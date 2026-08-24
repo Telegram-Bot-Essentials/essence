@@ -3,7 +3,6 @@
 namespace TelegramBotEssentials\Essence\Telegram\CallbackQueries\Member;
 
 use Illuminate\Contracts\Container\BindingResolutionException;
-use Illuminate\Support\Carbon;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use TelegramBotEssentials\Essence\Enums\Roles;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
@@ -31,7 +30,6 @@ class InlineConfirmationQuery extends CallbackQuery
         }
 
         $inlineConfirmation->delete();
-        InlineConfirmation::where('updated_at', '<', Carbon::now()->subHours(6))->delete();
     }
 
     /**
@@ -47,7 +45,6 @@ class InlineConfirmationQuery extends CallbackQuery
         }
 
         $inlineConfirmation->delete();
-        InlineConfirmation::where('updated_at', '<', Carbon::now()->subHours(6))->delete();
     }
 
     /**

@@ -3,7 +3,9 @@
 namespace TelegramBotEssentials\Essence\Models;
 
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Prunable;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\Keyboard\Keyboard;
@@ -13,6 +15,8 @@ use TelegramBotEssentials\Essence\Telegram\TelegramResponse;
 
 class MessageMeta extends Model
 {
+    use Prunable;
+
     public static $type = 'MESSAGE_META';
 
     protected $fillable = ['chat_id', 'message_id', 'message_text', 'message_reply_markup'];
@@ -21,6 +25,11 @@ class MessageMeta extends Model
         'message_text' => 'string',
         'message_reply_markup' => 'array',
     ];
+
+    public function prunable(): Builder
+    {
+        return static::where('updated_at', '<', now()->subDays(config('tbe-essence.pruning.message_metas_days', 7)));
+    }
 
     public static function makeWithCurrentMessage(?string $tag = null): MessageMeta
     {

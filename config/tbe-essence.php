@@ -51,4 +51,10 @@ return [
         'cache_key' => 'tbe.translation_stats',
         'ttl' => 86400,
     ],
+
+    'pruning' => [
+        'state_data_days' => env('TBE_PRUNE_STATE_DATA_DAYS', 7),
+        'message_metas_days' => env('TBE_PRUNE_MESSAGE_METAS_DAYS', 7),
+        'inline_confirmations_hours' => env('TBE_PRUNE_INLINE_CONFIRMATIONS_HOURS', 6),
+    ],
 ];
