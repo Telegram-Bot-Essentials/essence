@@ -17,7 +17,6 @@ class BotFactory extends Factory
             'bot_token' => fake()->unique()->randomNumber(),
             'unique_id' => Uuid::uuid4()->toString(),
             'secret_token' => fake()->unique()->randomNumber(),
-            'currency' => collect(config('tbe-essence.supported_currencies'))->random()['name'] ?? 'USD',
             'bot_owner_peer_id' => TelegramUser::factory()->create()->peer_id,
         ];
     }

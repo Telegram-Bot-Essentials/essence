@@ -23,9 +23,8 @@ class BotUserFactory extends Factory
             ])->id,
             'telegram_user_peer_id' => $telegramUser->peer_id,
             'power' => $role,
-            'balance' => rand(0, 10) * 25000,
             'state' => ['test', null][rand(0, 1)],
-            'menu' => $role == Roles::ADMIN->value ? 'admin' : 'main',
+            'menu' => $role->value >= Roles::ADMIN->value ? 'admin' : 'main',
             'suspend' => fake()->boolean(),
         ];
     }
