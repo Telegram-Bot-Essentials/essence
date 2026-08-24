@@ -7,7 +7,9 @@ use Telegram\Bot\Keyboard\Button;
 use Telegram\Bot\Keyboard\Keyboard;
 use TelegramBotEssentials\Essence\Enums\Roles;
 use TelegramBotEssentials\Essence\Events\BotEventBus;
+use TelegramBotEssentials\Essence\Exceptions\CallbackDataTooLong;
 use TelegramBotEssentials\Essence\Exceptions\FeatureIsDisabled;
+use TelegramBotEssentials\Essence\Exceptions\InvalidCallbackParam;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
 use TelegramBotEssentials\Essence\Models\InlineConfirmation;
 use TelegramBotEssentials\Essence\Services\BotUserStatus;
@@ -125,16 +127,46 @@ if (! function_exists('decodeAnswerState')) {
 }
 
 if (! function_exists('encodeCallback')) {
+    /**
+     * Encode a callback_data payload for an inline button.
+     *
+     * Params are positional: every param produces one slot, so a null or
+     * empty value encodes as an empty slot rather than vanishing and
+     * shifting its successors left. Param keys are not encoded.
+     *
+     * @throws InvalidCallbackParam when a param cannot be stringified
+     * @throws CallbackDataTooLong when the result exceeds Telegram's 64 bytes
+     */
     function encodeCallback(string $type, string $method, array $params = []): string
     {
-        $safeParams = array_filter($params, fn ($p) => is_scalar($p) && ! is_null($p) && $p !== '');
+        $encoded = [];
 
-        $result = empty($safeParams)
+        foreach ($params as $key => $param) {
+            if ($param !== null && ! is_scalar($param) && ! $param instanceof Stringable) {
+                throw new InvalidCallbackParam(sprintf(
+                    'Callback param "%s" for %s#%s is a %s, which cannot be encoded.',
+                    $key,
+                    $type,
+                    $method,
+                    get_debug_type($param)
+                ));
+            }
+
+            $encoded[] = (string) $param;
+        }
+
+        $result = $encoded === []
             ? $type.'#'.$method
-            : $type.'#'.$method.'?'.implode('&', array_map('strval', $safeParams));
+            : $type.'#'.$method.'?'.implode('&', $encoded);
 
         if (strlen($result) > 64) {
-            return 'LONG_CALLBACK_DATA'; // TODO: handle this case
+            throw new CallbackDataTooLong(sprintf(
+                'Callback data for %s#%s is %d bytes, over Telegram\'s 64-byte limit. '
+                .'Store the payload with stateData() and pass its id instead.',
+                $type,
+                $method,
+                strlen($result)
+            ));
         }
 
         return $result;

@@ -2,12 +2,14 @@
 
 declare(strict_types=1);
 
+use TelegramBotEssentials\Essence\Exceptions\CallbackDataTooLong;
+use TelegramBotEssentials\Essence\Exceptions\InvalidCallbackParam;
+
 /*
- * Characterisation tests for the callback-data codec.
+ * Tests for the callback-data codec.
  *
- * These pin the behaviour that exists TODAY, bugs included, so that the
- * phase 0 fixes show up as deliberate assertion changes rather than as
- * silent regressions. Cases known to be wrong are marked BUG.
+ * Params are positional: N params in always means N slots out, so a
+ * handler can address params[2] regardless of what params[1] held.
  */
 
 it('encodes a type and method with no params', function () {
@@ -52,37 +54,51 @@ it('preserves an empty positional slot on decode', function () {
 });
 
 it('already emits an empty slot for false, preserving arity', function () {
-    // false is scalar, not null and not '', so it survives the filter and
-    // strval()s to ''. Positions are preserved. This is the behaviour the
-    // null/empty-string cases below should have had all along.
+    // false stringifies to '', so it always occupied a slot. null and
+    // the empty string now behave the same way.
     expect(encodeCallback('TYPE', 'method', [7, false, 9]))->toBe('TYPE#method?7&&9');
 });
 
-it('BUG: drops a null param and shifts later params left', function () {
-    // Should be 'TYPE#method?7&&9' so index 2 stays addressable.
-    expect(encodeCallback('TYPE', 'method', [7, null, 9]))->toBe('TYPE#method?7&9');
+it('encodes null as an empty slot, preserving arity', function () {
+    expect(encodeCallback('TYPE', 'method', [7, null, 9]))->toBe('TYPE#method?7&&9');
 
     $params = decodeCallback(encodeCallback('TYPE', 'method', [7, null, 9]))['params'];
-    expect($params)->toHaveCount(2)
-        ->and($params[1])->toBe('9');
+    expect($params)->toHaveCount(3)
+        ->and($params[1])->toBe('')
+        ->and($params[2])->toBe('9');
 });
 
-it('BUG: drops an empty-string param and shifts later params left', function () {
-    expect(encodeCallback('TYPE', 'method', [7, '', 9]))->toBe('TYPE#method?7&9');
+it('encodes an empty string as an empty slot', function () {
+    expect(encodeCallback('TYPE', 'method', [7, '', 9]))->toBe('TYPE#method?7&&9');
 });
 
-it('BUG: silently drops a non-scalar param', function () {
-    expect(encodeCallback('TYPE', 'method', [7, ['a'], 9]))->toBe('TYPE#method?7&9');
+it('throws on a param it cannot stringify', function () {
+    expect(fn () => encodeCallback('TYPE', 'method', [7, ['a'], 9]))
+        ->toThrow(InvalidCallbackParam::class);
 });
 
-it('BUG: returns a sentinel string when the result exceeds 64 bytes', function () {
-    // Telegram caps callback_data at 64 bytes. Today the overflow ships a
-    // button whose data is the literal sentinel, which matches no handler,
-    // so the button is silently dead.
-    $long = encodeCallback('TYPE', 'method', [str_repeat('x', 80)]);
+it('accepts a Stringable param', function () {
+    $param = new class implements Stringable
+    {
+        public function __toString(): string
+        {
+            return '42';
+        }
+    };
 
-    expect($long)->toBe('LONG_CALLBACK_DATA')
-        ->and(decodeCallback($long)['method'])->toBeNull();
+    expect(encodeCallback('TYPE', 'method', [$param]))->toBe('TYPE#method?42');
+});
+
+it('throws when the result exceeds 64 bytes', function () {
+    // Telegram caps callback_data at 64 bytes. Overflow used to return the
+    // literal string LONG_CALLBACK_DATA, which matched no handler, so the
+    // button rendered fine and did nothing when tapped.
+    expect(fn () => encodeCallback('TYPE', 'method', [str_repeat('x', 80)]))
+        ->toThrow(CallbackDataTooLong::class);
+});
+
+it('allows a result of exactly 64 bytes', function () {
+    expect(strlen(encodeCallback('T', 'm', [str_repeat('x', 60)])))->toBe(64);
 });
 
 it('measures the 64-byte limit in bytes, not characters', function () {
