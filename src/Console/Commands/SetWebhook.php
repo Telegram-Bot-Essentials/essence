@@ -3,12 +3,12 @@
 namespace TelegramBotEssentials\Essence\Console\Commands;
 
 use TelegramBotEssentials\Essence\Models\Bot;
-use TelegramBotEssentials\Essence\Traits\CanResolveCommand;
+use TelegramBotEssentials\Essence\Traits\CanResolveBotCommand;
 use Illuminate\Console\Command;
 
 class SetWebhook extends Command
 {
-    use CanResolveCommand;
+    use CanResolveBotCommand;
 
     /**
      * The name and signature of the console command.
@@ -88,7 +88,7 @@ class SetWebhook extends Command
 
         $commands = [];
         foreach (config('tbe-essence.commands') as $command) {
-            $command = $this->resolveCommand($command);
+            $command = $this->resolveBotCommand($command);
             $commands[] = [
                 'command' => $command->getName(),
                 'description' => $command->getDescription(),
