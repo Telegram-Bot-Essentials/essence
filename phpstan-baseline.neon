@@ -1,0 +1,3823 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
+			identifier: larastan.noEnvCallsOutsideOfConfig
+			count: 17
+			path: config/tbe-essence.php
+
+		-
+			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
+			identifier: larastan.noEnvCallsOutsideOfConfig
+			count: 4
+			path: config/telegram.php
+
+		-
+			message: '#^Class App\\Telegram\\Commands\\StartCommand not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: config/telegram.php
+
+		-
+			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
+			identifier: larastan.noEnvCallsOutsideOfConfig
+			count: 1
+			path: config/tenancy.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$peer_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: database/factories/BotFactory.php
+
+		-
+			message: '#^Class TelegramBotEssentials\\Essence\\Database\\factories\\BotFactory extends generic class Illuminate\\Database\\Eloquent\\Factories\\Factory but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: database/factories/BotFactory.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: database/factories/BotUserFactory.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$peer_id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: database/factories/BotUserFactory.php
+
+		-
+			message: '#^Class TelegramBotEssentials\\Essence\\Database\\factories\\BotUserFactory extends generic class Illuminate\\Database\\Eloquent\\Factories\\Factory but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: database/factories/BotUserFactory.php
+
+		-
+			message: '#^Class TelegramBotEssentials\\Essence\\Database\\factories\\TelegramUserFactory extends generic class Illuminate\\Database\\Eloquent\\Factories\\Factory but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: database/factories/TelegramUserFactory.php
+
+		-
+			message: '#^Binary operation "\." between ''This is your multi…'' and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: routes/tenant.php
+
+		-
+			message: '#^Binary operation "\." between non\-falsy\-string and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: src/Console/Commands/BotManagementTokenCommand.php
+
+		-
+			message: '#^Call to static method random\(\) on an unknown class Str\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Console/Commands/BotManagementTokenCommand.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Console\\Commands\\BotManagementTokenCommand\:\:handle\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Console/Commands/BotManagementTokenCommand.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Console\\Commands\\BotManagementTokenCommand\:\:updateEnv\(\) has parameter \$key with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Console/Commands/BotManagementTokenCommand.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Console\\Commands\\BotManagementTokenCommand\:\:updateEnv\(\) has parameter \$value with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Console/Commands/BotManagementTokenCommand.php
+
+		-
+			message: '#^Parameter \#1 \$str of function preg_quote expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Console/Commands/BotManagementTokenCommand.php
+
+		-
+			message: '#^Parameter \#2 \$subject of function preg_match expects string, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Console/Commands/BotManagementTokenCommand.php
+
+		-
+			message: '#^Parameter \#3 \$subject of function preg_replace expects array\<float\|int\|string\>\|string, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Console/Commands/BotManagementTokenCommand.php
+
+		-
+			message: '#^Part \$appName \(mixed\) of encapsed string cannot be cast to string\.$#'
+			identifier: encapsedStringPart.nonString
+			count: 1
+			path: src/Console/Commands/BotManagementTokenCommand.php
+
+		-
+			message: '#^Part \$key \(mixed\) of encapsed string cannot be cast to string\.$#'
+			identifier: encapsedStringPart.nonString
+			count: 2
+			path: src/Console/Commands/BotManagementTokenCommand.php
+
+		-
+			message: '#^Part \$value \(mixed\) of encapsed string cannot be cast to string\.$#'
+			identifier: encapsedStringPart.nonString
+			count: 2
+			path: src/Console/Commands/BotManagementTokenCommand.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\TelegramUser\:\:\$peer_id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: src/Console/Commands/InitMainBotCommand.php
+
+		-
+			message: '#^Parameter \#1 \$command of method Illuminate\\Console\\Command\:\:call\(\) expects string\|Symfony\\Component\\Console\\Command\\Command, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Console/Commands/MakeCallbackQuery.php
+
+		-
+			message: '#^Parameter \#1 \$string of function strtolower expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Console/Commands/MakeCallbackQuery.php
+
+		-
+			message: '#^Parameter \#1 \$string of function trim expects string, array\|bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Console/Commands/MakeCallbackQuery.php
+
+		-
+			message: '#^Parameter \#1 \$string of function ucwords expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Console/Commands/MakeCallbackQuery.php
+
+		-
+			message: '#^Property TelegramBotEssentials\\Essence\\Console\\Commands\\MakeCallbackQuery\:\:\$map type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Console/Commands/MakeCallbackQuery.php
+
+		-
+			message: '#^Property TelegramBotEssentials\\Essence\\Console\\Commands\\MakeCallbackQuery\:\:\$nameValue \(string\) does not accept string\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Console/Commands/MakeCallbackQuery.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Console\\Commands\\MakeCommand\:\:\$map\.$#'
+			identifier: property.notFound
+			count: 3
+			path: src/Console/Commands/MakeCommand.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 1
+			path: src/Console/Commands/MakeCommand.php
+
+		-
+			message: '#^Binary operation "\." between ''Command to handle '' and array\|bool\|float\|int\|string results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: src/Console/Commands/MakeCommand.php
+
+		-
+			message: '#^Cannot access offset mixed on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/Console/Commands/MakeCommand.php
+
+		-
+			message: '#^Parameter \#1 \$array of function array_keys expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Console/Commands/MakeCommand.php
+
+		-
+			message: '#^Parameter \#1 \$command of method Illuminate\\Console\\Command\:\:call\(\) expects string\|Symfony\\Component\\Console\\Command\\Command, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Console/Commands/MakeCommand.php
+
+		-
+			message: '#^Parameter \#1 \$key of method Illuminate\\Console\\Command\:\:option\(\) expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Console/Commands/MakeCommand.php
+
+		-
+			message: '#^Parameter \#1 \$string of function strtolower expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Console/Commands/MakeCommand.php
+
+		-
+			message: '#^Parameter \#1 \$string of function trim expects string, array\|bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Console/Commands/MakeCommand.php
+
+		-
+			message: '#^Parameter \#1 \$string of function ucwords expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Console/Commands/MakeCommand.php
+
+		-
+			message: '#^Parameter \#2 \$replace of function str_replace expects array\<string\>\|string, array\<int, mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Console/Commands/MakeCommand.php
+
+		-
+			message: '#^Property TelegramBotEssentials\\Essence\\Console\\Commands\\MakeCommand\:\:\$nameValue \(string\) does not accept string\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Console/Commands/MakeCommand.php
+
+		-
+			message: '#^Parameter \#1 \$command of method Illuminate\\Console\\Command\:\:call\(\) expects string\|Symfony\\Component\\Console\\Command\\Command, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Console/Commands/MakeFeature.php
+
+		-
+			message: '#^Parameter \#1 \$string of function strtolower expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Console/Commands/MakeFeature.php
+
+		-
+			message: '#^Parameter \#1 \$string of function trim expects string, array\|bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Console/Commands/MakeFeature.php
+
+		-
+			message: '#^Parameter \#1 \$string of function ucwords expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Console/Commands/MakeFeature.php
+
+		-
+			message: '#^Property TelegramBotEssentials\\Essence\\Console\\Commands\\MakeFeature\:\:\$map type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Console/Commands/MakeFeature.php
+
+		-
+			message: '#^Property TelegramBotEssentials\\Essence\\Console\\Commands\\MakeFeature\:\:\$nameValue \(string\) does not accept string\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Console/Commands/MakeFeature.php
+
+		-
+			message: '#^Parameter \#1 \$command of method Illuminate\\Console\\Command\:\:call\(\) expects string\|Symfony\\Component\\Console\\Command\\Command, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Console/Commands/MakeInlineQuery.php
+
+		-
+			message: '#^Parameter \#1 \$string of function strtolower expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Console/Commands/MakeInlineQuery.php
+
+		-
+			message: '#^Parameter \#1 \$string of function trim expects string, array\|bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Console/Commands/MakeInlineQuery.php
+
+		-
+			message: '#^Parameter \#1 \$string of function ucwords expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Console/Commands/MakeInlineQuery.php
+
+		-
+			message: '#^Property TelegramBotEssentials\\Essence\\Console\\Commands\\MakeInlineQuery\:\:\$map type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Console/Commands/MakeInlineQuery.php
+
+		-
+			message: '#^Property TelegramBotEssentials\\Essence\\Console\\Commands\\MakeInlineQuery\:\:\$nameValue \(string\) does not accept string\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Console/Commands/MakeInlineQuery.php
+
+		-
+			message: '#^Parameter \#1 \$command of method Illuminate\\Console\\Command\:\:call\(\) expects string\|Symfony\\Component\\Console\\Command\\Command, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Console/Commands/MakeReplyKey.php
+
+		-
+			message: '#^Parameter \#1 \$string of function strtolower expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Console/Commands/MakeReplyKey.php
+
+		-
+			message: '#^Parameter \#1 \$string of function trim expects string, array\|bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Console/Commands/MakeReplyKey.php
+
+		-
+			message: '#^Parameter \#1 \$string of function ucwords expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Console/Commands/MakeReplyKey.php
+
+		-
+			message: '#^Property TelegramBotEssentials\\Essence\\Console\\Commands\\MakeReplyKey\:\:\$map type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Console/Commands/MakeReplyKey.php
+
+		-
+			message: '#^Property TelegramBotEssentials\\Essence\\Console\\Commands\\MakeReplyKey\:\:\$nameValue \(string\) does not accept string\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Console/Commands/MakeReplyKey.php
+
+		-
+			message: '#^Parameter \#1 \$command of method Illuminate\\Console\\Command\:\:call\(\) expects string\|Symfony\\Component\\Console\\Command\\Command, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Console/Commands/MakeStateAnswer.php
+
+		-
+			message: '#^Parameter \#1 \$string of function strtolower expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Console/Commands/MakeStateAnswer.php
+
+		-
+			message: '#^Parameter \#1 \$string of function trim expects string, array\|bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Console/Commands/MakeStateAnswer.php
+
+		-
+			message: '#^Parameter \#1 \$string of function ucwords expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Console/Commands/MakeStateAnswer.php
+
+		-
+			message: '#^Property TelegramBotEssentials\\Essence\\Console\\Commands\\MakeStateAnswer\:\:\$map type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Console/Commands/MakeStateAnswer.php
+
+		-
+			message: '#^Property TelegramBotEssentials\\Essence\\Console\\Commands\\MakeStateAnswer\:\:\$nameValue \(string\) does not accept string\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Console/Commands/MakeStateAnswer.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\Bot\:\:\$bot_token\.$#'
+			identifier: property.notFound
+			count: 2
+			path: src/Console/Commands/SetWebhook.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\Bot\:\:\$secret_token\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Console/Commands/SetWebhook.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\Bot\:\:\$unique_id\.$#'
+			identifier: property.notFound
+			count: 3
+			path: src/Console/Commands/SetWebhook.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 1
+			path: src/Console/Commands/SetWebhook.php
+
+		-
+			message: '#^Binary operation "\." between ''Bot with unique id\: '' and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: src/Console/Commands/SetWebhook.php
+
+		-
+			message: '#^Binary operation "\." between ''Setting webhook for…'' and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: src/Console/Commands/SetWebhook.php
+
+		-
+			message: '#^Binary operation "\." between ''Telegram bot api…'' and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: src/Console/Commands/SetWebhook.php
+
+		-
+			message: '#^Binary operation "\." between ''Telegram webhook…'' and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: src/Console/Commands/SetWebhook.php
+
+		-
+			message: '#^Call to function is_object\(\) with string will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: src/Console/Commands/SetWebhook.php
+
+		-
+			message: '#^Call to method Illuminate\\Support\\Collection\<\(int\|string\),Illuminate\\Database\\Eloquent\\Model\>\:\:isEmpty\(\) will always evaluate to false\.$#'
+			identifier: method.impossibleType
+			count: 1
+			path: src/Console/Commands/SetWebhook.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Console\\Commands\\SetWebhook\:\:buildDependencyInjectedClass\(\) should return object but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Console/Commands/SetWebhook.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Console\\Commands\\SetWebhook\:\:resolveBotCommand\(\) should return TelegramBotEssentials\\Essence\\Telegram\\Commands\\CommandInterface but returns object\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Console/Commands/SetWebhook.php
+
+		-
+			message: '#^Parameter \#1 \$bot of method TelegramBotEssentials\\Essence\\Console\\Commands\\SetWebhook\:\:rotateWebhook\(\) expects TelegramBotEssentials\\Essence\\Models\\Bot, Illuminate\\Database\\Eloquent\\Model given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Console/Commands/SetWebhook.php
+
+		-
+			message: '#^Parameter \#1 \$command of method TelegramBotEssentials\\Essence\\Console\\Commands\\SetWebhook\:\:resolveBotCommand\(\) expects string\|TelegramBotEssentials\\Essence\\Telegram\\Commands\\CommandInterface, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Console/Commands/SetWebhook.php
+
+		-
+			message: '#^Parameter \#1 \$string of function rtrim expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Console/Commands/SetWebhook.php
+
+		-
+			message: '#^Parameter \#1 \$token of function telegramApi expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Console/Commands/SetWebhook.php
+
+		-
+			message: '#^Parameter \#2 \$endpointTemplate of method TelegramBotEssentials\\Essence\\Console\\Commands\\SetWebhook\:\:rotateWebhook\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Console/Commands/SetWebhook.php
+
+		-
+			message: '#^Parameter \#2 \$replace of function str_replace expects array\<string\>\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Console/Commands/SetWebhook.php
+
+		-
+			message: '#^Parameter \#1 \$key of static method Illuminate\\Cache\\Repository\:\:put\(\) expects array\|string\|UnitEnum, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Console/Commands/TranslationStats.php
+
+		-
+			message: '#^Parameter \#3 \$ttl of static method Illuminate\\Cache\\Repository\:\:put\(\) expects DateInterval\|DateTimeInterface\|int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Console/Commands/TranslationStats.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Events\\BotEventBus\:\:listen\(\) has parameter \$listener with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Events/BotEventBus.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\Bot\:\:\$bot_token\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Http/Controllers/BotController.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\Bot\:\:\$unique_id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: src/Http/Controllers/BotController.php
+
+		-
+			message: '#^Binary operation "\." between mixed and non\-falsy\-string results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: src/Http/Controllers/BotController.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Http\\Controllers\\BotController\:\:destroy\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Http/Controllers/BotController.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Http\\Controllers\\BotController\:\:index\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Http/Controllers/BotController.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Http\\Controllers\\BotController\:\:initializeData\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Controllers/BotController.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Http\\Controllers\\BotController\:\:initializeData\(\) should return array\{array\<string, mixed\>, string\} but returns array\{non\-empty\-array, string\}\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Http/Controllers/BotController.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Http\\Controllers\\BotController\:\:show\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Http/Controllers/BotController.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Http\\Controllers\\BotController\:\:update\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Http/Controllers/BotController.php
+
+		-
+			message: '#^Parameter \#1 \$botToken of method TelegramBotEssentials\\Essence\\Http\\Controllers\\BotController\:\:setWebhook\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Http/Controllers/BotController.php
+
+		-
+			message: '#^Parameter \#1 \$time of static method Carbon\\Carbon\:\:parse\(\) expects Carbon\\Month\|Carbon\\WeekDay\|DateTimeInterface\|float\|int\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Http/Controllers/BotController.php
+
+		-
+			message: '#^Parameter \#2 \$uniqueId of method TelegramBotEssentials\\Essence\\Http\\Controllers\\BotController\:\:setWebhook\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Http/Controllers/BotController.php
+
+		-
+			message: '#^Access to property \$bot on an unknown class TelegramBotEssentials\\Essence\\Models\\Billing\\Invoice\.$#'
+			identifier: class.notFound
+			count: 3
+			path: src/Http/Controllers/GatewayZarinpalController.php
+
+		-
+			message: '#^Access to property \$botUser on an unknown class TelegramBotEssentials\\Essence\\Models\\Billing\\Invoice\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Http/Controllers/GatewayZarinpalController.php
+
+		-
+			message: '#^Call to static method where\(\) on an unknown class TelegramBotEssentials\\Essence\\Models\\Billing\\Invoice\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Http/Controllers/GatewayZarinpalController.php
+
+		-
+			message: '#^Cannot access property \$bot_token on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Http/Controllers/GatewayZarinpalController.php
+
+		-
+			message: '#^Cannot access property \$price on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Http/Controllers/GatewayZarinpalController.php
+
+		-
+			message: '#^Cannot call method PaymentRequest\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Http/Controllers/GatewayZarinpalController.php
+
+		-
+			message: '#^Cannot call method execute\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Http/Controllers/GatewayZarinpalController.php
+
+		-
+			message: '#^Cannot call method firstOrFail\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Http/Controllers/GatewayZarinpalController.php
+
+		-
+			message: '#^Cannot call method toIRT\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Http/Controllers/GatewayZarinpalController.php
+
+		-
+			message: '#^Cannot call method zarinpal\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Http/Controllers/GatewayZarinpalController.php
+
+		-
+			message: '#^Function gateways not found\.$#'
+			identifier: function.notFound
+			count: 1
+			path: src/Http/Controllers/GatewayZarinpalController.php
+
+		-
+			message: '#^Function priceIn not found\.$#'
+			identifier: function.notFound
+			count: 1
+			path: src/Http/Controllers/GatewayZarinpalController.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Http\\Controllers\\GatewayZarinpalController\:\:callback\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Http/Controllers/GatewayZarinpalController.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Http\\Controllers\\GatewayZarinpalController\:\:pay\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Http/Controllers/GatewayZarinpalController.php
+
+		-
+			message: '#^Parameter \#1 \$bot of method TelegramBotEssentials\\Essence\\Support\\Webhook\:\:setBot\(\) expects TelegramBotEssentials\\Essence\\Models\\Bot\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Controllers/GatewayZarinpalController.php
+
+		-
+			message: '#^Parameter \#1 \$invoice of method TelegramBotEssentials\\Essence\\Http\\Controllers\\GatewayZarinpalController\:\:initializeWHookByInvoice\(\) expects TelegramBotEssentials\\Essence\\Models\\Billing\\Invoice, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Controllers/GatewayZarinpalController.php
+
+		-
+			message: '#^Parameter \#1 \$tenant of method Stancl\\Tenancy\\Tenancy\:\:initialize\(\) expects int\|Stancl\\Tenancy\\Contracts\\Tenant\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Controllers/GatewayZarinpalController.php
+
+		-
+			message: '#^Parameter \#1 \$token of function telegramApi expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Controllers/GatewayZarinpalController.php
+
+		-
+			message: '#^Parameter \#1 \$user of method TelegramBotEssentials\\Essence\\Support\\Webhook\:\:setUser\(\) expects TelegramBotEssentials\\Essence\\Models\\BotUser\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Controllers/GatewayZarinpalController.php
+
+		-
+			message: '#^Parameter \$invoice of method TelegramBotEssentials\\Essence\\Http\\Controllers\\GatewayZarinpalController\:\:initializeWHookByInvoice\(\) has invalid type TelegramBotEssentials\\Essence\\Models\\Billing\\Invoice\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Http/Controllers/GatewayZarinpalController.php
+
+		-
+			message: '#^Access to property \$bot on an unknown class TelegramBotEssentials\\Essence\\Models\\Billing\\Invoice\.$#'
+			identifier: class.notFound
+			count: 4
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Access to property \$botUser on an unknown class TelegramBotEssentials\\Essence\\Models\\Billing\\Invoice\.$#'
+			identifier: class.notFound
+			count: 2
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Access to property \$id on an unknown class TelegramBotEssentials\\Essence\\Models\\Billing\\Invoice\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Access to property \$price on an unknown class TelegramBotEssentials\\Essence\\Models\\Billing\\Invoice\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Binary operation "\." between ''Zirgozar rejected…'' and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 2
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Binary operation "\." between mixed and ''/api/index\.php'' results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 2
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Binary operation "\." between non\-falsy\-string and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 2
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Call to method attemptFailed\(\) on an unknown class TelegramBotEssentials\\Essence\\Models\\Abstract\\PaymentAttempt\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Call to method attemptFailed\(\) on an unknown class TelegramBotEssentials\\Essence\\Models\\Billing\\Attempts\\ToZirgozarAttempt\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Call to method attemptSucceed\(\) on an unknown class TelegramBotEssentials\\Essence\\Models\\Abstract\\PaymentAttempt\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Call to method attemptSucceed\(\) on an unknown class TelegramBotEssentials\\Essence\\Models\\Billing\\Attempts\\ToZirgozarAttempt\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Call to method update\(\) on an unknown class TelegramBotEssentials\\Essence\\Models\\Abstract\\PaymentAttempt\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Call to method update\(\) on an unknown class TelegramBotEssentials\\Essence\\Models\\Billing\\Attempts\\ToZirgozarAttempt\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Call to static method create\(\) on an unknown class TelegramBotEssentials\\Essence\\Models\\Billing\\Attempts\\ToZirgozarAttempt\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Call to static method from\(\) on an unknown class TelegramBotEssentials\\Billing\\Services\\CurrencyFather\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Call to static method where\(\) on an unknown class TelegramBotEssentials\\Essence\\Models\\Billing\\Invoice\.$#'
+			identifier: class.notFound
+			count: 2
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Cannot access offset ''error_desc'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Cannot access offset ''result'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Cannot access property \$bot on mixed\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Cannot access property \$bot_token on mixed\.$#'
+			identifier: property.nonObject
+			count: 3
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Cannot access property \$currency on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Cannot access property \$id on mixed\.$#'
+			identifier: property.nonObject
+			count: 4
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Cannot access property \$paymentAttempt on mixed\.$#'
+			identifier: property.nonObject
+			count: 3
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Cannot access property \$price on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Cannot access property \$status on mixed\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Cannot access property \$tel on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Cannot access property \$telegramUser on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Cannot call method amount\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Cannot call method attemptPayment\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Cannot call method firstOrFail\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Cannot call method toIRT\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Class TelegramBotEssentials\\Essence\\Models\\Abstract\\PaymentAttempt not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Class TelegramBotEssentials\\Essence\\Models\\Billing\\Attempts\\ToZirgozarAttempt not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Function billing not found\.$#'
+			identifier: function.notFound
+			count: 1
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Http\\Controllers\\GatewayZirgozarController\:\:getWebPayResult\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Http\\Controllers\\GatewayZirgozarController\:\:getWebPayResult\(\) should return array but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Http\\Controllers\\GatewayZirgozarController\:\:initializeWebPay\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Http\\Controllers\\GatewayZirgozarController\:\:initializeWebPay\(\) should return array but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Parameter \#1 \$bot of method TelegramBotEssentials\\Essence\\Support\\Webhook\:\:setBot\(\) expects TelegramBotEssentials\\Essence\\Models\\Bot\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Parameter \#1 \$invoice of method TelegramBotEssentials\\Essence\\Http\\Controllers\\GatewayZirgozarController\:\:initializeWHook\(\) expects TelegramBotEssentials\\Essence\\Models\\Billing\\Invoice, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Parameter \#1 \$invoice of method TelegramBotEssentials\\Essence\\Http\\Controllers\\GatewayZirgozarController\:\:initializeWebPay\(\) expects TelegramBotEssentials\\Essence\\Models\\Billing\\Invoice, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Parameter \#1 \$paymentToken of method TelegramBotEssentials\\Essence\\Http\\Controllers\\GatewayZirgozarController\:\:getWebPayResult\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Parameter \#1 \$tenant of method Stancl\\Tenancy\\Tenancy\:\:initialize\(\) expects int\|Stancl\\Tenancy\\Contracts\\Tenant\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Parameter \#1 \$to of function redirect expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Parameter \#1 \$token of function telegramApi expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 3
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Parameter \#1 \$user of method TelegramBotEssentials\\Essence\\Support\\Webhook\:\:setUser\(\) expects TelegramBotEssentials\\Essence\\Models\\BotUser\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Parameter \#1 \$view of function view expects view\-string\|null, string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Parameter \$invoice of method TelegramBotEssentials\\Essence\\Http\\Controllers\\GatewayZirgozarController\:\:initializeWHook\(\) has invalid type TelegramBotEssentials\\Essence\\Models\\Billing\\Invoice\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Parameter \$invoice of method TelegramBotEssentials\\Essence\\Http\\Controllers\\GatewayZirgozarController\:\:initializeWebPay\(\) has invalid type TelegramBotEssentials\\Essence\\Models\\Billing\\Invoice\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Http/Controllers/GatewayZirgozarController.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\Bot\:\:\$activated_until\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Http/Controllers/TelegramWebhookController.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\BotUser\:\:\$state\.$#'
+			identifier: property.notFound
+			count: 2
+			path: src/Http/Controllers/TelegramWebhookController.php
+
+		-
+			message: '#^Cannot access property \$newChatMember on Telegram\\Bot\\Objects\\ChatMemberUpdated\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Http/Controllers/TelegramWebhookController.php
+
+		-
+			message: '#^Cannot access property \$peer_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: src/Http/Controllers/TelegramWebhookController.php
+
+		-
+			message: '#^Cannot call method isFuture\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Http/Controllers/TelegramWebhookController.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Http\\Controllers\\TelegramWebhookController\:\:__invoke\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Http/Controllers/TelegramWebhookController.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Http\\Controllers\\TelegramWebhookController\:\:buildDependencyInjectedClass\(\) should return object but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Http/Controllers/TelegramWebhookController.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Http\\Controllers\\TelegramWebhookController\:\:processUpdate\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Http/Controllers/TelegramWebhookController.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Http\\Controllers\\TelegramWebhookController\:\:resolveReplyKey\(\) should return TelegramBotEssentials\\Essence\\Telegram\\ReplyKeys\\ReplyKeyInterface but returns object\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Http/Controllers/TelegramWebhookController.php
+
+		-
+			message: '#^Parameter \#1 \$context of class TelegramBotEssentials\\Essence\\Events\\BotCallbackQueryHandled constructor expects TelegramBotEssentials\\Essence\\Support\\WebhookContext, TelegramBotEssentials\\Essence\\Support\\WebhookContext\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Controllers/TelegramWebhookController.php
+
+		-
+			message: '#^Parameter \#1 \$context of class TelegramBotEssentials\\Essence\\Events\\BotDeepLinkReceived constructor expects TelegramBotEssentials\\Essence\\Support\\WebhookContext, TelegramBotEssentials\\Essence\\Support\\WebhookContext\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Controllers/TelegramWebhookController.php
+
+		-
+			message: '#^Parameter \#1 \$context of class TelegramBotEssentials\\Essence\\Events\\BotInlineQueryHandled constructor expects TelegramBotEssentials\\Essence\\Support\\WebhookContext, TelegramBotEssentials\\Essence\\Support\\WebhookContext\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Controllers/TelegramWebhookController.php
+
+		-
+			message: '#^Parameter \#1 \$context of class TelegramBotEssentials\\Essence\\Events\\BotReplyKeyHandled constructor expects TelegramBotEssentials\\Essence\\Support\\WebhookContext, TelegramBotEssentials\\Essence\\Support\\WebhookContext\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Controllers/TelegramWebhookController.php
+
+		-
+			message: '#^Parameter \#1 \$context of class TelegramBotEssentials\\Essence\\Events\\BotStateAnswerHandled constructor expects TelegramBotEssentials\\Essence\\Support\\WebhookContext, TelegramBotEssentials\\Essence\\Support\\WebhookContext\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Controllers/TelegramWebhookController.php
+
+		-
+			message: '#^Parameter \#1 \$context of class TelegramBotEssentials\\Essence\\Events\\BotUpdateReceived constructor expects TelegramBotEssentials\\Essence\\Support\\WebhookContext, TelegramBotEssentials\\Essence\\Support\\WebhookContext\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Controllers/TelegramWebhookController.php
+
+		-
+			message: '#^Parameter \#1 \$context of class TelegramBotEssentials\\Essence\\Events\\BotUpdateUnhandled constructor expects TelegramBotEssentials\\Essence\\Support\\WebhookContext, TelegramBotEssentials\\Essence\\Support\\WebhookContext\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Controllers/TelegramWebhookController.php
+
+		-
+			message: '#^Parameter \#1 \$haystack of function str_starts_with expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Controllers/TelegramWebhookController.php
+
+		-
+			message: '#^Parameter \#1 \$input of function decodeCallback expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Controllers/TelegramWebhookController.php
+
+		-
+			message: '#^Parameter \#1 \$string of function strtolower expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Controllers/TelegramWebhookController.php
+
+		-
+			message: '#^Parameter \#2 \$keyText of class TelegramBotEssentials\\Essence\\Events\\BotReplyKeyHandled constructor expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Controllers/TelegramWebhookController.php
+
+		-
+			message: '#^Parameter \#2 \$state of class TelegramBotEssentials\\Essence\\Events\\BotStateAnswerHandled constructor expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Controllers/TelegramWebhookController.php
+
+		-
+			message: '#^Parameter \#2 \$string of function explode expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Controllers/TelegramWebhookController.php
+
+		-
+			message: '#^Parameter \#2 \$type of class TelegramBotEssentials\\Essence\\Events\\BotCallbackQueryHandled constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Controllers/TelegramWebhookController.php
+
+		-
+			message: '#^Parameter \#3 \$method of class TelegramBotEssentials\\Essence\\Events\\BotCallbackQueryHandled constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Controllers/TelegramWebhookController.php
+
+		-
+			message: '#^Using nullsafe property access on non\-nullable type Telegram\\Bot\\Objects\\ChatMember\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: src/Http/Controllers/TelegramWebhookController.php
+
+		-
+			message: '#^Using nullsafe property access on non\-nullable type Telegram\\Bot\\Objects\\Update\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: src/Http/Controllers/TelegramWebhookController.php
+
+		-
+			message: '#^Cannot call method parameter\(\) on Illuminate\\Routing\\Route\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Http/Middleware/InitializeTenancyByPath.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\Bot\:\:\$bot_token\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Http/Middleware/TelegramBotAuthentication.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\Bot\:\:\$secret_token\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Http/Middleware/TelegramBotAuthentication.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\TelegramUser\:\:\$peer_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Http/Middleware/TelegramBotAuthentication.php
+
+		-
+			message: '#^Binary operation "\." between ''tbe\:update\:'' and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: src/Http/Middleware/TelegramBotAuthentication.php
+
+		-
+			message: '#^Cannot access property \$from on Telegram\\Bot\\Objects\\ChatMemberUpdated\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Http/Middleware/TelegramBotAuthentication.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: src/Http/Middleware/TelegramBotAuthentication.php
+
+		-
+			message: '#^Instanceof between Telegram\\Bot\\Objects\\User and Telegram\\Bot\\Objects\\User will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 1
+			path: src/Http/Middleware/TelegramBotAuthentication.php
+
+		-
+			message: '#^Parameter \#1 \$token of function telegramApi expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Middleware/TelegramBotAuthentication.php
+
+		-
+			message: '#^Parameter \#3 \$ttl of static method Illuminate\\Cache\\Repository\:\:add\(\) expects DateInterval\|DateTimeInterface\|int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Middleware/TelegramBotAuthentication.php
+
+		-
+			message: '#^Parameter \$headers of class GuzzleHttp\\Psr7\\ServerRequest constructor expects array\<array\<string\>\|string\>, array\<string, list\<string\|null\>\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Middleware/TelegramBotAuthentication.php
+
+		-
+			message: '#^Using nullsafe property access on non\-nullable type Telegram\\Bot\\Objects\\Chat\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 2
+			path: src/Http/Middleware/TelegramBotAuthentication.php
+
+		-
+			message: '#^Using nullsafe property access on non\-nullable type Telegram\\Bot\\Objects\\User\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: src/Http/Middleware/TelegramBotAuthentication.php
+
+		-
+			message: '#^Cannot call method parameter\(\) on Illuminate\\Routing\\Route\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Http/Middleware/TenantExist.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\Bot\:\:\$activated_until\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Http/Resources/BotResource.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\Bot\:\:\$bot_token\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Http/Resources/BotResource.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\Bot\:\:\$suspended_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Http/Resources/BotResource.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\Bot\:\:\$unique_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Http/Resources/BotResource.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\Bot\:\:\$suspended_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Models/Bot.php
+
+		-
+			message: '#^Class TelegramBotEssentials\\Essence\\Models\\Bot uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Models/Bot.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\Bot\:\:botOwner\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasOne does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Models/Bot.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\Bot\:\:botUsers\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Models/Bot.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\Bot\:\:getCustomColumns\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Models/Bot.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$deactivated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Models/BotUser.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\BotUser\:\:\$menu\.$#'
+			identifier: property.notFound
+			count: 2
+			path: src/Models/BotUser.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\BotUser\:\:\$power\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Models/BotUser.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\BotUser\:\:\$state\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Models/BotUser.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 1
+			path: src/Models/BotUser.php
+
+		-
+			message: '#^Cannot call method interact\(\) on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Models/BotUser.php
+
+		-
+			message: '#^Class TelegramBotEssentials\\Essence\\Models\\BotUser uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Models/BotUser.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\BotUser\:\:addParamToState\(\) has parameter \$params with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Models/BotUser.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\BotUser\:\:bot\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Models/BotUser.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\BotUser\:\:buildDependencyInjectedClass\(\) should return object but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Models/BotUser.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\BotUser\:\:getKeyboard\(\) return type with generic class Telegram\\Bot\\Keyboard\\Keyboard does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Models/BotUser.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\BotUser\:\:keyboardGenerator\(\) has parameter \$rows with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Models/BotUser.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\BotUser\:\:keyboardGenerator\(\) return type with generic class Telegram\\Bot\\Keyboard\\Keyboard does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Models/BotUser.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\BotUser\:\:reachability\(\) should return string but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Models/BotUser.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\BotUser\:\:resolveReplyKey\(\) should return TelegramBotEssentials\\Essence\\Telegram\\ReplyKeys\\ReplyKeyInterface but returns object\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Models/BotUser.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\BotUser\:\:scopeDeactivated\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Models/BotUser.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\BotUser\:\:scopeDeactivated\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Models/BotUser.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\BotUser\:\:scopeNotSuspended\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Models/BotUser.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\BotUser\:\:scopeNotSuspended\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Models/BotUser.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\BotUser\:\:scopeReachable\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Models/BotUser.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\BotUser\:\:scopeReachable\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Models/BotUser.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\BotUser\:\:scopeWithStatus\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Models/BotUser.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\BotUser\:\:scopeWithStatus\(\) has parameter \$status with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Models/BotUser.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\BotUser\:\:scopeWithStatus\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Models/BotUser.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\BotUser\:\:setSuspendAttribute\(\) has parameter \$value with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Models/BotUser.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\BotUser\:\:telegramUser\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Models/BotUser.php
+
+		-
+			message: '#^Parameter \#1 \$replyKey of method TelegramBotEssentials\\Essence\\Models\\BotUser\:\:resolveReplyKey\(\) expects string\|TelegramBotEssentials\\Essence\\Telegram\\ReplyKeys\\ReplyKeyInterface, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Models/BotUser.php
+
+		-
+			message: '#^Parameter \#1 \.\.\.\$arrays of function array_merge expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Models/BotUser.php
+
+		-
+			message: '#^Parameter \#2 \.\.\.\$arrays of function array_merge expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Models/BotUser.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\InlineConfirmation\:\:prunable\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Models/InlineConfirmation.php
+
+		-
+			message: '#^Parameter \#1 \$value of method Carbon\\Carbon\:\:subHours\(\) expects float\|int, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Models/InlineConfirmation.php
+
+		-
+			message: '#^Access to an undefined property \$this\(TelegramBotEssentials\\Essence\\Models\\MessageMeta\)\:\:\$chat_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Models/MessageMeta.php
+
+		-
+			message: '#^Access to an undefined property \$this\(TelegramBotEssentials\\Essence\\Models\\MessageMeta\)\:\:\$message_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Models/MessageMeta.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\MessageMeta\:\:\$chat_id\.$#'
+			identifier: property.notFound
+			count: 11
+			path: src/Models/MessageMeta.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\MessageMeta\:\:\$message_id\.$#'
+			identifier: property.notFound
+			count: 8
+			path: src/Models/MessageMeta.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\MessageMeta\:\:\$message_text\.$#'
+			identifier: property.notFound
+			count: 3
+			path: src/Models/MessageMeta.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\MessageMeta\:\:\$tag\.$#'
+			identifier: property.notFound
+			count: 3
+			path: src/Models/MessageMeta.php
+
+		-
+			message: '#^Called ''Model\:\:make\(\)'' which performs unnecessary work, use ''new Model\(\)''\.$#'
+			identifier: larastan.noModelMake
+			count: 2
+			path: src/Models/MessageMeta.php
+
+		-
+			message: '#^Cannot access property \$chat on Telegram\\Bot\\Objects\\Message\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Models/MessageMeta.php
+
+		-
+			message: '#^Cannot access property \$messageId on Telegram\\Bot\\Objects\\Message\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Models/MessageMeta.php
+
+		-
+			message: '#^Cannot access property \$replyMarkup on Telegram\\Bot\\Objects\\Message\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Models/MessageMeta.php
+
+		-
+			message: '#^Cannot access property \$text on Telegram\\Bot\\Objects\\Message\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Models/MessageMeta.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\MessageMeta\:\:action\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\MorphTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Models/MessageMeta.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\MessageMeta\:\:getMessageReplyMarkupAttribute\(\) has parameter \$value with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Models/MessageMeta.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\MessageMeta\:\:getMessageReplyMarkupAttribute\(\) return type with generic class Telegram\\Bot\\Keyboard\\Keyboard does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Models/MessageMeta.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\MessageMeta\:\:lockingProcess\(\) has parameter \$replyMarkup with generic class Telegram\\Bot\\Keyboard\\Keyboard but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Models/MessageMeta.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\MessageMeta\:\:makeWithMessage\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Models/MessageMeta.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\MessageMeta\:\:prunable\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Models/MessageMeta.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\MessageMeta\:\:setMessageReplyMarkupAttribute\(\) has parameter \$replyMarkup with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Models/MessageMeta.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\MessageMeta\:\:updateAction\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Models/MessageMeta.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\MessageMeta\:\:updateAndContinueAction\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Models/MessageMeta.php
+
+		-
+			message: '#^Parameter \#1 \$chatId of method TelegramBotEssentials\\Essence\\Telegram\\TelegramResponse\:\:send\(\) expects int\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Models/MessageMeta.php
+
+		-
+			message: '#^Parameter \#1 \$chatId of method TelegramBotEssentials\\Essence\\Telegram\\TelegramResponse\:\:update\(\) expects int\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Models/MessageMeta.php
+
+		-
+			message: '#^Parameter \#1 \$items of static method Illuminate\\Support\\Collection\<\(int\|string\),mixed\>\:\:make\(\) expects Illuminate\\Contracts\\Support\\Arrayable\<\(int\|string\), mixed\>\|iterable\<\(int\|string\), mixed\>\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Models/MessageMeta.php
+
+		-
+			message: '#^Parameter \#1 \$json of function json_decode expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Models/MessageMeta.php
+
+		-
+			message: '#^Parameter \#1 \$type of function encodeCallback expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 3
+			path: src/Models/MessageMeta.php
+
+		-
+			message: '#^Parameter \#1 \$value of method Carbon\\Carbon\:\:subDays\(\) expects float\|int, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Models/MessageMeta.php
+
+		-
+			message: '#^Parameter \#2 \$messageId of method TelegramBotEssentials\\Essence\\Telegram\\TelegramResponse\:\:update\(\) expects int\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Models/MessageMeta.php
+
+		-
+			message: '#^Property TelegramBotEssentials\\Essence\\Models\\MessageMeta\:\:\$message_reply_markup \(Telegram\\Bot\\Keyboard\\Keyboard\|null\) does not accept string\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Models/MessageMeta.php
+
+		-
+			message: '#^Property TelegramBotEssentials\\Essence\\Models\\MessageMeta\:\:\$message_reply_markup \(Telegram\\Bot\\Keyboard\\Keyboard\|null\) does not accept string\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Models/MessageMeta.php
+
+		-
+			message: '#^Property TelegramBotEssentials\\Essence\\Models\\MessageMeta\:\:\$type has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Models/MessageMeta.php
+
+		-
+			message: '#^Unable to resolve the template type TMakeKey in call to static method Illuminate\\Support\\Collection\<\(int\|string\),mixed\>\:\:make\(\)$#'
+			identifier: argument.templateType
+			count: 1
+			path: src/Models/MessageMeta.php
+
+		-
+			message: '#^Unable to resolve the template type TMakeValue in call to static method Illuminate\\Support\\Collection\<\(int\|string\),mixed\>\:\:make\(\)$#'
+			identifier: argument.templateType
+			count: 1
+			path: src/Models/MessageMeta.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\StateData\:\:allMessageMetas\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\MorphMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Models/StateData.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\StateData\:\:messageMeta\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\MorphOne does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Models/StateData.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\StateData\:\:prunable\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Models/StateData.php
+
+		-
+			message: '#^Parameter \#1 \$value of method Carbon\\Carbon\:\:subDays\(\) expects float\|int, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Models/StateData.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\TelegramUser\:\:\$first_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Models/TelegramUser.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\TelegramUser\:\:\$last_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Models/TelegramUser.php
+
+		-
+			message: '#^Class TelegramBotEssentials\\Essence\\Models\\TelegramUser uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Models/TelegramUser.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Models\\TelegramUser\:\:botUsers\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Models/TelegramUser.php
+
+		-
+			message: '#^Part \$this\-\>first_name \(mixed\) of encapsed string cannot be cast to string\.$#'
+			identifier: encapsedStringPart.nonString
+			count: 1
+			path: src/Models/TelegramUser.php
+
+		-
+			message: '#^Part \$this\-\>last_name \(mixed\) of encapsed string cannot be cast to string\.$#'
+			identifier: encapsedStringPart.nonString
+			count: 1
+			path: src/Models/TelegramUser.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Seeders/MainSeeder.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\TelegramUser\:\:\$peer_id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: src/Seeders/MainSeeder.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: src/Seeders/TelegramBotAndUserSeeder.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\TelegramUser\:\:\$peer_id\.$#'
+			identifier: property.notFound
+			count: 3
+			path: src/Seeders/TelegramBotAndUserSeeder.php
+
+		-
+			message: '#^Property TelegramBotEssentials\\Essence\\Seeders\\TestDataSeeder\:\:\$bot \(TelegramBotEssentials\\Essence\\Models\\Bot\) does not accept TelegramBotEssentials\\Essence\\Models\\Bot\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Seeders/TestDataSeeder.php
+
+		-
+			message: '#^Property TelegramBotEssentials\\Essence\\Seeders\\TestDataSeeder\:\:\$bot is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: src/Seeders/TestDataSeeder.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Services\\ApiResponse\:\:errors\(\) has parameter \$errors with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Services/ApiResponse.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Services\\ApiResponse\:\:success\(\) has parameter \$extra with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Services/ApiResponse.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$deactivated_at\.$#'
+			identifier: property.notFound
+			count: 2
+			path: src/Services/BotUserStatus.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$peer_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Services/BotUserStatus.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\BotUser\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 2
+			path: src/Services/BotUserStatus.php
+
+		-
+			message: '#^Cannot access property \$id on Telegram\\Bot\\Objects\\InlineQuery\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Services/ExceptionHandler.php
+
+		-
+			message: '#^Cannot access property \$peer_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: property.nonObject
+			count: 9
+			path: src/Services/ExceptionHandler.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Services\\ExceptionHandler\:\:itemNotFoundUserAlert\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Services/ExceptionHandler.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Services\\ExceptionHandler\:\:modelNotFoundUserAlert\(\) has parameter \$e with generic class Illuminate\\Database\\Eloquent\\ModelNotFoundException but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Services/ExceptionHandler.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>text" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: src/Services/ExceptionHandler.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Services\\NavState\:\:get\(\) has parameter \$default with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Services/NavState.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Services\\NavState\:\:get\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Services/NavState.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Services\\NavState\:\:get\(\) should return array but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Services/NavState.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Services\\NavState\:\:getForCurrentMessage\(\) has parameter \$default with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Services/NavState.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Services\\NavState\:\:getForCurrentMessage\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Services/NavState.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Services\\NavState\:\:put\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Services/NavState.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Services\\NavState\:\:putForCurrentMessage\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Services/NavState.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>message" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: src/Services/NavState.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\StateData\:\:\$data\.$#'
+			identifier: property.notFound
+			count: 2
+			path: src/Services/StateDataService.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Services\\StateDataService\:\:addData\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Services/StateDataService.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Services\\StateDataService\:\:store\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Services/StateDataService.php
+
+		-
+			message: '#^Parameter \#1 \.\.\.\$arrays of function array_merge expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Services/StateDataService.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Services\\TelegramPaginator\:\:makeNavigationButtonsRow\(\) has parameter \$callbackMethod with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Services/TelegramPaginator.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Services\\TelegramPaginator\:\:makeNavigationButtonsRow\(\) has parameter \$customPageMethod with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Services/TelegramPaginator.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Services\\TelegramPaginator\:\:makeNavigationButtonsRow\(\) has parameter \$extraParams with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Services/TelegramPaginator.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Services\\TelegramPaginator\:\:makeNavigationButtonsRow\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Services/TelegramPaginator.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Services\\TelegramPaginator\:\:validatePageNumber\(\) has parameter \$models with generic class Illuminate\\Pagination\\LengthAwarePaginator but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Services/TelegramPaginator.php
+
+		-
+			message: '#^Parameter \#2 \$method of function encodeCallback expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 5
+			path: src/Services/TelegramPaginator.php
+
+		-
+			message: '#^Binary operation "\." between mixed and ''/''\|''\\\\'' results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 2
+			path: src/Services/TranslationScanner.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Services\\TranslationScanner\:\:baseLocale\(\) should return string but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Services/TranslationScanner.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Services\\TranslationScanner\:\:discoverAppLocales\(\) should return list\<string\> but returns array\<int, string\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Services/TranslationScanner.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Services\\TranslationScanner\:\:discoverLocales\(\) should return list\<string\> but returns array\<int, string\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Services/TranslationScanner.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Services\\TranslationScanner\:\:discoverSupportedLocales\(\) should return list\<string\> but returns array\<int, string\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Services/TranslationScanner.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Services\\TranslationScanner\:\:flattenKeys\(\) has parameter \$array with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Services/TranslationScanner.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Services\\TranslationScanner\:\:flattenKeys\(\) should return array\<string, string\> but returns array\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Services/TranslationScanner.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<\(int\|string\),mixed\>\:\:map\(\) expects callable\(mixed, int\|string\)\: string, Closure\(string\)\: string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Services/TranslationScanner.php
+
+		-
+			message: '#^Parameter \#1 \$path of function basename expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 3
+			path: src/Services/TranslationScanner.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$peer_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Support/TbeLogger.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Support\\TbeLogger\:\:defaultContext\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Support/TbeLogger.php
+
+		-
+			message: '#^Parameter \#1 \$channel of static method Illuminate\\Log\\LogManager\:\:channel\(\) expects string\|UnitEnum\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Support/TbeLogger.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\Bot\:\:\$bot_token\.$#'
+			identifier: property.notFound
+			count: 2
+			path: src/Support/Webhook.php
+
+		-
+			message: '#^Cannot access property \$callbackQuery on Telegram\\Bot\\Objects\\Update\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Support/Webhook.php
+
+		-
+			message: '#^Cannot access property \$from on Telegram\\Bot\\Objects\\CallbackQuery\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Support/Webhook.php
+
+		-
+			message: '#^Cannot access property \$from on Telegram\\Bot\\Objects\\InlineQuery\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Support/Webhook.php
+
+		-
+			message: '#^Cannot access property \$from on Telegram\\Bot\\Objects\\Message\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Support/Webhook.php
+
+		-
+			message: '#^Cannot access property \$id on Telegram\\Bot\\Objects\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Support/Webhook.php
+
+		-
+			message: '#^Cannot access property \$id on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Support/Webhook.php
+
+		-
+			message: '#^Cannot access property \$inlineQuery on Telegram\\Bot\\Objects\\Update\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Support/Webhook.php
+
+		-
+			message: '#^Cannot access property \$message on Telegram\\Bot\\Objects\\Update\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Support/Webhook.php
+
+		-
+			message: '#^Cannot access property \$state on TelegramBotEssentials\\Essence\\Models\\BotUser\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Support/Webhook.php
+
+		-
+			message: '#^Cannot call method isType\(\) on Telegram\\Bot\\Objects\\Update\|null\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: src/Support/Webhook.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Support\\Webhook\:\:importContext\(\) has parameter \$context with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Support/Webhook.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Support\\Webhook\:\:peerId\(\) should return int but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Support/Webhook.php
+
+		-
+			message: '#^Parameter \#1 \$bot of method TelegramBotEssentials\\Essence\\Support\\Webhook\:\:setBot\(\) expects TelegramBotEssentials\\Essence\\Models\\Bot\|null, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Support/Webhook.php
+
+		-
+			message: '#^Parameter \#1 \$token of function telegramApi expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Support/Webhook.php
+
+		-
+			message: '#^Parameter \$botId of class TelegramBotEssentials\\Essence\\Support\\WebhookContext constructor expects int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Support/Webhook.php
+
+		-
+			message: '#^Parameter \$botToken of class TelegramBotEssentials\\Essence\\Support\\WebhookContext constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Support/Webhook.php
+
+		-
+			message: '#^Parameter \$botUserId of class TelegramBotEssentials\\Essence\\Support\\WebhookContext constructor expects int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Support/Webhook.php
+
+		-
+			message: '#^Property TelegramBotEssentials\\Essence\\Support\\Webhook\:\:\$requestState \(string\|null\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Support/Webhook.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\Bot\:\:\$bot_token\.$#'
+			identifier: property.notFound
+			count: 2
+			path: src/Support/WebhookContext.php
+
+		-
+			message: '#^Expression on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.expr
+			count: 1
+			path: src/Support/WebhookContext.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Support\\WebhookContext\:\:__construct\(\) has parameter \$updatePayload with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Support/WebhookContext.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Support\\WebhookContext\:\:__construct\(\) has parameter \$updatePayload with no value type specified in iterable type array\|Telegram\\Bot\\Objects\\Update\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Support/WebhookContext.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Support\\WebhookContext\:\:apiToken\(\) should return string\|null but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Support/WebhookContext.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Support\\WebhookContext\:\:fromArray\(\) has parameter \$payload with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Support/WebhookContext.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Support\\WebhookContext\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Support/WebhookContext.php
+
+		-
+			message: '#^Parameter \$bot of class TelegramBotEssentials\\Essence\\Support\\WebhookContext constructor expects TelegramBotEssentials\\Essence\\Models\\Bot\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Support/WebhookContext.php
+
+		-
+			message: '#^Parameter \$botId of class TelegramBotEssentials\\Essence\\Support\\WebhookContext constructor expects int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Support/WebhookContext.php
+
+		-
+			message: '#^Parameter \$botToken of class TelegramBotEssentials\\Essence\\Support\\WebhookContext constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Support/WebhookContext.php
+
+		-
+			message: '#^Parameter \$botUser of class TelegramBotEssentials\\Essence\\Support\\WebhookContext constructor expects TelegramBotEssentials\\Essence\\Models\\BotUser\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Support/WebhookContext.php
+
+		-
+			message: '#^Parameter \$botUserId of class TelegramBotEssentials\\Essence\\Support\\WebhookContext constructor expects int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Support/WebhookContext.php
+
+		-
+			message: '#^Parameter \$updatePayload of class TelegramBotEssentials\\Essence\\Support\\WebhookContext constructor expects array\|Telegram\\Bot\\Objects\\Update, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Support/WebhookContext.php
+
+		-
+			message: '#^Using nullsafe method call on non\-nullable type TelegramBotEssentials\\Essence\\Models\\Bot\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: src/Support/WebhookContext.php
+
+		-
+			message: '#^Using nullsafe method call on non\-nullable type TelegramBotEssentials\\Essence\\Models\\BotUser\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: src/Support/WebhookContext.php
+
+		-
+			message: '#^Using nullsafe method call on non\-nullable type Telegram\\Bot\\Objects\\Update\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: src/Support/WebhookContext.php
+
+		-
+			message: '#^Using nullsafe property access on non\-nullable type TelegramBotEssentials\\Essence\\Models\\Bot\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: src/Support/WebhookContext.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\BotUser\:\:\$power\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Telegram/CallbackQueries/Admin/BotAdminsQuery.php
+
+		-
+			message: '#^Cannot access property \$created_at on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Telegram/CallbackQueries/Admin/BotAdminsQuery.php
+
+		-
+			message: '#^Cannot access property \$full_name on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: src/Telegram/CallbackQueries/Admin/BotAdminsQuery.php
+
+		-
+			message: '#^Cannot access property \$id on Telegram\\Bot\\Objects\\CallbackQuery\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Telegram/CallbackQueries/Admin/BotAdminsQuery.php
+
+		-
+			message: '#^Cannot access property \$peer_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Telegram/CallbackQueries/Admin/BotAdminsQuery.php
+
+		-
+			message: '#^Parameter \#2 \$replace of function __ expects array\<string, bool\|float\|int\|string\|null\>, array\<string, mixed\> given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Telegram/CallbackQueries/Admin/BotAdminsQuery.php
+
+		-
+			message: '#^Call to an undefined method ReflectionType\:\:getName\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Telegram/CallbackQueries/CallbackQuery.php
+
+		-
+			message: '#^Cannot access offset class\-string\<Illuminate\\Database\\Eloquent\\Model\> on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/Telegram/CallbackQueries/CallbackQuery.php
+
+		-
+			message: '#^Cannot access property \$id on Telegram\\Bot\\Objects\\CallbackQuery\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Telegram/CallbackQueries/CallbackQuery.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\CallbackQueries\\CallbackQuery\:\:setParams\(\) has parameter \$params with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/CallbackQueries/CallbackQuery.php
+
+		-
+			message: '#^Parameter \#1 \$class of function class_exists expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Telegram/CallbackQueries/CallbackQuery.php
+
+		-
+			message: '#^Parameter \#1 \$column of static method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:where\(\) expects array\<int\|string, mixed\>\|\(Closure\(Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\)\: Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\)\|\(Closure\(Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\)\: void\)\|Illuminate\\Contracts\\Database\\Query\\Expression\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/CallbackQueries/CallbackQuery.php
+
+		-
+			message: '#^Property TelegramBotEssentials\\Essence\\Telegram\\CallbackQueries\\CallbackQuery\:\:\$params type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/CallbackQueries/CallbackQuery.php
+
+		-
+			message: '#^Binary operation "\." between ''Callback query "'' and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: src/Telegram/CallbackQueries/CallbackQueryBus.php
+
+		-
+			message: '#^Call to an undefined method TelegramBotEssentials\\Essence\\Telegram\\CallbackQueries\\CallbackQueryInterface\:\:setMethod\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Telegram/CallbackQueries/CallbackQueryBus.php
+
+		-
+			message: '#^Call to function is_object\(\) with string will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: src/Telegram/CallbackQueries/CallbackQueryBus.php
+
+		-
+			message: '#^Cannot access constant class on mixed\.$#'
+			identifier: classConstant.nonObject
+			count: 1
+			path: src/Telegram/CallbackQueries/CallbackQueryBus.php
+
+		-
+			message: '#^Cannot access property \$data on Telegram\\Bot\\Objects\\CallbackQuery\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Telegram/CallbackQueries/CallbackQueryBus.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\CallbackQueries\\CallbackQueryBus\:\:addCallbackQueries\(\) has parameter \$replyKeys with no value type specified in iterable type iterable\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/CallbackQueries/CallbackQueryBus.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\CallbackQueries\\CallbackQueryBus\:\:buildDependencyInjectedClass\(\) should return object but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Telegram/CallbackQueries/CallbackQueryBus.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\CallbackQueries\\CallbackQueryBus\:\:getCallbackQueryTypes\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/CallbackQueries/CallbackQueryBus.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\CallbackQueries\\CallbackQueryBus\:\:handler\(\) has parameter \$params with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/CallbackQueries/CallbackQueryBus.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\CallbackQueries\\CallbackQueryBus\:\:removeCallbackQueries\(\) has parameter \$names with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/CallbackQueries/CallbackQueryBus.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\CallbackQueries\\CallbackQueryBus\:\:resolveCallbackQuery\(\) should return TelegramBotEssentials\\Essence\\Telegram\\CallbackQueries\\CallbackQueryInterface but returns object\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Telegram/CallbackQueries/CallbackQueryBus.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\CallbackQueries\\CallbackQueryBus\:\:route\(\) has parameter \$callbackQueryData with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/CallbackQueries/CallbackQueryBus.php
+
+		-
+			message: '#^Parameter \#1 \$callbackQuery of method TelegramBotEssentials\\Essence\\Telegram\\CallbackQueries\\CallbackQueryBus\:\:addCallbackQuery\(\) expects string\|TelegramBotEssentials\\Essence\\Telegram\\CallbackQueries\\CallbackQueryInterface, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/CallbackQueries/CallbackQueryBus.php
+
+		-
+			message: '#^Parameter \#1 \$callbackQuery of method TelegramBotEssentials\\Essence\\Telegram\\CallbackQueries\\CallbackQueryBus\:\:resolveCallbackQuery\(\) expects string\|TelegramBotEssentials\\Essence\\Telegram\\CallbackQueries\\CallbackQueryInterface, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/CallbackQueries/CallbackQueryBus.php
+
+		-
+			message: '#^Parameter \#1 \$input of function decodeCallback expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/CallbackQueries/CallbackQueryBus.php
+
+		-
+			message: '#^Parameter \#1 \$name of method TelegramBotEssentials\\Essence\\Telegram\\CallbackQueries\\CallbackQueryBus\:\:removeCallbackQuery\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/CallbackQueries/CallbackQueryBus.php
+
+		-
+			message: '#^Parameter \#2 \$method of method TelegramBotEssentials\\Essence\\Telegram\\CallbackQueries\\CallbackQueryBus\:\:handler\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/CallbackQueries/CallbackQueryBus.php
+
+		-
+			message: '#^Parameter \#3 \$params of method TelegramBotEssentials\\Essence\\Telegram\\CallbackQueries\\CallbackQueryBus\:\:handler\(\) expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/CallbackQueries/CallbackQueryBus.php
+
+		-
+			message: '#^Possibly invalid array key type mixed\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 1
+			path: src/Telegram/CallbackQueries/CallbackQueryBus.php
+
+		-
+			message: '#^Property TelegramBotEssentials\\Essence\\Telegram\\CallbackQueries\\CallbackQueryBus\:\:\$callbackQueryTypes type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/CallbackQueries/CallbackQueryBus.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\CallbackQueries\\CallbackQueryInterface\:\:setParams\(\) has parameter \$params with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/CallbackQueries/CallbackQueryInterface.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\InlineConfirmation\:\:\$back_callback_data\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Telegram/CallbackQueries/Member/InlineConfirmationQuery.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\InlineConfirmation\:\:\$callback_data\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Telegram/CallbackQueries/Member/InlineConfirmationQuery.php
+
+		-
+			message: '#^Parameter \#1 \$callbackQuery of method TelegramBotEssentials\\Essence\\Telegram\\CallbackQueries\\CallbackQueryBus\:\:routeQuery\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Telegram/CallbackQueries/Member/InlineConfirmationQuery.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\BotUser\:\:\$state\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Telegram/CallbackQueries/Member/MessageMetaQuery.php
+
+		-
+			message: '#^Cannot access property \$id on Telegram\\Bot\\Objects\\CallbackQuery\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Telegram/CallbackQueries/Member/MessageMetaQuery.php
+
+		-
+			message: '#^Cannot access property \$peer_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Telegram/CallbackQueries/Member/MessageMetaQuery.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\CallbackQueries\\Member\\MessageMetaQuery\:\:buildDependencyInjectedClass\(\) should return object but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Telegram/CallbackQueries/Member/MessageMetaQuery.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\CallbackQueries\\Member\\MessageMetaQuery\:\:resolveReplyKey\(\) should return TelegramBotEssentials\\Essence\\Telegram\\ReplyKeys\\ReplyKeyInterface but returns object\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Telegram/CallbackQueries/Member/MessageMetaQuery.php
+
+		-
+			message: '#^Using nullsafe property access on non\-nullable type Telegram\\Bot\\Objects\\Update\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: src/Telegram/CallbackQueries/Member/MessageMetaQuery.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\Commands\\Command\:\:getAliases\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/Commands/Command.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\Commands\\Command\:\:getBindings\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/Commands/Command.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\Commands\\Command\:\:getParams\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/Commands/Command.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\Commands\\Command\:\:setParams\(\) has parameter \$params with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/Commands/Command.php
+
+		-
+			message: '#^Property TelegramBotEssentials\\Essence\\Telegram\\Commands\\Command\:\:\$aliases type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/Commands/Command.php
+
+		-
+			message: '#^Property TelegramBotEssentials\\Essence\\Telegram\\Commands\\Command\:\:\$bindings type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/Commands/Command.php
+
+		-
+			message: '#^Property TelegramBotEssentials\\Essence\\Telegram\\Commands\\Command\:\:\$params type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/Commands/Command.php
+
+		-
+			message: '#^Call to an undefined method ReflectionType\:\:getName\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Telegram/Commands/CommandBus.php
+
+		-
+			message: '#^Call to function is_object\(\) with string will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: src/Telegram/Commands/CommandBus.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\Commands\\CommandBus\:\:addCommands\(\) has parameter \$commands with no value type specified in iterable type iterable\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/Commands/CommandBus.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\Commands\\CommandBus\:\:buildDependencyInjectedClass\(\) should return object but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Telegram/Commands/CommandBus.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\Commands\\CommandBus\:\:getCommands\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/Commands/CommandBus.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\Commands\\CommandBus\:\:handler\(\) has parameter \$params with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/Commands/CommandBus.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\Commands\\CommandBus\:\:invoke\(\) has parameter \$params with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/Commands/CommandBus.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\Commands\\CommandBus\:\:parseCommandText\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/Commands/CommandBus.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\Commands\\CommandBus\:\:removeCommands\(\) has parameter \$names with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/Commands/CommandBus.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\Commands\\CommandBus\:\:resolveCommand\(\) should return TelegramBotEssentials\\Essence\\Telegram\\Commands\\CommandInterface but returns object\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Telegram/Commands/CommandBus.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\Commands\\CommandBus\:\:route\(\) has parameter \$params with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/Commands/CommandBus.php
+
+		-
+			message: '#^Parameter \#1 \$array of function array_shift expects array, list\<string\>\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/Commands/CommandBus.php
+
+		-
+			message: '#^Parameter \#1 \$class of function class_exists expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Telegram/Commands/CommandBus.php
+
+		-
+			message: '#^Parameter \#1 \$column of static method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:where\(\) expects array\<int\|string, mixed\>\|\(Closure\(Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\)\: Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\)\|\(Closure\(Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\)\: void\)\|Illuminate\\Contracts\\Database\\Query\\Expression\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/Commands/CommandBus.php
+
+		-
+			message: '#^Parameter \#1 \$command of method TelegramBotEssentials\\Essence\\Telegram\\Commands\\CommandBus\:\:addCommand\(\) expects string\|TelegramBotEssentials\\Essence\\Telegram\\Commands\\CommandInterface, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/Commands/CommandBus.php
+
+		-
+			message: '#^Parameter \#1 \$context of class TelegramBotEssentials\\Essence\\Events\\BotCommandHandled constructor expects TelegramBotEssentials\\Essence\\Support\\WebhookContext, TelegramBotEssentials\\Essence\\Support\\WebhookContext\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/Commands/CommandBus.php
+
+		-
+			message: '#^Parameter \#1 \$haystack of function str_starts_with expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/Commands/CommandBus.php
+
+		-
+			message: '#^Parameter \#1 \$name of method TelegramBotEssentials\\Essence\\Telegram\\Commands\\CommandBus\:\:removeCommand\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/Commands/CommandBus.php
+
+		-
+			message: '#^Parameter \#1 \$name of method TelegramBotEssentials\\Essence\\Telegram\\Commands\\CommandBus\:\:route\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/Commands/CommandBus.php
+
+		-
+			message: '#^Parameter \#1 \$string of function ltrim expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/Commands/CommandBus.php
+
+		-
+			message: '#^Parameter \#1 \$text of method TelegramBotEssentials\\Essence\\Telegram\\Commands\\CommandBus\:\:parseCommandText\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/Commands/CommandBus.php
+
+		-
+			message: '#^Parameter \#2 \$alias of method TelegramBotEssentials\\Essence\\Telegram\\Commands\\CommandBus\:\:checkForConflicts\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/Commands/CommandBus.php
+
+		-
+			message: '#^Parameter \#2 \$params of method TelegramBotEssentials\\Essence\\Telegram\\Commands\\CommandBus\:\:route\(\) expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/Commands/CommandBus.php
+
+		-
+			message: '#^Possibly invalid array key type mixed\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 2
+			path: src/Telegram/Commands/CommandBus.php
+
+		-
+			message: '#^Property TelegramBotEssentials\\Essence\\Telegram\\Commands\\CommandBus\:\:\$aliases \(array\<string, TelegramBotEssentials\\Essence\\Telegram\\Commands\\CommandInterface\>\) does not accept array\<TelegramBotEssentials\\Essence\\Telegram\\Commands\\CommandInterface\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Telegram/Commands/CommandBus.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\Commands\\CommandInterface\:\:getAliases\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/Commands/CommandInterface.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\Commands\\CommandInterface\:\:setParams\(\) has parameter \$params with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/Commands/CommandInterface.php
+
+		-
+			message: '#^Cannot access property \$peer_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Telegram/Commands/Member/HelpCommand.php
+
+		-
+			message: '#^Cannot call method getDescription\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Telegram/Commands/Member/HelpCommand.php
+
+		-
+			message: '#^Cannot call method getPerm\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Telegram/Commands/Member/HelpCommand.php
+
+		-
+			message: '#^Cannot call method isEnabled\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Telegram/Commands/Member/HelpCommand.php
+
+		-
+			message: '#^Parameter \#1 \$power of function hasAccess expects int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/Commands/Member/HelpCommand.php
+
+		-
+			message: '#^Parameter \#3 \.\.\.\$values of function sprintf expects bool\|float\|int\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/Commands/Member/HelpCommand.php
+
+		-
+			message: '#^Property TelegramBotEssentials\\Essence\\Telegram\\Commands\\Member\\HelpCommand\:\:\$aliases type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/Commands/Member/HelpCommand.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Telegram/Features/BotAdminsFeature.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$telegramUser\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Telegram/Features/BotAdminsFeature.php
+
+		-
+			message: '#^Cannot access property \$full_name on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: src/Telegram/Features/BotAdminsFeature.php
+
+		-
+			message: '#^Cannot access property \$full_name on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Telegram/Features/BotAdminsFeature.php
+
+		-
+			message: '#^Parameter \#2 \$replace of function __ expects array\<string, bool\|float\|int\|string\|null\>, array\<string, mixed\> given\.$#'
+			identifier: argument.type
+			count: 3
+			path: src/Telegram/Features/BotAdminsFeature.php
+
+		-
+			message: '#^Parameter \$text of class TelegramBotEssentials\\Essence\\Telegram\\TelegramResponse constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/Features/Member/InlineConfirmationFeature.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\HttpClients\\LaravelHttpClient\:\:dispatch\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/HttpClients/LaravelHttpClient.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\HttpClients\\LaravelHttpClient\:\:pendingRequest\(\) has parameter \$headers with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/HttpClients/LaravelHttpClient.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\HttpClients\\LaravelHttpClient\:\:pendingRequest\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/HttpClients/LaravelHttpClient.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\HttpClients\\LaravelHttpClient\:\:send\(\) has parameter \$headers with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/HttpClients/LaravelHttpClient.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\HttpClients\\LaravelHttpClient\:\:send\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/HttpClients/LaravelHttpClient.php
+
+		-
+			message: '#^Parameter \#1 \$to of method Illuminate\\Http\\Client\\PendingRequest\<false\>\:\:sink\(\) expects resource\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/HttpClients/LaravelHttpClient.php
+
+		-
+			message: '#^Parameter \#2 \$data of method Illuminate\\Http\\Client\\PendingRequest\<false\>\:\:post\(\) expects array\<int\<0, max\>\|string, mixed\>\|Illuminate\\Contracts\\Support\\Arrayable\<string, mixed\>\|JsonSerializable, mixed given\.$#'
+			identifier: argument.type
+			count: 3
+			path: src/Telegram/HttpClients/LaravelHttpClient.php
+
+		-
+			message: '#^Parameter \#2 \$headers of class GuzzleHttp\\Psr7\\Response constructor expects array\<array\<string\>\|string\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/HttpClients/LaravelHttpClient.php
+
+		-
+			message: '#^Parameter \#2 \$query of method Illuminate\\Http\\Client\\PendingRequest\<false\>\:\:get\(\) expects array\<int\<0, max\>\|string, mixed\>\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/HttpClients/LaravelHttpClient.php
+
+		-
+			message: '#^Parameter \#3 \$options of method Illuminate\\Http\\Client\\PendingRequest\<false\>\:\:send\(\) expects array\<int\<0, max\>\|string, mixed\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/HttpClients/LaravelHttpClient.php
+
+		-
+			message: '#^Cannot access property \$id on Telegram\\Bot\\Objects\\InlineQuery\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Telegram/InlineQueries/InlineQuery.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\InlineQueries\\InlineQuery\:\:answer\(\) has parameter \$extra with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/InlineQueries/InlineQuery.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\InlineQueries\\InlineQuery\:\:answer\(\) has parameter \$results with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/InlineQueries/InlineQuery.php
+
+		-
+			message: '#^Call to function is_object\(\) with string will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: src/Telegram/InlineQueries/InlineQueryBus.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\InlineQueries\\InlineQueryBus\:\:buildDependencyInjectedClass\(\) should return object but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Telegram/InlineQueries/InlineQueryBus.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\InlineQueries\\InlineQueryBus\:\:resolveInlineQuery\(\) should return TelegramBotEssentials\\Essence\\Telegram\\InlineQueries\\InlineQueryInterface but returns object\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Telegram/InlineQueries/InlineQueryBus.php
+
+		-
+			message: '#^Cannot access property \$peer_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Telegram/ReplyKeys/Admin/AdminPanelKey.php
+
+		-
+			message: '#^Cannot access property \$peer_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Telegram/ReplyKeys/Member/CancelProcessKey.php
+
+		-
+			message: '#^Cannot access property \$peer_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Telegram/ReplyKeys/Member/MainMenuKey.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\BotUser\:\:\$state\.$#'
+			identifier: property.notFound
+			count: 2
+			path: src/Telegram/ReplyKeys/ReplyKeyBus.php
+
+		-
+			message: '#^Call to function is_object\(\) with string will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: src/Telegram/ReplyKeys/ReplyKeyBus.php
+
+		-
+			message: '#^Cannot access property \$peer_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Telegram/ReplyKeys/ReplyKeyBus.php
+
+		-
+			message: '#^Cannot call method getText\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Telegram/ReplyKeys/ReplyKeyBus.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\ReplyKeys\\ReplyKeyBus\:\:addReplyKeys\(\) has parameter \$replyKeys with no value type specified in iterable type iterable\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/ReplyKeys/ReplyKeyBus.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\ReplyKeys\\ReplyKeyBus\:\:buildDependencyInjectedClass\(\) should return object but returns mixed\.$#'
+			identifier: return.type
+			count: 2
+			path: src/Telegram/ReplyKeys/ReplyKeyBus.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\ReplyKeys\\ReplyKeyBus\:\:findByText\(\) should return TelegramBotEssentials\\Essence\\Telegram\\ReplyKeys\\ReplyKeyInterface\|null but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Telegram/ReplyKeys/ReplyKeyBus.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\ReplyKeys\\ReplyKeyBus\:\:getReplyKeys\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/ReplyKeys/ReplyKeyBus.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\ReplyKeys\\ReplyKeyBus\:\:removeReplyKeys\(\) has parameter \$names with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/ReplyKeys/ReplyKeyBus.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\ReplyKeys\\ReplyKeyBus\:\:resolveReplyKey\(\) should return TelegramBotEssentials\\Essence\\Telegram\\ReplyKeys\\ReplyKeyInterface but returns object\.$#'
+			identifier: return.type
+			count: 2
+			path: src/Telegram/ReplyKeys/ReplyKeyBus.php
+
+		-
+			message: '#^Parameter \#1 \$name of method TelegramBotEssentials\\Essence\\Telegram\\ReplyKeys\\ReplyKeyBus\:\:removeReplyKey\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/ReplyKeys/ReplyKeyBus.php
+
+		-
+			message: '#^Parameter \#1 \$replyKey of method TelegramBotEssentials\\Essence\\Telegram\\ReplyKeys\\ReplyKeyBus\:\:addReplyKey\(\) expects string\|TelegramBotEssentials\\Essence\\Telegram\\ReplyKeys\\ReplyKeyInterface, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/ReplyKeys/ReplyKeyBus.php
+
+		-
+			message: '#^Parameter \#1 \$state of method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswerBus\:\:cancelHandler\(\) expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/ReplyKeys/ReplyKeyBus.php
+
+		-
+			message: '#^Parameter \#1 \$text of method TelegramBotEssentials\\Essence\\Telegram\\ReplyKeys\\ReplyKeyBus\:\:findByText\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/ReplyKeys/ReplyKeyBus.php
+
+		-
+			message: '#^Property TelegramBotEssentials\\Essence\\Telegram\\ReplyKeys\\ReplyKeyBus\:\:\$replyKeys type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/ReplyKeys/ReplyKeyBus.php
+
+		-
+			message: '#^Using nullsafe property access on non\-nullable type Telegram\\Bot\\Objects\\Update\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: src/Telegram/ReplyKeys/ReplyKeyBus.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$power\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Telegram/StateAnswers/Admin/BotAdminsAnswer.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\TelegramUser\:\:\$peer_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Telegram/StateAnswers/Admin/BotAdminsAnswer.php
+
+		-
+			message: '#^Cannot access property \$peer_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Telegram/StateAnswers/Admin/BotAdminsAnswer.php
+
+		-
+			message: '#^Cannot access property \$text on Telegram\\Bot\\Objects\\Message\|null\.$#'
+			identifier: property.nonObject
+			count: 3
+			path: src/Telegram/StateAnswers/Admin/BotAdminsAnswer.php
+
+		-
+			message: '#^Cannot call method updateAndContinueAction\(\) on Illuminate\\Database\\Eloquent\\Collection\<int, TelegramBotEssentials\\Essence\\Models\\MessageMeta\>\|TelegramBotEssentials\\Essence\\Models\\MessageMeta\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Telegram/StateAnswers/Admin/BotAdminsAnswer.php
+
+		-
+			message: '#^Parameter \#1 \$haystack of function str_starts_with expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/StateAnswers/Admin/BotAdminsAnswer.php
+
+		-
+			message: '#^Parameter \#3 \$subject of function str_replace expects array\<string\>\|string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/StateAnswers/Admin/BotAdminsAnswer.php
+
+		-
+			message: '#^Call to an undefined method ReflectionType\:\:getName\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswer.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswer\:\:buildKeyCandidates\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswer.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswer\:\:buildNormalizedCandidates\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswer.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswer\:\:findMatchingKey\(\) has parameter \$keys with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswer.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswer\:\:getAllowedFields\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswer.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswer\:\:messageMeta\(\) should return TelegramBotEssentials\\Essence\\Models\\MessageMeta\|null but returns Illuminate\\Database\\Eloquent\\Collection\<int, TelegramBotEssentials\\Essence\\Models\\MessageMeta\>\|TelegramBotEssentials\\Essence\\Models\\MessageMeta\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswer.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswer\:\:resolveParamValue\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswer.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswer\:\:setParams\(\) has parameter \$params with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswer.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswer\:\:stateData\(\) should return TelegramBotEssentials\\Essence\\Models\\StateData\|null but returns Illuminate\\Database\\Eloquent\\Collection\<int, TelegramBotEssentials\\Essence\\Models\\StateData\>\|TelegramBotEssentials\\Essence\\Models\\StateData\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswer.php
+
+		-
+			message: '#^Parameter \#1 \$array of function array_intersect expects an array of values castable to string, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswer.php
+
+		-
+			message: '#^Parameter \#1 \$class of function class_exists expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Telegram/StateAnswers/StateAnswer.php
+
+		-
+			message: '#^Parameter \#1 \$column of static method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:where\(\) expects array\<int\|string, mixed\>\|\(Closure\(Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\)\: Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\)\|\(Closure\(Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\)\: void\)\|Illuminate\\Contracts\\Database\\Query\\Expression\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswer.php
+
+		-
+			message: '#^Parameter \#1 \$primary of method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswer\:\:resolveParamValue\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswer.php
+
+		-
+			message: '#^Parameter \#2 \$arrays of function array_intersect expects an array of values castable to string, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswer.php
+
+		-
+			message: '#^Property TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswer\:\:\$allowedFields type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswer.php
+
+		-
+			message: '#^Property TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswer\:\:\$bindings type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswer.php
+
+		-
+			message: '#^Property TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswer\:\:\$messageMeta \(TelegramBotEssentials\\Essence\\Models\\MessageMeta\|null\) does not accept Illuminate\\Database\\Eloquent\\Collection\<int, TelegramBotEssentials\\Essence\\Models\\MessageMeta\>\|TelegramBotEssentials\\Essence\\Models\\MessageMeta\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswer.php
+
+		-
+			message: '#^Property TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswer\:\:\$params type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswer.php
+
+		-
+			message: '#^Property TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswer\:\:\$stateData \(TelegramBotEssentials\\Essence\\Models\\StateData\|null\) does not accept Illuminate\\Database\\Eloquent\\Collection\<int, TelegramBotEssentials\\Essence\\Models\\StateData\>\|TelegramBotEssentials\\Essence\\Models\\StateData\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswer.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\BotUser\:\:\$state\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswerBus.php
+
+		-
+			message: '#^Binary operation "\." between ''State answer "'' and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswerBus.php
+
+		-
+			message: '#^Call to an undefined method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswerInterface\:\:setMethod\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswerBus.php
+
+		-
+			message: '#^Call to function is_object\(\) with string will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswerBus.php
+
+		-
+			message: '#^Cannot access constant class on mixed\.$#'
+			identifier: classConstant.nonObject
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswerBus.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswerBus\:\:addStateAnswers\(\) has parameter \$stateAnswers with no value type specified in iterable type iterable\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswerBus.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswerBus\:\:buildDependencyInjectedClass\(\) should return object but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswerBus.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswerBus\:\:getStateAnswerTypes\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswerBus.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswerBus\:\:handleStateAnswer\(\) has parameter \$decodedStates with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswerBus.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswerBus\:\:handler\(\) has parameter \$params with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswerBus.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswerBus\:\:hasValidField\(\) has parameter \$fields with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswerBus.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswerBus\:\:removeStateAnswers\(\) has parameter \$names with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswerBus.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswerBus\:\:resolveStateAnswer\(\) should return TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswerInterface but returns object\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswerBus.php
+
+		-
+			message: '#^Parameter \#1 \$key of method Illuminate\\Support\\Collection\<\(int\|string\),mixed\>\:\:has\(\) expects array\<\(int\|string\)\>\|int\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswerBus.php
+
+		-
+			message: '#^Parameter \#1 \$name of method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswerBus\:\:removeStateAnswer\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswerBus.php
+
+		-
+			message: '#^Parameter \#1 \$stateAnswer of method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswerBus\:\:addStateAnswer\(\) expects string\|TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswerInterface, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswerBus.php
+
+		-
+			message: '#^Parameter \#1 \$stateAnswer of method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswerBus\:\:resolveStateAnswer\(\) expects string\|TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswerInterface, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswerBus.php
+
+		-
+			message: '#^Parameter \#2 \$method of method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswerBus\:\:handler\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswerBus.php
+
+		-
+			message: '#^Parameter \#3 \$params of method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswerBus\:\:handler\(\) expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswerBus.php
+
+		-
+			message: '#^Possibly invalid array key type mixed\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswerBus.php
+
+		-
+			message: '#^Property TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswerBus\:\:\$stateAnswerTypes type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswerBus.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswerInterface\:\:getAllowedFields\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswerInterface.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswerInterface\:\:setParams\(\) has parameter \$params with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswerInterface.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$peer_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Telegram/TelegramResponse.php
+
+		-
+			message: '#^Cannot access property \$chat on Telegram\\Bot\\Objects\\Message\|null\.$#'
+			identifier: property.nonObject
+			count: 3
+			path: src/Telegram/TelegramResponse.php
+
+		-
+			message: '#^Cannot access property \$id on Telegram\\Bot\\Objects\\CallbackQuery\|null\.$#'
+			identifier: property.nonObject
+			count: 3
+			path: src/Telegram/TelegramResponse.php
+
+		-
+			message: '#^Cannot access property \$message on Telegram\\Bot\\Objects\\CallbackQuery\|null\.$#'
+			identifier: property.nonObject
+			count: 6
+			path: src/Telegram/TelegramResponse.php
+
+		-
+			message: '#^Cannot access property \$messageId on Telegram\\Bot\\Objects\\Message\|null\.$#'
+			identifier: property.nonObject
+			count: 3
+			path: src/Telegram/TelegramResponse.php
+
+		-
+			message: '#^Cannot access property \$peer_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Telegram/TelegramResponse.php
+
+		-
+			message: '#^Cannot call method action\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Telegram/TelegramResponse.php
+
+		-
+			message: '#^Cannot call method associate\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Telegram/TelegramResponse.php
+
+		-
+			message: '#^Cannot call method save\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Telegram/TelegramResponse.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 1
+			path: src/Telegram/TelegramResponse.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: src/Telegram/TelegramResponse.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\TelegramResponse\:\:__construct\(\) has parameter \$replyMarkup with generic class Telegram\\Bot\\Keyboard\\Keyboard but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Telegram/TelegramResponse.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\TelegramResponse\:\:fromArray\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/TelegramResponse.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\TelegramResponse\:\:navState\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/TelegramResponse.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\TelegramResponse\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/TelegramResponse.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\TelegramResponse\:\:toCallbackQueryAnswer\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/TelegramResponse.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\TelegramResponse\:\:toEditMessageArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/TelegramResponse.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\TelegramResponse\:\:toMultipartParams\(\) has parameter \$params with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/TelegramResponse.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\TelegramResponse\:\:toMultipartParams\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/TelegramResponse.php
+
+		-
+			message: '#^Parameter \#2 \$messageId of method TelegramBotEssentials\\Essence\\Telegram\\TelegramResponse\:\:editMessageMedia\(\) expects int, int\|string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/TelegramResponse.php
+
+		-
+			message: '#^Property TelegramBotEssentials\\Essence\\Telegram\\TelegramResponse\:\:\$navStateData type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Telegram/TelegramResponse.php
+
+		-
+			message: '#^Unsafe usage of new static\(\)\.$#'
+			identifier: new.static
+			count: 1
+			path: src/Telegram/TelegramResponse.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 1
+			path: src/TelegramBotServiceProvider.php
+
+		-
+			message: '#^Cannot access offset ''Telegram\\\\Bot\\\\BotsManager'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/TelegramBotServiceProvider.php
+
+		-
+			message: '#^Cannot access offset ''central_connection'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/TelegramBotServiceProvider.php
+
+		-
+			message: '#^Cannot access offset ''config'' on Illuminate\\Contracts\\Foundation\\Application\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 3
+			path: src/TelegramBotServiceProvider.php
+
+		-
+			message: '#^Cannot access offset ''config'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/TelegramBotServiceProvider.php
+
+		-
+			message: '#^Cannot access offset ''database'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/TelegramBotServiceProvider.php
+
+		-
+			message: '#^Cannot access offset ''http_client_handler'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/TelegramBotServiceProvider.php
+
+		-
+			message: '#^Cannot call method bot\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/TelegramBotServiceProvider.php
+
+		-
+			message: '#^Cannot call method get\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: src/TelegramBotServiceProvider.php
+
+		-
+			message: '#^Cannot call method make\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/TelegramBotServiceProvider.php
+
+		-
+			message: '#^Cannot call method set\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/TelegramBotServiceProvider.php
+
+		-
+			message: '#^Parameter \#1 \$config of class Telegram\\Bot\\BotsManager constructor expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/TelegramBotServiceProvider.php
+
+		-
+			message: '#^Parameter \#1 \$container of method Telegram\\Bot\\BotsManager\:\:setContainer\(\) expects Psr\\Container\\ContainerInterface, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/TelegramBotServiceProvider.php
+
+		-
+			message: '#^Parameter \#1 \$prefix of static method Illuminate\\Support\\Facades\\Route\:\:prefix\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/TelegramBotServiceProvider.php
+
+		-
+			message: '#^Parameter \#1 \$replyKeys of function addUserReplyKeys expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/TelegramBotServiceProvider.php
+
+		-
+			message: '#^Parameter \#1 \.\.\.\$arrays of function array_merge expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/TelegramBotServiceProvider.php
+
+		-
+			message: '#^Parameter \#2 \.\.\.\$arrays of function array_merge expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/TelegramBotServiceProvider.php
+
+		-
+			message: '#^Cannot access offset ''Illuminate\\\\Contracts\\\\Http\\\\Kernel'' on Illuminate\\Contracts\\Foundation\\Application\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/TenancyServiceProvider.php
+
+		-
+			message: '#^Cannot call method prependToMiddlewarePriority\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/TenancyServiceProvider.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\TenancyServiceProvider\:\:boot\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/TenancyServiceProvider.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\TenancyServiceProvider\:\:bootEvents\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/TenancyServiceProvider.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\TenancyServiceProvider\:\:events\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/TenancyServiceProvider.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\TenancyServiceProvider\:\:makeTenancyMiddlewareHighestPriority\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/TenancyServiceProvider.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\TenancyServiceProvider\:\:mapRoutes\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/TenancyServiceProvider.php
+
+		-
+			message: '#^Trait TelegramBotEssentials\\Essence\\Traits\\CanBeActivated is used zero times and is not analysed\.$#'
+			identifier: trait.unused
+			count: 1
+			path: src/Traits/CanBeActivated.php
+
+		-
+			message: '#^Trait TelegramBotEssentials\\Essence\\Traits\\DoneLimited is used zero times and is not analysed\.$#'
+			identifier: trait.unused
+			count: 1
+			path: src/Traits/DoneLimited.php
+
+		-
+			message: '#^Trait TelegramBotEssentials\\Essence\\Traits\\HidesDone is used zero times and is not analysed\.$#'
+			identifier: trait.unused
+			count: 1
+			path: src/Traits/HidesDone.php
+
+		-
+			message: '#^Trait TelegramBotEssentials\\Essence\\Traits\\PriceBasedOnCurrency is used zero times and is not analysed\.$#'
+			identifier: trait.unused
+			count: 1
+			path: src/Traits/PriceBasedOnCurrency.php
+
+		-
+			message: '#^Trait TelegramBotEssentials\\Essence\\Traits\\ValidationOnModelLevel is used zero times and is not analysed\.$#'
+			identifier: trait.unused
+			count: 1
+			path: src/Traits/ValidationOnModelLevel.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\BotUser\:\:\$power\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Binary operation "\." between ''/'' and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Binary operation "\." between mixed and ''\#'' results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Binary operation "\." between non\-falsy\-string and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Call to function is_iterable\(\) with null will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Cannot access offset ''text'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Cannot access property \$id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: src/helpers.php
+
+		-
+			message: '#^Cannot access property \$peer_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Function addInlineKeysSmartSorted\(\) has parameter \$keyboard with generic class Telegram\\Bot\\Keyboard\\Keyboard but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Function addInlineKeysSmartSorted\(\) has parameter \$keys with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Function addInlineKeysSorted\(\) has parameter \$keyboard with generic class Telegram\\Bot\\Keyboard\\Keyboard but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Function addInlineKeysSorted\(\) has parameter \$keys with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Function addUserReplyKeys\(\) has parameter \$replyKeys with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Function decodeAnswerState\(\) has parameter \$input with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Function decodeAnswerState\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Function decodeCallback\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Function encodeAnswerState\(\) has parameter \$method with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Function encodeAnswerState\(\) has parameter \$params with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Function encodeAnswerState\(\) has parameter \$type with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Function encodeCallback\(\) has parameter \$params with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Function getInputInlineKeyText\(\) never returns string so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Function inlineConfirmationKey\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Function inlineConfirmationKey\(\) return type with generic class Telegram\\Bot\\Keyboard\\Button does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Function inlineSorter\(\) has parameter \$array with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Function inlineSorter\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Function smartInlineKeysSorter\(\) has parameter \$array with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Function smartInlineKeysSorter\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Invalid array key type float\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 2
+			path: src/helpers.php
+
+		-
+			message: '#^Offset ''inline_keyboard'' on string\|null on left side of \?\? does not exist\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Offset 0 on non\-empty\-list\<string\> on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 2
+			path: src/helpers.php
+
+		-
+			message: '#^Parameter \#1 \$buttons of method Telegram\\Bot\\Keyboard\\Keyboard\<\(int\|string\),mixed\>\:\:row\(\) expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/helpers.php
+
+		-
+			message: '#^Parameter \#1 \$contents of static method Telegram\\Bot\\FileUpload\\InputFile\:\:createFromContents\(\) expects string, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Parameter \#1 \$data of function http_build_query expects array\|object, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Parameter \#1 \$message of method TelegramBotEssentials\\Essence\\Support\\TbeLogger\:\:warning\(\) expects string\|Stringable, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Parameter \#1 \$object_or_class of function is_subclass_of expects object\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Parameter \#1 \$s of closure expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Parameter \#2 \$string of function explode expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Parameter \$baseBotUrl of class Telegram\\Bot\\Api constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Part \$replyKey \(mixed\) of encapsed string cannot be cast to string\.$#'
+			identifier: encapsedStringPart.nonString
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: src/helpers.php
