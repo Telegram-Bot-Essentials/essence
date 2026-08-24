@@ -1,0 +1,6 @@
+# Bulk reformats that should not obscure git blame.
+# Configure locally with:
+#   git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# style: apply pint laravel preset
+4e23fa3d5cdaac01f1be414367f2a1f0d186c16a
