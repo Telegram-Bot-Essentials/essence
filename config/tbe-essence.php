@@ -1,6 +1,6 @@
 <?php
 
-use Telegram\Bot\Commands\HelpCommand;
+use TelegramBotEssentials\Essence\Telegram\Commands\Member\HelpCommand;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Admin\AdminPanelKey;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Member\MainMenuKey;
 
