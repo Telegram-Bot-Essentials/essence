@@ -7,3 +7,11 @@
 /.zed
 /graphify-out
 .env.testing
+
+# A library pins nothing: the CI matrix resolves each Laravel version itself.
+/composer.lock
+
+# Test and analysis artefacts.
+/.phpunit.cache
+/.phpunit.result.cache
+/build
