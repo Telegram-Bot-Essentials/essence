@@ -1,17 +1,40 @@
 {
     "name": "telegram-bot-essentials/essence",
-    "description": "This is the how i like to develop my bots and handle different incoming requests",
+    "description": "A Laravel framework for building multi-bot Telegram applications: command, reply-key and callback-query buses, conversational state, and per-bot tenancy.",
     "type": "library",
+    "keywords": [
+        "laravel",
+        "telegram",
+        "telegram-bot",
+        "bot-framework",
+        "multi-tenancy"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Elyar",
+            "email": "elyar.ranjbar0@gmail.com"
+        }
+    ],
     "require": {
-        "php": "^8.2",
+        "php": "^8.3",
+        "elyar/personal-laravel-helpers": ">=0.0.2",
         "irazasyed/telegram-bot-sdk": "^3.15",
         "laravel/framework": "^12 || ^13",
         "ramsey/uuid": "^4.7",
-        "stancl/tenancy": "^3.9",
-        "laravel/telescope": "*",
-        "elyar/personal-laravel-helpers": "*"
+        "stancl/tenancy": "^3.9"
     },
-    "license": "GPL-3.0-only",
+    "require-dev": {
+        "larastan/larastan": "^3.0",
+        "laravel/pint": "^1.18",
+        "laravel/telescope": "^5.0",
+        "orchestra/testbench": "^10.0 || ^11.0",
+        "pestphp/pest": "^3.7 || ^4.0",
+        "pestphp/pest-plugin-laravel": "^3.1 || ^4.0"
+    },
+    "suggest": {
+        "laravel/telescope": "Tags handled exceptions with BUG so they can be filtered in the Telescope UI."
+    },
     "autoload": {
         "psr-4": {
             "TelegramBotEssentials\\Essence\\": "src/"
@@ -23,18 +46,30 @@
             "database/factories"
         ]
     },
-    "authors": [
-        {
-            "name": "Elyar",
-            "email": "elyar.ranjbar0@gmail.com"
+    "autoload-dev": {
+        "psr-4": {
+            "TelegramBotEssentials\\Essence\\Tests\\": "tests/"
         }
-    ],
-    "minimum-stability": "stable",
+    },
+    "scripts": {
+        "test": "pest",
+        "lint": "pint --test",
+        "format": "pint",
+        "analyse": "phpstan analyse"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        },
+        "sort-packages": true
+    },
     "extra": {
         "laravel": {
             "providers": [
                 "TelegramBotEssentials\\Essence\\TelegramBotServiceProvider"
             ]
         }
-    }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
 }

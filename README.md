@@ -76,10 +76,15 @@ The webhook controller auto-loads classes from `app/Telegram/CallbackQueries/*` 
 
 ## Documentation
 
-- [Architecture](docs/architecture.md) — webhook flow, buses, encoding formats
-- [State & StateData](docs/state-and-statedata.md) — `bot_users.state` vs `state_data` table
-- [Extending](docs/extending.md) — building CallbackQueries, StateAnswers, Features
-- [Reference](docs/reference.md) — helpers, config, database, artisan commands
+Full documentation lives in the [essence-docs](https://github.com/Elyar0/essence-docs)
+site, which is the single source of truth:
+
+- [Architecture](https://github.com/Elyar0/essence-docs/blob/main/docs/core/architecture.md) — webhook flow, buses, encoding formats
+- [State & StateData](https://github.com/Elyar0/essence-docs/blob/main/docs/core/state-and-statedata.md) — `bot_users.state` vs `state_data` table
+- [Extending](https://github.com/Elyar0/essence-docs/blob/main/docs/core/extending.md) — building CallbackQueries, StateAnswers, Features
+- [Commands](https://github.com/Elyar0/essence-docs/blob/main/docs/core/commands.md) — CommandBus, aliases, programmatic routing
+- [Events & Listeners](https://github.com/Elyar0/essence-docs/blob/main/docs/core/events.md) — the bot event bus
+- [Reference](https://github.com/Elyar0/essence-docs/blob/main/docs/core/reference.md) — helpers, config, database, artisan commands
 
 ## Artisan Generators
 
