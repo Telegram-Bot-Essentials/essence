@@ -10,7 +10,8 @@ abstract class Command implements CommandInterface
 
     protected array $aliases = [];
 
-    protected string $description = '';
+    /** Translation key for the command's description, resolved per call so one instance serves every locale. */
+    protected string $descriptionKey = '';
 
     protected int $perm;
 
@@ -31,7 +32,7 @@ abstract class Command implements CommandInterface
 
     public function getDescription(): string
     {
-        return $this->description;
+        return $this->descriptionKey === '' ? '' : (string) __($this->descriptionKey);
     }
 
     public function getPerm(): int

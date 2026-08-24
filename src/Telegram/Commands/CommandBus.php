@@ -107,7 +107,9 @@ class CommandBus
             throw new TbeLogicException(__('tbe::general.command.notFound'));
         }
 
-        $command = $this->resolveCommand($key);
+        // Fresh instance to handle with: the registered one is a long-lived
+        // template shared by every request on this worker.
+        $command = $this->resolveCommand($key::class);
 
         return $this->handler($command, $name, $params);
     }

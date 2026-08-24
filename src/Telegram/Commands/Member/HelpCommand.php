@@ -15,10 +15,7 @@ class HelpCommand extends Command
 
     protected int $perm = Roles::MEMBER->value;
 
-    public function __construct()
-    {
-        $this->description = __('tbe::general.command.helpDescription');
-    }
+    protected string $descriptionKey = 'tbe::general.command.helpDescription';
 
     public function handle(): ?bool
     {

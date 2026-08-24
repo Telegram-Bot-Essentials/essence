@@ -36,74 +36,16 @@ class TelegramWebhookController extends Controller
                 __('tbe::general.alerts.botIsOff'
                 ));
             //            if (!hasAccess()) dependsOn(wHook()->bot()->settings->bot_status, __('tbe::general.alerts.botIsOff'));
-            // Blocking or unblocking the bot cannot use any command, key,
-            // answer or query, so it is answered before initializeOptions()
-            // scans all of those off disk.
+            // Blocking or unblocking the bot routes through no handler, so
+            // it is answered before processUpdate() consults the buses.
             if ($this->processChatMemberUpdate()) {
                 return;
             }
 
-            $this->initializeOptions();
             $this->processUpdate();
         } catch (Throwable $e) {
             exceptionHandler()->handle($e);
         }
-    }
-
-    /**
-     * @throws LogicException
-     * @throws TelegramSDKException
-     * @throws BindingResolutionException
-     */
-    private function initializeOptions()
-    {
-        $adminQueries = base_path('app/Telegram/CallbackQueries/Admin');
-        $memberQueries = base_path('app/Telegram/CallbackQueries/Member');
-        $adminStateAnswers = base_path('app/Telegram/StateAnswers/Admin');
-        $memberStateAnswers = base_path('app/Telegram/StateAnswers/Member');
-        $adminCommands = base_path('app/Telegram/Commands/Admin');
-        $memberCommands = base_path('app/Telegram/Commands/Member');
-        //        $adminReplyKeys = base_path('app/Telegram/ReplyKeys/Admin');
-        //        $memberReplyKeys = base_path('app/Telegram/ReplyKeys/Member');
-        $inlineQueriesPath = base_path('app/Telegram/InlineQueries');
-
-        if (is_dir($adminQueries)) {
-            loadCallbackQueries($adminQueries);
-        }
-        if (is_dir($memberQueries)) {
-            loadCallbackQueries($memberQueries);
-        }
-
-        if (is_dir($adminStateAnswers)) {
-            loadStateAnswers($adminStateAnswers);
-        }
-        if (is_dir($memberStateAnswers)) {
-            loadStateAnswers($memberStateAnswers);
-        }
-
-        if (is_dir($adminCommands)) {
-            loadCommands($adminCommands);
-        }
-        if (is_dir($memberCommands)) {
-            loadCommands($memberCommands);
-        }
-
-        if (is_dir($inlineQueriesPath)) {
-            loadInlineQueries($inlineQueriesPath);
-        }
-
-        foreach (config('tbe-essence.keyboard') ?? [] as $values) {
-            addUserReplyKeys($values);
-        }
-
-        loadCallbackQueries(realpath(__DIR__.'/../../Telegram/CallbackQueries/Member'));
-        loadCallbackQueries(realpath(__DIR__.'/../../Telegram/CallbackQueries/Admin'));
-        loadStateAnswers(realpath(__DIR__.'/../../Telegram/StateAnswers/Member'));
-        loadStateAnswers(realpath(__DIR__.'/../../Telegram/StateAnswers/Admin'));
-        loadReplyKeys(realpath(__DIR__.'/../../Telegram/ReplyKeys/Member'));
-        loadReplyKeys(realpath(__DIR__.'/../../Telegram/ReplyKeys/Admin'));
-        loadCommands(realpath(__DIR__.'/../../Telegram/Commands/Member'));
-        loadCommands(realpath(__DIR__.'/../../Telegram/Commands/Admin'));
     }
 
     /**

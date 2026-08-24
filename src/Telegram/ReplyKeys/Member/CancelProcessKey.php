@@ -9,15 +9,11 @@ use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKey;
 
 class CancelProcessKey extends ReplyKey
 {
-    protected string $text = 'Cancel Process';
+    protected string $textKey = 'tbe::cancel_process.reply_key';
 
     protected int $perm = 0;
 
-    public function __construct()
-    {
-        $this->text = __('tbe::cancel_process.reply_key');
-        $this->response = __('tbe::cancel_process.main.text.response');
-    }
+    protected string $responseKey = 'tbe::cancel_process.main.text.response';
 
     /**
      * @throws LogicException
@@ -28,7 +24,7 @@ class CancelProcessKey extends ReplyKey
     {
         wHook()->api()->sendMessage([
             'chat_id' => wHook()->user()->telegramUser->peer_id,
-            'text' => $this->response,
+            'text' => $this->getResponse(),
             'reply_markup' => wHook()->user()->getKeyboard(),
         ]);
     }

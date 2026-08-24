@@ -7,17 +7,11 @@ use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKey;
 
 class AdminPanelKey extends ReplyKey
 {
-    protected string $text = 'Admin Panel';
+    protected string $textKey = 'tbe::admin_panel.reply_key';
 
     protected int $perm = 100;
 
-    protected string $response = 'You are in the admin panel';
-
-    public function __construct()
-    {
-        $this->text = __('tbe::admin_panel.reply_key');
-        $this->response = __('tbe::admin_panel.main.text.menu_changed');
-    }
+    protected string $responseKey = 'tbe::admin_panel.main.text.menu_changed';
 
     /**
      * @throws TelegramSDKException
@@ -27,7 +21,7 @@ class AdminPanelKey extends ReplyKey
         wHook()->user()->update(['menu' => 'admin']);
         wHook()->api()->sendMessage([
             'chat_id' => wHook()->user()->telegramUser->peer_id,
-            'text' => $this->response,
+            'text' => $this->getResponse(),
             'reply_markup' => wHook()->user()->getKeyboard(),
         ]);
     }

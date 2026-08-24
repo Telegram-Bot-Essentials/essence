@@ -91,7 +91,9 @@ class CallbackQueryBus
             throw new TbeLogicException(__('tbe::general.callbackQuery.willBeAddedInTheFuture'));
         }
 
-        $resolvedCallbackQuery = $this->resolveCallbackQuery($key);
+        // Fresh instance to handle with: the registered one is a long-lived
+        // template shared by every request on this worker.
+        $resolvedCallbackQuery = $this->resolveCallbackQuery($key::class);
 
         return $this->handler($resolvedCallbackQuery, $method, $callbackQueryData['params']);
     }

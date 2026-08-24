@@ -9,14 +9,12 @@ use TelegramBotEssentials\Essence\Telegram\Commands\CommandBus;
 /*
  * Characterisation tests for CommandBus registration.
  *
- * Registration order decides who wins a name collision, and today that
- * order comes from TelegramWebhookController::initializeOptions(), which
- * scans the consuming app FIRST and essence's own built-ins LAST. Since
- * addCommand() replaces on a duplicate name, essence currently overrides
- * the app — the opposite of what a consumer would expect.
- *
- * Phase 0 moves registration into the provider and inverts this
- * deliberately, so pin the current rule first.
+ * Registration order decides who wins a name collision. essence registers
+ * its built-ins in boot(), companion packages register in their own
+ * boot(), and the consuming app is scanned in a booted() callback after
+ * every provider has booted. addCommand() replaces on a duplicate name, so
+ * the app wins — the inverse of the old per-request scan, which ran
+ * essence last and let the package override the app.
  */
 
 class AppGreetCommand extends Command
@@ -25,7 +23,7 @@ class AppGreetCommand extends Command
 
     protected int $perm = 0;
 
-    protected string $description = 'from the app';
+    protected string $descriptionKey = 'from the app';
 
     public function handle(): ?bool
     {
@@ -39,7 +37,7 @@ class PackageGreetCommand extends Command
 
     protected int $perm = 0;
 
-    protected string $description = 'from the package';
+    protected string $descriptionKey = 'from the package';
 
     public function handle(): ?bool
     {
@@ -93,7 +91,8 @@ it('lets the last registration of a name win', function () {
 });
 
 it('is idempotent when the same command is registered twice', function () {
-    // Required today because the per-request scan re-registers everything.
+    // Companion packages register in their own boot(), which can run more
+    // than once across a worker's life under some reload paths.
     $bus = new CommandBus;
     $bus->addCommand(AliasedCommand::class);
     $bus->addCommand(AliasedCommand::class);

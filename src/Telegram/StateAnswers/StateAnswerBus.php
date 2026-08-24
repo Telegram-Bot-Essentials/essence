@@ -106,7 +106,9 @@ class StateAnswerBus
             return false;
         }
 
-        $resolvedStateAnswer = $this->resolveStateAnswer($key);
+        // Fresh instance to handle with: the registered one is a long-lived
+        // template shared by every request on this worker.
+        $resolvedStateAnswer = $this->resolveStateAnswer($key::class);
         if (! $this->hasValidField($resolvedStateAnswer->getAllowedFields())) {
             return false;
         }

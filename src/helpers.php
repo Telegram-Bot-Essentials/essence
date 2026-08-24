@@ -528,7 +528,7 @@ if (! function_exists('botUserStatus')) {
 if (! function_exists('loadStateAnswers')) {
     function loadStateAnswers(string $path): void
     {
-        if (! $path) {
+        if (! $path || ! is_dir($path)) {
             return;
         }
         $namespace = resolveNamespace($path);
@@ -546,7 +546,7 @@ if (! function_exists('loadStateAnswers')) {
 if (! function_exists('loadCallbackQueries')) {
     function loadCallbackQueries(string $path): void
     {
-        if (! $path) {
+        if (! $path || ! is_dir($path)) {
             return;
         }
         $namespace = resolveNamespace($path);
@@ -564,7 +564,7 @@ if (! function_exists('loadCallbackQueries')) {
 if (! function_exists('loadCommands')) {
     function loadCommands(string $path): void
     {
-        if (! $path) {
+        if (! $path || ! is_dir($path)) {
             return;
         }
         $namespace = resolveNamespace($path);
@@ -582,7 +582,7 @@ if (! function_exists('loadCommands')) {
 if (! function_exists('loadInlineQueries')) {
     function loadInlineQueries(string $path): void
     {
-        if (! $path) {
+        if (! $path || ! is_dir($path)) {
             return;
         }
         $namespace = resolveNamespace($path);
@@ -616,7 +616,7 @@ if (! function_exists('addUserReplyKeys')) {
 if (! function_exists('loadReplyKeys')) {
     function loadReplyKeys(string $path): void
     {
-        if (! $path) {
+        if (! $path || ! is_dir($path)) {
             return;
         }
         $namespace = resolveNamespace($path);

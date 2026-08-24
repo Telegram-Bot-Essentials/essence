@@ -44,9 +44,29 @@ class ReplyKeyBus
      */
     public function addReplyKey(ReplyKeyInterface|string $replyKey): void
     {
-        $replyKey = $this->resolveReplyKey($replyKey);
+        $resolved = $this->resolveReplyKey($replyKey);
 
-        $this->replyKeys[$replyKey->getText()] = $replyKey;
+        // Keyed by class, not by label: a label is locale-dependent, so
+        // keying on it made the same key register once per locale and let
+        // a bot in one language match a button labelled in another.
+        $this->replyKeys[$resolved::class] = $resolved;
+    }
+
+    /**
+     * Find the registered key whose label matches this text in the locale
+     * active right now.
+     *
+     * @throws LogicException
+     */
+    private function findByText(string $text): ?ReplyKeyInterface
+    {
+        foreach ($this->replyKeys as $replyKey) {
+            if ($replyKey->getText() === $text) {
+                return $replyKey;
+            }
+        }
+
+        return null;
     }
 
     public function removeReplyKeys(array $names): self
@@ -58,6 +78,9 @@ class ReplyKeyBus
         return $this;
     }
 
+    /**
+     * @param  string  $name  the reply key's fully qualified class name
+     */
     public function removeReplyKey(string $name): self
     {
         unset($this->replyKeys[$name]);
@@ -83,12 +106,14 @@ class ReplyKeyBus
         }
         $text = $message->get('text');
 
-        $key = $this->replyKeys[$text] ?? null;
-        if (empty($key)) {
+        $key = $this->findByText($text);
+        if ($key === null) {
             return false;
         }
 
-        $resolvedKey = $this->resolveReplyKey($key);
+        // Resolve a fresh instance to handle with: the registered one is a
+        // long-lived template shared by every request on this worker.
+        $resolvedKey = $this->resolveReplyKey($key::class);
         $this->handler($resolvedKey);
 
         return true;

@@ -30,7 +30,6 @@ use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQueryBus;
 use TelegramBotEssentials\Essence\Telegram\Commands\CommandBus;
 use TelegramBotEssentials\Essence\Telegram\HttpClients\LaravelHttpClient;
 use TelegramBotEssentials\Essence\Telegram\InlineQueries\InlineQueryBus;
-use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Member\CancelProcessKey;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKeyBus;
 use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswerBus;
 
@@ -161,9 +160,60 @@ class TelegramBotServiceProvider extends ServiceProvider
         $this->loadTranslationsFrom(__DIR__.'/../lang', 'tbe');
         $this->loadTranslationsFrom(__DIR__.'/../lang', 'tbe-essence');
 
-        replyKeyBus()->addReplyKeys([
-            CancelProcessKey::class,
-        ]);
+        $this->registerPackageHandlers();
+
+        // The consuming app's handlers are scanned after every provider has
+        // booted, so app/Telegram/** is registered last and therefore wins
+        // any collision with a companion package or with essence itself.
+        $this->app->booted(fn () => $this->registerAppHandlers());
+    }
+
+    /**
+     * Register essence's own built-in handlers.
+     *
+     * Runs during boot() rather than in the booted() callback so these sit
+     * at the bottom of the precedence order: companion packages register in
+     * their own boot(), and the consuming app registers after both.
+     */
+    protected function registerPackageHandlers(): void
+    {
+        $telegram = __DIR__.'/Telegram';
+
+        loadCallbackQueries($telegram.'/CallbackQueries/Member');
+        loadCallbackQueries($telegram.'/CallbackQueries/Admin');
+        loadStateAnswers($telegram.'/StateAnswers/Member');
+        loadStateAnswers($telegram.'/StateAnswers/Admin');
+        loadReplyKeys($telegram.'/ReplyKeys/Member');
+        loadReplyKeys($telegram.'/ReplyKeys/Admin');
+        loadCommands($telegram.'/Commands/Member');
+        loadCommands($telegram.'/Commands/Admin');
+    }
+
+    /**
+     * Register the consuming app's handlers from app/Telegram/**.
+     *
+     * This used to run on every webhook request from
+     * TelegramWebhookController, walking fifteen directories and rebuilding
+     * every handler each time. It only needs to happen once per process:
+     * handlers now hold translation keys rather than translated strings, so
+     * a single instance serves every locale and every bot.
+     */
+    protected function registerAppHandlers(): void
+    {
+        $appTelegram = base_path('app/Telegram');
+
+        foreach (['Admin', 'Member'] as $scope) {
+            loadCallbackQueries($appTelegram.'/CallbackQueries/'.$scope);
+            loadStateAnswers($appTelegram.'/StateAnswers/'.$scope);
+            loadCommands($appTelegram.'/Commands/'.$scope);
+            loadReplyKeys($appTelegram.'/ReplyKeys/'.$scope);
+        }
+
+        loadInlineQueries($appTelegram.'/InlineQueries');
+
+        foreach (config('tbe-essence.keyboard') ?? [] as $replyKeyRows) {
+            addUserReplyKeys($replyKeyRows);
+        }
     }
 
     protected function loadConsoleRoutes(): void
