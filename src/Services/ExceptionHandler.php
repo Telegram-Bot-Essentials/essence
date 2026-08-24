@@ -42,7 +42,7 @@ class ExceptionHandler
                 $this->generalAlert($e);
             }
         } catch (Throwable $e) {
-            Telescope::tag(fn () => ['BUG']);
+            $this->tagInTelescope();
             try {
                 if (wHook()->update()->inlineQuery) {
                     $this->answerInlineQueryWithError();
@@ -59,6 +59,22 @@ class ExceptionHandler
             exceptionReport($e);
             abort(203, 'Something went wrong');
         }
+    }
+
+    /**
+     * Tag the current Telescope entry as a BUG so unhandled exceptions can
+     * be filtered in the Telescope UI.
+     *
+     * Telescope is an optional dev dependency, so this is a no-op in apps
+     * that do not install it.
+     */
+    private function tagInTelescope(): void
+    {
+        if (! class_exists(Telescope::class)) {
+            return;
+        }
+
+        Telescope::tag(fn () => ['BUG']);
     }
 
     /**
