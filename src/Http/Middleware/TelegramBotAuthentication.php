@@ -6,6 +6,7 @@ use Closure;
 use GuzzleHttp\Psr7\ServerRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Symfony\Component\HttpFoundation\Response;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\Objects\User;
@@ -56,23 +57,41 @@ class TelegramBotAuthentication
             return tbeApiResponse()->error('Failed to initialize API service', 503);
         }
 
-        $botUser = $this->fetchUserData();
-        wHook()->setUser($botUser);
+        // Telegram redelivers an update whenever it does not see a prompt
+        // response, and can otherwise send the same update_id twice. Claim it
+        // atomically before doing any work: a duplicate finds the claim
+        // already taken and is dropped without being reprocessed. The claim
+        // is released on failure so a crashed handler still gets retried,
+        // but kept on success so a slow-yet-successful run is never redone.
+        $dedupKey = 'tbe:update:'.$bot->getKey().':'.$update->updateId;
 
-        // An update can only reach us from someone who has not blocked the bot
-        // and whose account still exists, so any inbound update other than the
-        // membership change itself proves the user is reachable. This is what
-        // recovers a user whose unblock event was lost to drop_pending_updates,
-        // and what undoes a deactivation recorded by mistake.
-        if (! wHook()->update()->myChatMember) {
-            botUserStatus()->markActive($botUser);
+        if (! Cache::add($dedupKey, true, config('tbe-essence.update_dedup.ttl_seconds', 300))) {
+            return tbeApiResponse()->success();
         }
 
-        if ($context = WebhookContext::capture()) {
-            botEventBus()->fire(new BotWebhookInitialized($context));
-        }
+        try {
+            $botUser = $this->fetchUserData();
+            wHook()->setUser($botUser);
 
-        return $next($request);
+            // An update can only reach us from someone who has not blocked the bot
+            // and whose account still exists, so any inbound update other than the
+            // membership change itself proves the user is reachable. This is what
+            // recovers a user whose unblock event was lost to drop_pending_updates,
+            // and what undoes a deactivation recorded by mistake.
+            if (! wHook()->update()->myChatMember) {
+                botUserStatus()->markActive($botUser);
+            }
+
+            if ($context = WebhookContext::capture()) {
+                botEventBus()->fire(new BotWebhookInitialized($context));
+            }
+
+            return $next($request);
+        } catch (\Throwable $e) {
+            Cache::forget($dedupKey);
+
+            throw $e;
+        }
     }
 
     /**

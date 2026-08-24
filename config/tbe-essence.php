@@ -67,4 +67,13 @@ return [
         // Prefix for the payment-gateway callback routes (routes/web.php).
         'web_prefix' => env('TBE_ROUTES_WEB_PREFIX', ''),
     ],
+
+    // update_id dedup requires an atomic Cache::add across workers/processes.
+    // The array and file drivers do not provide that (array is per-worker
+    // under Octane; file's add() is a non-atomic read-then-write), so both
+    // let a redelivered update slip through. Use redis, memcached, or
+    // another driver with a real atomic add in production.
+    'update_dedup' => [
+        'ttl_seconds' => env('TBE_UPDATE_DEDUP_TTL_SECONDS', 300),
+    ],
 ];
