@@ -2,8 +2,8 @@
 
 return [
     'text' => [
-        "enterResourcesNewField" => "Enter the :resourceName's new :field:",
-        "resourceFieldUpdated" => ':resource\'s :field updated successfully.',
+        'enterResourcesNewField' => "Enter the :resourceName's new :field:",
+        'resourceFieldUpdated' => ':resource\'s :field updated successfully.',
     ],
 
     'status' => [
@@ -50,19 +50,19 @@ return [
     'messages' => [
         'valueUpdatedSuccessfully' => '❕ Value updated successfully ✅',
         'enterNewValueOfField' => '❓ Enter value for :field:',
-        'deleteConfirmationQuestion' => 'Are you sure you want to delete :resource ":resourceName"?'
+        'deleteConfirmationQuestion' => 'Are you sure you want to delete :resource ":resourceName"?',
     ],
 
     'keys' => [
         'generateInvoiceAndPay' => 'Pay Now 💵 - :price',
-        'bunchDeletion' => "Bunch Deletion 🗑",
-        'bunchActivation' => "Bunch Activation 🔥",
+        'bunchDeletion' => 'Bunch Deletion 🗑',
+        'bunchActivation' => 'Bunch Activation 🔥',
         'delete' => 'Delete 🗑',
         'back' => 'Back 🔙',
     ],
 
     'lock-keys' => [
-        'waitingForFieldUpdate' => "Waiting for :field change",
+        'waitingForFieldUpdate' => 'Waiting for :field change',
     ],
 
     'answers' => [

@@ -25,11 +25,9 @@ use TelegramBotEssentials\Essence\Models\Billing\Invoice;
 class GatewayZirgozarController extends Controller
 {
     /**
-     * @param string $token
-     * @param Request $request
      * @return ResponseFactory|Application|RedirectResponse|Response|Redirector|object
      */
-    function pay(string $token, Request $request)
+    public function pay(string $token, Request $request)
     {
         $invoice = Invoice::where('public_token', $token)->firstOrFail();
         if ($invoice->status == 'paid') {
@@ -41,7 +39,7 @@ class GatewayZirgozarController extends Controller
         $toZirgozarAttempt = ToZirgozarAttempt::create([
             'payment_code' => $response['code'],
             'payment_token' => $response['token'],
-            'amount' => $invoice->price
+            'amount' => $invoice->price,
         ]);
 
         billing()->attemptPayment($invoice, $toZirgozarAttempt);
@@ -51,10 +49,10 @@ class GatewayZirgozarController extends Controller
 
     private function initializeWebPay(Invoice $invoice, string $token): array
     {
-        try{
-            $url = config('tbe-essence.gateways.zirgozar.url') . '/api/index.php';
+        try {
+            $url = config('tbe-essence.gateways.zirgozar.url').'/api/index.php';
             $data = [
-//                'key' => $invoice->bot->settings->zirgozar_token,
+                //                'key' => $invoice->bot->settings->zirgozar_token,
                 'key' => 'x',
                 'action' => 'web_pay',
                 'mobile' => $invoice->botUser->telegramUser->tel,
@@ -65,25 +63,26 @@ class GatewayZirgozarController extends Controller
             $data = array_filter($data);
             $response = Http::post($url, $data);
             $response = $response->json();
-            if(!$response || !$response['result']) {
-                tbeLog('essence')->warning('Zirgozar rejected web_pay request: ' . ($response['error_desc'] ?? 'error is not provided'), ['invoice_id' => $invoice->id]);
+            if (! $response || ! $response['result']) {
+                tbeLog('essence')->warning('Zirgozar rejected web_pay request: '.($response['error_desc'] ?? 'error is not provided'), ['invoice_id' => $invoice->id]);
                 throw new HttpResponseException(apiResponse()->error('Failed to initialize web payment', 503));
             }
+
             return $response;
-        } catch (Exception $e){
+        } catch (Exception $e) {
             exceptionReport($e);
+
             return [];
         }
     }
 
     /**
-     * @param string $token
-     * @param Request $request
      * @return ResponseFactory|Factory|View|Application|Response|\Illuminate\View\View|object
+     *
      * @throws TelegramSDKException
      * @throws TenantCouldNotBeIdentifiedById
      */
-    function callback(string $token, Request $request)
+    public function callback(string $token, Request $request)
     {
         $invoice = Invoice::where('public_token', $token)->firstOrFail();
 
@@ -93,11 +92,13 @@ class GatewayZirgozarController extends Controller
                 $me = $api->getMe();
                 $username = $me->username;
             } catch (TelegramSDKException $e) {
-                tbeLog('essence')->error('Failed to resolve bot username for invoice redirect: ' . $e->getMessage(), ['exception' => $e, 'invoice_id' => $invoice->id]);
+                tbeLog('essence')->error('Failed to resolve bot username for invoice redirect: '.$e->getMessage(), ['exception' => $e, 'invoice_id' => $invoice->id]);
+
                 return response('Failed to redirect', 503);
             }
-            $botLink = 'https://t.me/' . $username . '?start=invoice_' . $invoice->id;
-            return response('invoice is already paid, go to ' . "<a href=\"{$botLink}\">Telegram</a>", 200);
+            $botLink = 'https://t.me/'.$username.'?start=invoice_'.$invoice->id;
+
+            return response('invoice is already paid, go to '."<a href=\"{$botLink}\">Telegram</a>", 200);
         }
 
         try {
@@ -111,7 +112,9 @@ class GatewayZirgozarController extends Controller
         $this->initializeWHook($invoice);
         $response = $this->getWebPayResult($paymentToken);
 
-        if(!($invoice->paymentAttempt instanceof ToZirgozarAttempt) || !($invoice->paymentAttempt instanceof PaymentAttempt)) return apiResponse()->error('Failed to handle payment', 503);
+        if (! ($invoice->paymentAttempt instanceof ToZirgozarAttempt) || ! ($invoice->paymentAttempt instanceof PaymentAttempt)) {
+            return apiResponse()->error('Failed to handle payment', 503);
+        }
 
         $zirGozarAttempt = $invoice->paymentAttempt;
         $zirGozarAttempt->update([
@@ -131,11 +134,13 @@ class GatewayZirgozarController extends Controller
             $me = $api->getMe();
             $username = $me->username;
         } catch (TelegramSDKException $e) {
-            tbeLog('essence')->error('Failed to resolve bot username for invoice redirect: ' . $e->getMessage(), ['exception' => $e, 'invoice_id' => $invoice->id]);
+            tbeLog('essence')->error('Failed to resolve bot username for invoice redirect: '.$e->getMessage(), ['exception' => $e, 'invoice_id' => $invoice->id]);
+
             return response('Failed to redirect', 503);
         }
 
-        $botLink = 'https://t.me/' . $username . '?start=invoice_' . $invoice->id;
+        $botLink = 'https://t.me/'.$username.'?start=invoice_'.$invoice->id;
+
         return view('tbe::app', [
             'status' => $response['status'],
             'gateway' => 'zirgozar',
@@ -148,7 +153,7 @@ class GatewayZirgozarController extends Controller
      * @throws TelegramSDKException
      * @throws TenantCouldNotBeIdentifiedById
      */
-    function initializeWHook(Invoice $invoice): void
+    public function initializeWHook(Invoice $invoice): void
     {
         tenancy()->initialize($invoice->bot);
         wHook()->setBot($invoice->bot);
@@ -159,24 +164,26 @@ class GatewayZirgozarController extends Controller
 
     private function getWebPayResult(string $paymentToken): array
     {
-        try{
-            $url = config('tbe-essence.gateways.zirgozar.url') . '/api/index.php';
+        try {
+            $url = config('tbe-essence.gateways.zirgozar.url').'/api/index.php';
             $data = [
-//                'key' => wHook()->bot()->settings->zirgozar_token,
-                'key' => "x",
+                //                'key' => wHook()->bot()->settings->zirgozar_token,
+                'key' => 'x',
                 'action' => 'web_pay_status',
                 'token' => $paymentToken,
             ];
 
             $response = Http::post($url, $data);
             $response = $response->json();
-            if(!$response || !$response['result']) {
-                tbeLog('essence')->warning('Zirgozar rejected web_pay_status request: ' . ($response['error_desc'] ?? 'error is not provided'));
+            if (! $response || ! $response['result']) {
+                tbeLog('essence')->warning('Zirgozar rejected web_pay_status request: '.($response['error_desc'] ?? 'error is not provided'));
                 throw new HttpResponseException(apiResponse()->error('Failed to handle payment', 503));
             }
+
             return $response;
-        } catch (Exception $e){
+        } catch (Exception $e) {
             exceptionReport($e);
+
             return [];
         }
     }

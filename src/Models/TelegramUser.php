@@ -2,12 +2,12 @@
 
 namespace TelegramBotEssentials\Essence\Models;
 
-
-use TelegramBotEssentials\Essence\Database\factories\TelegramUserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use TelegramBotEssentials\Essence\Database\factories\TelegramUserFactory;
+use TelegramBotEssentials\Essence\Services\BotUserStatus;
 
 class TelegramUser extends Model
 {
@@ -36,7 +36,7 @@ class TelegramUser extends Model
      * be written by BotUserStatus, off an exact Telegram "user is deactivated"
      * response, since it silences the user across every bot at once.
      *
-     * @see \TelegramBotEssentials\Essence\Services\BotUserStatus
+     * @see BotUserStatus
      */
     protected $casts = [
         'peer_id' => 'integer',
@@ -50,7 +50,7 @@ class TelegramUser extends Model
         return trim("{$this->first_name} {$this->last_name}");
     }
 
-    public function botUsers(): hasMany
+    public function botUsers(): HasMany
     {
         return $this->hasMany(BotUser::class);
     }

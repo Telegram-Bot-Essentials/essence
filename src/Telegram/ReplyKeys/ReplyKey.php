@@ -5,8 +5,10 @@ namespace TelegramBotEssentials\Essence\Telegram\ReplyKeys;
 abstract class ReplyKey implements ReplyKeyInterface
 {
     protected string $text;
+
     protected int $perm = 0;
-    protected string $response = "";
+
+    protected string $response = '';
 
     public function getText(): string
     {

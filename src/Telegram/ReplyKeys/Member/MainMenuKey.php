@@ -2,15 +2,17 @@
 
 namespace TelegramBotEssentials\Essence\Telegram\ReplyKeys\Member;
 
-use TelegramBotEssentials\Essence\Exceptions\LogicException;
-use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKey;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Telegram\Bot\Exceptions\TelegramSDKException;
+use TelegramBotEssentials\Essence\Exceptions\LogicException;
+use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKey;
 
 class MainMenuKey extends ReplyKey
 {
     protected string $text = 'Main Menu';
+
     protected int $perm = 0;
+
     protected string $response = 'You are in the Main Menu';
 
     public function __construct()
@@ -30,7 +32,7 @@ class MainMenuKey extends ReplyKey
         wHook()->api()->sendMessage([
             'chat_id' => wHook()->user()->telegramUser->peer_id,
             'text' => $this->response,
-            'reply_markup' => wHook()->user()->getKeyboard()
+            'reply_markup' => wHook()->user()->getKeyboard(),
         ]);
     }
 }

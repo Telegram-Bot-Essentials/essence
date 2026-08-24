@@ -2,14 +2,15 @@
 
 namespace TelegramBotEssentials\Essence\Telegram\ReplyKeys\Admin;
 
+use Telegram\Bot\Exceptions\TelegramSDKException;
 use TelegramBotEssentials\Essence\Enums\Roles;
 use TelegramBotEssentials\Essence\Telegram\Features\BotAdminsFeature;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKey;
-use Telegram\Bot\Exceptions\TelegramSDKException;
 
 class BotAdminsKey extends ReplyKey
 {
     protected string $text = 'Bot Admins';
+
     protected int $perm = Roles::ADMIN->value;
 
     public function __construct()

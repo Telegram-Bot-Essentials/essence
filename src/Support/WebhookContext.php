@@ -16,12 +16,11 @@ class WebhookContext
         public readonly ?string $botToken = null,
         public readonly ?Bot $bot = null,
         public readonly ?BotUser $botUser = null,
-    ) {
-    }
+    ) {}
 
     public static function capture(): ?self
     {
-        if (!wHook()->check()) {
+        if (! wHook()->check()) {
             return null;
         }
 

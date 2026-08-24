@@ -55,9 +55,11 @@ class TelegramPaginator
      */
     public static function validatePageNumber(int $targetPage, int $currentPage, LengthAwarePaginator $models): void
     {
-        if ($targetPage == $currentPage)
+        if ($targetPage == $currentPage) {
             throw new InvalidPageNumber(__('tbe::general.alerts.samePageNumber'));
-        if ($targetPage < 1 || $targetPage > $models->lastPage())
+        }
+        if ($targetPage < 1 || $targetPage > $models->lastPage()) {
             throw new InvalidPageNumber(__('tbe::general.alerts.outOfBoundPageNumber'));
+        }
     }
 }

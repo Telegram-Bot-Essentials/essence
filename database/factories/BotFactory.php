@@ -2,14 +2,15 @@
 
 namespace TelegramBotEssentials\Essence\Database\factories;
 
-use TelegramBotEssentials\Essence\Models\Bot;
-use TelegramBotEssentials\Essence\Models\TelegramUser;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Ramsey\Uuid\Uuid;
+use TelegramBotEssentials\Essence\Models\Bot;
+use TelegramBotEssentials\Essence\Models\TelegramUser;
 
 class BotFactory extends Factory
 {
     protected $model = Bot::class;
+
     public function definition(): array
     {
         return [

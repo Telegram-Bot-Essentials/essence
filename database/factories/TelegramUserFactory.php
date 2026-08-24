@@ -2,12 +2,13 @@
 
 namespace TelegramBotEssentials\Essence\Database\factories;
 
-use TelegramBotEssentials\Essence\Models\TelegramUser;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use TelegramBotEssentials\Essence\Models\TelegramUser;
 
 class TelegramUserFactory extends Factory
 {
     protected $model = TelegramUser::class;
+
     public function definition(): array
     {
         return [

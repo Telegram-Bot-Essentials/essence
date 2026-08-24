@@ -2,13 +2,15 @@
 
 namespace TelegramBotEssentials\Essence\Telegram\ReplyKeys\Admin;
 
-use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKey;
 use Telegram\Bot\Exceptions\TelegramSDKException;
+use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKey;
 
 class AdminPanelKey extends ReplyKey
 {
     protected string $text = 'Admin Panel';
+
     protected int $perm = 100;
+
     protected string $response = 'You are in the admin panel';
 
     public function __construct()
@@ -26,7 +28,7 @@ class AdminPanelKey extends ReplyKey
         wHook()->api()->sendMessage([
             'chat_id' => wHook()->user()->telegramUser->peer_id,
             'text' => $this->response,
-            'reply_markup' => wHook()->user()->getKeyboard()
+            'reply_markup' => wHook()->user()->getKeyboard(),
         ]);
     }
 }

@@ -25,9 +25,7 @@ class TbeLogger implements LoggerInterface
 {
     use LoggerTrait;
 
-    public function __construct(private readonly ?string $package = null)
-    {
-    }
+    public function __construct(private readonly ?string $package = null) {}
 
     public function log($level, string|Stringable $message, array $context = []): void
     {
@@ -45,7 +43,7 @@ class TbeLogger implements LoggerInterface
 
         try {
             $webhook = wHook();
-            if (!$webhook->check()) {
+            if (! $webhook->check()) {
                 return $context;
             }
 

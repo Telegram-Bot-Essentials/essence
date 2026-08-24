@@ -36,13 +36,21 @@ class InlineQueryBus
     {
         $update = wHook()->update();
 
-        if (!$update->isType('inline_query')) return false;
-        if (!$this->handler) return false;
+        if (! $update->isType('inline_query')) {
+            return false;
+        }
+        if (! $this->handler) {
+            return false;
+        }
 
         $handler = $this->resolveInlineQuery($this->handler);
 
-        if (!$handler->isEnabled()) return false;
-        if (!hasAccess($handler->getPerm())) return false;
+        if (! $handler->isEnabled()) {
+            return false;
+        }
+        if (! hasAccess($handler->getPerm())) {
+            return false;
+        }
 
         $handler->handle();
 

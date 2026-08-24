@@ -9,6 +9,7 @@ class BotEventBus
     public function listen(string $event, string|array|callable $listener): self
     {
         Event::listen($event, $listener);
+
         return $this;
     }
 

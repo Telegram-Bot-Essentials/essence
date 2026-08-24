@@ -5,22 +5,28 @@ namespace TelegramBotEssentials\Essence\Telegram\StateAnswers;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use ReflectionMethod;
-use TelegramBotEssentials\Essence\Support\ResolvesParameters;
 use TelegramBotEssentials\Essence\Enums\AllowableFields;
 use TelegramBotEssentials\Essence\Exceptions\TbeLogicException;
 use TelegramBotEssentials\Essence\Models\MessageMeta;
 use TelegramBotEssentials\Essence\Models\StateData;
+use TelegramBotEssentials\Essence\Support\ResolvesParameters;
 
 abstract class StateAnswer implements StateAnswerInterface
 {
     use ResolvesParameters;
 
     protected string $type;
+
     protected int $perm;
+
     protected string $method;
+
     protected array $params = [];
+
     protected ?MessageMeta $messageMeta = null;
+
     protected ?StateData $stateData = null;
+
     protected array $bindings = [];
 
     protected array $allowedFields = [AllowableFields::TEXT->value];
@@ -56,12 +62,13 @@ abstract class StateAnswer implements StateAnswerInterface
         $camel = lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $command))));
         $method = method_exists($this, $camel) ? $camel : (method_exists($this, $command) ? $command : null);
 
-        if (!$method) {
+        if (! $method) {
             wHook()->api()->sendMessage([
                 'chat_id' => wHook()->peerId(),
                 'text' => __('tbe::general.status.unavailable'),
-                'reply_markup' => wHook()->user()->getKeyboard()
+                'reply_markup' => wHook()->user()->getKeyboard(),
             ]);
+
             return;
         }
 
@@ -76,27 +83,31 @@ abstract class StateAnswer implements StateAnswerInterface
             if ($type && class_exists($type) && is_subclass_of($type, Model::class)) {
                 $column = $this->bindings[$type] ?? null;
                 [$value, $found] = $this->resolveParamValue($column ?? $paramName, $paramName);
-                if (!$found) {
+                if (! $found) {
                     throw new \Exception("Missing binding value for {$type} (\$$paramName)");
                 }
 
                 $dependencies[] = $type::where($column ?? 'id', $value)->firstOrFail();
+
                 continue;
             }
 
             if ($type && class_exists($type)) {
                 $dependencies[] = Container::getInstance()->make($type);
+
                 continue;
             }
 
             [$value, $found] = $this->resolveParamValue($paramName);
             if ($found) {
                 $dependencies[] = $value;
+
                 continue;
             }
 
             if ($param->isDefaultValueAvailable()) {
                 $dependencies[] = $param->getDefaultValue();
+
                 continue;
             }
 
@@ -108,24 +119,31 @@ abstract class StateAnswer implements StateAnswerInterface
 
     public function messageMeta(): ?MessageMeta
     {
-        if ($this->messageMeta) return $this->messageMeta;
+        if ($this->messageMeta) {
+            return $this->messageMeta;
+        }
         $messageMeta = MessageMeta::find($this->params['message_meta_id'] ?? ($this->params['message_meta'] ?? null));
-        if (!$messageMeta) {
+        if (! $messageMeta) {
             return null;
         }
         $this->messageMeta = $messageMeta;
+
         return $messageMeta;
     }
 
     public function stateData(): ?StateData
     {
-        if ($this->stateData) return $this->stateData;
+        if ($this->stateData) {
+            return $this->stateData;
+        }
         $stateData = StateData::find($this->params['state_data_id'] ?? $this->params['state_data']);
-        if (!$stateData) {
+        if (! $stateData) {
             exceptionReport(new TbeLogicException('Trying to access state data, but it is not provided'));
+
             return null;
         }
         $this->stateData = $stateData;
+
         return $stateData;
     }
 

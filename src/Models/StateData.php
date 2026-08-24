@@ -2,8 +2,8 @@
 
 namespace TelegramBotEssentials\Essence\Models;
 
-use TelegramBotEssentials\Essence\Traits\HasMessageMeta;
 use Illuminate\Database\Eloquent\Model;
+use TelegramBotEssentials\Essence\Traits\HasMessageMeta;
 
 class StateData extends Model
 {
@@ -12,6 +12,7 @@ class StateData extends Model
     public $timestamps = false;
 
     protected $table = 'state_data';
+
     protected $fillable = ['data'];
 
     protected $casts = [

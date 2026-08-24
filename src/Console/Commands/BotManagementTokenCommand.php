@@ -24,17 +24,20 @@ class BotManagementTokenCommand extends Command
     public function handle()
     {
         $appName = config('app.name', 'TBE');
-        $token = "$appName:" . Str::random(32);
+        $token = "$appName:".Str::random(32);
 
         $this->info("Generated token: {$token}");
         $this->updateEnv('BOT_MANAGEMENT_ACCESS_TOKEN', $token);
+
         return 0;
     }
 
     protected function updateEnv($key, $value): bool
     {
         $envPath = base_path('.env');
-        if (!file_exists($envPath)) return false;
+        if (! file_exists($envPath)) {
+            return false;
+        }
 
         $escaped = preg_quote($key, '/');
         $envContent = file_get_contents($envPath);
@@ -46,7 +49,7 @@ class BotManagementTokenCommand extends Command
                 $envContent
             );
         } else {
-            $envContent .= PHP_EOL . "{$key}=\"{$value}\"" . PHP_EOL;
+            $envContent .= PHP_EOL."{$key}=\"{$value}\"".PHP_EOL;
         }
 
         return file_put_contents($envPath, $envContent) !== false;

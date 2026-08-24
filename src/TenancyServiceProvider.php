@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TelegramBotEssentials\Essence;
 
+use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -25,8 +26,8 @@ class TenancyServiceProvider extends ServiceProvider
             Events\CreatingTenant::class => [],
             Events\TenantCreated::class => [
                 JobPipeline::make([
-//                    Jobs\CreateDatabase::class,
-//                    Jobs\MigrateDatabase::class,
+                    //                    Jobs\CreateDatabase::class,
+                    //                    Jobs\MigrateDatabase::class,
                     // Jobs\SeedDatabase::class,
 
                     // Your own jobs to prepare the tenant.
@@ -43,7 +44,7 @@ class TenancyServiceProvider extends ServiceProvider
             Events\DeletingTenant::class => [],
             Events\TenantDeleted::class => [
                 JobPipeline::make([
-//                    Jobs\DeleteDatabase::class,
+                    //                    Jobs\DeleteDatabase::class,
                 ])->send(function (Events\TenantDeleted $event) {
                     return $event->tenant;
                 })->shouldBeQueued(false), // `false` by default, but you probably want to make this `true` for production.
@@ -107,25 +108,25 @@ class TenancyServiceProvider extends ServiceProvider
 
     protected function bootEvents()
     {
-//        foreach ($this->events() as $event => $listeners) {
-//            foreach ($listeners as $listener) {
-//                if ($listener instanceof JobPipeline) {
-//                    $listener = $listener->toListener();
-//                }
-//
-//                Event::listen($event, $listener);
-//            }
-//        }
+        //        foreach ($this->events() as $event => $listeners) {
+        //            foreach ($listeners as $listener) {
+        //                if ($listener instanceof JobPipeline) {
+        //                    $listener = $listener->toListener();
+        //                }
+        //
+        //                Event::listen($event, $listener);
+        //            }
+        //        }
     }
 
     protected function mapRoutes()
     {
-//        $this->app->booted(function () {
-//            if (file_exists(base_path('routes/tenant.php'))) {
-//                Route::namespace(static::$controllerNamespace)
-//                    ->group(base_path('routes/tenant.php'));
-//            }
-//        });
+        //        $this->app->booted(function () {
+        //            if (file_exists(base_path('routes/tenant.php'))) {
+        //                Route::namespace(static::$controllerNamespace)
+        //                    ->group(base_path('routes/tenant.php'));
+        //            }
+        //        });
     }
 
     protected function makeTenancyMiddlewareHighestPriority()
@@ -142,7 +143,7 @@ class TenancyServiceProvider extends ServiceProvider
         ];
 
         foreach (array_reverse($tenancyMiddleware) as $middleware) {
-            $this->app[\Illuminate\Contracts\Http\Kernel::class]->prependToMiddlewarePriority($middleware);
+            $this->app[Kernel::class]->prependToMiddlewarePriority($middleware);
         }
     }
 }

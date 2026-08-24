@@ -5,7 +5,6 @@ use Telegram\Bot\Api;
 use Telegram\Bot\FileUpload\InputFile;
 use Telegram\Bot\Keyboard\Button;
 use Telegram\Bot\Keyboard\Keyboard;
-use TelegramBotEssentials\Billing\Services\CurrencyFather;
 use TelegramBotEssentials\Essence\Enums\Roles;
 use TelegramBotEssentials\Essence\Events\BotEventBus;
 use TelegramBotEssentials\Essence\Exceptions\FeatureIsDisabled;
@@ -21,31 +20,31 @@ use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQuery;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQueryBus;
 use TelegramBotEssentials\Essence\Telegram\Commands\Command;
 use TelegramBotEssentials\Essence\Telegram\Commands\CommandBus;
-use TelegramBotEssentials\Essence\Telegram\InlineQueries\InlineQuery;
-use TelegramBotEssentials\Essence\Telegram\InlineQueries\InlineQueryBus;
 use TelegramBotEssentials\Essence\Telegram\Features\Member\InlineConfirmationFeature;
 use TelegramBotEssentials\Essence\Telegram\HttpClients\LaravelHttpClient;
+use TelegramBotEssentials\Essence\Telegram\InlineQueries\InlineQuery;
+use TelegramBotEssentials\Essence\Telegram\InlineQueries\InlineQueryBus;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKey;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKeyBus;
 use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswer;
 use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswerBus;
 use TelegramBotEssentials\Essence\Telegram\TelegramResponse;
 
-if (!function_exists('wHook')) {
+if (! function_exists('wHook')) {
     function wHook(): Webhook
     {
         return app(Webhook::class);
     }
 }
 
-if (!function_exists('tbeLog')) {
+if (! function_exists('tbeLog')) {
     function tbeLog(?string $package = null): TbeLogger
     {
         return new TbeLogger($package);
     }
 }
 
-if (!function_exists('telegramApi')) {
+if (! function_exists('telegramApi')) {
     function telegramApi(string $token, ?string $baseBotUrl = null): Api
     {
         return new Api(
@@ -56,57 +55,58 @@ if (!function_exists('telegramApi')) {
     }
 }
 
-if (!function_exists('replyKeyBus')) {
+if (! function_exists('replyKeyBus')) {
     function replyKeyBus(): ReplyKeyBus
     {
         return app(ReplyKeyBus::class);
     }
 }
 
-if (!function_exists('callbackQueryBus')) {
+if (! function_exists('callbackQueryBus')) {
     function callbackQueryBus(): CallbackQueryBus
     {
         return app(CallbackQueryBus::class);
     }
 }
 
-if (!function_exists('stateAnswerBus')) {
+if (! function_exists('stateAnswerBus')) {
     function stateAnswerBus(): StateAnswerBus
     {
         return app(StateAnswerBus::class);
     }
 }
 
-if (!function_exists('botEventBus')) {
+if (! function_exists('botEventBus')) {
     function botEventBus(): BotEventBus
     {
         return app(BotEventBus::class);
     }
 }
 
-if (!function_exists('inlineQueryBus')) {
+if (! function_exists('inlineQueryBus')) {
     function inlineQueryBus(): InlineQueryBus
     {
         return app(InlineQueryBus::class);
     }
 }
 
-if (!function_exists('commandBus')) {
+if (! function_exists('commandBus')) {
     function commandBus(): CommandBus
     {
         return app(CommandBus::class);
     }
 }
 
-if (!function_exists('encodeAnswerState')) {
+if (! function_exists('encodeAnswerState')) {
     function encodeAnswerState($type, $method, $params = []): string
     {
         $queryString = http_build_query($params);
-        return $type . '#' . $method . ($queryString ? '?' . $queryString : '');
+
+        return $type.'#'.$method.($queryString ? '?'.$queryString : '');
     }
 }
 
-if (!function_exists('decodeAnswerState')) {
+if (! function_exists('decodeAnswerState')) {
     function decodeAnswerState($input): array
     {
         $parts = explode('#', $input);
@@ -124,23 +124,24 @@ if (!function_exists('decodeAnswerState')) {
     }
 }
 
-if (!function_exists('encodeCallback')) {
+if (! function_exists('encodeCallback')) {
     function encodeCallback(string $type, string $method, array $params = []): string
     {
-        $safeParams = array_filter($params, fn($p) => is_scalar($p) && !is_null($p) && $p !== '');
+        $safeParams = array_filter($params, fn ($p) => is_scalar($p) && ! is_null($p) && $p !== '');
 
         $result = empty($safeParams)
-            ? $type . '#' . $method
-            : $type . '#' . $method . '?' . implode('&', array_map('strval', $safeParams));
+            ? $type.'#'.$method
+            : $type.'#'.$method.'?'.implode('&', array_map('strval', $safeParams));
 
         if (strlen($result) > 64) {
             return 'LONG_CALLBACK_DATA'; // TODO: handle this case
         }
+
         return $result;
     }
 }
 
-if (!function_exists('decodeCallback')) {
+if (! function_exists('decodeCallback')) {
     function decodeCallback(string $input): array
     {
         $type = null;
@@ -175,12 +176,15 @@ if (!function_exists('decodeCallback')) {
     }
 }
 
-if (!function_exists('inlineSorter')) {
+if (! function_exists('inlineSorter')) {
     function inlineSorter(array $array, ?int $step = null): array
     {
         if (empty($step)) {
-            if (count($array) < 6) $step = 1;
-            else $step = 2;
+            if (count($array) < 6) {
+                $step = 1;
+            } else {
+                $step = 2;
+            }
         }
 
         $list = [];
@@ -190,15 +194,16 @@ if (!function_exists('inlineSorter')) {
             $list[$row][] = $data;
             $num++;
         }
+
         return $list;
     }
 }
 
-if (!function_exists('smartInlineKeysSorter')) {
+if (! function_exists('smartInlineKeysSorter')) {
     function smartInlineKeysSorter(array $array, ?int $step = null, int $limit = 40): array
     {
         collect($array)->each(function ($data) {
-            if (!($data instanceof Button)) {
+            if (! ($data instanceof Button)) {
                 throw new InvalidArgumentException('Items must be instance of Button');
             }
         });
@@ -210,7 +215,7 @@ if (!function_exists('smartInlineKeysSorter')) {
 
             $pattern = '/\X/u';
             if (defined('SYMFONY_GRAPHEME_CLUSTER_RX')) {
-                $pattern = '/' . SYMFONY_GRAPHEME_CLUSTER_RX . '/u';
+                $pattern = '/'.SYMFONY_GRAPHEME_CLUSTER_RX.'/u';
             }
 
             $length = preg_match_all($pattern, $s, $matches);
@@ -245,8 +250,11 @@ if (!function_exists('smartInlineKeysSorter')) {
         };
 
         if (empty($step)) {
-            if (count($array) < 6) $step = 1;
-            else $step = 2;
+            if (count($array) < 6) {
+                $step = 1;
+            } else {
+                $step = 2;
+            }
         }
 
         $list = [];
@@ -257,7 +265,9 @@ if (!function_exists('smartInlineKeysSorter')) {
             $keyLen = $charLen($keyText);
 
             if (($scope + $keyLen) > $limit) {
-                if ($num % $step != 0) $num = ($num + $step) - ($num % $step);
+                if ($num % $step != 0) {
+                    $num = ($num + $step) - ($num % $step);
+                }
                 $scope = 0;
             }
             $row = floor($num / $step);
@@ -270,13 +280,7 @@ if (!function_exists('smartInlineKeysSorter')) {
     }
 }
 
-if (!function_exists('addInlineKeysSorted')) {
-    /**
-     * @param Keyboard $keyboard
-     * @param array $keys
-     * @param int|null $step
-     * @return void
-     */
+if (! function_exists('addInlineKeysSorted')) {
     function addInlineKeysSorted(Keyboard $keyboard, array $keys, ?int $step = null): void
     {
         $rows = inlineSorter($keys, $step);
@@ -286,13 +290,7 @@ if (!function_exists('addInlineKeysSorted')) {
     }
 }
 
-if (!function_exists('addInlineKeysSmartSorted')) {
-    /**
-     * @param Keyboard $keyboard
-     * @param array $keys
-     * @param int|null $step
-     * @return void
-     */
+if (! function_exists('addInlineKeysSmartSorted')) {
     function addInlineKeysSmartSorted(Keyboard $keyboard, array $keys, ?int $step = null, int $limit = 30): void
     {
         $rows = smartInlineKeysSorter($keys, $step, $limit);
@@ -302,28 +300,28 @@ if (!function_exists('addInlineKeysSmartSorted')) {
     }
 }
 
-if (!function_exists('getInputInlineKeyText')) {
+if (! function_exists('getInputInlineKeyText')) {
     function getInputInlineKeyText(): ?string
     {
         $callbackQuery = wHook()->update()->callbackQuery;
 
-        if (!$callbackQuery?->data) {
+        if (! $callbackQuery?->data) {
             return null;
         }
 
         $inlineKeys = $callbackQuery->message?->replyMarkup['inline_keyboard'] ?? null;
 
-        if (!is_iterable($inlineKeys)) {
+        if (! is_iterable($inlineKeys)) {
             return null;
         }
 
         foreach ($inlineKeys as $rows) {
-            if (!is_iterable($rows)) {
+            if (! is_iterable($rows)) {
                 continue;
             }
 
             foreach ($rows as $key) {
-                if (!is_array($key) && !($key instanceof \ArrayAccess)) {
+                if (! is_array($key) && ! ($key instanceof ArrayAccess)) {
                     continue;
                 }
 
@@ -337,18 +335,19 @@ if (!function_exists('getInputInlineKeyText')) {
     }
 }
 
-if (!function_exists('dependsOn')) {
+if (! function_exists('dependsOn')) {
     /**
      * @throws FeatureIsDisabled
      */
     function dependsOn(?bool $condition, string|TelegramResponse|null $message = null): void
     {
-        if (!$condition)
+        if (! $condition) {
             throw new FeatureIsDisabled($message);
+        }
     }
 }
 
-if (!function_exists('hasAccess')) {
+if (! function_exists('hasAccess')) {
 
     function hasAccess(?int $power = null): bool
     {
@@ -358,24 +357,25 @@ if (!function_exists('hasAccess')) {
     }
 }
 
-if (!function_exists('getResourceName')) {
+if (! function_exists('getResourceName')) {
     function getResourceName(string $resource): string
     {
         $parts = explode('\\', $resource);
+
         return end($parts);
     }
 }
 
-if (!function_exists('exceptionReport')) {
+if (! function_exists('exceptionReport')) {
     function exceptionReport(Throwable $e): void
     {
         tbeLog('essence')->error(
-            get_class($e) . ': ' . ($e->getMessage() ?: 'error message is not provided'),
+            get_class($e).': '.($e->getMessage() ?: 'error message is not provided'),
             ['exception' => $e],
         );
 
         $chatId = config('tbe-essence.bug_report.telegram_chat_id');
-        if (!$chatId || !config('tbe-essence.logging.telegram_notify')) {
+        if (! $chatId || ! config('tbe-essence.logging.telegram_notify')) {
             return;
         }
 
@@ -383,10 +383,10 @@ if (!function_exists('exceptionReport')) {
             $time = time();
             $summary = get_class($e);
             if ($e->getMessage()) {
-                $summary .= "\n" . $e->getMessage();
+                $summary .= "\n".$e->getMessage();
             }
             if (wHook()->requestState()) {
-                $summary .= "\nstate: " . wHook()->requestState();
+                $summary .= "\nstate: ".wHook()->requestState();
             }
             wHook()->api()->sendMessage([
                 'chat_id' => $chatId,
@@ -394,23 +394,23 @@ if (!function_exists('exceptionReport')) {
             ]);
             wHook()->api()->sendDocument([
                 'chat_id' => $chatId,
-                'document' => InputFile::createFromContents($e->getTraceAsString(), $time . '.trace'),
+                'document' => InputFile::createFromContents($e->getTraceAsString(), $time.'.trace'),
             ]);
             wHook()->api()->sendDocument([
                 'chat_id' => $chatId,
-                'document' => InputFile::createFromContents(json_encode(wHook()->update(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE), $time . '.update'),
+                'document' => InputFile::createFromContents(json_encode(wHook()->update(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE), $time.'.update'),
             ]);
         } catch (Throwable $err) {
-            tbeLog('essence')->warning('Failed to report exception to Telegram: ' . $err->getMessage());
+            tbeLog('essence')->warning('Failed to report exception to Telegram: '.$err->getMessage());
         }
     }
 }
 
-if (!function_exists('debugMessage')) {
+if (! function_exists('debugMessage')) {
     function debugMessage(string $message): void
     {
         tbeLog('essence')->warning($message);
-        if (!config('tbe-essence.logging.telegram_notify')) {
+        if (! config('tbe-essence.logging.telegram_notify')) {
             return;
         }
         try {
@@ -418,16 +418,17 @@ if (!function_exists('debugMessage')) {
                 'chat_id' => config('tbe-essence.bug_report.telegram_chat_id'),
                 'text' => $message,
             ]);
-        } catch (Throwable) {}
+        } catch (Throwable) {
+        }
     }
 }
 
-if (!function_exists('mixedDebugMessage')) {
+if (! function_exists('mixedDebugMessage')) {
     function mixedDebugMessage(mixed $data): void
     {
         $text = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         tbeLog('essence')->warning($text);
-        if (!config('tbe-essence.logging.telegram_notify')) {
+        if (! config('tbe-essence.logging.telegram_notify')) {
             return;
         }
         try {
@@ -435,62 +436,65 @@ if (!function_exists('mixedDebugMessage')) {
                 'chat_id' => config('tbe-essence.bug_report.telegram_chat_id'),
                 'text' => $text,
             ]);
-        } catch (Throwable) {}
+        } catch (Throwable) {
+        }
     }
 }
 
-if (!function_exists('exceptionHandler')) {
+if (! function_exists('exceptionHandler')) {
     function exceptionHandler(): ExceptionHandler
     {
         return app(ExceptionHandler::class);
     }
 }
 
-if (!function_exists('inlineConfirmationKey')) {
+if (! function_exists('inlineConfirmationKey')) {
     function inlineConfirmationKey(string $keyText, string $targetCallbackData, string $backCallbackData, ?string $confirmationText): Button|array|string
     {
         $inlineConfirmation = InlineConfirmation::create([
             'confirmation_text' => $confirmationText,
             'callback_data' => $targetCallbackData,
-            'back_callback_data' => $backCallbackData
+            'back_callback_data' => $backCallbackData,
         ]);
 
         return Keyboard::inlineButton([
             'text' => $keyText,
-            'callback_data' => encodeCallback(InlineConfirmationFeature::$type, 'load', [$inlineConfirmation->id])
+            'callback_data' => encodeCallback(InlineConfirmationFeature::$type, 'load', [$inlineConfirmation->id]),
         ]);
     }
 }
 
-if (!function_exists('stateData')) {
+if (! function_exists('stateData')) {
     function stateData(): StateDataService
     {
         return app(StateDataService::class);
     }
 }
 
-if (!function_exists('navState')) {
+if (! function_exists('navState')) {
     function navState(): NavState
     {
         return app(NavState::class);
     }
 }
 
-if (!function_exists('botUserStatus')) {
+if (! function_exists('botUserStatus')) {
     function botUserStatus(): BotUserStatus
     {
         return app(BotUserStatus::class);
     }
 }
 
-if (!function_exists('loadStateAnswers')) {
+if (! function_exists('loadStateAnswers')) {
     function loadStateAnswers(string $path): void
     {
-        if (!$path) return;
+        if (! $path) {
+            return;
+        }
         $namespace = resolveNamespace($path);
 
         foreach (File::allFiles($path) as $file) {
-            $fqcn = $namespace . '\\' . $file->getFilenameWithoutExtension();
+            $fqcn = $namespace.'\\'.$file->getFilenameWithoutExtension();
 
             if (class_exists($fqcn) && is_subclass_of($fqcn, StateAnswer::class)) {
                 stateAnswerBus()->addStateAnswer($fqcn);
@@ -499,14 +503,16 @@ if (!function_exists('loadStateAnswers')) {
     }
 }
 
-if (!function_exists('loadCallbackQueries')) {
+if (! function_exists('loadCallbackQueries')) {
     function loadCallbackQueries(string $path): void
     {
-        if (!$path) return;
+        if (! $path) {
+            return;
+        }
         $namespace = resolveNamespace($path);
 
         foreach (File::allFiles($path) as $file) {
-            $fqcn = $namespace . '\\' . $file->getFilenameWithoutExtension();
+            $fqcn = $namespace.'\\'.$file->getFilenameWithoutExtension();
 
             if (class_exists($fqcn) && is_subclass_of($fqcn, CallbackQuery::class)) {
                 callbackQueryBus()->addCallbackQuery($fqcn);
@@ -515,14 +521,16 @@ if (!function_exists('loadCallbackQueries')) {
     }
 }
 
-if (!function_exists('loadCommands')) {
+if (! function_exists('loadCommands')) {
     function loadCommands(string $path): void
     {
-        if (!$path) return;
+        if (! $path) {
+            return;
+        }
         $namespace = resolveNamespace($path);
 
         foreach (File::allFiles($path) as $file) {
-            $fqcn = $namespace . '\\' . $file->getFilenameWithoutExtension();
+            $fqcn = $namespace.'\\'.$file->getFilenameWithoutExtension();
 
             if (class_exists($fqcn) && is_subclass_of($fqcn, Command::class)) {
                 commandBus()->addCommand($fqcn);
@@ -531,44 +539,50 @@ if (!function_exists('loadCommands')) {
     }
 }
 
-if (!function_exists('loadInlineQueries')) {
+if (! function_exists('loadInlineQueries')) {
     function loadInlineQueries(string $path): void
     {
-        if (!$path) return;
+        if (! $path) {
+            return;
+        }
         $namespace = resolveNamespace($path);
 
         foreach (File::allFiles($path) as $file) {
-            $fqcn = $namespace . '\\' . $file->getFilenameWithoutExtension();
+            $fqcn = $namespace.'\\'.$file->getFilenameWithoutExtension();
 
             if (class_exists($fqcn) && is_subclass_of($fqcn, InlineQuery::class)) {
                 inlineQueryBus()->setHandler($fqcn);
+
                 return;
             }
         }
     }
 }
 
-if (!function_exists('addUserReplyKeys')) {
+if (! function_exists('addUserReplyKeys')) {
     function addUserReplyKeys(array $replyKeys): void
     {
         foreach ($replyKeys as $replyKeyRow) {
             foreach ($replyKeyRow as $replyKey) {
-                if (!is_subclass_of($replyKey, ReplyKey::class))
+                if (! is_subclass_of($replyKey, ReplyKey::class)) {
                     throw new LogicException("ReplyKey {$replyKey} is not a subclass of TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKey");
+                }
                 replyKeyBus()->addReplyKey($replyKey);
             }
         }
     }
 }
 
-if (!function_exists('loadReplyKeys')) {
+if (! function_exists('loadReplyKeys')) {
     function loadReplyKeys(string $path): void
     {
-        if (!$path) return;
+        if (! $path) {
+            return;
+        }
         $namespace = resolveNamespace($path);
 
         foreach (File::allFiles($path) as $file) {
-            $fqcn = $namespace . '\\' . $file->getFilenameWithoutExtension();
+            $fqcn = $namespace.'\\'.$file->getFilenameWithoutExtension();
 
             if (class_exists($fqcn) && is_subclass_of($fqcn, ReplyKey::class)) {
                 replyKeyBus()->addReplyKey($fqcn);
@@ -577,7 +591,7 @@ if (!function_exists('loadReplyKeys')) {
     }
 }
 
-if (!function_exists('resolveNamespace')) {
+if (! function_exists('resolveNamespace')) {
     function resolveNamespace(string $path): string
     {
         if (str_starts_with($path, base_path('app'))) {
@@ -588,9 +602,9 @@ if (!function_exists('resolveNamespace')) {
             $baseNamespace = 'TelegramBotEssentials\\Essence';
         }
 
-        $relativePath = str_replace($basePath . DIRECTORY_SEPARATOR, '', $path);
+        $relativePath = str_replace($basePath.DIRECTORY_SEPARATOR, '', $path);
         $relativeNamespace = str_replace(DIRECTORY_SEPARATOR, '\\', $relativePath);
 
-        return trim(rtrim($baseNamespace, '\\') . '\\' . $relativeNamespace, '\\');
+        return trim(rtrim($baseNamespace, '\\').'\\'.$relativeNamespace, '\\');
     }
 }

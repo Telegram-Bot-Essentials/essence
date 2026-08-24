@@ -140,21 +140,21 @@ class TranslationScanner
             $sources[] = ['path' => $appLocalePath, 'prefix' => 'app'];
         }
 
-        $publishedVendorPath = lang_path("vendor");
+        $publishedVendorPath = lang_path('vendor');
         if (File::isDirectory($publishedVendorPath)) {
             foreach (File::directories($publishedVendorPath) as $vendorNamespaceDir) {
-                $localePath = $vendorNamespaceDir . DIRECTORY_SEPARATOR . $locale;
+                $localePath = $vendorNamespaceDir.DIRECTORY_SEPARATOR.$locale;
                 if (File::isDirectory($localePath)) {
                     $sources[] = [
                         'path' => $localePath,
-                        'prefix' => 'vendor.' . basename($vendorNamespaceDir),
+                        'prefix' => 'vendor.'.basename($vendorNamespaceDir),
                     ];
                 }
             }
         }
 
         foreach ($this->packageLangRoots() as $packageName => $langRoot) {
-            $localePath = $langRoot . DIRECTORY_SEPARATOR . $locale;
+            $localePath = $langRoot.DIRECTORY_SEPARATOR.$locale;
             if (File::isDirectory($localePath)) {
                 $sources[] = ['path' => $localePath, 'prefix' => $packageName];
             }
@@ -175,7 +175,7 @@ class TranslationScanner
                 continue;
             }
 
-            $relativePrefix = $prefix . '.' . $file->getBasename('.php');
+            $relativePrefix = $prefix.'.'.$file->getBasename('.php');
             $content = File::getRequire($file->getPathname());
 
             if (is_array($content)) {
@@ -207,7 +207,7 @@ class TranslationScanner
         }
 
         foreach (File::directories($vendorPath) as $packageDir) {
-            $langRoot = $packageDir . DIRECTORY_SEPARATOR . 'lang';
+            $langRoot = $packageDir.DIRECTORY_SEPARATOR.'lang';
             if (File::isDirectory($langRoot)) {
                 $roots[basename($packageDir)] = $langRoot;
             }

@@ -15,6 +15,7 @@ use TelegramBotEssentials\Essence\Telegram\Features\Member\InlineConfirmationFea
 class InlineConfirmationQuery extends CallbackQuery
 {
     protected string $type = 'INLINECONFIRMATION';
+
     protected int $perm = Roles::MEMBER->value;
 
     /**
@@ -25,7 +26,9 @@ class InlineConfirmationQuery extends CallbackQuery
     public function accept(InlineConfirmation $inlineConfirmation): void
     {
         $done = callbackQueryBus()->routeQuery($inlineConfirmation->callback_data);
-        if (!$done) return;
+        if (! $done) {
+            return;
+        }
 
         $inlineConfirmation->delete();
         InlineConfirmation::where('updated_at', '<', Carbon::now()->subHours(6))->delete();
@@ -39,7 +42,9 @@ class InlineConfirmationQuery extends CallbackQuery
     public function decline(InlineConfirmation $inlineConfirmation): void
     {
         $done = callbackQueryBus()->routeQuery($inlineConfirmation->back_callback_data);
-        if (!$done) return;
+        if (! $done) {
+            return;
+        }
 
         $inlineConfirmation->delete();
         InlineConfirmation::where('updated_at', '<', Carbon::now()->subHours(6))->delete();

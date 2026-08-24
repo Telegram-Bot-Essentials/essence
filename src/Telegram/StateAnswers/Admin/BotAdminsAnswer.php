@@ -2,18 +2,19 @@
 
 namespace TelegramBotEssentials\Essence\Telegram\StateAnswers\Admin;
 
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Telegram\Bot\Exceptions\TelegramSDKException;
 use TelegramBotEssentials\Essence\Enums\Roles;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
 use TelegramBotEssentials\Essence\Models\MessageMeta;
 use TelegramBotEssentials\Essence\Models\TelegramUser;
 use TelegramBotEssentials\Essence\Telegram\Features\BotAdminsFeature;
 use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswer;
-use Illuminate\Contracts\Container\BindingResolutionException;
-use Telegram\Bot\Exceptions\TelegramSDKException;
 
 class BotAdminsAnswer extends StateAnswer
 {
     protected string $type = 'BOTADMNS';
+
     protected int $perm = Roles::ADMIN->value;
 
     /**
@@ -24,7 +25,7 @@ class BotAdminsAnswer extends StateAnswer
     public function addAdmin(): void
     {
         $telegramUser = str_starts_with(wHook()->update()->message->text, '@') ?
-            TelegramUser::where('username', str_replace('@', '', wHook()->update()->message->text))->firstOrFail():
+            TelegramUser::where('username', str_replace('@', '', wHook()->update()->message->text))->firstOrFail() :
             TelegramUser::where('peer_id', wHook()->update()->message->text)->firstOrFail();
         $botUser = wHook()->bot()->botUsers()->where('telegram_user_peer_id', $telegramUser->peer_id)->firstOrFail();
         $botUser->power = Roles::ADMIN->value;

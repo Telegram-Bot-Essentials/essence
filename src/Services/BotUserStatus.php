@@ -119,7 +119,7 @@ class BotUserStatus
         $telegramUser = $botUser->telegramUser;
 
         if ($state === BotUser::STATUS_DEACTIVATED) {
-            if (!$telegramUser) {
+            if (! $telegramUser) {
                 return;
             }
 

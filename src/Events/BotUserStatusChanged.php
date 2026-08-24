@@ -23,14 +23,14 @@ class BotUserStatusChanged
     public const SOURCE_SEND_SUCCESS = 'send_success';
 
     /**
-     * @param string $from previous reachability state
-     * @param string $to new reachability state
-     * @param string $source one of the SOURCE_* constants
+     * @param  string  $from  previous reachability state
+     * @param  string  $to  new reachability state
+     * @param  string  $source  one of the SOURCE_* constants
      */
     public function __construct(
         public readonly BotUser $botUser,
-        public readonly string  $from,
-        public readonly string  $to,
-        public readonly string  $source,
+        public readonly string $from,
+        public readonly string $to,
+        public readonly string $source,
     ) {}
 }

@@ -27,7 +27,7 @@ trait ResolvesParameters
 
         foreach ($keys as $key) {
             $normalizedKeyVariants = $this->buildNormalizedCandidates($key);
-            if (!empty(array_intersect($normalizedTargets, $normalizedKeyVariants))) {
+            if (! empty(array_intersect($normalizedTargets, $normalizedKeyVariants))) {
                 return $key;
             }
         }

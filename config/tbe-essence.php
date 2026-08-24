@@ -7,11 +7,11 @@ use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Member\MainMenuKey;
 return [
     'keyboard' => [
         'admin' => [
-            [MainMenuKey::class]
+            [MainMenuKey::class],
         ],
         'member' => [
             [AdminPanelKey::class],
-        ]
+        ],
     ],
 
     'commands' => [

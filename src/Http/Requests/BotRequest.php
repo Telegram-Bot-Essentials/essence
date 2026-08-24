@@ -4,7 +4,6 @@ namespace TelegramBotEssentials\Essence\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
 
 class BotRequest extends FormRequest
 {
@@ -30,12 +29,11 @@ class BotRequest extends FormRequest
             'suspended_at' => 'nullable|date',
         ];
 
-
-        if($this->isMethod('PUT')){
+        if ($this->isMethod('PUT')) {
             $rules['bot_owner_peer_id'] = 'nullable|integer';
         }
 
-        if($this->isMethod('PATCH')){
+        if ($this->isMethod('PATCH')) {
             $rules['bot_token'] = 'nullable|string|max:255';
             $rules['bot_owner_peer_id'] = 'nullable|integer';
         }

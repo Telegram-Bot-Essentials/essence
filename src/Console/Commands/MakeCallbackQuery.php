@@ -2,8 +2,8 @@
 
 namespace TelegramBotEssentials\Essence\Console\Commands;
 
-use TelegramBotEssentials\Essence\Traits\TgClassMaker;
 use Illuminate\Console\GeneratorCommand;
+use TelegramBotEssentials\Essence\Traits\TgClassMaker;
 
 class MakeCallbackQuery extends GeneratorCommand
 {
@@ -16,6 +16,7 @@ class MakeCallbackQuery extends GeneratorCommand
         {--f|feature : Generate feature class}
         {--r|reply-key : Generate reply key}
         {--s|state-answer : Generate state answer}';
+
     protected $description = 'Create a new CallbackQuery class';
 
     protected array $map = [
@@ -26,18 +27,19 @@ class MakeCallbackQuery extends GeneratorCommand
 
     protected function getStub(): string
     {
-        return __DIR__ . '/stubs/callback-query.stub';
+        return __DIR__.'/stubs/callback-query.stub';
     }
 
     protected function getDefaultNamespace($rootNamespace): string
     {
         $perm = $this->option('admin') ? 'Admin' : 'Member';
-        return $rootNamespace . '\\Telegram\\CallbackQueries\\' . $perm;
+
+        return $rootNamespace.'\\Telegram\\CallbackQueries\\'.$perm;
     }
 
     protected function getNameInput(): string
     {
-        return $this->initializeName() . 'Query';
+        return $this->initializeName().'Query';
     }
 
     protected function buildClass($name): string

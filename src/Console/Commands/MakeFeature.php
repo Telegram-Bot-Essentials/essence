@@ -2,8 +2,8 @@
 
 namespace TelegramBotEssentials\Essence\Console\Commands;
 
-use TelegramBotEssentials\Essence\Traits\TgClassMaker;
 use Illuminate\Console\GeneratorCommand;
+use TelegramBotEssentials\Essence\Traits\TgClassMaker;
 
 class MakeFeature extends GeneratorCommand
 {
@@ -16,6 +16,7 @@ class MakeFeature extends GeneratorCommand
         {--c|callback : Generate callback query}
         {--r|reply-key : Generate reply key}
         {--s|state-answer : Generate state answer}';
+
     protected $description = 'Create a new feature';
 
     protected array $map = [
@@ -26,18 +27,19 @@ class MakeFeature extends GeneratorCommand
 
     protected function getStub(): string
     {
-        return __DIR__ . '/stubs/feature.stub';
+        return __DIR__.'/stubs/feature.stub';
     }
 
     protected function getDefaultNamespace($rootNamespace): string
     {
         $perm = $this->option('admin') ? 'Admin' : 'Member';
-        return $rootNamespace . '\\Telegram\\Features\\' . $perm;
+
+        return $rootNamespace.'\\Telegram\\Features\\'.$perm;
     }
 
     protected function getNameInput(): string
     {
-        return $this->initializeName() . 'Feature';
+        return $this->initializeName().'Feature';
     }
 
     protected function buildClass($name): string

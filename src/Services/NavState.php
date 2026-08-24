@@ -29,7 +29,7 @@ class NavState
     {
         $message = $this->currentMessage();
 
-        if (!$message) {
+        if (! $message) {
             return;
         }
 
@@ -40,7 +40,7 @@ class NavState
     {
         $message = $this->currentMessage();
 
-        if (!$message) {
+        if (! $message) {
             return $default;
         }
 

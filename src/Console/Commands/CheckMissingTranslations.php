@@ -19,7 +19,7 @@ class CheckMissingTranslations extends Command
         }
 
         $baseLocale = $scanner->baseLocale();
-        $this->info('Checking translations with base locale: ' . $baseLocale);
+        $this->info('Checking translations with base locale: '.$baseLocale);
 
         $baseKeys = $scanner->baseKeys();
         $hadIssues = false;
@@ -34,13 +34,14 @@ class CheckMissingTranslations extends Command
 
             if (empty($missing)) {
                 $this->info("✅ $locale: All keys present");
+
                 continue;
             }
 
             $hadIssues = true;
-            $this->warn('❌ ' . $locale . ': Missing ' . count($missing) . ' keys');
+            $this->warn('❌ '.$locale.': Missing '.count($missing).' keys');
             foreach (array_keys($missing) as $key) {
-                $this->line('   - ' . $key);
+                $this->line('   - '.$key);
             }
         }
 

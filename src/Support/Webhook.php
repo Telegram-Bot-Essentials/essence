@@ -14,9 +14,13 @@ use Throwable;
 class Webhook
 {
     private ?Api $api = null;
+
     private ?Update $update = null;
+
     private ?Bot $bot = null;
+
     private ?BotUser $user = null;
+
     private ?string $requestState = null;
 
     public function clear(): void
@@ -41,7 +45,10 @@ class Webhook
     public function api(): Api
     {
         try {
-            if ($this->api == null) throw new WebhookAuthException('Failed to retrieve API service.');
+            if ($this->api == null) {
+                throw new WebhookAuthException('Failed to retrieve API service.');
+            }
+
             return $this->api;
         } catch (WebhookAuthException $e) {
             exceptionHandler()->handle($e);
@@ -52,7 +59,10 @@ class Webhook
     public function update(): Update
     {
         try {
-            if ($this->update == null) throw new WebhookAuthException('Failed to retrieve Updates.');
+            if ($this->update == null) {
+                throw new WebhookAuthException('Failed to retrieve Updates.');
+            }
+
             return $this->update;
         } catch (WebhookAuthException $e) {
             exceptionHandler()->handle($e);
@@ -63,7 +73,10 @@ class Webhook
     public function bot(): Bot
     {
         try {
-            if ($this->bot == null) throw new WebhookAuthException('Failed to retrieve bot.');
+            if ($this->bot == null) {
+                throw new WebhookAuthException('Failed to retrieve bot.');
+            }
+
             return $this->bot;
         } catch (WebhookAuthException $e) {
             exceptionHandler()->handle($e);
@@ -74,7 +87,10 @@ class Webhook
     public function user(): BotUser
     {
         try {
-            if ($this->user == null) throw new WebhookAuthException('Failed to retrieve telegram user.');
+            if ($this->user == null) {
+                throw new WebhookAuthException('Failed to retrieve telegram user.');
+            }
+
             return $this->user;
         } catch (WebhookAuthException $e) {
             exceptionHandler()->handle($e);
@@ -128,7 +144,7 @@ class Webhook
 
     public function exportContext(): ?WebhookContext
     {
-        if (!self::check()) {
+        if (! self::check()) {
             return null;
         }
 
@@ -156,13 +172,13 @@ class Webhook
 
         $bot = $snapshot->bot ?? $snapshot->resolveBot();
 
-        if (!$bot) {
+        if (! $bot) {
             return false;
         }
 
         $botUser = $snapshot->botUser ?? $snapshot->resolveBotUser();
 
-        if (!$botUser) {
+        if (! $botUser) {
             return false;
         }
 
@@ -180,7 +196,7 @@ class Webhook
         } else {
             $token = $snapshot->botToken ?? $bot->bot_token;
 
-            if (!$token) {
+            if (! $token) {
                 return false;
             }
             self::setApi(telegramApi($token));

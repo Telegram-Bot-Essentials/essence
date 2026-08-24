@@ -26,7 +26,7 @@ class Bot extends BaseTenant
     ];
 
     protected $hidden = [
-        'secret_token'
+        'secret_token',
     ];
 
     protected $casts = [

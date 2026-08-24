@@ -12,14 +12,15 @@ use Telegram\Bot\Keyboard\Keyboard;
 use TelegramBotEssentials\Essence\Database\factories\BotUserFactory;
 use TelegramBotEssentials\Essence\Enums\Roles;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
+use TelegramBotEssentials\Essence\Services\BotUserStatus;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Member\CancelProcessKey;
 use TelegramBotEssentials\Essence\Traits\CanResolveReplyKey;
 
 class BotUser extends Model
 {
-    use HasFactory;
-    use CanResolveReplyKey;
     use BelongsToTenant;
+    use CanResolveReplyKey;
+    use HasFactory;
 
     /** Telegram delivers to this user. */
     public const STATUS_ACTIVE = 'active';
@@ -43,11 +44,12 @@ class BotUser extends Model
      * telegram_users.deactivated_at. Named here because it is the fourth
      * reachability state that consumers filter and report on.
      *
-     * @see \TelegramBotEssentials\Essence\Services\BotUserStatus
+     * @see BotUserStatus
      */
     public const STATUS_DEACTIVATED = 'deactivated';
 
     protected $appends = ['role', 'suspend'];
+
     protected $guarded = [
         'id',
         'created_at',
@@ -155,11 +157,12 @@ class BotUser extends Model
         $rows = [];
         if ($this->state) {
             $rows[] = [CancelProcessKey::class];
-        } else if ($this->menu == 'main') {
+        } elseif ($this->menu == 'main') {
             $rows = array_merge($rows, config('tbe-essence.keyboard.member') ?? []);
         } elseif ($this->menu == 'admin') {
             $rows = array_merge($rows, config('tbe-essence.keyboard.admin') ?? []);
         }
+
         return $this->keyboardGenerator($rows);
     }
 
@@ -178,9 +181,15 @@ class BotUser extends Model
             $processedRow = [];
             foreach ($keys as $key) {
                 $resolvedKey = $this->resolveReplyKey($key);
-                if (!hasAccess($resolvedKey->getPerm())) continue;
-                if (!$resolvedKey->isEnabled()) continue;
-                if (in_array($resolvedKey->getText(), $addedKeys)) continue;
+                if (! hasAccess($resolvedKey->getPerm())) {
+                    continue;
+                }
+                if (! $resolvedKey->isEnabled()) {
+                    continue;
+                }
+                if (in_array($resolvedKey->getText(), $addedKeys)) {
+                    continue;
+                }
                 $addedKeys[] = $resolvedKey->getText();
                 $processedRow[] = $resolvedKey->getText();
             }

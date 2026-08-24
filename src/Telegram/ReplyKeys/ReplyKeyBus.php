@@ -4,19 +4,20 @@ declare(strict_types=1);
 
 namespace TelegramBotEssentials\Essence\Telegram\ReplyKeys;
 
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Telegram\Bot\Exceptions\TelegramSDKException;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
 use TelegramBotEssentials\Essence\Traits\CanCancelOldProcess;
 use TelegramBotEssentials\Essence\Traits\CanResolveReplyKey;
-use Illuminate\Contracts\Container\BindingResolutionException;
-use Telegram\Bot\Exceptions\TelegramSDKException;
 
 /**
  * Class CommandBus.
  */
 class ReplyKeyBus
 {
-    use CanResolveReplyKey;
     use CanCancelOldProcess;
+    use CanResolveReplyKey;
+
     private array $replyKeys = [];
 
     public function getReplyKeys(): array
@@ -73,9 +74,13 @@ class ReplyKeyBus
     {
         $update = wHook()->update();
 
-        if (!$update->isType('message')) return false;
+        if (! $update->isType('message')) {
+            return false;
+        }
         $message = $update->getMessage();
-        if (!$message->has('text')) return false;
+        if (! $message->has('text')) {
+            return false;
+        }
         $text = $message->get('text');
 
         $key = $this->replyKeys[$text] ?? null;
@@ -85,19 +90,23 @@ class ReplyKeyBus
 
         $resolvedKey = $this->resolveReplyKey($key);
         $this->handler($resolvedKey);
+
         return true;
     }
 
     /**
-     * @param ReplyKeyInterface $resolvedKey
      * @throws BindingResolutionException
      * @throws LogicException
      * @throws TelegramSDKException
      */
     protected function handler(ReplyKeyInterface $resolvedKey): void
     {
-        if(!$resolvedKey->isEnabled()) return;
-        if (!hasAccess($resolvedKey->getPerm())) return;
+        if (! $resolvedKey->isEnabled()) {
+            return;
+        }
+        if (! hasAccess($resolvedKey->getPerm())) {
+            return;
+        }
         $currentState = wHook()->user()->state;
         $this->cancelOldProcess();
         $resolvedKey->handle();

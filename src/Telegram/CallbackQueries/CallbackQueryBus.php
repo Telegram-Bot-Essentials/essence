@@ -64,8 +64,6 @@ class CallbackQueryBus
     }
 
     /**
-     * @param string $callbackQuery
-     * @return bool
      * @throws BindingResolutionException
      * @throws LogicException
      * @throws TbeLogicException
@@ -78,8 +76,6 @@ class CallbackQueryBus
     }
 
     /**
-     * @param array $callbackQueryData
-     * @return bool
      * @throws BindingResolutionException
      * @throws LogicException
      * @throws TbeLogicException
@@ -91,20 +87,26 @@ class CallbackQueryBus
 
         $key = $this->callbackQueryTypes[$type] ?? null;
         if (empty($key)) {
-            tbeLog('essence')->warning('Callback query "' . $type . '" is not registered');
+            tbeLog('essence')->warning('Callback query "'.$type.'" is not registered');
             throw new TbeLogicException(__('tbe::general.callbackQuery.willBeAddedInTheFuture'));
         }
 
         $resolvedCallbackQuery = $this->resolveCallbackQuery($key);
+
         return $this->handler($resolvedCallbackQuery, $method, $callbackQueryData['params']);
     }
 
     protected function handler(CallbackQueryInterface $resolvedCallbackQuery, string $method, array $params): bool
     {
-        if (!$resolvedCallbackQuery->isEnabled()) return false;
-        if (!hasAccess($resolvedCallbackQuery->getPerm())) return false;
+        if (! $resolvedCallbackQuery->isEnabled()) {
+            return false;
+        }
+        if (! hasAccess($resolvedCallbackQuery->getPerm())) {
+            return false;
+        }
         $resolvedCallbackQuery->setParams($params);
         $resolvedCallbackQuery->setMethod($method);
+
         return $resolvedCallbackQuery->handle() ?? true;
     }
 
@@ -117,7 +119,9 @@ class CallbackQueryBus
     {
         $update = wHook()->update();
 
-        if (!$update->isType('callback_query')) return false;
+        if (! $update->isType('callback_query')) {
+            return false;
+        }
         $callbackQueryData = decodeCallback($update->callbackQuery->data);
 
         return $this->route($callbackQueryData);

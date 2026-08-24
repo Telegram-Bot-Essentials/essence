@@ -2,32 +2,33 @@
 
 namespace TelegramBotEssentials\Essence\Telegram;
 
-use TelegramBotEssentials\Essence\Models\BotUser;
-use TelegramBotEssentials\Essence\Models\MessageMeta;
 use Exception;
-use Throwable;
 use Illuminate\Database\Eloquent\Model;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\FileUpload\InputFile;
 use Telegram\Bot\Keyboard\Keyboard;
 use Telegram\Bot\Objects\Message;
+use TelegramBotEssentials\Essence\Models\BotUser;
+use TelegramBotEssentials\Essence\Models\MessageMeta;
+use Throwable;
 
 class TelegramResponse
 {
     private ?Model $modelForMessageMeta = null;
+
     private ?string $messageMetaTag = null;
+
     private ?string $softAnswer = null;
+
     private ?array $navStateData = null;
 
     public function __construct(
-        public ?string            $text = null,
-        public ?Keyboard          $replyMarkup = null,
-        public ?string            $answer = null,
-        public ?string            $parseMode = null,
+        public ?string $text = null,
+        public ?Keyboard $replyMarkup = null,
+        public ?string $answer = null,
+        public ?string $parseMode = null,
         public string|InputFile|null $photo = null,
-    )
-    {
-    }
+    ) {}
 
     public static function fromArray(array $data): static
     {
@@ -70,18 +71,21 @@ class TelegramResponse
     public function answer(string $answer): self
     {
         $this->answer = $answer;
+
         return $this;
     }
 
     public function softAnswer(string $answer): self
     {
         $this->softAnswer = $answer;
+
         return $this;
     }
 
     public function photo(string|InputFile $photo): self
     {
         $this->photo = $photo;
+
         return $this;
     }
 
@@ -89,18 +93,21 @@ class TelegramResponse
     {
         $this->modelForMessageMeta = $model;
         $this->messageMetaTag = $tag;
+
         return $this;
     }
 
     public function messageMetaTag(?string $tag = null): self
     {
         $this->messageMetaTag = $tag;
+
         return $this;
     }
 
     public function navState(array $data): self
     {
         $this->navStateData = $data;
+
         return $this;
     }
 
@@ -149,7 +156,7 @@ class TelegramResponse
      */
     private function statusTarget(string|int|null $chatId): ?BotUser
     {
-        if (!wHook()->check()) {
+        if (! wHook()->check()) {
             return null;
         }
 
@@ -312,7 +319,7 @@ class TelegramResponse
 
     private function saveMessageMeta(Message $message): void
     {
-        if (!$this->modelForMessageMeta) {
+        if (! $this->modelForMessageMeta) {
             return;
         }
 

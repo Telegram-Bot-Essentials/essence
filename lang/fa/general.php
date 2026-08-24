@@ -2,8 +2,8 @@
 
 return [
     'text' => [
-        "enterResourcesNewField" => "مقدار جدید :field برای :resourceName را وارد کنید:",
-        "resourceFieldUpdated" => 'فیلد :field برای ":resource" با موفقیت به روزرسانی شد ✅.',
+        'enterResourcesNewField' => 'مقدار جدید :field برای :resourceName را وارد کنید:',
+        'resourceFieldUpdated' => 'فیلد :field برای ":resource" با موفقیت به روزرسانی شد ✅.',
     ],
 
     'status' => [
@@ -55,14 +55,14 @@ return [
 
     'keys' => [
         'generateInvoiceAndPay' => 'پرداخت 💵 - :price',
-        'bunchDeletion' => "حذف دسته ای 🗑",
-        'bunchActivation' => "فعالسازی دسته ای 🔥",
+        'bunchDeletion' => 'حذف دسته ای 🗑',
+        'bunchActivation' => 'فعالسازی دسته ای 🔥',
         'delete' => 'حذف 🗑',
         'back' => 'بازگشت 🔙',
     ],
 
     'lock-keys' => [
-        'waitingForFieldUpdate' => "در انتظار تغییر :field",
+        'waitingForFieldUpdate' => 'در انتظار تغییر :field',
     ],
 
     'answers' => [

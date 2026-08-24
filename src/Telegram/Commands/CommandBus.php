@@ -102,12 +102,13 @@ class CommandBus
     public function route(string $name, array $params = []): bool
     {
         $key = $this->commands[$name] ?? $this->aliases[$name] ?? null;
-        if (!$key) {
-            tbeLog('essence')->warning('Command "' . $name . '" is not registered');
+        if (! $key) {
+            tbeLog('essence')->warning('Command "'.$name.'" is not registered');
             throw new TbeLogicException(__('tbe::general.command.notFound'));
         }
 
         $command = $this->resolveCommand($key);
+
         return $this->handler($command, $name, $params);
     }
 
@@ -116,13 +117,17 @@ class CommandBus
      */
     protected function handler(CommandInterface $command, string $name, array $params): bool
     {
-        if (!$command->isEnabled()) return false;
-        if (!hasAccess($command->getPerm())) return false;
+        if (! $command->isEnabled()) {
+            return false;
+        }
+        if (! hasAccess($command->getPerm())) {
+            return false;
+        }
 
         $command->setParams($params);
         $result = $this->invoke($command, $params);
 
-        botEventBus()->fire(new BotCommandHandled(WebhookContext::capture(), '/' . $name));
+        botEventBus()->fire(new BotCommandHandled(WebhookContext::capture(), '/'.$name));
 
         return $result ?? true;
     }
@@ -144,21 +149,25 @@ class CommandBus
                 $value = $params[$i] ?? null;
 
                 $dependencies[] = $type::where($column ?? 'id', $value)->firstOrFail();
+
                 continue;
             }
 
             if ($type && class_exists($type)) {
                 $dependencies[] = Container::getInstance()->make($type);
+
                 continue;
             }
 
             if (isset($paramData)) {
                 $dependencies[] = $paramData;
+
                 continue;
             }
 
             if ($param->isDefaultValueAvailable()) {
                 $dependencies[] = $param->getDefaultValue();
+
                 continue;
             }
 
@@ -177,9 +186,13 @@ class CommandBus
     {
         $update = wHook()->update();
 
-        if (!$update->isType('message')) return false;
+        if (! $update->isType('message')) {
+            return false;
+        }
         $text = $update->getMessage()->text ?? '';
-        if (!str_starts_with($text, '/')) return false;
+        if (! str_starts_with($text, '/')) {
+            return false;
+        }
 
         [$name, $params] = $this->parseCommandText($text);
 

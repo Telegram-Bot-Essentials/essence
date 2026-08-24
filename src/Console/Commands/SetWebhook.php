@@ -2,9 +2,9 @@
 
 namespace TelegramBotEssentials\Essence\Console\Commands;
 
+use Illuminate\Console\Command;
 use TelegramBotEssentials\Essence\Models\Bot;
 use TelegramBotEssentials\Essence\Traits\CanResolveBotCommand;
-use Illuminate\Console\Command;
 
 class SetWebhook extends Command
 {
@@ -40,6 +40,7 @@ class SetWebhook extends Command
 
             if ($bots->isEmpty()) {
                 $this->error('No bots found');
+
                 return;
             }
 
@@ -54,8 +55,9 @@ class SetWebhook extends Command
 
         $bot = Bot::where('unique_id', $uniqueID)->first();
 
-        if (!$bot) {
-            $this->error('Bot with unique id: ' . $uniqueID . ' not found');
+        if (! $bot) {
+            $this->error('Bot with unique id: '.$uniqueID.' not found');
+
             return;
         }
 
@@ -64,11 +66,11 @@ class SetWebhook extends Command
 
     private function rotateWebhook(Bot $bot, string $endpointTemplate): void
     {
-        $this->info('Setting webhook for bot with unique id: ' . $bot->unique_id);
-        $this->info('Telegram bot api url: ' . config('tbe-essence.base_bot_url'));
+        $this->info('Setting webhook for bot with unique id: '.$bot->unique_id);
+        $this->info('Telegram bot api url: '.config('tbe-essence.base_bot_url'));
 
-        $url = rtrim(config('app.url'), '/') . str_replace('{unique_id}', $bot->unique_id, $endpointTemplate);
-        $this->info('Webhook url: ' . $url);
+        $url = rtrim(config('app.url'), '/').str_replace('{unique_id}', $bot->unique_id, $endpointTemplate);
+        $this->info('Webhook url: '.$url);
 
         $telegram = telegramApi($bot->bot_token);
 
@@ -102,6 +104,6 @@ class SetWebhook extends Command
             ],
         ]);
 
-        $this->info('Telegram webhook has been set for ' . $bot->unique_id);
+        $this->info('Telegram webhook has been set for '.$bot->unique_id);
     }
 }

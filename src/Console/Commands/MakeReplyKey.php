@@ -2,8 +2,8 @@
 
 namespace TelegramBotEssentials\Essence\Console\Commands;
 
-use TelegramBotEssentials\Essence\Traits\TgClassMaker;
 use Illuminate\Console\GeneratorCommand;
+use TelegramBotEssentials\Essence\Traits\TgClassMaker;
 
 class MakeReplyKey extends GeneratorCommand
 {
@@ -16,6 +16,7 @@ class MakeReplyKey extends GeneratorCommand
         {--f|feature : Generate feature class}
         {--c|callback : Generate callback query}
         {--s|state-answer : Generate state answer}';
+
     protected $description = 'Create a new ReplyKey class';
 
     protected array $map = [
@@ -26,18 +27,19 @@ class MakeReplyKey extends GeneratorCommand
 
     protected function getStub(): string
     {
-        return __DIR__ . '/stubs/reply-key.stub';
+        return __DIR__.'/stubs/reply-key.stub';
     }
 
     protected function getDefaultNamespace($rootNamespace): string
     {
         $perm = $this->option('admin') ? 'Admin' : 'Member';
-        return $rootNamespace . '\\Telegram\\ReplyKeys\\' . $perm;
+
+        return $rootNamespace.'\\Telegram\\ReplyKeys\\'.$perm;
     }
 
     protected function getNameInput(): string
     {
-        return $this->initializeName() . 'Key';
+        return $this->initializeName().'Key';
     }
 
     protected function buildClass($name): string

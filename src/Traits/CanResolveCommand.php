@@ -2,9 +2,9 @@
 
 namespace TelegramBotEssentials\Essence\Traits;
 
+use Illuminate\Contracts\Container\BindingResolutionException;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
 use TelegramBotEssentials\Essence\Telegram\Commands\CommandInterface;
-use Illuminate\Contracts\Container\BindingResolutionException;
 
 trait CanResolveCommand
 {
@@ -16,7 +16,7 @@ trait CanResolveCommand
      */
     private function resolveCommand(CommandInterface|string $command): CommandInterface
     {
-        if (!is_a($command, CommandInterface::class, true)) {
+        if (! is_a($command, CommandInterface::class, true)) {
             throw new LogicException(
                 sprintf(
                     'Command class "%s" should be an instance of "%s"',

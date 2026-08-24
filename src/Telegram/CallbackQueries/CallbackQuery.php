@@ -6,13 +6,15 @@ use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use ReflectionMethod;
 use Telegram\Bot\Exceptions\TelegramSDKException;
-use Throwable;
 
 abstract class CallbackQuery implements CallbackQueryInterface
 {
     protected string $type;
+
     protected int $perm;
+
     protected string $method;
+
     protected array $params;
 
     public function getType(): string
@@ -42,9 +44,10 @@ abstract class CallbackQuery implements CallbackQueryInterface
         $camel = lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $command))));
         $method = method_exists($this, $camel) ? $camel : (method_exists($this, $command) ? $command : null);
 
-        if (!$method) {
+        if (! $method) {
             debugMessage("Method {$this->method} is not available in {$this->getType()} callback query");
             $this->answer('Method is not available');
+
             return false;
         }
 
@@ -52,7 +55,7 @@ abstract class CallbackQuery implements CallbackQueryInterface
         $parameters = $reflection->getParameters();
         $dependencies = [];
 
-        for($i = 0; $i < count($parameters); $i++){
+        for ($i = 0; $i < count($parameters); $i++) {
             $param = $parameters[$i];
             $paramData = $this->params[$i] ?? null;
             $paramName = $param->getName();
@@ -63,21 +66,25 @@ abstract class CallbackQuery implements CallbackQueryInterface
                 $value = $this->params[$i] ?? null;
 
                 $dependencies[] = $type::where($column ?? 'id', $value)->firstOrFail();
+
                 continue;
             }
 
             if ($type && class_exists($type)) {
                 $dependencies[] = Container::getInstance()->make($type);
+
                 continue;
             }
 
             if (isset($paramData)) {
                 $dependencies[] = $paramData;
+
                 continue;
             }
 
             if ($param->isDefaultValueAvailable()) {
                 $dependencies[] = $param->getDefaultValue();
+
                 continue;
             }
 
@@ -85,17 +92,18 @@ abstract class CallbackQuery implements CallbackQueryInterface
         }
 
         $this->{$method}(...$dependencies);
+
         return true;
     }
 
     protected function answer(?string $text = null): void
     {
-        try{
+        try {
             wHook()->api()->answerCallbackQuery(array_filter([
                 'callback_query_id' => wHook()->update()->callbackQuery->id,
-                'text' => $text
+                'text' => $text,
             ]));
-        } catch (TelegramSDKException){
+        } catch (TelegramSDKException) {
         }
     }
 

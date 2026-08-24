@@ -2,20 +2,19 @@
 
 namespace TelegramBotEssentials\Essence\Http\Controllers;
 
-use Exception;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Telegram\Bot\Exceptions\TelegramSDKException;
-use TelegramBotEssentials\Essence\Exceptions\LogicException;
-use TelegramBotEssentials\Essence\Exceptions\TbeLogicException;
 use TelegramBotEssentials\Essence\Events\BotCallbackQueryHandled;
-use TelegramBotEssentials\Essence\Events\BotInlineQueryHandled;
 use TelegramBotEssentials\Essence\Events\BotDeepLinkReceived;
+use TelegramBotEssentials\Essence\Events\BotInlineQueryHandled;
 use TelegramBotEssentials\Essence\Events\BotReplyKeyHandled;
 use TelegramBotEssentials\Essence\Events\BotStateAnswerHandled;
 use TelegramBotEssentials\Essence\Events\BotUpdateReceived;
 use TelegramBotEssentials\Essence\Events\BotUpdateUnhandled;
+use TelegramBotEssentials\Essence\Exceptions\LogicException;
+use TelegramBotEssentials\Essence\Exceptions\TbeLogicException;
 use TelegramBotEssentials\Essence\Http\Middleware\TelegramBotAuthentication;
 use TelegramBotEssentials\Essence\Support\WebhookContext;
 use TelegramBotEssentials\Essence\Traits\CanCancelOldProcess;
@@ -28,15 +27,15 @@ class TelegramWebhookController extends Controller
     public function __invoke(Request $request)
     {
         $request->headers->set('Accept', 'application/json');
-//        App::setLocale(wHook()->bot()->settings->language);
+        //        App::setLocale(wHook()->bot()->settings->language);
 
         try {
-            dependsOn(!wHook()->bot()->suspended, ('tbe::general.alerts.botIsOff'));
+            dependsOn(! wHook()->bot()->suspended, ('tbe::general.alerts.botIsOff'));
             dependsOn(
                 is_null(wHook()->bot()->activated_until) || wHook()->bot()->activated_until->isFuture(),
                 __('tbe::general.alerts.botIsOff'
                 ));
-//            if (!hasAccess()) dependsOn(wHook()->bot()->settings->bot_status, __('tbe::general.alerts.botIsOff'));
+            //            if (!hasAccess()) dependsOn(wHook()->bot()->settings->bot_status, __('tbe::general.alerts.botIsOff'));
             // Blocking or unblocking the bot cannot use any command, key,
             // answer or query, so it is answered before initializeOptions()
             // scans all of those off disk.
@@ -64,33 +63,47 @@ class TelegramWebhookController extends Controller
         $memberStateAnswers = base_path('app/Telegram/StateAnswers/Member');
         $adminCommands = base_path('app/Telegram/Commands/Admin');
         $memberCommands = base_path('app/Telegram/Commands/Member');
-//        $adminReplyKeys = base_path('app/Telegram/ReplyKeys/Admin');
-//        $memberReplyKeys = base_path('app/Telegram/ReplyKeys/Member');
+        //        $adminReplyKeys = base_path('app/Telegram/ReplyKeys/Admin');
+        //        $memberReplyKeys = base_path('app/Telegram/ReplyKeys/Member');
         $inlineQueriesPath = base_path('app/Telegram/InlineQueries');
 
-        if (is_dir($adminQueries)) loadCallbackQueries($adminQueries);
-        if (is_dir($memberQueries)) loadCallbackQueries($memberQueries);
+        if (is_dir($adminQueries)) {
+            loadCallbackQueries($adminQueries);
+        }
+        if (is_dir($memberQueries)) {
+            loadCallbackQueries($memberQueries);
+        }
 
-        if (is_dir($adminStateAnswers)) loadStateAnswers($adminStateAnswers);
-        if (is_dir($memberStateAnswers)) loadStateAnswers($memberStateAnswers);
+        if (is_dir($adminStateAnswers)) {
+            loadStateAnswers($adminStateAnswers);
+        }
+        if (is_dir($memberStateAnswers)) {
+            loadStateAnswers($memberStateAnswers);
+        }
 
-        if (is_dir($adminCommands)) loadCommands($adminCommands);
-        if (is_dir($memberCommands)) loadCommands($memberCommands);
+        if (is_dir($adminCommands)) {
+            loadCommands($adminCommands);
+        }
+        if (is_dir($memberCommands)) {
+            loadCommands($memberCommands);
+        }
 
-        if (is_dir($inlineQueriesPath)) loadInlineQueries($inlineQueriesPath);
+        if (is_dir($inlineQueriesPath)) {
+            loadInlineQueries($inlineQueriesPath);
+        }
 
         foreach (config('tbe-essence.keyboard') ?? [] as $values) {
             addUserReplyKeys($values);
         }
 
-        loadCallbackQueries(realpath(__DIR__ . '/../../Telegram/CallbackQueries/Member'));
-        loadCallbackQueries(realpath(__DIR__ . '/../../Telegram/CallbackQueries/Admin'));
-        loadStateAnswers(realpath(__DIR__ . '/../../Telegram/StateAnswers/Member'));
-        loadStateAnswers(realpath(__DIR__ . '/../../Telegram/StateAnswers/Admin'));
-        loadReplyKeys(realpath(__DIR__ . '/../../Telegram/ReplyKeys/Member'));
-        loadReplyKeys(realpath(__DIR__ . '/../../Telegram/ReplyKeys/Admin'));
-        loadCommands(realpath(__DIR__ . '/../../Telegram/Commands/Member'));
-        loadCommands(realpath(__DIR__ . '/../../Telegram/Commands/Admin'));
+        loadCallbackQueries(realpath(__DIR__.'/../../Telegram/CallbackQueries/Member'));
+        loadCallbackQueries(realpath(__DIR__.'/../../Telegram/CallbackQueries/Admin'));
+        loadStateAnswers(realpath(__DIR__.'/../../Telegram/StateAnswers/Member'));
+        loadStateAnswers(realpath(__DIR__.'/../../Telegram/StateAnswers/Admin'));
+        loadReplyKeys(realpath(__DIR__.'/../../Telegram/ReplyKeys/Member'));
+        loadReplyKeys(realpath(__DIR__.'/../../Telegram/ReplyKeys/Admin'));
+        loadCommands(realpath(__DIR__.'/../../Telegram/Commands/Member'));
+        loadCommands(realpath(__DIR__.'/../../Telegram/Commands/Admin'));
     }
 
     /**
@@ -103,7 +116,7 @@ class TelegramWebhookController extends Controller
      */
     private function processChatMemberUpdate(): bool
     {
-        if (!TelegramBotAuthentication::isPrivateChatMemberUpdate()) {
+        if (! TelegramBotAuthentication::isPrivateChatMemberUpdate()) {
             return false;
         }
 
@@ -164,7 +177,7 @@ class TelegramWebhookController extends Controller
                 }
             }
 
-            $requestIsInvalid = !($commandProcessed || $keyProcessed || $answerProcessed);
+            $requestIsInvalid = ! ($commandProcessed || $keyProcessed || $answerProcessed);
             if ($requestIsInvalid) {
                 botEventBus()->fire(new BotUpdateUnhandled($context));
 

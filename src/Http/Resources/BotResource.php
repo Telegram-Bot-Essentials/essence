@@ -2,10 +2,10 @@
 
 namespace TelegramBotEssentials\Essence\Http\Resources;
 
-use TelegramBotEssentials\Essence\Models\Bot;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use InvalidArgumentException;
+use TelegramBotEssentials\Essence\Models\Bot;
 
 class BotResource extends JsonResource
 {
@@ -16,7 +16,9 @@ class BotResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        if (!$this->resource instanceof Bot) throw new InvalidArgumentException('Bot resource must be instance of Bot');
+        if (! $this->resource instanceof Bot) {
+            throw new InvalidArgumentException('Bot resource must be instance of Bot');
+        }
 
         return [
             'id' => $this->resource->id,

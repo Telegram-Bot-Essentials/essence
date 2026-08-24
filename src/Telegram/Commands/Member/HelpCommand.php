@@ -25,8 +25,12 @@ class HelpCommand extends Command
         $lines = [__('tbe::general.command.availableCommands')];
 
         foreach (commandBus()->getCommands() as $name => $command) {
-            if (!$command->isEnabled()) continue;
-            if (!hasAccess($command->getPerm())) continue;
+            if (! $command->isEnabled()) {
+                continue;
+            }
+            if (! hasAccess($command->getPerm())) {
+                continue;
+            }
 
             $lines[] = sprintf('/%s - %s', $name, $command->getDescription());
         }

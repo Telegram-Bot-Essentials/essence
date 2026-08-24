@@ -25,8 +25,6 @@ class StateAnswerBus
     }
 
     /**
-     * @param iterable $stateAnswers
-     * @return StateAnswerBus
      * @throws BindingResolutionException
      * @throws LogicException
      */
@@ -40,7 +38,6 @@ class StateAnswerBus
     }
 
     /**
-     * @param StateAnswerInterface|string $stateAnswer
      * @throws BindingResolutionException
      * @throws LogicException
      */
@@ -68,17 +65,18 @@ class StateAnswerBus
     }
 
     /**
-     * @param string|null $state
-     * @return bool
      * @throws BindingResolutionException
      * @throws LogicException
      * @throws TelegramSDKException
      */
     public function cancelHandler(?string $state): bool
     {
-        if (!$state) return false;
+        if (! $state) {
+            return false;
+        }
         $decodedState = decodeAnswerState($state);
         $decodedState['method'] = 'cancel';
+
         return $this->handleStateAnswer($decodedState);
     }
 
@@ -88,7 +86,9 @@ class StateAnswerBus
      */
     private function handleStateAnswer(array $decodedStates): bool
     {
-        if (!wHook()->update()->isType('message')) return false;
+        if (! wHook()->update()->isType('message')) {
+            return false;
+        }
 
         $type = $decodedStates['type'];
         $method = $decodedStates['method'];
@@ -96,18 +96,22 @@ class StateAnswerBus
 
         $key = $this->stateAnswerTypes[$type] ?? null;
         if (empty($key)) {
-            tbeLog('essence')->warning('State answer "' . $type . '" is not registered');
+            tbeLog('essence')->warning('State answer "'.$type.'" is not registered');
             try {
                 wHook()->user()->changeState();
             } catch (Exception $e) {
-                tbeLog('essence')->error('Failed to reset user state: ' . $e->getMessage(), ['exception' => $e]);
+                tbeLog('essence')->error('Failed to reset user state: '.$e->getMessage(), ['exception' => $e]);
             }
+
             return false;
         }
 
         $resolvedStateAnswer = $this->resolveStateAnswer($key);
-        if (!$this->hasValidField($resolvedStateAnswer->getAllowedFields())) return false;
+        if (! $this->hasValidField($resolvedStateAnswer->getAllowedFields())) {
+            return false;
+        }
         $this->handler($resolvedStateAnswer, $method, $params);
+
         return true;
     }
 
@@ -115,8 +119,11 @@ class StateAnswerBus
     {
         $message = wHook()->update()->getMessage();
         foreach ($fields as $field) {
-            if ($message->has($field)) return true;
+            if ($message->has($field)) {
+                return true;
+            }
         }
+
         return false;
     }
 
@@ -125,15 +132,18 @@ class StateAnswerBus
      */
     protected function handler(StateAnswerInterface $resolvedStateAnswer, string $method, array $params): void
     {
-        if (!$resolvedStateAnswer->isEnabled()) return;
-        if (!hasAccess($resolvedStateAnswer->getPerm())) return;
+        if (! $resolvedStateAnswer->isEnabled()) {
+            return;
+        }
+        if (! hasAccess($resolvedStateAnswer->getPerm())) {
+            return;
+        }
         $resolvedStateAnswer->setParams($params);
         $resolvedStateAnswer->setMethod($method);
         $resolvedStateAnswer->handle();
     }
 
     /**
-     * @return bool
      * @throws BindingResolutionException
      * @throws LogicException
      * @throws TelegramSDKException
@@ -141,6 +151,7 @@ class StateAnswerBus
     public function processStateAnswers(bool $cancelOldProcess = false): bool
     {
         $answerState = decodeAnswerState(wHook()->user()->state);
+
         return $this->handleStateAnswer($answerState);
     }
 }

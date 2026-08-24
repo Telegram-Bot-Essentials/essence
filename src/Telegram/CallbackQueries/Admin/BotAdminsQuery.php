@@ -2,18 +2,19 @@
 
 namespace TelegramBotEssentials\Essence\Telegram\CallbackQueries\Admin;
 
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Telegram\Bot\Exceptions\TelegramSDKException;
 use TelegramBotEssentials\Essence\Enums\Roles;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
 use TelegramBotEssentials\Essence\Models\BotUser;
 use TelegramBotEssentials\Essence\Models\MessageMeta;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQuery;
 use TelegramBotEssentials\Essence\Telegram\Features\BotAdminsFeature;
-use Illuminate\Contracts\Container\BindingResolutionException;
-use Telegram\Bot\Exceptions\TelegramSDKException;
 
 class BotAdminsQuery extends CallbackQuery
 {
     protected string $type = 'BOTADMNS';
+
     protected int $perm = Roles::ADMIN->value;
 
     /**
@@ -25,7 +26,7 @@ class BotAdminsQuery extends CallbackQuery
     {
         $messageMeta = MessageMeta::makeWithCurrentMessage();
         $messageMeta->lockAction(__('tbe::bot_admins.main.lock-keys.addingNewAdmin'));
-        wHook()->user()->changeState(encodeAnswerState($this->type, "add_admin", ['message_meta_id' => $messageMeta->id]));
+        wHook()->user()->changeState(encodeAnswerState($this->type, 'add_admin', ['message_meta_id' => $messageMeta->id]));
         wHook()->api()->sendMessage([
             'chat_id' => wHook()->user()->telegramUser->peer_id,
             'text' => __('tbe::bot_admins.main.text.enterNewAdminId'),
@@ -62,7 +63,7 @@ class BotAdminsQuery extends CallbackQuery
 
         BotAdminsFeature::menu()
             ->answer(__('tbe::bot_admins.main.answers.adminRemoved', [
-                'adminName' => $botUser->telegramUser->full_name
+                'adminName' => $botUser->telegramUser->full_name,
             ]))
             ->update();
     }

@@ -2,7 +2,6 @@
 
 namespace TelegramBotEssentials\Essence\Traits;
 
-
 use TelegramBotEssentials\Essence\Exceptions\CannotSetItAsDone;
 
 trait DoneLimited

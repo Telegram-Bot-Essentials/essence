@@ -2,6 +2,4 @@
 
 namespace TelegramBotEssentials\Essence\Events;
 
-class BotWebhookInitialized extends BotEvent
-{
-}
+class BotWebhookInitialized extends BotEvent {}

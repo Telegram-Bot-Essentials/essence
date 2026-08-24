@@ -2,14 +2,17 @@
 
 namespace TelegramBotEssentials\Essence\Traits;
 
-use TelegramBotEssentials\Essence\Enums\Roles;
 use Illuminate\Support\Str;
+use TelegramBotEssentials\Essence\Enums\Roles;
 
 trait TgClassMaker
 {
     private string $nameValue;
+
     private int $permValue;
+
     private string $permEnumValue;
+
     private string $typeValue;
 
     public function initializeName(): string
@@ -51,7 +54,9 @@ trait TgClassMaker
             $arguments = [
                 'name' => $this->nameValue,
             ];
-            if ($this->permValue == 100) $arguments['--admin'] = true;
+            if ($this->permValue == 100) {
+                $arguments['--admin'] = true;
+            }
 
             $this->call($command, $arguments);
         }
@@ -60,7 +65,7 @@ trait TgClassMaker
     private function initializeValues(): void
     {
         $this->typeValue = strtoupper($this->nameValue);
-        if($this->hasOption('admin')){
+        if ($this->hasOption('admin')) {
             $this->permValue = $this->option('admin') ? Roles::ADMIN->value : Roles::MEMBER->value;
             $this->permEnumValue = $this->option('admin') ? 'Roles::ADMIN->value' : 'Roles::MEMBER->value';
         }

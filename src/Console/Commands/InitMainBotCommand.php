@@ -2,11 +2,10 @@
 
 namespace TelegramBotEssentials\Essence\Console\Commands;
 
+use Illuminate\Console\Command;
 use TelegramBotEssentials\Essence\Models\Bot;
 use TelegramBotEssentials\Essence\Models\BotUser;
 use TelegramBotEssentials\Essence\Models\TelegramUser;
-use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Hash;
 
 class InitMainBotCommand extends Command
 {
@@ -35,8 +34,9 @@ class InitMainBotCommand extends Command
         ];
 
         foreach ($required as $key) {
-            if (!config("tbe-essence.main.$key")) {
+            if (! config("tbe-essence.main.$key")) {
                 $this->error("Missing configuration: tbe-essence.main.$key");
+
                 return self::FAILURE;
             }
         }
@@ -47,8 +47,8 @@ class InitMainBotCommand extends Command
 
         $bot = Bot::where('unique_id', config('tbe-essence.main.unique_id'))->first();
 
-        if ($bot && !$this->option('force')) {
-            $this->warn("Bot already exists. Use --force to reinitialize.");
+        if ($bot && ! $this->option('force')) {
+            $this->warn('Bot already exists. Use --force to reinitialize.');
         } else {
             $bot = Bot::updateOrCreate([
                 'unique_id' => config('tbe-essence.main.unique_id'),
@@ -58,7 +58,7 @@ class InitMainBotCommand extends Command
                 'activated_until' => null,
             ]);
 
-            $this->info("Bot created successfully");
+            $this->info('Bot created successfully');
         }
 
         BotUser::firstOrCreate([
@@ -66,7 +66,7 @@ class InitMainBotCommand extends Command
             'telegram_user_peer_id' => $telegramUser->peer_id,
         ]);
 
-        $this->info("Admin user linked to bot");
+        $this->info('Admin user linked to bot');
 
         return self::SUCCESS;
     }

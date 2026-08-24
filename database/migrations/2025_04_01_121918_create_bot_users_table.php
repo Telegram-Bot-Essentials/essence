@@ -1,12 +1,12 @@
 <?php
 
-use TelegramBotEssentials\Essence\Models\Bot;
-use TelegramBotEssentials\Essence\Models\TelegramUser;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use TelegramBotEssentials\Essence\Models\Bot;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */

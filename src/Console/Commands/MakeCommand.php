@@ -2,8 +2,8 @@
 
 namespace TelegramBotEssentials\Essence\Console\Commands;
 
-use TelegramBotEssentials\Essence\Traits\TgClassMaker;
 use Illuminate\Console\GeneratorCommand;
+use TelegramBotEssentials\Essence\Traits\TgClassMaker;
 
 class MakeCommand extends GeneratorCommand
 {
@@ -19,13 +19,14 @@ class MakeCommand extends GeneratorCommand
 
     protected function getStub(): string
     {
-        return __DIR__ . '/stubs/command.stub';
+        return __DIR__.'/stubs/command.stub';
     }
 
     protected function getDefaultNamespace($rootNamespace): string
     {
         $perm = $this->option('admin') ? 'Admin' : 'Member';
-        return $rootNamespace . '\\Telegram\\Commands\\' . $perm;
+
+        return $rootNamespace.'\\Telegram\\Commands\\'.$perm;
     }
 
     protected function buildClass($name): string
@@ -38,7 +39,7 @@ class MakeCommand extends GeneratorCommand
         $namespace = $this->getNamespace($name);
 
         $commandName = $this->option('command-name') ?? strtolower(preg_replace('/Command$/', '', $className));
-        $description = $this->option('description') ?? 'Command to handle ' . $commandName;
+        $description = $this->option('description') ?? 'Command to handle '.$commandName;
 
         return str_replace(
             [
@@ -58,5 +59,4 @@ class MakeCommand extends GeneratorCommand
             $stub
         );
     }
-
 }

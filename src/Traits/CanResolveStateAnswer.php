@@ -2,9 +2,9 @@
 
 namespace TelegramBotEssentials\Essence\Traits;
 
+use Illuminate\Contracts\Container\BindingResolutionException;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
 use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswerInterface;
-use Illuminate\Contracts\Container\BindingResolutionException;
 
 trait CanResolveStateAnswer
 {
@@ -16,7 +16,7 @@ trait CanResolveStateAnswer
      */
     private function resolveStateAnswer(StateAnswerInterface|string $stateAnswer): StateAnswerInterface
     {
-        if (!is_a($stateAnswer, StateAnswerInterface::class, true)) {
+        if (! is_a($stateAnswer, StateAnswerInterface::class, true)) {
             throw new LogicException(
                 sprintf(
                     'StateAnswer class "%s" should be an instance of "%s"',

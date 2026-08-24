@@ -2,9 +2,9 @@
 
 namespace TelegramBotEssentials\Essence\Traits;
 
-use TelegramBotEssentials\Essence\Models\MessageMeta;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use TelegramBotEssentials\Essence\Models\MessageMeta;
 
 trait HasMessageMeta
 {

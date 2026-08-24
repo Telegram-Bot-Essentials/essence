@@ -3,7 +3,6 @@
 namespace TelegramBotEssentials\Essence\Console\Commands;
 
 use Illuminate\Console\Command;
-use Symfony\Component\Console\Attribute\AsCommand;
 
 class PublishCommand extends Command
 {

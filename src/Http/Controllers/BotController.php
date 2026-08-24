@@ -23,12 +23,13 @@ class BotController extends Controller
     {
         $bots = Bot::all();
         $result = BotResource::collection($bots);
+
         return apiResponse()->success($result);
     }
 
     /**
      * Store a newly created resource in storage.
-     * @param BotRequest $request
+     *
      * @return JsonResponse
      */
     public function store(BotRequest $request)
@@ -41,18 +42,22 @@ class BotController extends Controller
             $bot = Bot::create($data);
 
             $botResource = new BotResource($bot);
+
             return apiResponse()->success($botResource, 201);
         } catch (TelegramSDKException $e) {
-            tbeLog('essence')->error('Failed to set webhook while creating bot: ' . $e->getMessage(), ['exception' => $e]);
+            tbeLog('essence')->error('Failed to set webhook while creating bot: '.$e->getMessage(), ['exception' => $e]);
+
             return apiResponse()->error('failed to set webhook', 503);
         } catch (Exception $e) {
-            tbeLog('essence')->error('Failed to create bot: ' . $e->getMessage(), ['exception' => $e]);
+            tbeLog('essence')->error('Failed to create bot: '.$e->getMessage(), ['exception' => $e]);
+
             return apiResponse()->error('failed to create bot', 500);
         }
     }
 
     /**
      * @return array{0: array<string, mixed>, 1: string}
+     *
      * @throws RandomException
      */
     private function initializeData(array $data): array
@@ -61,7 +66,7 @@ class BotController extends Controller
         $data['secret_token'] = $secretToken;
         $data['unique_id'] = Uuid::uuid4()->toString();
 
-        if (key_exists('activated_until', $data)) {
+        if (array_key_exists('activated_until', $data)) {
             $data['activated_until'] = $data['activated_until']
                 ? Carbon::parse($data['activated_until'])->format('Y-m-d H:i:s')
                 : null;
@@ -77,7 +82,7 @@ class BotController extends Controller
     {
         $telegram = telegramApi($botToken);
         $telegram->setWebhook([
-            'url' => config('app.url') . "/api/{$uniqueId}/telegram/bot/webhook",
+            'url' => config('app.url')."/api/{$uniqueId}/telegram/bot/webhook",
             'drop_pending_updates' => true,
             'secret_token' => $secretToken,
         ]);
@@ -98,6 +103,7 @@ class BotController extends Controller
     {
         $bot = Bot::where('unique_id', $id)->firstOrFail();
         $data = new BotResource($bot);
+
         return apiResponse()->success($data);
     }
 
@@ -108,7 +114,7 @@ class BotController extends Controller
     {
         $bot = Bot::where('unique_id', $id)->firstOrFail();
         $data = $request->validated();
-        if (key_exists('activated_until', $data)) {
+        if (array_key_exists('activated_until', $data)) {
             $data['activated_until'] = $data['activated_until']
                 ? Carbon::parse($data['activated_until'])->format('Y-m-d H:i:s')
                 : null;
@@ -121,7 +127,8 @@ class BotController extends Controller
             try {
                 $secretTokenPlain = $this->generateSecretToken();
             } catch (RandomException $e) {
-                tbeLog('essence')->error('Failed to refresh bot secret: ' . $e->getMessage(), ['exception' => $e]);
+                tbeLog('essence')->error('Failed to refresh bot secret: '.$e->getMessage(), ['exception' => $e]);
+
                 return apiResponse()->error('failed to refresh bot secret', 500);
             }
 
@@ -134,10 +141,11 @@ class BotController extends Controller
             try {
                 $this->setWebhook($bot->bot_token, $bot->unique_id, $secretTokenPlain);
             } catch (TelegramSDKException $e) {
-                tbeLog('essence')->error('Failed to set webhook after bot token update: ' . $e->getMessage(), ['exception' => $e, 'bot_unique_id' => $bot->unique_id]);
+                tbeLog('essence')->error('Failed to set webhook after bot token update: '.$e->getMessage(), ['exception' => $e, 'bot_unique_id' => $bot->unique_id]);
             }
         }
         $data = new BotResource($bot);
+
         return apiResponse()->success($data);
     }
 
@@ -148,6 +156,7 @@ class BotController extends Controller
     {
         $bot = Bot::where('unique_id', $id)->firstOrFail();
         $bot->delete();
+
         return apiResponse()->success(code: 204);
     }
 }

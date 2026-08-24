@@ -8,7 +8,7 @@ use TelegramBotEssentials\Essence\Telegram\TelegramResponse;
 
 class InlineConfirmationFeature
 {
-    static string $type = 'INLINECONFIRMATION';
+    public static string $type = 'INLINECONFIRMATION';
 
     public static function load(InlineConfirmation $inlineConfirmation): TelegramResponse
     {
@@ -19,18 +19,18 @@ class InlineConfirmationFeature
         $replyMarkup->row([
             Keyboard::inlineButton([
                 'text' => __('tbe::inline_confirmation.main.keys.accept'),
-                'callback_data' => encodeCallback(self::$type, 'accept', [$inlineConfirmation->id])
+                'callback_data' => encodeCallback(self::$type, 'accept', [$inlineConfirmation->id]),
             ]),
             Keyboard::inlineButton([
                 'text' => __('tbe::inline_confirmation.main.keys.decline'),
-                'callback_data' => encodeCallback(self::$type, 'decline', [$inlineConfirmation->id])
-            ])
+                'callback_data' => encodeCallback(self::$type, 'decline', [$inlineConfirmation->id]),
+            ]),
         ]);
 
-        return (new TelegramResponse(
+        return new TelegramResponse(
             text: $text,
             replyMarkup: $replyMarkup,
             parseMode: 'HTML',
-        ));
+        );
     }
 }

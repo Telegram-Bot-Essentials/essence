@@ -13,8 +13,10 @@ use TelegramBotEssentials\Essence\Telegram\TelegramResponse;
 
 class MessageMeta extends Model
 {
-    static $type = 'MESSAGE_META';
+    public static $type = 'MESSAGE_META';
+
     protected $fillable = ['chat_id', 'message_id', 'message_text', 'message_reply_markup'];
+
     protected $casts = [
         'message_text' => 'string',
         'message_reply_markup' => 'array',
@@ -26,6 +28,7 @@ class MessageMeta extends Model
         $messageMeta->initializeModel();
         $messageMeta->tag = $tag;
         $messageMeta->save();
+
         return $messageMeta;
     }
 
@@ -56,6 +59,7 @@ class MessageMeta extends Model
         $messageMeta->initializeModel($message->chat->id, $message->messageId, $message->text, $message->replyMarkup);
         $messageMeta->tag = $tag;
         $messageMeta->save();
+
         return $messageMeta;
     }
 
@@ -69,6 +73,7 @@ class MessageMeta extends Model
         if ($value === null) {
             return null;
         }
+
         return Keyboard::make(json_decode($value, true));
     }
 
@@ -80,14 +85,12 @@ class MessageMeta extends Model
     private function isIgnorableError(Exception $e): bool
     {
         $message = $e->getMessage();
+
         return str_contains($message, 'message is not modified') ||
                str_contains($message, 'query is too old and response timeout expired or query ID is invalid');
     }
 
-    /**
-     * @param string|null $lockMessage
-     */
-    public function lockAction(?string $lockMessage = null, string $customEmoji = "🔒"): void
+    public function lockAction(?string $lockMessage = null, string $customEmoji = '🔒'): void
     {
         if (empty($this->chat_id) || empty($this->message_id) || empty($this->message_text)) {
             $this->initializeModel();
@@ -97,9 +100,9 @@ class MessageMeta extends Model
             ->inline()
             ->row([
                 Keyboard::inlineButton([
-                    'text' => $customEmoji . " " . ($lockMessage ?? "Locked For Action"),
+                    'text' => $customEmoji.' '.($lockMessage ?? 'Locked For Action'),
                     'callback_data' => encodeCallback(self::$type, 'action_is_locked', [$this->id]),
-                ])
+                ]),
             ]);
 
         $this->lockingProcess($replyMarkup);
@@ -117,7 +120,7 @@ class MessageMeta extends Model
                 'reply_markup' => $replyMarkup,
             ]);
         } catch (Exception $e) {
-            if (!$this->isIgnorableError($e)) {
+            if (! $this->isIgnorableError($e)) {
                 exceptionReport($e);
             }
         }
@@ -131,15 +134,15 @@ class MessageMeta extends Model
             ->inline()
             ->row([
                 Keyboard::inlineButton([
-                    'text' => "🔒 " . ($lockMessage ?? "Locked For Action"),
+                    'text' => '🔒 '.($lockMessage ?? 'Locked For Action'),
                     'callback_data' => encodeCallback(self::$type, 'action_is_locked', [$this->id]),
-                ])
+                ]),
             ])
             ->row([
                 Keyboard::inlineButton([
-                    'text' => "🗑️ Cancel",
+                    'text' => '🗑️ Cancel',
                     'callback_data' => encodeCallback(self::$type, 'cancel_action', [$this->id]),
-                ])
+                ]),
             ]);
 
         $this->lockingProcess($replyMarkup);
@@ -156,7 +159,7 @@ class MessageMeta extends Model
                 'message_id' => $this->message_id,
             ]);
         } catch (Exception $e) {
-            if (!$this->isIgnorableError($e)) {
+            if (! $this->isIgnorableError($e)) {
                 exceptionReport($e);
             }
         }
@@ -169,7 +172,7 @@ class MessageMeta extends Model
             ]);
             $this->initializeModel($message->chat->id, $message->messageId, $message->text, $message->replyMarkup);
         } catch (Exception $e) {
-            if (!$this->isIgnorableError($e)) {
+            if (! $this->isIgnorableError($e)) {
                 exceptionReport($e);
             }
         }
@@ -183,7 +186,7 @@ class MessageMeta extends Model
                 'message_id' => $this->message_id,
             ]);
         } catch (Exception $e) {
-            if (!$this->isIgnorableError($e)) {
+            if (! $this->isIgnorableError($e)) {
                 exceptionReport($e);
             }
         }
@@ -203,7 +206,7 @@ class MessageMeta extends Model
                 'reply_markup' => $this->message_reply_markup,
             ]);
         } catch (Exception $e) {
-            if (!$this->isIgnorableError($e)) {
+            if (! $this->isIgnorableError($e)) {
                 exceptionReport($e);
             }
         }
@@ -226,7 +229,7 @@ class MessageMeta extends Model
                     'parse_mode' => $data['parse_mode'] ?? null,
                 ]);
             } catch (Exception $e) {
-                if (!$this->isIgnorableError($e)) {
+                if (! $this->isIgnorableError($e)) {
                     exceptionReport($e);
                 }
             }
@@ -244,7 +247,7 @@ class MessageMeta extends Model
                 'message_id' => $this->message_id,
             ]);
         } catch (Exception $e) {
-            if (!$this->isIgnorableError($e)) {
+            if (! $this->isIgnorableError($e)) {
                 exceptionReport($e);
             }
         }
@@ -260,7 +263,7 @@ class MessageMeta extends Model
                 ]);
             $this->initializeModel($message->chat->id, $message->messageId, $message->text, $message->replyMarkup);
         } catch (Exception $e) {
-            if (!$this->isIgnorableError($e)) {
+            if (! $this->isIgnorableError($e)) {
                 exceptionReport($e);
             }
         }

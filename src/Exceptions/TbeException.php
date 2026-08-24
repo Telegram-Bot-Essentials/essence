@@ -4,6 +4,4 @@ namespace TelegramBotEssentials\Essence\Exceptions;
 
 use Exception;
 
-class TbeException extends Exception
-{
-}
+class TbeException extends Exception {}
