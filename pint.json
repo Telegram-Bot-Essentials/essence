@@ -1,0 +1,11 @@
+{
+    "preset": "laravel",
+    "exclude": [
+        "vendor",
+        "graphify-out",
+        "docs"
+    ],
+    "notPath": [
+        "check-translations.php"
+    ]
+}
