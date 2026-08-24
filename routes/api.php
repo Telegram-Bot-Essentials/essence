@@ -25,15 +25,3 @@ Route::group([
     });
     Route::post('/telegram/bot/webhook', TelegramWebhookController::class)->middleware(TelegramBotAuthentication::class);
 });
-
-Route::get('test', function () {
-
-    return tbeApiResponse()->success();
-    //    \TelegramBotEssentials\Essence\Models\Billing\Invoice::factory()->count(40)->create();
-    //    return response('OK', 200);
-    //    $bot = \TelegramBotEssentials\Essence\Models\Bot::where('unique_id', config('tbe-essence.develop.DEVELOP_UNIQUE_ID'))->first();
-    //    \TelegramBotEssentials\Essence\Models\BotUser::factory()->count(200)->create([
-    //        'bot_id' => $bot->id,
-    //    ]);
-    //    return response(\TelegramBotEssentials\Essence\Models\BotUser::count(), 200);
-});

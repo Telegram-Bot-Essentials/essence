@@ -57,4 +57,14 @@ return [
         'message_metas_days' => env('TBE_PRUNE_MESSAGE_METAS_DAYS', 7),
         'inline_confirmations_hours' => env('TBE_PRUNE_INLINE_CONFIRMATIONS_HOURS', 6),
     ],
+
+    'routes' => [
+        'enabled' => env('TBE_ROUTES_ENABLED', true),
+        // Prefix for the bot management + webhook routes (routes/api.php).
+        // Empty string mounts them at the app's root, same as before this
+        // was configurable.
+        'api_prefix' => env('TBE_ROUTES_API_PREFIX', 'api'),
+        // Prefix for the payment-gateway callback routes (routes/web.php).
+        'web_prefix' => env('TBE_ROUTES_WEB_PREFIX', ''),
+    ],
 ];

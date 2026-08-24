@@ -151,10 +151,12 @@ class TelegramBotServiceProvider extends ServiceProvider
         BelongsToTenant::$tenantIdColumn = 'bot_id';
         PathTenantResolver::$tenantParameterName = 'bot';
 
-        Route::prefix('api')
-            ->group(__DIR__.'/../routes/api.php');
-        Route::prefix('')
-            ->group(__DIR__.'/../routes/web.php');
+        if (config('tbe-essence.routes.enabled', true)) {
+            Route::prefix(config('tbe-essence.routes.api_prefix', 'api'))
+                ->group(__DIR__.'/../routes/api.php');
+            Route::prefix(config('tbe-essence.routes.web_prefix', ''))
+                ->group(__DIR__.'/../routes/web.php');
+        }
 
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         $this->loadTranslationsFrom(__DIR__.'/../lang', 'tbe');
