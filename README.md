@@ -1,10 +1,18 @@
 # Telegram Bot Essentials (Essence)
 
-A Laravel package for building multi-tenant Telegram bots with a structured request-routing architecture. Instead of one giant update handler, incoming webhook updates are dispatched through typed buses: **Commands**, **ReplyKeys**, **CallbackQueries**, and **StateAnswers**.
+[![tests](https://github.com/Elyar0/telegram-bot-essentials/actions/workflows/tests.yml/badge.svg)](https://github.com/Elyar0/telegram-bot-essentials/actions/workflows/tests.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+A Laravel package for running many Telegram bots from one codebase, each bot
+its own tenant. Instead of one giant update handler per bot, incoming
+webhook updates are dispatched through typed buses - **Commands**,
+**ReplyKeys**, **CallbackQueries**, and **StateAnswers** - so a
+multi-tenant, multi-locale bot platform stays organized as it grows past a
+handful of features.
 
 ## Requirements
 
-- PHP ^8.2
+- PHP ^8.3
 - Laravel ^12 or ^13
 - [irazasyed/telegram-bot-sdk](https://github.com/irazasyed/telegram-bot-sdk) ^3.15
 - [stancl/tenancy](https://tenancyforlaravel.com/) ^3.9 (each bot is a tenant)
@@ -72,7 +80,7 @@ app/Telegram/
 └── Commands/
 ```
 
-The webhook controller auto-loads classes from `app/Telegram/CallbackQueries/*` and `app/Telegram/StateAnswers/*` on each request. Package defaults are loaded from `vendor/telegram-bot-essentials/essence/src/Telegram/`.
+Handlers are discovered from `app/Telegram/**` once per process/worker at boot, after every companion package has registered its own - so your app's handlers always win a naming collision. Package defaults are loaded from `vendor/telegram-bot-essentials/essence/src/Telegram/`.
 
 ## Documentation
 
@@ -106,6 +114,10 @@ Essence is the core framework. Optional companion packages extend it:
 
 Register their CallbackQueries and StateAnswers in each package's service provider via `callbackQueryBus()` and `stateAnswerBus()`.
 
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for local setup, the test/lint/analyse commands CI runs, and commit conventions.
+
 ## License
 
-GPL-3.0
+[MIT](LICENSE)
