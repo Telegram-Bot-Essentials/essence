@@ -65,7 +65,7 @@ class GatewayZirgozarController extends Controller
             $response = $response->json();
             if (! $response || ! $response['result']) {
                 tbeLog('essence')->warning('Zirgozar rejected web_pay request: '.($response['error_desc'] ?? 'error is not provided'), ['invoice_id' => $invoice->id]);
-                throw new HttpResponseException(apiResponse()->error('Failed to initialize web payment', 503));
+                throw new HttpResponseException(tbeApiResponse()->error('Failed to initialize web payment', 503));
             }
 
             return $response;
@@ -113,7 +113,7 @@ class GatewayZirgozarController extends Controller
         $response = $this->getWebPayResult($paymentToken);
 
         if (! ($invoice->paymentAttempt instanceof ToZirgozarAttempt) || ! ($invoice->paymentAttempt instanceof PaymentAttempt)) {
-            return apiResponse()->error('Failed to handle payment', 503);
+            return tbeApiResponse()->error('Failed to handle payment', 503);
         }
 
         $zirGozarAttempt = $invoice->paymentAttempt;
@@ -177,7 +177,7 @@ class GatewayZirgozarController extends Controller
             $response = $response->json();
             if (! $response || ! $response['result']) {
                 tbeLog('essence')->warning('Zirgozar rejected web_pay_status request: '.($response['error_desc'] ?? 'error is not provided'));
-                throw new HttpResponseException(apiResponse()->error('Failed to handle payment', 503));
+                throw new HttpResponseException(tbeApiResponse()->error('Failed to handle payment', 503));
             }
 
             return $response;

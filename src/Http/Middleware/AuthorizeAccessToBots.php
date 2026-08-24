@@ -16,7 +16,7 @@ class AuthorizeAccessToBots
     public function handle(Request $request, Closure $next): Response
     {
         if ($request->header('Authorization') !== config('tbe-essence.bot_access.token')) {
-            return apiResponse()->error('Unauthorized access to the bot management', 403);
+            return tbeApiResponse()->error('Unauthorized access to the bot management', 403);
         }
 
         return $next($request);

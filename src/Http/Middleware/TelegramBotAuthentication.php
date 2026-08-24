@@ -30,13 +30,13 @@ class TelegramBotAuthentication
         $bot = tenancy()->tenant;
 
         if (empty($bot) || ! ($bot instanceof Bot)) {
-            return apiResponse()->error('Invalid Bot ID', 204);
+            return tbeApiResponse()->error('Invalid Bot ID', 204);
         }
 
         wHook()->setBot($bot);
 
         if (! hash_equals((string) $bot->secret_token, (string) $request->header('x-telegram-bot-api-secret-token'))) {
-            return apiResponse()->error('Unauthorized', 204);
+            return tbeApiResponse()->error('Unauthorized', 204);
         }
 
         try {
@@ -53,7 +53,7 @@ class TelegramBotAuthentication
         } catch (TelegramSDKException $e) {
             tbeLog('essence')->error('Failed to initialize Telegram API service: '.$e->getMessage(), ['exception' => $e]);
 
-            return apiResponse()->error('Failed to initialize API service', 503);
+            return tbeApiResponse()->error('Failed to initialize API service', 503);
         }
 
         $botUser = $this->fetchUserData();
@@ -89,7 +89,7 @@ class TelegramBotAuthentication
         } elseif (self::isPrivateChatMemberUpdate()) {
             $from = wHook()->update()->myChatMember->from;
         } else {
-            throw new HttpResponseException(apiResponse()->error('Invalid update', 204));
+            throw new HttpResponseException(tbeApiResponse()->error('Invalid update', 204));
         }
 
         if (empty($from) || ! ($from instanceof User)) {

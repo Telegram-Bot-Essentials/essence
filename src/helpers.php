@@ -12,6 +12,7 @@ use TelegramBotEssentials\Essence\Exceptions\FeatureIsDisabled;
 use TelegramBotEssentials\Essence\Exceptions\InvalidCallbackParam;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
 use TelegramBotEssentials\Essence\Models\InlineConfirmation;
+use TelegramBotEssentials\Essence\Services\ApiResponse;
 use TelegramBotEssentials\Essence\Services\BotUserStatus;
 use TelegramBotEssentials\Essence\Services\ExceptionHandler;
 use TelegramBotEssentials\Essence\Services\NavState;
@@ -43,6 +44,13 @@ if (! function_exists('tbeLog')) {
     function tbeLog(?string $package = null): TbeLogger
     {
         return new TbeLogger($package);
+    }
+}
+
+if (! function_exists('tbeApiResponse')) {
+    function tbeApiResponse(): ApiResponse
+    {
+        return app(ApiResponse::class);
     }
 }
 

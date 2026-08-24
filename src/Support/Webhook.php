@@ -237,6 +237,6 @@ class Webhook
             return $this->update->chat->id;
         }
 
-        throw new HttpResponseException(apiResponse()->error('Failed to retrieve telegram peer id.', 204));
+        throw new HttpResponseException(tbeApiResponse()->error('Failed to retrieve telegram peer id.', 204));
     }
 }

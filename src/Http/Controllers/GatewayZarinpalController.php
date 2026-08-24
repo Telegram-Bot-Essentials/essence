@@ -22,7 +22,7 @@ class GatewayZarinpalController extends Controller
 
         $result = gateways()->zarinpal()->PaymentRequest(priceIn($invoice->price)->toIRT(), 'test', route('invoice.zarinpal.callback', ['token' => $token]))->execute();
 
-        //        return apiResponse()->success($result);
+        //        return tbeApiResponse()->success($result);
     }
 
     public function callback(string $token, Request $request) {}
