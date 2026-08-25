@@ -26,9 +26,19 @@ will ship as 0.12.0.
   config (level max, with a committed baseline).
 - GitHub Actions CI: Pest across PHP 8.3/8.4/8.5 x Laravel 12/13, plus Pint
   and PHPStan.
+- `ResolvesBotLocale` contract: essence binds a default implementation that
+  returns `config('app.locale')`, and calls it both from its own
+  `BotWebhookInitialized` listener and from `tbe:set-webhook`'s per-bot
+  command-menu loop (which has no webhook request to hang a listener off
+  of, and previously built every bot's command menu in whatever locale the
+  app happened to be in). A companion package that owns real per-bot locale
+  data rebinds the interface; essence never references that package.
 
 ### Changed
 
+- **BREAKING:** `ResolvesBotLocale` replaces a companion package's own
+  `BotWebhookInitialized` listener as the locale-setting mechanism for the
+  webhook path - see the corresponding companion package's changelog.
 - **BREAKING:** Handlers (`Command`, `ReplyKey`) now hold translation keys
   (`$descriptionKey`, `$textKey`, `$responseKey`) instead of translated
   strings resolved once in the constructor, and the buses that hold them are
