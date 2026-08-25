@@ -21,10 +21,14 @@ use TelegramBotEssentials\Essence\Console\Commands\MakeStateAnswer;
 use TelegramBotEssentials\Essence\Console\Commands\PublishCommand;
 use TelegramBotEssentials\Essence\Console\Commands\SetWebhook;
 use TelegramBotEssentials\Essence\Console\Commands\TranslationStats;
+use TelegramBotEssentials\Essence\Contracts\ResolvesBotLocale;
 use TelegramBotEssentials\Essence\Events\BotEventBus;
+use TelegramBotEssentials\Essence\Events\BotWebhookInitialized;
+use TelegramBotEssentials\Essence\Listeners\SetBotLocale;
 use TelegramBotEssentials\Essence\Services\BotUserStatus;
 use TelegramBotEssentials\Essence\Services\NavState;
 use TelegramBotEssentials\Essence\Services\TranslationScanner;
+use TelegramBotEssentials\Essence\Support\DefaultBotLocaleResolver;
 use TelegramBotEssentials\Essence\Support\Webhook;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQueryBus;
 use TelegramBotEssentials\Essence\Telegram\Commands\CommandBus;
@@ -48,6 +52,18 @@ class TelegramBotServiceProvider extends ServiceProvider
 
         $this->registerBotsManager();
         $this->initializeSingletons();
+
+        // A companion package (tbe-settings) that owns real per-bot locale
+        // data rebinds this in its own provider; essence never references
+        // that package back. Bound (not singleton) since it's a swappable
+        // strategy, not shared state.
+        $this->app->bind(ResolvesBotLocale::class, DefaultBotLocaleResolver::class);
+
+        // Event::listen resolves a string-class listener fresh from the
+        // container on every dispatch, so this always picks up whichever
+        // ResolvesBotLocale is currently bound - no ordering dependency
+        // between this registration and a companion's rebind above.
+        botEventBus()->listen(BotWebhookInitialized::class, SetBotLocale::class);
     }
 
     private function initializeSingletons(): void

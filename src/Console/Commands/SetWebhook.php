@@ -3,6 +3,8 @@
 namespace TelegramBotEssentials\Essence\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\App;
+use TelegramBotEssentials\Essence\Contracts\ResolvesBotLocale;
 use TelegramBotEssentials\Essence\Models\Bot;
 use TelegramBotEssentials\Essence\Traits\CanResolveBotCommand;
 
@@ -87,6 +89,11 @@ class SetWebhook extends Command
             'drop_pending_updates' => true,
             'secret_token' => $secretToken,
         ]);
+
+        // A console command has no webhook request to hang a locale-setting
+        // listener off of, so this loop is the only chance to get each
+        // bot's command menu translated into the right locale.
+        App::setLocale(app(ResolvesBotLocale::class)->resolve($bot));
 
         $commands = [];
         foreach (config('tbe-essence.commands') as $command) {
