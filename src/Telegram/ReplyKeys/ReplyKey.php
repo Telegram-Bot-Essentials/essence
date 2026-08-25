@@ -2,35 +2,29 @@
 
 namespace TelegramBotEssentials\Essence\Telegram\ReplyKeys;
 
-use TelegramBotEssentials\Essence\Exceptions\LogicException;
-
 abstract class ReplyKey implements ReplyKeyInterface
 {
-    /**
-     * Translation key for the button's label.
-     *
-     * Held as a key rather than a resolved string so one instance serves
-     * every locale. Resolving __() in a constructor froze the label to
-     * whichever locale was active when the key was built, which is why
-     * handlers had to be rebuilt on every request.
-     */
-    protected string $textKey;
-
     protected int $perm = 0;
 
-    /** Translation key for the message sent when the button is pressed. */
-    protected string $responseKey = '';
-
     /**
-     * @throws LogicException
+     * The button's label, calling __() directly rather than storing a key
+     * property - a bare string property doesn't get IDE navigation/
+     * autocomplete/missing-key inspection, a literal __() call does. Called
+     * per read rather than resolved once so one instance serves every
+     * locale: resolving it in a constructor would freeze the label to
+     * whichever locale was active when the singleton was built.
      */
+    abstract protected function text(): string;
+
+    /** The message sent when the button is pressed, or null for none. */
+    protected function response(): ?string
+    {
+        return null;
+    }
+
     public function getText(): string
     {
-        if (! isset($this->textKey)) {
-            throw new LogicException(static::class.' must declare a $textKey.');
-        }
-
-        return (string) __($this->textKey);
+        return $this->text();
     }
 
     public function getPerm(): int
@@ -40,7 +34,7 @@ abstract class ReplyKey implements ReplyKeyInterface
 
     public function getResponse(): string
     {
-        return $this->responseKey === '' ? '' : (string) __($this->responseKey);
+        return $this->response() ?? '';
     }
 
     abstract public function handle(): void;

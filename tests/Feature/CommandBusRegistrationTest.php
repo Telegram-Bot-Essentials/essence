@@ -23,7 +23,10 @@ class AppGreetCommand extends Command
 
     protected int $perm = 0;
 
-    protected string $descriptionKey = 'from the app';
+    protected function description(): string
+    {
+        return __('from the app');
+    }
 
     public function handle(): ?bool
     {
@@ -37,7 +40,10 @@ class PackageGreetCommand extends Command
 
     protected int $perm = 0;
 
-    protected string $descriptionKey = 'from the package';
+    protected function description(): string
+    {
+        return __('from the package');
+    }
 
     public function handle(): ?bool
     {

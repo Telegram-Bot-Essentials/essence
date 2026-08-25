@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\App;
-use TelegramBotEssentials\Essence\Exceptions\LogicException;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Member\CancelProcessKey;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKey;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKeyBus;
@@ -70,14 +69,9 @@ it('registers the built-in cancel key on the container bus at boot', function ()
         ->toContain(CancelProcessKey::class);
 });
 
-it('refuses a key that declares no textKey', function () {
-    $bus = new ReplyKeyBus;
-
-    $bad = new class extends ReplyKey
-    {
-        public function handle(): void {}
-    };
-
-    expect(fn () => $bad->getText())
-        ->toThrow(LogicException::class);
+it('requires every key to declare a label, enforced by PHP rather than at runtime', function () {
+    // text() is abstract: a class that skips it now fails to compile at
+    // all, instead of the runtime LogicException getText() used to throw
+    // on an unset $textKey.
+    expect((new ReflectionMethod(ReplyKey::class, 'text'))->isAbstract())->toBeTrue();
 });

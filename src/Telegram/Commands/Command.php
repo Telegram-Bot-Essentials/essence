@@ -10,9 +10,6 @@ abstract class Command implements CommandInterface
 
     protected array $aliases = [];
 
-    /** Translation key for the command's description, resolved per call so one instance serves every locale. */
-    protected string $descriptionKey = '';
-
     protected int $perm;
 
     protected array $params = [];
@@ -30,9 +27,15 @@ abstract class Command implements CommandInterface
         return $this->aliases;
     }
 
+    /** The command's description, or null for none. Calls __() directly - a literal call, not a stored key, keeps IDE navigation/autocomplete/missing-key inspection working. */
+    protected function description(): ?string
+    {
+        return null;
+    }
+
     public function getDescription(): string
     {
-        return $this->descriptionKey === '' ? '' : (string) __($this->descriptionKey);
+        return $this->description() ?? '';
     }
 
     public function getPerm(): int

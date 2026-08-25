@@ -9,11 +9,17 @@ use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKey;
 
 class CancelProcessKey extends ReplyKey
 {
-    protected string $textKey = 'tbe::cancel_process.reply_key';
-
     protected int $perm = 0;
 
-    protected string $responseKey = 'tbe::cancel_process.main.text.response';
+    protected function text(): string
+    {
+        return __('tbe::cancel_process.reply_key');
+    }
+
+    protected function response(): string
+    {
+        return __('tbe::cancel_process.main.text.response');
+    }
 
     /**
      * @throws LogicException

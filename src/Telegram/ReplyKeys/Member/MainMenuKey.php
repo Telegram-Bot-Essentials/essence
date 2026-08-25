@@ -9,11 +9,17 @@ use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKey;
 
 class MainMenuKey extends ReplyKey
 {
-    protected string $textKey = 'tbe::main_menu.reply_key';
-
     protected int $perm = 0;
 
-    protected string $responseKey = 'tbe::main_menu.main.text.menu_changed';
+    protected function text(): string
+    {
+        return __('tbe::main_menu.reply_key');
+    }
+
+    protected function response(): string
+    {
+        return __('tbe::main_menu.main.text.menu_changed');
+    }
 
     /**
      * @throws TelegramSDKException
