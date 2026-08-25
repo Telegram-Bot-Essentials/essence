@@ -39,12 +39,16 @@ will ship as 0.12.0.
 - **BREAKING:** `ResolvesBotLocale` replaces a companion package's own
   `BotWebhookInitialized` listener as the locale-setting mechanism for the
   webhook path - see the corresponding companion package's changelog.
-- **BREAKING:** Handlers (`Command`, `ReplyKey`) now hold translation keys
-  (`$descriptionKey`, `$textKey`, `$responseKey`) instead of translated
-  strings resolved once in the constructor, and the buses that hold them are
-  keyed by class name instead of by label. This makes registration correct
-  under every locale a bot might be in, so handlers can be registered once
-  per Octane worker instead of rescanned on every request.
+- **BREAKING:** Handlers (`Command`, `ReplyKey`) resolve their label lazily
+  now, via overridable `text()`/`response()`/`description()` methods that
+  call `__()` directly, instead of translating once in the constructor. The
+  buses that hold them are keyed by class name instead of by label. This
+  makes registration correct under every locale a bot might be in, so
+  handlers can be registered once per Octane worker instead of rescanned on
+  every request. (Went through a `$textKey`-style string-property design
+  first; reverted before release - a bare string property is invisible to
+  IDE tooling, where a literal `__()` call gets autocomplete, navigation,
+  and missing-key inspection.)
 - **BREAKING:** `encodeCallback()` now throws instead of silently reordering
   or dropping later params when one is `null`/non-scalar, and enforces
   Telegram's 64-byte callback-data limit instead of shipping a dead button.
