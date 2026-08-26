@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use TelegramBotEssentials\Essence\Database\factories\TelegramUserFactory;
 use TelegramBotEssentials\Essence\Services\BotUserStatus;
 
+/**
+ * @property int $peer_id
+ */
 class TelegramUser extends Model
 {
     use HasFactory;

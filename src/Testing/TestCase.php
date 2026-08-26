@@ -6,7 +6,10 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Testing\TestResponse;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Symfony\Component\HttpFoundation\Response;
+use TelegramBotEssentials\Essence\Enums\Roles;
 use TelegramBotEssentials\Essence\Models\Bot;
+use TelegramBotEssentials\Essence\Models\BotUser;
+use TelegramBotEssentials\Essence\Models\TelegramUser;
 use TelegramBotEssentials\Essence\TelegramBotServiceProvider;
 
 /**
@@ -61,6 +64,27 @@ abstract class TestCase extends Orchestra
     {
         return Bot::factory()->create(array_merge([
             'activated_until' => now()->addYears(10),
+        ], $attributes));
+    }
+
+    /**
+     * Pre-create a bot's user at a given Telegram peer id, so a subsequent
+     * postWebhookUpdate() with the same $peerId finds this row instead of
+     * auto-creating a fresh member-level one - the only way to test a
+     * role-gated handler (e.g. an admin-only ReplyKey).
+     *
+     * @param  array<string, mixed>  $attributes
+     */
+    protected function makeBotUser(Bot $bot, int $peerId, array $attributes = []): BotUser
+    {
+        TelegramUser::factory()->create(['peer_id' => $peerId]);
+
+        return BotUser::factory()->create(array_merge([
+            'bot_id' => $bot->id,
+            'telegram_user_peer_id' => $peerId,
+            'power' => Roles::MEMBER->value,
+            'state' => null,
+            'suspend' => false,
         ], $attributes));
     }
 

@@ -25,30 +25,6 @@ parameters:
 			path: config/tenancy.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$peer_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: database/factories/BotFactory.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$peer_id\.$#'
-			identifier: property.notFound
-			count: 2
-			path: database/factories/BotUserFactory.php
-
-		-
-			message: '#^Class TelegramBotEssentials\\Essence\\Database\\factories\\BotUserFactory extends generic class Illuminate\\Database\\Eloquent\\Factories\\Factory but does not specify its types\: TModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: database/factories/BotUserFactory.php
-
-		-
-			message: '#^Class TelegramBotEssentials\\Essence\\Database\\factories\\TelegramUserFactory extends generic class Illuminate\\Database\\Eloquent\\Factories\\Factory but does not specify its types\: TModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: database/factories/TelegramUserFactory.php
-
-		-
 			message: '#^Binary operation "\." between ''This is your multi…'' and mixed results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 1
@@ -119,12 +95,6 @@ parameters:
 			identifier: encapsedStringPart.nonString
 			count: 2
 			path: src/Console/Commands/BotManagementTokenCommand.php
-
-		-
-			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\TelegramUser\:\:\$peer_id\.$#'
-			identifier: property.notFound
-			count: 2
-			path: src/Console/Commands/InitMainBotCommand.php
 
 		-
 			message: '#^Parameter \#1 \$command of method Illuminate\\Console\\Command\:\:call\(\) expects string\|Symfony\\Component\\Console\\Command\\Command, mixed given\.$#'
@@ -1123,12 +1093,6 @@ parameters:
 			path: src/Http/Middleware/TelegramBotAuthentication.php
 
 		-
-			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\TelegramUser\:\:\$peer_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Http/Middleware/TelegramBotAuthentication.php
-
-		-
 			message: '#^Binary operation "\." between ''tbe\:update\:'' and mixed results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 1
@@ -1667,18 +1631,6 @@ parameters:
 			identifier: encapsedStringPart.nonString
 			count: 1
 			path: src/Models/TelegramUser.php
-
-		-
-			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\TelegramUser\:\:\$peer_id\.$#'
-			identifier: property.notFound
-			count: 2
-			path: src/Seeders/MainSeeder.php
-
-		-
-			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\TelegramUser\:\:\$peer_id\.$#'
-			identifier: property.notFound
-			count: 3
-			path: src/Seeders/TelegramBotAndUserSeeder.php
 
 		-
 			message: '#^Property TelegramBotEssentials\\Essence\\Seeders\\TestDataSeeder\:\:\$bot \(TelegramBotEssentials\\Essence\\Models\\Bot\) does not accept TelegramBotEssentials\\Essence\\Models\\Bot\|null\.$#'
@@ -2900,12 +2852,6 @@ parameters:
 
 		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$power\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Telegram/StateAnswers/Admin/BotAdminsAnswer.php
-
-		-
-			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\TelegramUser\:\:\$peer_id\.$#'
 			identifier: property.notFound
 			count: 1
 			path: src/Telegram/StateAnswers/Admin/BotAdminsAnswer.php

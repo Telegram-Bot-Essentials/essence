@@ -8,6 +8,9 @@ use TelegramBotEssentials\Essence\Models\Bot;
 use TelegramBotEssentials\Essence\Models\BotUser;
 use TelegramBotEssentials\Essence\Models\TelegramUser;
 
+/**
+ * @extends Factory<BotUser>
+ */
 class BotUserFactory extends Factory
 {
     protected $model = BotUser::class;

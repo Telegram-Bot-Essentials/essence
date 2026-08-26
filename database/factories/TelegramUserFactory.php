@@ -5,6 +5,9 @@ namespace TelegramBotEssentials\Essence\Database\factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use TelegramBotEssentials\Essence\Models\TelegramUser;
 
+/**
+ * @extends Factory<TelegramUser>
+ */
 class TelegramUserFactory extends Factory
 {
     protected $model = TelegramUser::class;
