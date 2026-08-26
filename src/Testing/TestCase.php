@@ -49,6 +49,11 @@ abstract class TestCase extends Orchestra
             'database' => ':memory:',
             'prefix' => '',
         ]);
+        // Pinned rather than left to whatever the booted app defaults to -
+        // Workbench boots a real skeleton app with its own env/config, whose
+        // default cache store (database) needs a `cache` table nothing here
+        // migrates. update_id dedup (Cache::add) needs *some* store.
+        $app['config']->set('cache.default', 'array');
         $app['config']->set('app.locale', 'en');
         $app['config']->set('app.fallback_locale', 'en');
     }
