@@ -9,6 +9,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Stancl\Tenancy\Database\Models\Tenant as BaseTenant;
 use TelegramBotEssentials\Essence\Database\factories\BotFactory;
 
+/**
+ * @property string $unique_id
+ * @property string|null $secret_token
+ */
 class Bot extends BaseTenant
 {
     use HasFactory;

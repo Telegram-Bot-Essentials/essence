@@ -31,18 +31,6 @@ parameters:
 			path: database/factories/BotFactory.php
 
 		-
-			message: '#^Class TelegramBotEssentials\\Essence\\Database\\factories\\BotFactory extends generic class Illuminate\\Database\\Eloquent\\Factories\\Factory but does not specify its types\: TModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: database/factories/BotFactory.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: database/factories/BotUserFactory.php
-
-		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$peer_id\.$#'
 			identifier: property.notFound
 			count: 2
@@ -397,18 +385,6 @@ parameters:
 			path: src/Console/Commands/SetWebhook.php
 
 		-
-			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\Bot\:\:\$secret_token\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Console/Commands/SetWebhook.php
-
-		-
-			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\Bot\:\:\$unique_id\.$#'
-			identifier: property.notFound
-			count: 3
-			path: src/Console/Commands/SetWebhook.php
-
-		-
 			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
 			count: 1
@@ -421,19 +397,7 @@ parameters:
 			path: src/Console/Commands/SetWebhook.php
 
 		-
-			message: '#^Binary operation "\." between ''Setting webhook for…'' and mixed results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Console/Commands/SetWebhook.php
-
-		-
 			message: '#^Binary operation "\." between ''Telegram bot api…'' and mixed results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Console/Commands/SetWebhook.php
-
-		-
-			message: '#^Binary operation "\." between ''Telegram webhook…'' and mixed results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 1
 			path: src/Console/Commands/SetWebhook.php
@@ -493,12 +457,6 @@ parameters:
 			path: src/Console/Commands/SetWebhook.php
 
 		-
-			message: '#^Parameter \#2 \$replace of function str_replace expects array\<string\>\|string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Console/Commands/SetWebhook.php
-
-		-
 			message: '#^Parameter \#1 \$key of static method Illuminate\\Cache\\Repository\:\:put\(\) expects array\|string\|UnitEnum, mixed given\.$#'
 			identifier: argument.type
 			count: 1
@@ -520,12 +478,6 @@ parameters:
 			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\Bot\:\:\$bot_token\.$#'
 			identifier: property.notFound
 			count: 1
-			path: src/Http/Controllers/BotController.php
-
-		-
-			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\Bot\:\:\$unique_id\.$#'
-			identifier: property.notFound
-			count: 2
 			path: src/Http/Controllers/BotController.php
 
 		-
@@ -585,7 +537,7 @@ parameters:
 		-
 			message: '#^Parameter \#2 \$uniqueId of method TelegramBotEssentials\\Essence\\Http\\Controllers\\BotController\:\:setWebhook\(\) expects string, mixed given\.$#'
 			identifier: argument.type
-			count: 2
+			count: 1
 			path: src/Http/Controllers/BotController.php
 
 		-
@@ -1171,12 +1123,6 @@ parameters:
 			path: src/Http/Middleware/TelegramBotAuthentication.php
 
 		-
-			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\Bot\:\:\$secret_token\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Http/Middleware/TelegramBotAuthentication.php
-
-		-
 			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\TelegramUser\:\:\$peer_id\.$#'
 			identifier: property.notFound
 			count: 1
@@ -1191,12 +1137,6 @@ parameters:
 		-
 			message: '#^Cannot access property \$from on Telegram\\Bot\\Objects\\ChatMemberUpdated\|null\.$#'
 			identifier: property.nonObject
-			count: 1
-			path: src/Http/Middleware/TelegramBotAuthentication.php
-
-		-
-			message: '#^Cannot cast mixed to string\.$#'
-			identifier: cast.string
 			count: 1
 			path: src/Http/Middleware/TelegramBotAuthentication.php
 
@@ -1256,12 +1196,6 @@ parameters:
 
 		-
 			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\Bot\:\:\$suspended_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Http/Resources/BotResource.php
-
-		-
-			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\Bot\:\:\$unique_id\.$#'
 			identifier: property.notFound
 			count: 1
 			path: src/Http/Resources/BotResource.php
@@ -1735,22 +1669,10 @@ parameters:
 			path: src/Models/TelegramUser.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Seeders/MainSeeder.php
-
-		-
 			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\TelegramUser\:\:\$peer_id\.$#'
 			identifier: property.notFound
 			count: 2
 			path: src/Seeders/MainSeeder.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 2
-			path: src/Seeders/TelegramBotAndUserSeeder.php
 
 		-
 			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\TelegramUser\:\:\$peer_id\.$#'

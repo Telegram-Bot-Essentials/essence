@@ -7,6 +7,9 @@ use Ramsey\Uuid\Uuid;
 use TelegramBotEssentials\Essence\Models\Bot;
 use TelegramBotEssentials\Essence\Models\TelegramUser;
 
+/**
+ * @extends Factory<Bot>
+ */
 class BotFactory extends Factory
 {
     protected $model = Bot::class;
