@@ -33,6 +33,14 @@ will ship as 0.12.0.
   of, and previously built every bot's command menu in whatever locale the
   app happened to be in). A companion package that owns real per-bot locale
   data rebinds the interface; essence never references that package.
+- `TelegramBotEssentials\Essence\Testing\TestCase`: a reusable Testbench
+  base every companion package can extend via its existing essence
+  dependency, with `Http::fake()` on by default (Telegram API calls route
+  through `Illuminate\Support\Facades\Http`, so this needs no bespoke SDK
+  mocking), `makeBot()`/`makeMessageUpdate()`/`makeCallbackQueryUpdate()`
+  factories, `postWebhookUpdate()` (a real request through routing,
+  `TelegramBotAuthentication`, and the controller), and
+  `assertTelegramSent()`.
 
 ### Changed
 

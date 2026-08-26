@@ -104,6 +104,28 @@ php artisan make:feature Admin/MyFeatureFeature
 php artisan make:command MyStartCommand
 ```
 
+## Testing
+
+Extend `TelegramBotEssentials\Essence\Testing\TestCase` (a Testbench base essence ships in `src/`) instead of wiring up Testbench yourself - every companion package already depends on essence, so no extra dependency is needed:
+
+```php
+use TelegramBotEssentials\Essence\Testing\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+uses(TestCase::class, RefreshDatabase::class);
+
+it('replies when the button is pressed', function () {
+    $bot = $this->makeBot();
+
+    $this->postWebhookUpdate($bot, $this->makeMessageUpdate('Main Menu 🔰'))
+        ->assertOk();
+
+    $this->assertTelegramSent(fn ($request) => str_contains($request['text'], 'Main Menu loaded'));
+});
+```
+
+`postWebhookUpdate()` sends a real request through routing, `TelegramBotAuthentication`, and the controller - not a hand-wired shortcut. Outbound Telegram API calls are faked automatically (`Http::fake()` in `setUp()`): `LaravelHttpClient`, essence's default `http_client_handler`, routes every SDK call through `Illuminate\Support\Facades\Http`, so no bespoke SDK mocking is needed.
+
 ## Related Packages
 
 Essence is the core framework. Optional companion packages extend it:
