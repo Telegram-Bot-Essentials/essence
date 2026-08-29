@@ -2,10 +2,9 @@
 
 namespace TelegramBotEssentials\Essence\Console\Commands;
 
-use Illuminate\Console\GeneratorCommand;
 use TelegramBotEssentials\Essence\Traits\TgClassMaker;
 
-class MakeReplyKey extends GeneratorCommand
+class MakeReplyKey extends PackageGeneratorCommand
 {
     use TgClassMaker;
 

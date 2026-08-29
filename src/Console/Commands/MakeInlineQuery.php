@@ -2,10 +2,9 @@
 
 namespace TelegramBotEssentials\Essence\Console\Commands;
 
-use Illuminate\Console\GeneratorCommand;
 use TelegramBotEssentials\Essence\Traits\TgClassMaker;
 
-class MakeInlineQuery extends GeneratorCommand
+class MakeInlineQuery extends PackageGeneratorCommand
 {
     use TgClassMaker;
 
