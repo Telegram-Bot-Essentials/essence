@@ -7,15 +7,17 @@ use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKey;
 
 class {{ class_name }} extends ReplyKey
 {
-    protected string $text = '{{ text }}';
     protected int $perm = {{ perm_power }};
-    protected string $response = '{{ response }}';
 
-    public function __construct()
+    // Multilingual: return __('') instead of a literal.
+    protected function text(): string
     {
-        // Multilingual translations
-        // $this->text = __('');
-        // $this->response = __('');
+        return '{{ text }}';
+    }
+
+    protected function response(): ?string
+    {
+        return '{{ response }}';
     }
 
     public function handle(): void
