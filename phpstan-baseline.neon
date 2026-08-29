@@ -109,12 +109,6 @@ parameters:
 			path: src/Console/Commands/MakeCallbackQuery.php
 
 		-
-			message: '#^Parameter \#1 \$string of function trim expects string, array\|bool\|float\|int\|string\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Console/Commands/MakeCallbackQuery.php
-
-		-
 			message: '#^Parameter \#1 \$string of function ucwords expects string, string\|null given\.$#'
 			identifier: argument.type
 			count: 1
@@ -145,14 +139,14 @@ parameters:
 			path: src/Console/Commands/MakeCommand.php
 
 		-
-			message: '#^Binary operation "\." between ''Command to handle '' and array\|bool\|float\|int\|string results in an error\.$#'
-			identifier: binaryOp.invalid
+			message: '#^Cannot access offset mixed on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
 			path: src/Console/Commands/MakeCommand.php
 
 		-
-			message: '#^Cannot access offset mixed on mixed\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
+			message: '#^Command "tbe\:make\:command" does not have option "all"\.$#'
+			identifier: larastan.console.undefinedOption
 			count: 1
 			path: src/Console/Commands/MakeCommand.php
 
@@ -181,19 +175,7 @@ parameters:
 			path: src/Console/Commands/MakeCommand.php
 
 		-
-			message: '#^Parameter \#1 \$string of function trim expects string, array\|bool\|float\|int\|string\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Console/Commands/MakeCommand.php
-
-		-
 			message: '#^Parameter \#1 \$string of function ucwords expects string, string\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Console/Commands/MakeCommand.php
-
-		-
-			message: '#^Parameter \#2 \$replace of function str_replace expects array\<string\>\|string, array\<int, mixed\> given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Console/Commands/MakeCommand.php
@@ -217,12 +199,6 @@ parameters:
 			path: src/Console/Commands/MakeFeature.php
 
 		-
-			message: '#^Parameter \#1 \$string of function trim expects string, array\|bool\|float\|int\|string\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Console/Commands/MakeFeature.php
-
-		-
 			message: '#^Parameter \#1 \$string of function ucwords expects string, string\|null given\.$#'
 			identifier: argument.type
 			count: 1
@@ -241,6 +217,18 @@ parameters:
 			path: src/Console/Commands/MakeFeature.php
 
 		-
+			message: '#^Command "tbe\:make\:inline\-query" does not have option "admin"\.$#'
+			identifier: larastan.console.undefinedOption
+			count: 2
+			path: src/Console/Commands/MakeInlineQuery.php
+
+		-
+			message: '#^Command "tbe\:make\:inline\-query" does not have option "all"\.$#'
+			identifier: larastan.console.undefinedOption
+			count: 1
+			path: src/Console/Commands/MakeInlineQuery.php
+
+		-
 			message: '#^Parameter \#1 \$command of method Illuminate\\Console\\Command\:\:call\(\) expects string\|Symfony\\Component\\Console\\Command\\Command, mixed given\.$#'
 			identifier: argument.type
 			count: 1
@@ -248,12 +236,6 @@ parameters:
 
 		-
 			message: '#^Parameter \#1 \$string of function strtolower expects string, string\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Console/Commands/MakeInlineQuery.php
-
-		-
-			message: '#^Parameter \#1 \$string of function trim expects string, array\|bool\|float\|int\|string\|null given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Console/Commands/MakeInlineQuery.php
@@ -289,12 +271,6 @@ parameters:
 			path: src/Console/Commands/MakeReplyKey.php
 
 		-
-			message: '#^Parameter \#1 \$string of function trim expects string, array\|bool\|float\|int\|string\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Console/Commands/MakeReplyKey.php
-
-		-
 			message: '#^Parameter \#1 \$string of function ucwords expects string, string\|null given\.$#'
 			identifier: argument.type
 			count: 1
@@ -320,12 +296,6 @@ parameters:
 
 		-
 			message: '#^Parameter \#1 \$string of function strtolower expects string, string\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Console/Commands/MakeStateAnswer.php
-
-		-
-			message: '#^Parameter \#1 \$string of function trim expects string, array\|bool\|float\|int\|string\|null given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Console/Commands/MakeStateAnswer.php
