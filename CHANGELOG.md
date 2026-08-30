@@ -15,6 +15,11 @@ will ship as 0.12.0.
 - `Prunable` on `StateData`, `InlineConfirmation`, and `MessageMeta`,
   scheduled hourly via `model:prune`, replacing the ad-hoc cleanup query that
   ran on every `InlineConfirmation` accept/decline.
+- `HandlerContextExpired` exception plus `StateAnswer::requireMessageMeta()` /
+  `requireStateData()`: a multi-step flow that resumes against a `MessageMeta`
+  or `StateData` row pruned out from under it (the user left it sitting past
+  the retention window) now surfaces a "this step expired" notice and has its
+  stuck state cleared, instead of dereferencing null and crashing the worker.
 - A config flag and prefix to let the consuming app opt out of essence's own
   routes (`tbe-essence.routes`).
 - `update_id` deduplication on the webhook: claimed atomically via
@@ -74,6 +79,13 @@ will ship as 0.12.0.
 - `BotFactory`/`BotUserFactory` no longer write `currency`/`balance`
   columns that don't exist on any migration.
 - `ExceptionHandler` no longer hard-depends on Telescope being installed.
+- `ExceptionHandler` no longer recurses into itself: its fallback
+  notification path is now skipped unless `wHook()->check()` passes, so a
+  stray exception with a half-populated (or absent) webhook context reports
+  once and stops instead of re-dereferencing `wHook()` until the worker OOMs.
+- `StateAnswer::stateData()` no longer reports an exception as a side effect
+  of returning `null` - a missing row is the caller's decision to make (see
+  `requireStateData()`).
 
 ### Removed
 

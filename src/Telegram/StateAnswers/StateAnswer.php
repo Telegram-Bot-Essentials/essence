@@ -6,7 +6,7 @@ use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use ReflectionMethod;
 use TelegramBotEssentials\Essence\Enums\AllowableFields;
-use TelegramBotEssentials\Essence\Exceptions\TbeLogicException;
+use TelegramBotEssentials\Essence\Exceptions\HandlerContextExpired;
 use TelegramBotEssentials\Essence\Models\MessageMeta;
 use TelegramBotEssentials\Essence\Models\StateData;
 use TelegramBotEssentials\Essence\Support\ResolvesParameters;
@@ -131,20 +131,35 @@ abstract class StateAnswer implements StateAnswerInterface
         return $messageMeta;
     }
 
+    /**
+     * The MessageMeta this answer resumes, or a HandlerContextExpired if the
+     * row is gone - pruned out from under a flow the user left sitting past
+     * the retention window. Callers that need the meta to continue should
+     * use this rather than dereferencing the nullable messageMeta().
+     */
+    protected function requireMessageMeta(): MessageMeta
+    {
+        return $this->messageMeta() ?? throw new HandlerContextExpired;
+    }
+
     public function stateData(): ?StateData
     {
         if ($this->stateData) {
             return $this->stateData;
         }
-        $stateData = StateData::find($this->params['state_data_id'] ?? $this->params['state_data']);
+        $stateData = StateData::find($this->params['state_data_id'] ?? ($this->params['state_data'] ?? null));
         if (! $stateData) {
-            exceptionReport(new TbeLogicException('Trying to access state data, but it is not provided'));
-
             return null;
         }
         $this->stateData = $stateData;
 
         return $stateData;
+    }
+
+    /** As requireMessageMeta(), for the StateData row this answer resumes. */
+    protected function requireStateData(): StateData
+    {
+        return $this->stateData() ?? throw new HandlerContextExpired;
     }
 
     public function cancel(): void

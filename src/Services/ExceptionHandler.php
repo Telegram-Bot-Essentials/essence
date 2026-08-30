@@ -12,6 +12,7 @@ use Telegram\Bot\Exceptions\TelegramSDKException;
 use TelegramBotEssentials\Essence\Exceptions\CannotSetItActive;
 use TelegramBotEssentials\Essence\Exceptions\CannotSetItAsDone;
 use TelegramBotEssentials\Essence\Exceptions\FeatureIsDisabled;
+use TelegramBotEssentials\Essence\Exceptions\HandlerContextExpired;
 use TelegramBotEssentials\Essence\Exceptions\InvalidPageNumber;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
 use TelegramBotEssentials\Essence\Exceptions\TbeLogicException;
@@ -32,6 +33,8 @@ class ExceptionHandler
                 $this->cannotSetItActiveUserAlert($e);
             } catch (CannotSetItAsDone $e) {
                 $this->cannotSetItAsDoneUserAlert($e);
+            } catch (HandlerContextExpired $e) {
+                $this->contextExpiredUserAlert($e);
             } catch (ModelNotFoundException $e) {
                 $this->modelNotFoundUserAlert($e);
             } catch (ItemNotFoundException $e) {
@@ -43,18 +46,26 @@ class ExceptionHandler
             }
         } catch (Throwable $e) {
             $this->tagInTelescope();
-            try {
-                if (wHook()->update()->inlineQuery) {
-                    $this->answerInlineQueryWithError();
-                } else {
-                    wHook()->api()->sendMessage([
-                        'chat_id' => wHook()->user()->telegramUser->peer_id,
-                        'text' => '😭 Something went wrong, please contact the bot support',
-                        'reply_markup' => wHook()->user()->getKeyboard(),
-                    ]);
+            // Only reach for the webhook to notify the user when it is fully
+            // populated. A stray exception mid-request (or one thrown well
+            // outside a webhook - a queued job, the scheduler, static
+            // analysis) leaves wHook() half-built; dereferencing it here
+            // throws again and recurses straight back into handle() until
+            // the worker runs out of memory.
+            if (wHook()->check()) {
+                try {
+                    if (wHook()->update()->inlineQuery) {
+                        $this->answerInlineQueryWithError();
+                    } else {
+                        wHook()->api()->sendMessage([
+                            'chat_id' => wHook()->user()->telegramUser->peer_id,
+                            'text' => '😭 Something went wrong, please contact the bot support',
+                            'reply_markup' => wHook()->user()->getKeyboard(),
+                        ]);
+                    }
+                } catch (Throwable $notifyError) {
+                    tbeLog('essence')->error('Failed to notify user about an error: '.$notifyError->getMessage(), ['exception' => $notifyError]);
                 }
-            } catch (Throwable $e) {
-                tbeLog('essence')->error('Failed to notify user about an error: '.$e->getMessage(), ['exception' => $e]);
             }
             exceptionReport($e);
             abort(203, 'Something went wrong');
@@ -175,6 +186,40 @@ class ExceptionHandler
             wHook()->api()->sendMessage([
                 'chat_id' => wHook()->user()->telegramUser->peer_id,
                 'text' => __('tbe::general.alerts.notFound', ['resource' => $resourceName]),
+                'reply_markup' => wHook()->user()->getKeyboard(),
+            ]);
+        }
+    }
+
+    /**
+     * A multi-step flow tried to resume against a MessageMeta/StateData row
+     * that has since been pruned. Clear the now-unresumable state and tell
+     * the user to start over rather than letting the null dereference that
+     * raised this crash the request.
+     *
+     * @throws TelegramSDKException
+     */
+    private function contextExpiredUserAlert(HandlerContextExpired $e): void
+    {
+        tbeLog('essence')->warning('Handler context expired: '.($e->getMessage() ?: 'no message'));
+
+        if (wHook()->check()) {
+            wHook()->user()->changeState();
+        }
+
+        if (wHook()->update()->callbackQuery) {
+            wHook()->api()->answerCallbackQuery([
+                'callback_query_id' => wHook()->update()->callbackQuery->id,
+                'text' => __('tbe::general.alerts.contextExpired'),
+                'show_alert' => true,
+                'cache_time' => 5,
+            ]);
+        } elseif (wHook()->update()->inlineQuery) {
+            $this->answerInlineQueryWithError();
+        } else {
+            wHook()->api()->sendMessage([
+                'chat_id' => wHook()->peerId(),
+                'text' => __('tbe::general.alerts.contextExpired'),
                 'reply_markup' => wHook()->user()->getKeyboard(),
             ]);
         }

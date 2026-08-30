@@ -45,6 +45,7 @@ return [
         'outOfBoundPageNumber' => '❗️ Target page number is out of bounds.',
         'notFound' => '❗️ Requested :resource not found.',
         'requestIsInvalid' => '❗️ Request is invalid, please use reply keyboard.',
+        'contextExpired' => '⏳ This step expired — please start again from the menu.',
     ],
 
     'messages' => [

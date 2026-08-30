@@ -6,7 +6,6 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use TelegramBotEssentials\Essence\Enums\Roles;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
-use TelegramBotEssentials\Essence\Models\MessageMeta;
 use TelegramBotEssentials\Essence\Models\TelegramUser;
 use TelegramBotEssentials\Essence\Telegram\Features\BotAdminsFeature;
 use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswer;
@@ -31,7 +30,7 @@ class BotAdminsAnswer extends StateAnswer
         $botUser->power = Roles::ADMIN->value;
         $botUser->save();
 
-        $messageMeta = MessageMeta::find($this->params['message_meta_id']);
+        $messageMeta = $this->requireMessageMeta();
         wHook()->user()->changeState();
         wHook()->api()->sendMessage([
             'chat_id' => wHook()->user()->telegramUser->peer_id,

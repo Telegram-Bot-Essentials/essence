@@ -2839,12 +2839,6 @@ parameters:
 			path: src/Telegram/StateAnswers/Admin/BotAdminsAnswer.php
 
 		-
-			message: '#^Cannot call method updateAndContinueAction\(\) on Illuminate\\Database\\Eloquent\\Collection\<int, TelegramBotEssentials\\Essence\\Models\\MessageMeta\>\|TelegramBotEssentials\\Essence\\Models\\MessageMeta\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Telegram/StateAnswers/Admin/BotAdminsAnswer.php
-
-		-
 			message: '#^Parameter \#1 \$haystack of function str_starts_with expects string, string\|null given\.$#'
 			identifier: argument.type
 			count: 1
