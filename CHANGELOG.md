@@ -14,6 +14,13 @@ the first public release.
 
 ### Added
 
+- Bot-user reachability tracking: a `bot_users.status`
+  (`active`/`blocked`/`unreachable`) column, `telegram_users.deactivated_at`
+  for the peer-global "account deleted" state, `BotUser::reachability()` and
+  the `reachable()`/`withStatus()`/`deactivated()` query scopes, and a
+  `BotUserStatus` service (`botUserStatus()`) that folds Telegram's
+  `my_chat_member` push signal and send-failure errors into one persisted
+  transition and one `BotUserStatusChanged` event.
 - `Prunable` on `StateData`, `InlineConfirmation`, and `MessageMeta`,
   scheduled hourly via `model:prune`, replacing the ad-hoc cleanup query that
   ran on every `InlineConfirmation` accept/decline.
@@ -88,6 +95,13 @@ the first public release.
 - `StateAnswer::stateData()` no longer reports an exception as a side effect
   of returning `null` - a missing row is the caller's decision to make (see
   `requireStateData()`).
+- `BotFactory` now generates always-truthy, Telegram-shaped `bot_token` and
+  `secret_token` values; `fake()->randomNumber()` could return `0`, and a
+  falsy token made the SDK fall back to the unset `TELEGRAM_BOT_TOKEN` env
+  var and throw.
+- The `tbe:make:*` generators and `tbe:bot-management-token` now narrow
+  `Command::argument()`/`option()` and `config()` values through `is_string()`
+  rather than a bare cast, so they pass Larastan at level max.
 
 ### Removed
 
