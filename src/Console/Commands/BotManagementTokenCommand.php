@@ -3,7 +3,7 @@
 namespace TelegramBotEssentials\Essence\Console\Commands;
 
 use Illuminate\Console\Command;
-use Str;
+use Illuminate\Support\Str;
 
 class BotManagementTokenCommand extends Command
 {
@@ -24,6 +24,7 @@ class BotManagementTokenCommand extends Command
     public function handle()
     {
         $appName = config('app.name', 'TBE');
+        $appName = is_string($appName) ? $appName : 'TBE';
         $token = "$appName:".Str::random(32);
 
         $this->info("Generated token: {$token}");

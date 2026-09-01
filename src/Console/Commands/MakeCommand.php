@@ -37,8 +37,15 @@ class MakeCommand extends PackageGeneratorCommand
         $className = class_basename($name);
         $namespace = $this->getNamespace($name);
 
-        $commandName = $this->option('command-name') ?? strtolower(preg_replace('/Command$/', '', $className));
-        $description = $this->option('description') ?? 'Command to handle '.$commandName;
+        $commandNameOption = $this->option('command-name');
+        $commandName = is_string($commandNameOption) && $commandNameOption !== ''
+            ? $commandNameOption
+            : strtolower((string) preg_replace('/Command$/', '', $className));
+
+        $descriptionOption = $this->option('description');
+        $description = is_string($descriptionOption) && $descriptionOption !== ''
+            ? $descriptionOption
+            : 'Command to handle '.$commandName;
 
         return str_replace(
             [

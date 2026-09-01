@@ -22,13 +22,14 @@ trait TgClassMaker
 
     public function initializeName(): string
     {
-        $name = trim($this->argument('name'));
+        $argument = $this->argument('name');
+        $name = trim(is_string($argument) ? $argument : '');
 
         if (Str::endsWith($name, '.php')) {
             $name = Str::substr($name, 0, -4);
         }
 
-        $this->nameValue = preg_replace([
+        $stripped = preg_replace([
             '/answer/i',
             '/query/i',
             '/feature/i',
@@ -36,6 +37,8 @@ trait TgClassMaker
             '/key/i',
             '/command/i',
         ], '', $name);
+
+        $this->nameValue = is_string($stripped) ? $stripped : $name;
 
         return $this->nameValue;
     }

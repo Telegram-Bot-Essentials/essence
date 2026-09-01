@@ -20,7 +20,7 @@ trait CanResolveReplyKey
             throw new LogicException(
                 sprintf(
                     'ReplyKey class "%s" should be an instance of "%s"',
-                    is_object($replyKey) ? $replyKey::class : $replyKey,
+                    $replyKey,
                     ReplyKeyInterface::class
                 )
             );
