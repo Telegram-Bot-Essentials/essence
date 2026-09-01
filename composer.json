@@ -82,9 +82,6 @@
             "providers": [
                 "TelegramBotEssentials\\Essence\\TelegramBotServiceProvider"
             ]
-        },
-        "branch-alias": {
-            "dev-chore/phase-0-hygiene": "0.12.x-dev"
         }
     },
     "minimum-stability": "stable",

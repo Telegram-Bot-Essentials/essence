@@ -5,10 +5,12 @@ All notable changes to this project are documented here. Format follows
 [Semantic Versioning](https://semver.org/), with the 0.x caveat that a minor
 bump may carry breaking changes until the API stabilizes at 1.0.
 
-Nothing before this point is tracked — the changelog starts here, at what
-will ship as 0.12.0.
+Nothing before this point is tracked — the changelog starts here, at 0.12.0,
+the first public release.
 
 ## [Unreleased]
+
+## [0.12.0] - 2026-09-01
 
 ### Added
 
