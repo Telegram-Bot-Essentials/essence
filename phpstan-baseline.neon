@@ -2299,12 +2299,6 @@ parameters:
 			path: src/Telegram/CallbackQueries/Member/MessageMetaQuery.php
 
 		-
-			message: '#^Call to function is_object\(\) with string will always evaluate to false\.$#'
-			identifier: function.impossibleType
-			count: 1
-			path: src/Telegram/CallbackQueries/Member/MessageMetaQuery.php
-
-		-
 			message: '#^Cannot access property \$id on Telegram\\Bot\\Objects\\CallbackQuery\|null\.$#'
 			identifier: property.nonObject
 			count: 1
@@ -2734,6 +2728,12 @@ parameters:
 			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\BotUser\:\:\$state\.$#'
 			identifier: property.notFound
 			count: 2
+			path: src/Telegram/ReplyKeys/ReplyKeyBus.php
+
+		-
+			message: '#^Call to function is_object\(\) with string will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
 			path: src/Telegram/ReplyKeys/ReplyKeyBus.php
 
 		-
