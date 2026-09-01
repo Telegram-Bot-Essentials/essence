@@ -31,18 +31,6 @@ parameters:
 			path: routes/tenant.php
 
 		-
-			message: '#^Binary operation "\." between non\-falsy\-string and mixed results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Console/Commands/BotManagementTokenCommand.php
-
-		-
-			message: '#^Call to static method random\(\) on an unknown class Str\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Console/Commands/BotManagementTokenCommand.php
-
-		-
 			message: '#^Method TelegramBotEssentials\\Essence\\Console\\Commands\\BotManagementTokenCommand\:\:handle\(\) has no return type specified\.$#'
 			identifier: missingType.return
 			count: 1
@@ -75,12 +63,6 @@ parameters:
 		-
 			message: '#^Parameter \#3 \$subject of function preg_replace expects array\<float\|int\|string\>\|string, string\|false given\.$#'
 			identifier: argument.type
-			count: 1
-			path: src/Console/Commands/BotManagementTokenCommand.php
-
-		-
-			message: '#^Part \$appName \(mixed\) of encapsed string cannot be cast to string\.$#'
-			identifier: encapsedStringPart.nonString
 			count: 1
 			path: src/Console/Commands/BotManagementTokenCommand.php
 
@@ -121,12 +103,6 @@ parameters:
 			path: src/Console/Commands/MakeCallbackQuery.php
 
 		-
-			message: '#^Property TelegramBotEssentials\\Essence\\Console\\Commands\\MakeCallbackQuery\:\:\$nameValue \(string\) does not accept string\|null\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: src/Console/Commands/MakeCallbackQuery.php
-
-		-
 			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Console\\Commands\\MakeCommand\:\:\$map\.$#'
 			identifier: property.notFound
 			count: 3
@@ -141,12 +117,6 @@ parameters:
 		-
 			message: '#^Cannot access offset mixed on mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: src/Console/Commands/MakeCommand.php
-
-		-
-			message: '#^Command "tbe\:make\:command" does not have option "all"\.$#'
-			identifier: larastan.console.undefinedOption
 			count: 1
 			path: src/Console/Commands/MakeCommand.php
 
@@ -171,18 +141,12 @@ parameters:
 		-
 			message: '#^Parameter \#1 \$string of function strtolower expects string, string\|null given\.$#'
 			identifier: argument.type
-			count: 2
+			count: 1
 			path: src/Console/Commands/MakeCommand.php
 
 		-
 			message: '#^Parameter \#1 \$string of function ucwords expects string, string\|null given\.$#'
 			identifier: argument.type
-			count: 1
-			path: src/Console/Commands/MakeCommand.php
-
-		-
-			message: '#^Property TelegramBotEssentials\\Essence\\Console\\Commands\\MakeCommand\:\:\$nameValue \(string\) does not accept string\|null\.$#'
-			identifier: assign.propertyType
 			count: 1
 			path: src/Console/Commands/MakeCommand.php
 
@@ -211,24 +175,6 @@ parameters:
 			path: src/Console/Commands/MakeFeature.php
 
 		-
-			message: '#^Property TelegramBotEssentials\\Essence\\Console\\Commands\\MakeFeature\:\:\$nameValue \(string\) does not accept string\|null\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: src/Console/Commands/MakeFeature.php
-
-		-
-			message: '#^Command "tbe\:make\:inline\-query" does not have option "admin"\.$#'
-			identifier: larastan.console.undefinedOption
-			count: 2
-			path: src/Console/Commands/MakeInlineQuery.php
-
-		-
-			message: '#^Command "tbe\:make\:inline\-query" does not have option "all"\.$#'
-			identifier: larastan.console.undefinedOption
-			count: 1
-			path: src/Console/Commands/MakeInlineQuery.php
-
-		-
 			message: '#^Parameter \#1 \$command of method Illuminate\\Console\\Command\:\:call\(\) expects string\|Symfony\\Component\\Console\\Command\\Command, mixed given\.$#'
 			identifier: argument.type
 			count: 1
@@ -249,12 +195,6 @@ parameters:
 		-
 			message: '#^Property TelegramBotEssentials\\Essence\\Console\\Commands\\MakeInlineQuery\:\:\$map type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
-			count: 1
-			path: src/Console/Commands/MakeInlineQuery.php
-
-		-
-			message: '#^Property TelegramBotEssentials\\Essence\\Console\\Commands\\MakeInlineQuery\:\:\$nameValue \(string\) does not accept string\|null\.$#'
-			identifier: assign.propertyType
 			count: 1
 			path: src/Console/Commands/MakeInlineQuery.php
 
@@ -283,12 +223,6 @@ parameters:
 			path: src/Console/Commands/MakeReplyKey.php
 
 		-
-			message: '#^Property TelegramBotEssentials\\Essence\\Console\\Commands\\MakeReplyKey\:\:\$nameValue \(string\) does not accept string\|null\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: src/Console/Commands/MakeReplyKey.php
-
-		-
 			message: '#^Parameter \#1 \$command of method Illuminate\\Console\\Command\:\:call\(\) expects string\|Symfony\\Component\\Console\\Command\\Command, mixed given\.$#'
 			identifier: argument.type
 			count: 1
@@ -313,12 +247,6 @@ parameters:
 			path: src/Console/Commands/MakeStateAnswer.php
 
 		-
-			message: '#^Property TelegramBotEssentials\\Essence\\Console\\Commands\\MakeStateAnswer\:\:\$nameValue \(string\) does not accept string\|null\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: src/Console/Commands/MakeStateAnswer.php
-
-		-
 			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\Bot\:\:\$bot_token\.$#'
 			identifier: property.notFound
 			count: 2
@@ -339,12 +267,6 @@ parameters:
 		-
 			message: '#^Binary operation "\." between ''Telegram bot api…'' and mixed results in an error\.$#'
 			identifier: binaryOp.invalid
-			count: 1
-			path: src/Console/Commands/SetWebhook.php
-
-		-
-			message: '#^Call to function is_object\(\) with string will always evaluate to false\.$#'
-			identifier: function.impossibleType
 			count: 1
 			path: src/Console/Commands/SetWebhook.php
 
@@ -2161,12 +2083,6 @@ parameters:
 			path: src/Telegram/CallbackQueries/CallbackQueryBus.php
 
 		-
-			message: '#^Call to function is_object\(\) with string will always evaluate to false\.$#'
-			identifier: function.impossibleType
-			count: 1
-			path: src/Telegram/CallbackQueries/CallbackQueryBus.php
-
-		-
 			message: '#^Cannot access constant class on mixed\.$#'
 			identifier: classConstant.nonObject
 			count: 1
@@ -2373,12 +2289,6 @@ parameters:
 		-
 			message: '#^Call to an undefined method ReflectionType\:\:getName\(\)\.$#'
 			identifier: method.notFound
-			count: 1
-			path: src/Telegram/Commands/CommandBus.php
-
-		-
-			message: '#^Call to function is_object\(\) with string will always evaluate to false\.$#'
-			identifier: function.impossibleType
 			count: 1
 			path: src/Telegram/Commands/CommandBus.php
 
@@ -2689,12 +2599,6 @@ parameters:
 			path: src/Telegram/InlineQueries/InlineQuery.php
 
 		-
-			message: '#^Call to function is_object\(\) with string will always evaluate to false\.$#'
-			identifier: function.impossibleType
-			count: 1
-			path: src/Telegram/InlineQueries/InlineQueryBus.php
-
-		-
 			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\InlineQueries\\InlineQueryBus\:\:buildDependencyInjectedClass\(\) should return object but returns mixed\.$#'
 			identifier: return.type
 			count: 1
@@ -2728,12 +2632,6 @@ parameters:
 			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\BotUser\:\:\$state\.$#'
 			identifier: property.notFound
 			count: 2
-			path: src/Telegram/ReplyKeys/ReplyKeyBus.php
-
-		-
-			message: '#^Call to function is_object\(\) with string will always evaluate to false\.$#'
-			identifier: function.impossibleType
-			count: 1
 			path: src/Telegram/ReplyKeys/ReplyKeyBus.php
 
 		-
@@ -2979,12 +2877,6 @@ parameters:
 		-
 			message: '#^Call to an undefined method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswerInterface\:\:setMethod\(\)\.$#'
 			identifier: method.notFound
-			count: 1
-			path: src/Telegram/StateAnswers/StateAnswerBus.php
-
-		-
-			message: '#^Call to function is_object\(\) with string will always evaluate to false\.$#'
-			identifier: function.impossibleType
 			count: 1
 			path: src/Telegram/StateAnswers/StateAnswerBus.php
 
@@ -3383,6 +3275,36 @@ parameters:
 			identifier: trait.unused
 			count: 1
 			path: src/Traits/CanBeActivated.php
+
+		-
+			message: '#^Call to function is_object\(\) with string will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: src/Traits/CanResolveBotCommand.php
+
+		-
+			message: '#^Call to function is_object\(\) with string will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: src/Traits/CanResolveCallbackQuery.php
+
+		-
+			message: '#^Call to function is_object\(\) with string will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: src/Traits/CanResolveCommand.php
+
+		-
+			message: '#^Call to function is_object\(\) with string will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: src/Traits/CanResolveInlineQuery.php
+
+		-
+			message: '#^Call to function is_object\(\) with string will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: src/Traits/CanResolveStateAnswer.php
 
 		-
 			message: '#^Trait TelegramBotEssentials\\Essence\\Traits\\DoneLimited is used zero times and is not analysed\.$#'
