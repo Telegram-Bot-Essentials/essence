@@ -48,8 +48,13 @@ at a glance.
 
 ## Companion packages
 
-Essence is the core framework; packages like `tbe-billing`, `tbe-settings`,
-and `tbe-user-management` extend it via the same bus/handler pattern. If
-your change affects a hook or interface those packages rely on (bus
-signatures, handler base classes, config keys), call that out explicitly in
-the PR description.
+Essence is the core framework; the companion packages
+(`telegram-bot-essentials/billing`, `settings`, `user-management`, …) extend
+it via the same bus/handler pattern. If your change affects a hook or
+interface those packages rely on (bus signatures, handler base classes,
+config keys, events), call that out explicitly in the PR description.
+
+Org-wide contribution norms — commit style, the code of conduct, the
+security policy — live in the
+[`.github` repo](https://github.com/Telegram-Bot-Essentials/.github); this
+file only adds what's specific to the core package.
