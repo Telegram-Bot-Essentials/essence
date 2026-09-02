@@ -216,6 +216,56 @@ if (! function_exists('decodeCallback')) {
     }
 }
 
+if (! function_exists('nextInArray')) {
+    /**
+     * The element after $current in $values, wrapping past the end back to the
+     * first. Null when $values is empty or $current is not in it; the first
+     * element when $current is null.
+     *
+     * @param  array<array-key, mixed>  $values
+     */
+    function nextInArray(array $values, mixed $current): mixed
+    {
+        $values = array_values($values);
+
+        if ($current === null) {
+            return $values[0] ?? null;
+        }
+
+        $index = array_search($current, $values);
+        if ($index === false) {
+            return null;
+        }
+
+        return $values[($index + 1) % count($values)];
+    }
+}
+
+if (! function_exists('prevInArray')) {
+    /**
+     * The element before $current in $values, wrapping past the start back to
+     * the last. Null when $values is empty or $current is not in it; the last
+     * element when $current is null.
+     *
+     * @param  array<array-key, mixed>  $values
+     */
+    function prevInArray(array $values, mixed $current): mixed
+    {
+        $values = array_values($values);
+
+        if ($current === null) {
+            return $values === [] ? null : $values[count($values) - 1];
+        }
+
+        $index = array_search($current, $values);
+        if ($index === false) {
+            return null;
+        }
+
+        return $values[($index - 1 + count($values)) % count($values)];
+    }
+}
+
 if (! function_exists('inlineSorter')) {
     function inlineSorter(array $array, ?int $step = null): array
     {

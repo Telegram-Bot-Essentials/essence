@@ -10,7 +10,7 @@ the first public release.
 
 ## [Unreleased]
 
-## [0.12.0] - 2026-09-01
+## [0.12.0] - 2026-09-02
 
 ### Added
 
@@ -34,8 +34,11 @@ the first public release.
 - `update_id` deduplication on the webhook: claimed atomically via
   `Cache::add` before processing and released on failure, so a crashed
   handler is retried but a slow-yet-successful one is never double-processed.
-- `tbeApiResponse()` helper, internalizing the `apiResponse()` helper
-  previously pulled in from `elyar/personal-laravel-helpers`.
+- `tbeApiResponse()` helper, plus the `nextInArray()` / `prevInArray()`
+  array-cycling helpers, internalizing what was previously pulled in from
+  `elyar/personal-laravel-helpers`. Both walk a list of values and wrap
+  around the ends, so a "cycle to the next option" button never runs off
+  the array.
 - A Pest test suite (unit + feature), a Laravel Pint config, and a PHPStan
   config (level max, with a committed baseline).
 - GitHub Actions CI: Pest across PHP 8.3/8.4/8.5 x Laravel 12/13, plus Pint
@@ -106,6 +109,7 @@ the first public release.
 ### Removed
 
 - The `elyar/personal-laravel-helpers` dependency, internalized as
-  `ApiResponse`/`tbeApiResponse()`.
+  `ApiResponse`/`tbeApiResponse()` and the `nextInArray()` / `prevInArray()`
+  helpers.
 - A dead debug `/test` route and its commented-out code.
 - The `inspire` console route scaffolding.
