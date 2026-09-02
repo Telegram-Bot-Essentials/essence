@@ -1,6 +1,7 @@
 # Telegram Bot Essentials (Essence)
 
-[![tests](https://github.com/Elyar0/telegram-bot-essentials/actions/workflows/tests.yml/badge.svg)](https://github.com/Elyar0/telegram-bot-essentials/actions/workflows/tests.yml)
+[![tests](https://github.com/Telegram-Bot-Essentials/essence/actions/workflows/tests.yml/badge.svg)](https://github.com/Telegram-Bot-Essentials/essence/actions/workflows/tests.yml)
+[![Latest Version](https://img.shields.io/packagist/v/telegram-bot-essentials/essence.svg)](https://packagist.org/packages/telegram-bot-essentials/essence)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 A Laravel package for running many Telegram bots from one codebase, each bot
@@ -84,15 +85,15 @@ Handlers are discovered from `app/Telegram/**` once per process/worker at boot, 
 
 ## Documentation
 
-Full documentation lives in the [essence-docs](https://github.com/Elyar0/essence-docs)
-site, which is the single source of truth:
+The full documentation site — the single source of truth — is maintained separately and
+being published. It covers:
 
-- [Architecture](https://github.com/Elyar0/essence-docs/blob/main/docs/core/architecture.md) — webhook flow, buses, encoding formats
-- [State & StateData](https://github.com/Elyar0/essence-docs/blob/main/docs/core/state-and-statedata.md) — `bot_users.state` vs `state_data` table
-- [Extending](https://github.com/Elyar0/essence-docs/blob/main/docs/core/extending.md) — building CallbackQueries, StateAnswers, Features
-- [Commands](https://github.com/Elyar0/essence-docs/blob/main/docs/core/commands.md) — CommandBus, aliases, programmatic routing
-- [Events & Listeners](https://github.com/Elyar0/essence-docs/blob/main/docs/core/events.md) — the bot event bus
-- [Reference](https://github.com/Elyar0/essence-docs/blob/main/docs/core/reference.md) — helpers, config, database, artisan commands
+- **Architecture** — webhook flow, buses, encoding formats
+- **State & StateData** — `bot_users.state` vs the `state_data` table
+- **Extending** — building CallbackQueries, StateAnswers, Features
+- **Commands** — CommandBus, aliases, programmatic routing
+- **Events & Listeners** — the bot event bus
+- **Reference** — helpers, config, database, artisan commands
 
 ## Artisan Generators
 
@@ -128,11 +129,17 @@ it('replies when the button is pressed', function () {
 
 ## Related Packages
 
-Essence is the core framework. Optional companion packages extend it:
+Essence is the core framework. Optional companion packages, all on Packagist under
+`telegram-bot-essentials/*`, extend it:
 
-- `telegram-bot-essentials/billing` — invoices and payments
-- `telegram-bot-essentials/settings` — bot settings
-- `telegram-bot-essentials/user-wallet` — user wallet/credits
+- `telegram-bot-essentials/settings` — per-bot typed key/value settings
+- `telegram-bot-essentials/billing` — invoices, payments, gateway registry
+- `telegram-bot-essentials/gateway-card` — manual card-to-card gateway for Billing
+- `telegram-bot-essentials/gateway-zibal` — Zibal gateway for Billing
+- `telegram-bot-essentials/user-wallet` — per-user balance/credit wallet
+- `telegram-bot-essentials/user-management` — admin user list, sortable/filterable
+- `telegram-bot-essentials/affiliates` — referral tracking and wallet payouts
+- `telegram-bot-essentials/announcements` — bulk broadcast with live progress
 
 Register their CallbackQueries and StateAnswers in each package's service provider via `callbackQueryBus()` and `stateAnswerBus()`.
 
