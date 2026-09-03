@@ -36,8 +36,16 @@ This repo uses [Conventional Commits](https://www.conventionalcommits.org/)
 the public API. `git log` is the best reference for the tone and level of
 detail expected in a commit body - explain *why*, not just what changed.
 
-Prefer one focused commit per logical change over one large commit bundling
-several concerns.
+**One commit per layer, not one commit per feature** — the org-wide slicing
+rule in the [`.github`
+CONTRIBUTING](https://github.com/Telegram-Bot-Essentials/.github/blob/main/CONTRIBUTING.md#commit-style)
+applies here too, and essence follows it strictly. A change that spans
+migration → model → validation → service/handler → resource → tests → docs
+is that many commits, committed bottom-up, not a single 1200-line `feat`.
+Scope is the feature and stays constant across the series; type is each
+layer's nature. Subject ≤50 chars, lowercase, imperative. Substantive
+commits carry a wrapped body saying *why*; trivial chores none. No
+AI-attribution or `Co-Authored-By` trailers.
 
 ## Versioning
 
@@ -54,7 +62,7 @@ it via the same bus/handler pattern. If your change affects a hook or
 interface those packages rely on (bus signatures, handler base classes,
 config keys, events), call that out explicitly in the PR description.
 
-Org-wide contribution norms — commit style, the code of conduct, the
-security policy — live in the
-[`.github` repo](https://github.com/Telegram-Bot-Essentials/.github); this
-file only adds what's specific to the core package.
+Org-wide contribution norms — the code of conduct, the security policy, the
+baseline commit conventions (including the commit-slicing rule above) — live
+in the [`.github` repo](https://github.com/Telegram-Bot-Essentials/.github);
+this file only adds what's specific to the core package.
