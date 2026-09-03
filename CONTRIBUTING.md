@@ -30,14 +30,22 @@ regenerating the baseline to hide it.
 
 ## Commit style
 
-This repo uses [Conventional Commits](https://www.conventionalcommits.org/)
-(`feat:`, `fix:`, `refactor:`, `chore:`, `docs:`, `test:`, `ci:`), with a
-`!` after the type and a `BREAKING CHANGE:` footer for anything that breaks
-the public API. `git log` is the best reference for the tone and level of
-detail expected in a commit body - explain *why*, not just what changed.
+This repo follows the org-wide convention in the [`.github`
+CONTRIBUTING](https://github.com/Telegram-Bot-Essentials/.github/blob/main/CONTRIBUTING.md#commit-style):
+[Conventional Commits](https://www.conventionalcommits.org/) as
+`type(scope): summary` (`feat:`, `fix:`, `refactor:`, `chore:`, `docs:`,
+`test:`, `ci:`), with a `!` before the colon and a `BREAKING CHANGE:` footer
+for anything that breaks the public API.
 
-Prefer one focused commit per logical change over one large commit bundling
-several concerns.
+Slice a change into one commit per layer, committed bottom-up. The `scope`
+names the work stream and stays constant across the whole slice; the `type`
+tracks each layer. A change split by permission tier tags the tier at the
+end of the summary:
+
+    refactor(essence-0.12): guard pruned message meta on resume (Admin)
+
+`git log` is the best reference for the tone and level of detail expected in
+a commit body — explain *why*, not just what changed.
 
 ## Versioning
 
