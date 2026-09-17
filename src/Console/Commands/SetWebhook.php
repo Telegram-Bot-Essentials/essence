@@ -112,5 +112,6 @@ class SetWebhook extends Command
         ]);
 
         $this->info('Telegram webhook has been set for '.$bot->unique_id);
+        $this->info('Bot url: https://t.me/'.$telegram->getMe()->getUsername());
     }
 }
