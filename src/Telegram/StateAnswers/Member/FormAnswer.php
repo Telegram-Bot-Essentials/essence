@@ -29,6 +29,7 @@ class FormAnswer extends StateAnswer
             : [AllowableFields::TEXT->value];
     }
 
+    /** @return Keyboard<array-key, mixed>|null */
     public function keyboard(): ?Keyboard
     {
         $resolved = $this->resolve();
