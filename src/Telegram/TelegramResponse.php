@@ -185,9 +185,7 @@ class TelegramResponse
                     $this->saveMessageMeta($message);
                     $this->saveNavState($message);
                 } catch (Exception) {
-                    wHook()->api()->answerCallbackQuery([
-                        'callback_query_id' => wHook()->update()->callbackQuery->id,
-                    ]);
+                    $this->answerCallbackQuery();
                 }
             } elseif ($this->text) {
                 try {
@@ -218,9 +216,7 @@ class TelegramResponse
                         $this->saveMessageMeta($message);
                         $this->saveNavState($message);
                     } catch (Exception) {
-                        wHook()->api()->answerCallbackQuery([
-                            'callback_query_id' => wHook()->update()->callbackQuery->id,
-                        ]);
+                        $this->answerCallbackQuery();
                     }
                 }
             }
@@ -230,14 +226,30 @@ class TelegramResponse
 
         try {
             if ($this->answer ?? $this->softAnswer) {
-                wHook()->api()->answerCallbackQuery([
-                    'callback_query_id' => wHook()->update()->callbackQuery->id,
-                    'text' => $this->answer,
-                ]);
+                $this->answerCallbackQuery($this->answer);
             }
         } catch (Exception $e) {
             exceptionReport($e);
         }
+    }
+
+    /**
+     * Answers the callback query behind this update, if there is one: an
+     * update() reached from a text message (a state answer editing an
+     * earlier message in place) has no callback query to answer.
+     */
+    private function answerCallbackQuery(?string $text = null): void
+    {
+        $callbackQuery = wHook()->update()->callbackQuery;
+
+        if ($callbackQuery === null) {
+            return;
+        }
+
+        wHook()->api()->answerCallbackQuery(array_filter([
+            'callback_query_id' => $callbackQuery->id,
+            'text' => $text,
+        ], fn ($value) => $value !== null));
     }
 
     public function toArray(): array
