@@ -23,7 +23,7 @@ final class FormState
 
     /**
      * @param  array<string, ?string>  $answers
-     * @param  array<string, array{p: int, o?: int}>  $msgs
+     * @param  array<string, array{p: int, o?: int, k?: int}>  $msgs
      * @param  array<string, mixed>  $ctx
      */
     public function __construct(
@@ -62,6 +62,10 @@ final class FormState
 
                 if (is_numeric($ids['o'] ?? null)) {
                     $msgs[(string) $key]['o'] = (int) $ids['o'];
+                }
+
+                if (is_numeric($ids['k'] ?? null)) {
+                    $msgs[(string) $key]['k'] = (int) $ids['k'];
                 }
             }
         }
