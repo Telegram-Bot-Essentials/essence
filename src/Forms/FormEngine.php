@@ -251,6 +251,7 @@ class FormEngine
 
         $this->editText($ids['p'] ?? null, '<s>'.e($title).'</s>'."\n".__('tbe::forms.prompt.cancelled'));
         $this->editText($ids['o'] ?? null, __('tbe::forms.prompt.cancelled'));
+        $this->deleteBotMessage($ids['k'] ?? null);
 
         $this->giveBackOriginal($state);
         $form->onCancel($state->ctx);
@@ -613,6 +614,7 @@ class FormEngine
             $result->send(wHook()->peerId());
         }
 
+        $this->deleteBotMessage($state->msgs[FormState::CONFIRM]['k'] ?? null);
         $this->giveBackOriginal($state, $form);
 
         wHook()->api()->sendMessage([
@@ -684,22 +686,58 @@ class FormEngine
         $state->at = time();
         $state->step = isset($applicable[$position]) ? $applicable[$position]->key : FormState::CONFIRM;
         $keyboard = $this->keyboard($form, $state);
+        $staleCarriers = $this->carriers($state);
 
+        // The prompt goes out with no reply markup: Telegram refuses to edit a
+        // message that carries a reply keyboard, and the prompt is edited once
+        // answered. The keyboard rides on a small message of its own.
         if ($state->step === FormState::CONFIRM) {
-            $state->msgs[FormState::CONFIRM] = ['p' => $this->send($this->summaryText($form, $applicable, $effective, $notice), $keyboard)];
+            $ids = ['p' => $this->send($this->summaryText($form, $applicable, $effective, $notice), null)];
+            $carrierText = '<i>'.__('tbe::forms.summary.hint').'</i>';
         } else {
             $step = $applicable[$position];
-            $ids = ['p' => $this->send($this->promptText($form, $step, $applicable, $effective, $notice), $keyboard)];
+            $ids = ['p' => $this->send($this->promptText($form, $step, $applicable, $effective, $notice), null)];
 
             if ($step instanceof Choice && $step->isInline()) {
                 $options = $this->optionsResponse($form, $state, $position, 1);
                 $ids['o'] = $this->send((string) $options?->text, $options?->replyMarkup);
             }
 
-            $state->msgs[$state->step] = $ids;
+            $carrierText = '<i>'.e($step->hintLine($this->answersBefore($applicable, $effective, $step->key))).'</i>';
+        }
+
+        $ids['k'] = $this->send($carrierText, $keyboard);
+        $state->msgs[$state->step] = $ids;
+
+        // The keyboards of earlier steps are only clutter now. Removing them
+        // is tidying: the new keyboard already replaced theirs, so nothing
+        // depends on the delete succeeding.
+        foreach ($staleCarriers as $key => $messageId) {
+            if ($key !== $state->step) {
+                unset($state->msgs[$key]['k']);
+            }
+            $this->deleteBotMessage($messageId);
         }
 
         wHook()->user()->changeState($state->toStateString());
+    }
+
+    /**
+     * The keyboard-carrying messages sent so far, by step.
+     *
+     * @return array<string, int>
+     */
+    private function carriers(FormState $state): array
+    {
+        $carriers = [];
+
+        foreach ($state->msgs as $key => $ids) {
+            if (isset($ids['k'])) {
+                $carriers[$key] = $ids['k'];
+            }
+        }
+
+        return $carriers;
     }
 
     /**
@@ -729,12 +767,11 @@ class FormEngine
     {
         $text = ($notice !== null ? $notice."\n\n" : '')
             .'<b>'.e($this->label($form, $step, $step->key)).'</b>'."\n"
-            .$this->promptFor($form, $step, $this->answersBefore($applicable, $effective, $step->key))."\n\n"
-            .'<i>'.e($step->hintLine($this->answersBefore($applicable, $effective, $step->key))).'</i>';
+            .$this->promptFor($form, $step, $this->answersBefore($applicable, $effective, $step->key));
 
         $current = $effective[$step->key] ?? null;
         if ($current !== null) {
-            $text .= "\n".__('tbe::forms.prompt.current', ['value' => '<b>'.e($step->displayAnswer($current)).'</b>']);
+            $text .= "\n\n".__('tbe::forms.prompt.current', ['value' => '<b>'.e($step->displayAnswer($current)).'</b>']);
         }
 
         return $text;
@@ -940,6 +977,19 @@ class FormEngine
             if (! str_contains($e->getMessage(), 'message is not modified') && ! str_contains($e->getMessage(), 'message to edit not found')) {
                 exceptionReport($e);
             }
+        }
+    }
+
+    /** Best effort, like deleteUserMessage(): a bot message too old to delete is simply left. */
+    private function deleteBotMessage(?int $messageId): void
+    {
+        if ($messageId === null) {
+            return;
+        }
+
+        try {
+            wHook()->api()->deleteMessage(['chat_id' => wHook()->peerId(), 'message_id' => $messageId]);
+        } catch (Exception) {
         }
     }
 
