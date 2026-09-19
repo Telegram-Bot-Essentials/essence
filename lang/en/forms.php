@@ -41,6 +41,7 @@ return [
     ],
 
     'summary' => [
+        'hint' => '⬆ Confirm to save, or go back to change an answer.',
         'title' => 'Please review',
     ],
 
