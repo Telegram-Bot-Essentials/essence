@@ -123,6 +123,12 @@ class FormEngine
             return;
         }
 
+        if ($text === $labels['finish'] && $this->canFinish($state, $applicable, $effective)) {
+            $this->finish($form, $state, $steps);
+
+            return;
+        }
+
         if ($step->isSkippable() && $text === $this->skipLabel($step, $effective)) {
             $this->submit($form, $state, $steps, $step, null);
 
@@ -228,6 +234,9 @@ class FormEngine
             }
             if ($controls !== []) {
                 $rows[] = $controls;
+            }
+            if ($this->canFinish($state, $applicable, $effective)) {
+                $rows[] = [$labels['finish']];
             }
         }
 
@@ -370,6 +379,29 @@ class FormEngine
         $position = $this->position($state, $applicable);
 
         return isset($applicable[$position]) && array_key_exists($applicable[$position]->key, $effective);
+    }
+
+    /**
+     * Whether Finish is on offer: every applicable step that must be answered
+     * has been, so all that is left is optional and the user may go straight
+     * to the summary.
+     *
+     * @param  list<Step>  $applicable
+     * @param  array<string, ?string>  $effective
+     */
+    private function canFinish(FormState $state, array $applicable, array $effective): bool
+    {
+        if ($state->step === FormState::CONFIRM) {
+            return false;
+        }
+
+        foreach ($applicable as $step) {
+            if (! $step->isSkippable() && ! array_key_exists($step->key, $effective)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -570,6 +602,29 @@ class FormEngine
 
         $this->closeOptions($state);
         $state->step = $previous->key;
+
+        $this->present($form, $state, $steps);
+    }
+
+    /**
+     * Skips whatever optional steps are still unanswered and shows the summary.
+     * Anything the skips make newly applicable and required is caught by the
+     * check Confirm runs.
+     *
+     * @param  array<string, Step>  $steps
+     */
+    private function finish(Form $form, FormState $state, array $steps): void
+    {
+        [$applicable, $effective] = $this->walk($steps, $state->answers);
+
+        foreach ($applicable as $step) {
+            if (! array_key_exists($step->key, $effective)) {
+                $state->answers[$step->key] = null;
+            }
+        }
+
+        $this->closeOptions($state);
+        $state->step = FormState::CONFIRM;
 
         $this->present($form, $state, $steps);
     }
@@ -828,7 +883,7 @@ class FormEngine
         return $keyboard;
     }
 
-    /** @return array{back: string, next: string, skip: string, clear: string, confirm: string} */
+    /** @return array{back: string, next: string, skip: string, clear: string, confirm: string, finish: string} */
     private function buttonLabels(): array
     {
         return [
@@ -837,6 +892,7 @@ class FormEngine
             'skip' => __('tbe::forms.buttons.skip'),
             'clear' => __('tbe::forms.buttons.clear'),
             'confirm' => __('tbe::forms.buttons.confirm'),
+            'finish' => __('tbe::forms.buttons.finish'),
         ];
     }
 
