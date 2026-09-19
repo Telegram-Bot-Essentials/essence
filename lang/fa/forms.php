@@ -7,6 +7,7 @@ return [
         'skip' => '⏭ رد کردن',
         'clear' => '🧹 پاک کردن',
         'confirm' => '✅ تأیید',
+        'finish' => '🏁 پایان',
     ],
 
     'marker' => [
