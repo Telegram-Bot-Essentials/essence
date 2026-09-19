@@ -33,6 +33,7 @@ class SampleForm extends Form
             Choice::make('type')->options(['percentage' => 'Percentage', 'fixed' => 'Fixed amount']),
             Text::make('amount')
                 ->dependsOn('type')
+                ->prompt(fn (array $answers) => "How much? ({$answers['type']})")
                 ->rules(fn (array $answers) => ($answers['type'] ?? null) === 'percentage' ? ['numeric', 'between:1,100'] : ['numeric', 'min:1'])
                 ->cast(fn (string $value) => (float) $value),
             Text::make('max_discount')

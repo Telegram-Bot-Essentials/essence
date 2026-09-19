@@ -254,6 +254,21 @@ it('restores an answer hidden by a changed condition when the condition holds ag
         ->and(formStateNow()->step)->toBe('max_discount');
 });
 
+it('builds a prompt from the earlier answers when the step asks for that', function () {
+    startSample();
+    say('SUMMER');
+    say('Percentage');
+
+    $promptId = formStateNow()->msgs['amount']['p'];
+    expect(tgCalls('sendMessage')->last()['text'])->toContain('How much? (percentage)');
+
+    say('20');
+
+    $answered = tgCalls('editMessageText')->last();
+    expect($answered['message_id'])->toBe($promptId)
+        ->and($answered['text'])->toContain('How much? (percentage)')->toContain('20');
+});
+
 it('rejects a new answer that breaks the rules of the current step', function () {
     startSample();
     say('SUMMER');
