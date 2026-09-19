@@ -5,6 +5,7 @@ namespace TelegramBotEssentials\Essence\Telegram\StateAnswers;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use ReflectionMethod;
+use Telegram\Bot\Keyboard\Keyboard;
 use TelegramBotEssentials\Essence\Enums\AllowableFields;
 use TelegramBotEssentials\Essence\Exceptions\HandlerContextExpired;
 use TelegramBotEssentials\Essence\Models\MessageMeta;
@@ -51,9 +52,19 @@ abstract class StateAnswer implements StateAnswerInterface
         $this->method = $method;
     }
 
+    /**
+     * Which message contents this state accepts. Called after the state's
+     * method and params are set, so a flow whose steps take different input
+     * (text, then a photo) can decide per step.
+     */
     public function getAllowedFields(): array
     {
         return $this->allowedFields;
+    }
+
+    public function keyboard(): ?Keyboard
+    {
+        return null;
     }
 
     public function handle(): void

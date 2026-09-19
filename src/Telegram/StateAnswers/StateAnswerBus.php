@@ -7,6 +7,7 @@ namespace TelegramBotEssentials\Essence\Telegram\StateAnswers;
 use Exception;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Telegram\Bot\Exceptions\TelegramSDKException;
+use Telegram\Bot\Keyboard\Keyboard;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
 use TelegramBotEssentials\Essence\Traits\CanResolveStateAnswer;
 
@@ -17,6 +18,7 @@ class StateAnswerBus
 {
     use CanResolveStateAnswer;
 
+    /** @var array<string, StateAnswerInterface> */
     private array $stateAnswerTypes = [];
 
     public function getStateAnswerTypes(): array
@@ -111,6 +113,8 @@ class StateAnswerBus
         // Fresh instance to handle with: the registered one is a long-lived
         // template shared by every request on this worker.
         $resolvedStateAnswer = $this->resolveStateAnswer($key::class);
+        $resolvedStateAnswer->setParams($params);
+        $resolvedStateAnswer->setMethod($method);
         if (! $this->hasValidField($resolvedStateAnswer->getAllowedFields())) {
             return false;
         }
@@ -145,6 +149,34 @@ class StateAnswerBus
         $resolvedStateAnswer->setParams($params);
         $resolvedStateAnswer->setMethod($method);
         $resolvedStateAnswer->handle();
+    }
+
+    /**
+     * The reply keyboard the state answer behind $state wants shown, or null
+     * when the state is unregistered or the answer keeps the default.
+     *
+     * @throws BindingResolutionException
+     * @throws LogicException
+     */
+    public function keyboardFor(string $state): ?Keyboard
+    {
+        $decoded = decodeAnswerState($state);
+        $registered = $this->stateAnswerTypes[(string) $decoded['type']] ?? null;
+
+        if ($registered === null) {
+            return null;
+        }
+
+        $stateAnswer = $this->resolveStateAnswer($registered::class);
+
+        if (! $stateAnswer->isEnabled() || ! hasAccess($stateAnswer->getPerm())) {
+            return null;
+        }
+
+        $stateAnswer->setParams($decoded['params']);
+        $stateAnswer->setMethod((string) $decoded['method']);
+
+        return $stateAnswer->keyboard();
     }
 
     /**
