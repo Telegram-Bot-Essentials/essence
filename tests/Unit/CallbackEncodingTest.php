@@ -111,14 +111,45 @@ it('measures the 64-byte limit in bytes, not characters', function () {
 it('round-trips answer state through encodeAnswerState', function () {
     $encoded = encodeAnswerState('TYPE', 'method', ['id' => 7, 'page' => 9]);
 
-    expect($encoded)->toBe('TYPE#method?id=7&page=9')
+    expect($encoded)->toBe('{"t":"TYPE","m":"method","p":{"id":7,"page":9}}')
         ->and(decodeAnswerState($encoded))->toBe([
             'type' => 'TYPE',
             'method' => 'method',
-            'params' => ['id' => '7', 'page' => '9'],
+            'params' => ['id' => 7, 'page' => 9],
         ]);
 });
 
 it('encodes answer state with no params', function () {
-    expect(encodeAnswerState('TYPE', 'method'))->toBe('TYPE#method');
+    expect(encodeAnswerState('TYPE', 'method'))->toBe('{"t":"TYPE","m":"method"}')
+        ->and(decodeAnswerState(encodeAnswerState('TYPE', 'method'))['params'])->toBe([]);
+});
+
+it('keeps param types, nulls and nesting through the answer state', function () {
+    $params = ['n' => 5, 'flag' => true, 'none' => null, 'nested' => ['a' => ['b' => 1.5]]];
+
+    expect(decodeAnswerState(encodeAnswerState('T', 'm', $params))['params'])->toBe($params);
+});
+
+it('stores non-ASCII answer state text unescaped', function () {
+    $text = str_repeat('سلام ', 10);
+    $encoded = encodeAnswerState('T', 'm', ['text' => $text]);
+
+    expect($encoded)->toContain($text)
+        ->and(strlen($encoded))->toBeLessThan(strlen('T#m?'.http_build_query(['text' => $text])))
+        ->and(decodeAnswerState($encoded)['params']['text'])->toBe($text);
+});
+
+it('substitutes invalid UTF-8 rather than throwing while encoding answer state', function () {
+    expect(decodeAnswerState(encodeAnswerState('T', 'm', ['text' => 'bad'.chr(0xB1).'byte']))['type'])->toBe('T');
+});
+
+it('decodes empty, null and non-JSON answer state to a null type', function (mixed $input) {
+    expect(decodeAnswerState($input))->toBe(['type' => null, 'method' => null, 'params' => []]);
+})->with([null, '', 'TYPE#method?id=1', '{broken', '"a string"']);
+
+it('summarises a stored state as type#method for logs', function () {
+    expect(answerStateSummary(encodeAnswerState('OFFER', 'answer', ['draft' => str_repeat('x', 500)])))->toBe('OFFER#answer')
+        ->and(answerStateSummary(null))->toBeNull()
+        ->and(answerStateSummary(''))->toBeNull()
+        ->and(answerStateSummary('TYPE#method?id=1'))->toBe('undecodable');
 });
