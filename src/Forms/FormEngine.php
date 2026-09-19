@@ -432,7 +432,7 @@ class FormEngine
             $cleared = [...$this->clearDependents($steps, $state, $step->key), ...$this->clearInvalid($form, $steps, $state, $step->key)];
         }
 
-        $this->markAnswered($form, $state, $step, $raw);
+        $this->markAnswered($form, $state, $steps, $step, $raw);
 
         [$applicable, $effective] = $this->walk($steps, $state->answers);
         $state->step = $this->stepAfter($applicable, $step->key);
@@ -555,7 +555,7 @@ class FormEngine
             return;
         }
 
-        $this->markAnswered($form, $state, $step, $effective[$step->key] ?? null);
+        $this->markAnswered($form, $state, $steps, $step, $effective[$step->key] ?? null);
         $state->step = $this->stepAfter($applicable, $step->key);
 
         $this->present($form, $state, $steps);
@@ -729,7 +729,7 @@ class FormEngine
     {
         $text = ($notice !== null ? $notice."\n\n" : '')
             .'<b>'.e($this->label($form, $step, $step->key)).'</b>'."\n"
-            .$form->text('fields.'.$step->key.'.prompt')."\n\n"
+            .$this->promptFor($form, $step, $this->answersBefore($applicable, $effective, $step->key))."\n\n"
             .'<i>'.e($step->hintLine($this->answersBefore($applicable, $effective, $step->key))).'</i>';
 
         $current = $effective[$step->key] ?? null;
@@ -740,10 +740,15 @@ class FormEngine
         return $text;
     }
 
-    /** The prompt turned into its answered form, and the options message closed. */
-    private function markAnswered(Form $form, FormState $state, Step $step, ?string $raw): void
+    /**
+     * The prompt turned into its answered form, and the options message closed.
+     *
+     * @param  array<string, Step>  $steps
+     */
+    private function markAnswered(Form $form, FormState $state, array $steps, Step $step, ?string $raw): void
     {
         $ids = $state->msgs[$step->key] ?? [];
+        [$applicable, $effective] = $this->walk($steps, $state->answers);
 
         $answer = $raw === null
             ? '<i>'.__('tbe::forms.prompt.skipped').'</i>'
@@ -751,7 +756,7 @@ class FormEngine
 
         $this->editText(
             $ids['p'] ?? null,
-            '<b>'.e($this->label($form, $step, $step->key)).'</b>'."\n".$form->text('fields.'.$step->key.'.prompt')."\n\n".$answer,
+            '<b>'.e($this->label($form, $step, $step->key)).'</b>'."\n".$this->promptFor($form, $step, $this->answersBefore($applicable, $effective, $step->key))."\n\n".$answer,
         );
         $this->editText($ids['o'] ?? null, __('tbe::forms.prompt.picked'));
     }
@@ -863,6 +868,12 @@ class FormEngine
     private function skipLabel(Step $step, array $effective): string
     {
         return __(($effective[$step->key] ?? null) !== null ? 'tbe::forms.buttons.clear' : 'tbe::forms.buttons.skip');
+    }
+
+    /** @param  array<string, ?string>  $answersBefore */
+    private function promptFor(Form $form, Step $step, array $answersBefore): string
+    {
+        return $step->customPrompt($answersBefore) ?? $form->text('fields.'.$step->key.'.prompt');
     }
 
     private function label(Form $form, ?Step $step, string $key): string
