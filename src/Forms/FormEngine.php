@@ -235,7 +235,6 @@ class FormEngine
         return Keyboard::make(array_filter([
             'keyboard' => $rows,
             'resize_keyboard' => true,
-            'one_time_keyboard' => true,
             'input_field_placeholder' => $placeholder,
         ], fn ($value) => $value !== null));
     }
@@ -251,7 +250,7 @@ class FormEngine
 
         $this->editText($ids['p'] ?? null, '<s>'.e($title).'</s>'."\n".__('tbe::forms.prompt.cancelled'));
         $this->editText($ids['o'] ?? null, __('tbe::forms.prompt.cancelled'));
-        $this->deleteBotMessage($ids['k'] ?? null);
+        $this->deleteBotMessage($state->carrier);
 
         $this->giveBackOriginal($state);
         $form->onCancel($state->ctx);
@@ -614,7 +613,7 @@ class FormEngine
             $result->send(wHook()->peerId());
         }
 
-        $this->deleteBotMessage($state->msgs[FormState::CONFIRM]['k'] ?? null);
+        $this->deleteBotMessage($state->carrier);
         $this->giveBackOriginal($state, $form);
 
         wHook()->api()->sendMessage([
@@ -685,15 +684,11 @@ class FormEngine
         $position = $this->position($state, $applicable);
         $state->at = time();
         $state->step = isset($applicable[$position]) ? $applicable[$position]->key : FormState::CONFIRM;
-        $keyboard = $this->keyboard($form, $state);
-        $staleCarriers = $this->carriers($state);
-
         // The prompt goes out with no reply markup: Telegram refuses to edit a
         // message that carries a reply keyboard, and the prompt is edited once
-        // answered. The keyboard rides on a small message of its own.
+        // answered.
         if ($state->step === FormState::CONFIRM) {
             $ids = ['p' => $this->send($this->summaryText($form, $applicable, $effective, $notice), null)];
-            $carrierText = '<i>'.__('tbe::forms.summary.hint').'</i>';
         } else {
             $step = $applicable[$position];
             $ids = ['p' => $this->send($this->promptText($form, $step, $applicable, $effective, $notice), null)];
@@ -702,42 +697,35 @@ class FormEngine
                 $options = $this->optionsResponse($form, $state, $position, 1);
                 $ids['o'] = $this->send((string) $options?->text, $options?->replyMarkup);
             }
-
-            $carrierText = '<i>'.e($step->hintLine($this->answersBefore($applicable, $effective, $step->key))).'</i>';
         }
 
-        $ids['k'] = $this->send($carrierText, $keyboard);
         $state->msgs[$state->step] = $ids;
-
-        // The keyboards of earlier steps are only clutter now. Removing them
-        // is tidying: the new keyboard already replaced theirs, so nothing
-        // depends on the delete succeeding.
-        foreach ($staleCarriers as $key => $messageId) {
-            if ($key !== $state->step) {
-                unset($state->msgs[$key]['k']);
-            }
-            $this->deleteBotMessage($messageId);
-        }
+        $this->showKeyboard($form, $state);
 
         wHook()->user()->changeState($state->toStateString());
     }
 
     /**
-     * The keyboard-carrying messages sent so far, by step.
-     *
-     * @return array<string, int>
+     * Puts the step's reply keyboard on screen, but only when it differs from
+     * the one already showing: a run of steps with the same buttons (a row of
+     * skippable ones) shares a single keyboard message. The previous keyboard
+     * message is removed as tidying; nothing depends on that succeeding, since
+     * the new keyboard already replaced the old one.
      */
-    private function carriers(FormState $state): array
+    private function showKeyboard(Form $form, FormState $state): void
     {
-        $carriers = [];
+        $keyboard = $this->keyboard($form, $state);
+        $signature = md5((string) json_encode($keyboard->toArray()));
 
-        foreach ($state->msgs as $key => $ids) {
-            if (isset($ids['k'])) {
-                $carriers[$key] = $ids['k'];
-            }
+        if ($state->keyboard === $signature) {
+            return;
         }
 
-        return $carriers;
+        $previous = $state->carrier;
+        $state->carrier = $this->send(__('tbe::forms.prompt.keyboard'), $keyboard);
+        $state->keyboard = $signature;
+
+        $this->deleteBotMessage($previous);
     }
 
     /**
@@ -767,7 +755,8 @@ class FormEngine
     {
         $text = ($notice !== null ? $notice."\n\n" : '')
             .'<b>'.e($this->label($form, $step, $step->key)).'</b>'."\n"
-            .$this->promptFor($form, $step, $this->answersBefore($applicable, $effective, $step->key));
+            .$this->promptFor($form, $step, $this->answersBefore($applicable, $effective, $step->key))."\n\n"
+            .'<i>'.e($step->hintLine($this->answersBefore($applicable, $effective, $step->key))).'</i>';
 
         $current = $effective[$step->key] ?? null;
         if ($current !== null) {
