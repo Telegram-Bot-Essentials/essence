@@ -108,29 +108,71 @@ if (! function_exists('commandBus')) {
 }
 
 if (! function_exists('encodeAnswerState')) {
+    /**
+     * Encode a user-state payload as `{"t":type,"m":method,"p":params}`.
+     *
+     * JSON rather than a query string so params keep their types (ints stay
+     * ints, nulls survive) and can nest, and so non-ASCII text isn't
+     * percent-encoded to three times its size. Invalid UTF-8 is substituted
+     * rather than thrown on: user-typed text ends up in here.
+     */
     function encodeAnswerState($type, $method, $params = []): string
     {
-        $queryString = http_build_query($params);
+        $payload = ['t' => $type, 'm' => $method];
 
-        return $type.'#'.$method.($queryString ? '?'.$queryString : '');
+        if ($params !== []) {
+            $payload['p'] = $params;
+        }
+
+        return json_encode(
+            $payload,
+            JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE | JSON_THROW_ON_ERROR
+        );
     }
 }
 
 if (! function_exists('decodeAnswerState')) {
+    /**
+     * The inverse of encodeAnswerState(). Null, empty or undecodable input
+     * (a state left behind by another format) yields a null type, which the
+     * state-answer bus treats as an unregistered state and resets.
+     *
+     * @return array{type: ?string, method: ?string, params: array}
+     */
     function decodeAnswerState($input): array
     {
-        $parts = explode('#', $input);
-        $type = $parts[0] ?? null;
+        $payload = is_string($input) && $input !== '' ? json_decode($input, true) : null;
 
-        $methodAndParams = explode('?', $parts[1] ?? '');
-        $method = $methodAndParams[0] ?? null;
-        parse_str($methodAndParams[1] ?? '', $params);
+        if (! is_array($payload)) {
+            return ['type' => null, 'method' => null, 'params' => []];
+        }
+
+        $type = $payload['t'] ?? null;
+        $method = $payload['m'] ?? null;
+        $params = $payload['p'] ?? null;
 
         return [
-            'type' => $type,
-            'method' => $method,
-            'params' => $params,
+            'type' => is_string($type) ? $type : null,
+            'method' => is_string($method) ? $method : null,
+            'params' => is_array($params) ? $params : [],
         ];
+    }
+}
+
+if (! function_exists('answerStateSummary')) {
+    /**
+     * A short `type#method` label for a stored state, for logs: the full
+     * payload can carry a whole draft and doesn't belong on every log line.
+     */
+    function answerStateSummary(?string $state): ?string
+    {
+        if ($state === null || $state === '') {
+            return null;
+        }
+
+        $decoded = decodeAnswerState($state);
+
+        return $decoded['type'] === null ? 'undecodable' : $decoded['type'].'#'.($decoded['method'] ?? '');
     }
 }
 
