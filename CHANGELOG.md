@@ -15,10 +15,14 @@ the first public release.
 - Forms: a reusable multi-step data-collection engine. Subclass `Form`, list
   `Text` and `Choice` steps, implement `onComplete()`, register it with
   `formRegistry()` (or `loadForms()`) and start it with `MyForm::start($ctx)`.
-  Each step is a new message edited to carry its answer (its reply keyboard
-  rides on a bare ⬇ message that is only sent when the buttons change, since
-  Telegram refuses to edit a message that carries one); Back / Next / Skip live on the reply keyboard, inline buttons page dynamic choices, and a
-  summary step confirms before anything is written. Steps can be conditional
+  The chat is a plain conversation: each step is a prompt carrying its own
+  reply keyboard (Back / Next / Skip / Cancel), and the bot answers back with
+  what it understood before asking the next question. Nothing is edited or
+  deleted, since Telegram cannot edit a message that carries a reply keyboard
+  and refuses to delete one older than 48 hours; only inline messages are
+  edited (choice paging, the starting message). Inline buttons page dynamic
+  choices, and a summary step confirms before anything is written. Steps can
+  be conditional
   (`when`), depend on each other (`dependsOn`, re-validation of later answers
   after a change), be skippable, validate with Laravel rules, and show an
   automatic Required/Optional marker plus a hint derived from the rules. Forms
