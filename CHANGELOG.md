@@ -10,6 +10,50 @@ the first public release.
 
 ## [Unreleased]
 
+### Added
+
+- Forms: a reusable multi-step data-collection engine. Subclass `Form`, list
+  `Text` and `Choice` steps, implement `onComplete()`, register it with
+  `formRegistry()` (or `loadForms()`) and start it with `MyForm::start($ctx)`.
+  Each step is a new message edited to carry its answer; Back / Next / Skip
+  live on the reply keyboard, inline buttons page dynamic choices, and a
+  summary step confirms before anything is written. Steps can be conditional
+  (`when`), depend on each other (`dependsOn`, re-validation of later answers
+  after a change), be skippable, validate with Laravel rules, and show an
+  automatic Required/Optional marker plus a hint derived from the rules. Forms
+  expire after 24h idle by default. Ships an `en` and `fa` `forms` lang file.
+- `StateAnswer::keyboard()`: a state answer can supply the reply keyboard
+  shown while a user is in its state, and `getAllowedFields()` is now called
+  after the state's method and params are set so it can vary per step.
+- `answerStateSummary()`, a short `type#method` label for a stored state.
+
+### Changed
+
+- **Breaking:** `bot_users.state` is now a `TEXT` column holding JSON
+  (`{"t":type,"m":method,"p":params}`) instead of a 255-character
+  `TYPE#method?query` string. Params keep their types (an `int` stays an
+  `int`, where it used to come back as a string) and can nest, and non-ASCII
+  text is no longer percent-encoded to three times its size. The migration
+  converts every state in the old format, so users mid-flow at deploy time
+  carry on; there is no decoder for the old format afterwards. Code that
+  reads the raw state string must go through `decodeAnswerState()`.
+  `encodeAnswerState()` keeps its signature.
+- **Breaking:** `MessageMeta::continueAction()` and
+  `updateAndContinueAction()` now edit the message in place instead of
+  deleting it and sending a new one, so they keep working past the 48 hours
+  after which Telegram refuses to delete a message. The message no longer
+  moves to the bottom of the chat. `deleteMessage()` still deletes, but a
+  message Telegram will no longer delete has its inline keyboard stripped
+  instead of raising an error report.
+- `TbeLogger` logs the state as `type#method` rather than the whole payload.
+- `BotUser::addParamToState()` no longer writes a bogus state for a user with
+  none.
+
+### Fixed
+
+- `TelegramResponse::update()` no longer throws when its edit fails while
+  handling a text message (there is no callback query to answer).
+
 ## [0.12.0] - 2026-09-02
 
 ### Added
