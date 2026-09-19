@@ -199,6 +199,7 @@ class FormEngine
     }
 
     /** The reply keyboard for the step the user is on. */
+    /** @return Keyboard<string, mixed> */
     public function keyboard(Form $form, FormState $state): Keyboard
     {
         $steps = $this->steps($form);
@@ -242,12 +243,15 @@ class FormEngine
 
         $rows[] = [$cancel];
 
-        return Keyboard::make(array_filter([
+        /** @var array<string, mixed> $markup */
+        $markup = array_filter([
             'keyboard' => $rows,
             'resize_keyboard' => true,
             'one_time_keyboard' => true,
             'input_field_placeholder' => $placeholder,
-        ], fn ($value) => $value !== null));
+        ], fn ($value) => $value !== null);
+
+        return Keyboard::make($markup);
     }
 
     /** Gives the starting message back and runs the form's cancel hook. */
@@ -853,6 +857,7 @@ class FormEngine
         return true;
     }
 
+    /** @return Keyboard<array-key, mixed> */
     private function optionsKeyboard(Choice $step, int $stepIndex, int $page): Keyboard
     {
         $options = $step->resolveOptions();
