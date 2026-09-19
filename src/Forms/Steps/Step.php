@@ -32,6 +32,9 @@ abstract class Step
     /** @var array<mixed>|(Closure(array<string, ?string>): array<mixed>)|null */
     protected array|Closure|null $rules = null;
 
+    /** @var (Closure(array<string, ?string>): string)|string|null */
+    protected Closure|string|null $prompt = null;
+
     protected ?string $hint = null;
 
     protected ?string $placeholder = null;
@@ -95,6 +98,20 @@ abstract class Step
         return $this;
     }
 
+    /**
+     * The question, when it cannot be a fixed lang line (it changes with an
+     * earlier answer). Without it the prompt is the form's
+     * `fields.{step}.prompt` text.
+     *
+     * @param  string|Closure(array<string, ?string>): string  $prompt
+     */
+    public function prompt(Closure|string $prompt): static
+    {
+        $this->prompt = $prompt;
+
+        return $this;
+    }
+
     /** Replaces the hint derived from the rules; needed for closure or object rules. */
     public function hint(string $hint): static
     {
@@ -144,6 +161,17 @@ abstract class Step
     public function dependencies(): array
     {
         return $this->dependsOn;
+    }
+
+    /**
+     * The custom prompt for the answers given so far, or null to use the
+     * form's lang line.
+     *
+     * @param  array<string, ?string>  $answers
+     */
+    public function customPrompt(array $answers): ?string
+    {
+        return $this->prompt instanceof Closure ? ($this->prompt)($answers) : $this->prompt;
     }
 
     public function getPlaceholder(): ?string
