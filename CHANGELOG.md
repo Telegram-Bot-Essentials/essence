@@ -21,7 +21,9 @@ the first public release.
   (`when`), depend on each other (`dependsOn`, re-validation of later answers
   after a change), be skippable, validate with Laravel rules, and show an
   automatic Required/Optional marker plus a hint derived from the rules. Forms
-  expire after 24h idle by default. Ships an `en` and `fa` `forms` lang file.
+  expire after 24h idle by default; a step whose question depends on an
+  earlier answer sets it with `prompt()`. Ships an `en` and `fa` `forms` lang
+  file.
 - `StateAnswer::keyboard()`: a state answer can supply the reply keyboard
   shown while a user is in its state, and `getAllowedFields()` is now called
   after the state's method and params are set so it can vary per step.
