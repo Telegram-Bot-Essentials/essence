@@ -7,6 +7,7 @@ return [
         'skip' => '⏭ Skip',
         'clear' => '🧹 Clear',
         'confirm' => '✅ Confirm',
+        'finish' => '🏁 Finish',
     ],
 
     'marker' => [
