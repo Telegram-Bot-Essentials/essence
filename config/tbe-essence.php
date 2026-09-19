@@ -46,6 +46,12 @@ return [
         'peer_id' => env('DEVELOPER_PEER_ID'),
     ],
 
+    'forms' => [
+        // Longest free-text answer a form's Text step accepts unless the step
+        // declares its own size rule.
+        'max_text_length' => 1000,
+    ],
+
     'translation_stats' => [
         'base_locale' => 'en',
         'cache_key' => 'tbe.translation_stats',
