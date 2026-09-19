@@ -15,8 +15,9 @@ the first public release.
 - Forms: a reusable multi-step data-collection engine. Subclass `Form`, list
   `Text` and `Choice` steps, implement `onComplete()`, register it with
   `formRegistry()` (or `loadForms()`) and start it with `MyForm::start($ctx)`.
-  Each step is a new message edited to carry its answer; Back / Next / Skip
-  live on the reply keyboard, inline buttons page dynamic choices, and a
+  Each step is a new message edited to carry its answer (its reply keyboard
+  rides on a small companion message, since Telegram refuses to edit a
+  message that carries one); Back / Next / Skip live on the reply keyboard, inline buttons page dynamic choices, and a
   summary step confirms before anything is written. Steps can be conditional
   (`when`), depend on each other (`dependsOn`, re-validation of later answers
   after a change), be skippable, validate with Laravel rules, and show an
