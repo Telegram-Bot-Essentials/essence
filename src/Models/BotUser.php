@@ -207,7 +207,12 @@ class BotUser extends Model
 
     public function addParamToState(array $params): void
     {
-        $state = decodeAnswerState($this->attributes['state']);
+        $state = decodeAnswerState($this->attributes['state'] ?? null);
+
+        if ($state['type'] === null) {
+            return;
+        }
+
         $this->attributes['state'] = encodeAnswerState($state['type'], $state['method'], array_merge($state['params'], $params));
         $this->save();
     }
