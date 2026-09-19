@@ -62,6 +62,7 @@ abstract class StateAnswer implements StateAnswerInterface
         return $this->allowedFields;
     }
 
+    /** @return Keyboard<array-key, mixed>|null */
     public function keyboard(): ?Keyboard
     {
         return null;
