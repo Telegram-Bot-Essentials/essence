@@ -96,7 +96,22 @@ class MessageMeta extends Model
         $message = $e->getMessage();
 
         return str_contains($message, 'message is not modified') ||
-               str_contains($message, 'query is too old and response timeout expired or query ID is invalid');
+               str_contains($message, 'query is too old and response timeout expired or query ID is invalid') ||
+               $this->isUndeletableError($e) ||
+               str_contains($message, 'message to edit not found');
+    }
+
+    /**
+     * A message Telegram will no longer delete: older than 48 hours, or
+     * already gone. Neither is a fault worth reporting - the caller can only
+     * leave the message where it is.
+     */
+    private function isUndeletableError(Exception $e): bool
+    {
+        $message = $e->getMessage();
+
+        return str_contains($message, "message can't be deleted") ||
+               str_contains($message, 'message to delete not found');
     }
 
     public function lockAction(?string $lockMessage = null, string $customEmoji = '🔒'): void
@@ -158,28 +173,26 @@ class MessageMeta extends Model
     }
 
     /**
+     * Unlocks the message where it stands, putting back the inline keyboard
+     * lockAction() replaced. Nothing is deleted or re-sent: Telegram refuses
+     * to delete a message older than 48 hours, so a flow that outlives that
+     * window must not depend on it.
+     *
      * @throws TelegramSDKException
      */
     public function continueAction(): void
     {
-        try {
-            wHook()->api()->deleteMessage([
-                'chat_id' => $this->chat_id,
-                'message_id' => $this->message_id,
-            ]);
-        } catch (Exception $e) {
-            if (! $this->isIgnorableError($e)) {
-                exceptionReport($e);
-            }
+        if (empty($this->chat_id) || empty($this->message_id)) {
+            return;
         }
 
         try {
-            $message = wHook()->api()->sendMessage([
+            // No reply_markup at all is how Telegram is told to clear the buttons.
+            wHook()->api()->editMessageReplyMarkup(array_filter([
                 'chat_id' => $this->chat_id,
-                'text' => $this->message_text,
+                'message_id' => $this->message_id,
                 'reply_markup' => $this->message_reply_markup,
-            ]);
-            $this->initializeModel($message->chat->id, $message->messageId, $message->text, $message->replyMarkup);
+            ]));
         } catch (Exception $e) {
             if (! $this->isIgnorableError($e)) {
                 exceptionReport($e);
@@ -187,10 +200,35 @@ class MessageMeta extends Model
         }
     }
 
+    /**
+     * Deletes the message. One Telegram will not delete any more (older than
+     * 48 hours) is left in place with its inline keyboard stripped instead,
+     * so its buttons stop being live.
+     */
     public function deleteMessage(): void
     {
         try {
             wHook()->api()->deleteMessage([
+                'chat_id' => $this->chat_id,
+                'message_id' => $this->message_id,
+            ]);
+        } catch (Exception $e) {
+            if ($this->isUndeletableError($e)) {
+                $this->stripReplyMarkup();
+
+                return;
+            }
+
+            if (! $this->isIgnorableError($e)) {
+                exceptionReport($e);
+            }
+        }
+    }
+
+    private function stripReplyMarkup(): void
+    {
+        try {
+            wHook()->api()->editMessageReplyMarkup([
                 'chat_id' => $this->chat_id,
                 'message_id' => $this->message_id,
             ]);
@@ -246,35 +284,28 @@ class MessageMeta extends Model
     }
 
     /**
+     * Replaces the message's content where it stands and keeps that content
+     * as what a later revertAction() or continueAction() restores. Edited in
+     * place rather than deleted and re-sent, for the same 48-hour reason as
+     * continueAction().
+     *
      * @throws TelegramSDKException
      */
     public function updateAndContinueAction(TelegramResponse|array $data): void
     {
-        try {
-            wHook()->api()->deleteMessage([
-                'chat_id' => $this->chat_id,
-                'message_id' => $this->message_id,
-            ]);
-        } catch (Exception $e) {
-            if (! $this->isIgnorableError($e)) {
-                exceptionReport($e);
-            }
+        $this->updateAction($data);
+
+        $text = $data instanceof TelegramResponse ? $data->text : ($data['text'] ?? null);
+        $replyMarkup = $data instanceof TelegramResponse ? $data->replyMarkup : ($data['reply_markup'] ?? null);
+
+        if ($replyMarkup instanceof Keyboard) {
+            $replyMarkup = $replyMarkup->isEmpty() ? null : $replyMarkup->toArray();
         }
 
-        try {
-            $message = $data instanceof TelegramResponse
-                ? $data->send($this->chat_id)
-                : wHook()->api()->sendMessage([
-                    'chat_id' => $this->chat_id,
-                    'text' => $data['text'],
-                    'reply_markup' => $data['reply_markup'],
-                    'parse_mode' => $data['parse_mode'] ?? null,
-                ]);
-            $this->initializeModel($message->chat->id, $message->messageId, $message->text, $message->replyMarkup);
-        } catch (Exception $e) {
-            if (! $this->isIgnorableError($e)) {
-                exceptionReport($e);
-            }
+        if ($text !== null) {
+            $this->message_text = $text;
         }
+        $this->setMessageReplyMarkupAttribute(is_array($replyMarkup) || is_string($replyMarkup) ? $replyMarkup : null);
+        $this->save();
     }
 }
