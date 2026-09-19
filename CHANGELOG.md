@@ -10,6 +10,8 @@ the first public release.
 
 ## [Unreleased]
 
+## [0.13.0] - 2026-09-20
+
 ### Added
 
 - Forms: a reusable multi-step data-collection engine. Subclass `Form`, list
