@@ -65,7 +65,8 @@ beforeEach(function () {
 });
 
 afterEach(function () {
-    expect($this->editViolations)->toBe([], 'the form tried to edit a message that carries a reply keyboard');
+    expect($this->editViolations)->toBe([], 'the form tried to edit a message that carries a reply keyboard')
+        ->and(tgCalls('deleteMessage')->all())->toBe([], 'the form deleted a message');
 });
 
 /** Recorded Telegram calls of one API method, oldest first. */
@@ -144,67 +145,30 @@ it('starts on the first step, locks the message it came from and offers only Can
     expect(tgCalls('editMessageReplyMarkup'))->not->toBeEmpty();
 });
 
-it('sends the prompt with no reply keyboard and the keyboard on a message of its own', function () {
+it('sends each prompt with its own reply keyboard and never touches it again', function () {
     startSample();
 
-    $prompt = tgCalls('sendMessage')->first(fn ($call) => str_contains($call['text'], 'Code'));
-    $carrier = tgCalls('sendMessage')->last();
+    $prompt = tgCalls('sendMessage')->last();
 
-    expect($prompt)->not->toHaveKey('reply_markup')
-        ->and($prompt['text'])->toContain('Required')
-        ->and(tgMarkup($carrier))->toHaveKey('keyboard')
-        ->and($carrier['text'])->toBe(__('tbe::forms.prompt.keyboard'))
-        ->and(formStateNow()->carrier)->not->toBeNull()
-        ->and(formStateNow()->carrier)->not->toBe(formStateNow()->msgs['code']['p']);
-});
-
-it('replaces the keyboard message only when the buttons change, removing the old one', function () {
-    startSample();
-    $first = formStateNow()->carrier;
-
-    say('SUMMER');   // the type step has other buttons
-
-    expect(formStateNow()->carrier)->not->toBe($first)
-        ->and(tgCalls('deleteMessage')->pluck('message_id'))->toContain($first);
-});
-
-it('shares one keyboard message across steps that offer the same buttons', function () {
-    test()->postWebhookUpdate($this->bot, $this->makeCallbackQueryUpdate('X#y', peerId: FORM_PEER))->assertOk();
-    SkippableRunForm::start();
-    say('Ada');   // first: Back, Skip, Cancel
-    $shared = formStateNow()->carrier;
-    $keyboardMessages = tgCalls('sendMessage')->filter(fn ($call) => isset(tgMarkup($call)['keyboard']))->count();
-
-    say(label('skip'));   // second: the same buttons
-    say(label('skip'));   // third: the same buttons
-
-    expect(formStateNow()->step)->toBe('third')
-        ->and(formStateNow()->carrier)->toBe($shared)
-        ->and(tgCalls('sendMessage')->filter(fn ($call) => isset(tgMarkup($call)['keyboard']))->count())->toBe($keyboardMessages)
-        ->and(keyLabels())->toContain(label('back'), label('skip'));
-});
-
-it('removes the keyboard message when the form is cancelled', function () {
-    startSample();
-    $carrier = formStateNow()->carrier;
-
-    say(__('tbe::cancel_process.reply_key'));
-
-    expect(tgCalls('deleteMessage')->pluck('message_id'))->toContain($carrier);
-});
-
-it('records an answer, edits the prompt to carry it and tidies the user reply away', function () {
-    startSample();
-    $promptId = formStateNow()->msgs['code']['p'];
+    expect($prompt['text'])->toContain('Code')->toContain('Required')
+        ->and(tgMarkup($prompt))->toHaveKey('keyboard');
 
     say('SUMMER');
 
+    expect(tgMarkup(tgCalls('sendMessage')->last()))->toHaveKey('keyboard')
+        ->and(tgCalls('editMessageText')->all())->toBe([]);
+});
+
+it('answers back with what it understood before asking the next question', function () {
+    startSample();
+
+    say('SUMMER');
+
+    [$echo, $next] = tgCalls('sendMessage')->slice(-2)->values()->all();
     expect(formStateNow()->answers)->toBe(['code' => 'SUMMER'])
         ->and(formStateNow()->step)->toBe('type')
-        ->and(tgCalls('editMessageText')->last())->toMatchArray(['message_id' => $promptId])
-        ->and(tgCalls('editMessageText')->last()['text'])->toContain('➜')->toContain('SUMMER')
-        ->and(tgCalls('deleteMessage')->last()['chat_id'])->toBe(FORM_PEER)
-        ->and(tgCalls('deleteMessage')->last()['message_id'])->toBeInt()->toBeGreaterThan(0)
+        ->and($echo['text'])->toContain('Code')->toContain('➜')->toContain('SUMMER')
+        ->and($next['text'])->toContain('Type')
         ->and(keyLabels())->toContain('Percentage', 'Fixed amount', label('back'));
 });
 
@@ -276,15 +240,15 @@ it('never offers Next past the first unanswered step', function () {
     expect(keyLabels())->not->toContain(label('next'));
 });
 
-it('marks the prompts it goes back over as revised instead of deleting them', function () {
+it('goes back by asking the earlier question again, leaving what was said as it is', function () {
     startSample();
     say('SUMMER');
     say('Percentage');
 
     say(label('back'));
 
-    $revised = tgCalls('editMessageText')->pluck('text')->filter(fn ($text) => str_contains($text, '<s>'));
-    expect($revised)->not->toBeEmpty();
+    expect(tgCalls('sendMessage')->last()['text'])->toContain('Type')->toContain('Current')
+        ->and(tgCalls('editMessageText')->all())->toBe([]);
 });
 
 it('clears an answer that depends on a changed one and says so', function () {
@@ -344,14 +308,11 @@ it('builds a prompt from the earlier answers when the step asks for that', funct
     say('SUMMER');
     say('Percentage');
 
-    $promptId = formStateNow()->msgs['amount']['p'];
     expect(sentTexts())->toContain('How much? (percentage)');
 
     say('20');
 
-    $answered = tgCalls('editMessageText')->last();
-    expect($answered['message_id'])->toBe($promptId)
-        ->and($answered['text'])->toContain('How much? (percentage)')->toContain('20');
+    expect(tgCalls('sendMessage')->slice(-2)->first()['text'])->toContain('Amount')->toContain('20');
 });
 
 it('rejects a new answer that breaks the rules of the current step', function () {
@@ -399,7 +360,8 @@ it('shows the summary once everything is answered and completes on Confirm', fun
     expect($answers)->toBe(['code' => 'SUMMER', 'type' => 'percentage', 'amount' => 20.0, 'max_discount' => '50', 'category' => 'c3'])
         ->and($ctx)->toBe(['lastPage' => 2])
         ->and($this->bot->botUsers()->where('telegram_user_peer_id', FORM_PEER)->sole()->state)->toBeNull()
-        ->and(tgCalls('editMessageText')->pluck('text'))->toContain('Created', 'Refreshed list');
+        ->and(sentTexts())->toContain('Created')
+        ->and(tgCalls('editMessageText')->pluck('text')->all())->toBe([__('tbe::forms.prompt.picked'), 'Refreshed list']);
 });
 
 it('completes with only the applicable answers', function () {
@@ -413,14 +375,13 @@ it('completes with only the applicable answers', function () {
     expect(SampleForm::$completed[0])->toBe(['code' => 'SUMMER', 'type' => 'fixed', 'amount' => 5.0, 'category' => 'c1']);
 });
 
-it('cancels: marks the open prompt, gives the starting message back and runs onCancel', function () {
+it('cancels: gives the starting message back and runs onCancel', function () {
     startSample();
     say('SUMMER');
 
     say(__('tbe::cancel_process.reply_key'));
 
     expect($this->bot->botUsers()->where('telegram_user_peer_id', FORM_PEER)->sole()->state)->toBeNull()
-        ->and(tgCalls('editMessageText')->pluck('text')->join('|'))->toContain(__('tbe::forms.prompt.cancelled'))
         ->and(SampleForm::$cancelled)->toBe([['lastPage' => 2]]);
 });
 
