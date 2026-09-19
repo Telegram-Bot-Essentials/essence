@@ -201,6 +201,68 @@ it('skips a step whose condition does not hold', function () {
     expect(formStateNow()->step)->toBe('category');
 });
 
+it('offers Finish once only optional steps are left, and Finish skips them and shows the summary', function () {
+    test()->postWebhookUpdate($this->bot, $this->makeCallbackQueryUpdate('X#y', peerId: FORM_PEER))->assertOk();
+    SkippableRunForm::start();
+
+    expect(keyLabels())->not->toContain(label('finish'));
+
+    say('Ada');
+
+    expect(keyLabels())->toContain(label('finish'), label('skip'));
+
+    say(label('finish'));
+
+    expect(formStateNow()->step)->toBe(FormState::CONFIRM)
+        ->and(formStateNow()->answers)->toBe(['name' => 'Ada', 'first' => null, 'second' => null, 'third' => null])
+        ->and(tgCalls('sendMessage')->last(fn ($call) => str_contains($call['text'], 'Ada'))['text'])->toContain('Ada')
+        ->and(keyLabels())->toContain(label('confirm'), label('back'))
+        ->and(keyLabels())->not->toContain(label('finish'));
+
+    say(label('confirm'));
+
+    expect($this->bot->botUsers()->where('telegram_user_peer_id', FORM_PEER)->sole()->state)->toBeNull()
+        ->and(sentTexts())->toContain('Done');
+});
+
+it('keeps answers already given when Finish skips the rest', function () {
+    test()->postWebhookUpdate($this->bot, $this->makeCallbackQueryUpdate('X#y', peerId: FORM_PEER))->assertOk();
+    SkippableRunForm::start();
+    say('Ada');
+    say('one');
+
+    say(label('finish'));
+
+    expect(formStateNow()->answers)->toBe(['name' => 'Ada', 'first' => 'one', 'second' => null, 'third' => null]);
+});
+
+it('does not offer Finish while a required step is still open, even past the optional one', function () {
+    startSample();
+    expect(keyLabels())->not->toContain(label('finish'));
+
+    say('SUMMER');
+    say('Percentage');
+    say('20');
+
+    // max_discount is optional but the category after it is required.
+    expect(formStateNow()->step)->toBe('max_discount')
+        ->and(keyLabels())->toContain(label('skip'))
+        ->and(keyLabels())->not->toContain(label('finish'));
+});
+
+it('offers Finish again when going back through a completed form', function () {
+    fillSample();
+
+    say(label('back'));   // category
+
+    expect(keyLabels())->toContain(label('finish'));
+
+    say(label('finish'));
+
+    expect(formStateNow()->step)->toBe(FormState::CONFIRM)
+        ->and(formStateNow()->answers['category'])->toBe('c3');
+});
+
 it('asks a skippable step, and a skip stores null', function () {
     startSample();
     say('SUMMER');
