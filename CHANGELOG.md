@@ -21,8 +21,9 @@ the first public release.
   deleted, since Telegram cannot edit a message that carries a reply keyboard
   and refuses to delete one older than 48 hours; only inline messages are
   edited (choice paging, the starting message). Inline buttons page dynamic
-  choices, and a summary step confirms before anything is written. Steps can
-  be conditional
+  choices, and a summary step confirms before anything is written. A Finish
+  button appears once only optional steps are left and jumps to the summary.
+  Steps can be conditional
   (`when`), depend on each other (`dependsOn`, re-validation of later answers
   after a change), be skippable, validate with Laravel rules, and show an
   automatic Required/Optional marker plus a hint derived from the rules. Forms
