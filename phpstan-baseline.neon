@@ -2041,12 +2041,6 @@ parameters:
 			path: src/Telegram/CallbackQueries/CallbackQuery.php
 
 		-
-			message: '#^Parameter \#1 \$column of static method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:where\(\) expects array\<int\|string, mixed\>\|\(Closure\(Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\)\: Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\)\|\(Closure\(Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\)\: void\)\|Illuminate\\Contracts\\Database\\Query\\Expression\|string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Telegram/CallbackQueries/CallbackQuery.php
-
-		-
 			message: '#^Property TelegramBotEssentials\\Essence\\Telegram\\CallbackQueries\\CallbackQuery\:\:\$params type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -2341,12 +2335,6 @@ parameters:
 			path: src/Telegram/Commands/CommandBus.php
 
 		-
-			message: '#^Parameter \#1 \$column of static method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:where\(\) expects array\<int\|string, mixed\>\|\(Closure\(Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\)\: Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\)\|\(Closure\(Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\)\: void\)\|Illuminate\\Contracts\\Database\\Query\\Expression\|string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Telegram/Commands/CommandBus.php
-
-		-
 			message: '#^Parameter \#1 \$command of method TelegramBotEssentials\\Essence\\Telegram\\Commands\\CommandBus\:\:addCommand\(\) expects string\|TelegramBotEssentials\\Essence\\Telegram\\Commands\\CommandInterface, mixed given\.$#'
 			identifier: argument.type
 			count: 1
@@ -2536,12 +2524,6 @@ parameters:
 			message: '#^Parameter \#1 \$to of method Illuminate\\Http\\Client\\PendingRequest\<false\>\:\:sink\(\) expects resource\|string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: src/Telegram/HttpClients/LaravelHttpClient.php
-
-		-
-			message: '#^Parameter \#2 \$data of method Illuminate\\Http\\Client\\PendingRequest\<false\>\:\:post\(\) expects array\<int\<0, max\>\|string, mixed\>\|Illuminate\\Contracts\\Support\\Arrayable\<string, mixed\>\|JsonSerializable, mixed given\.$#'
-			identifier: argument.type
-			count: 3
 			path: src/Telegram/HttpClients/LaravelHttpClient.php
 
 		-
@@ -2761,12 +2743,6 @@ parameters:
 			path: src/Telegram/StateAnswers/StateAnswer.php
 
 		-
-			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswer\:\:messageMeta\(\) should return TelegramBotEssentials\\Essence\\Models\\MessageMeta\|null but returns Illuminate\\Database\\Eloquent\\Collection\<int, TelegramBotEssentials\\Essence\\Models\\MessageMeta\>\|TelegramBotEssentials\\Essence\\Models\\MessageMeta\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Telegram/StateAnswers/StateAnswer.php
-
-		-
 			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswer\:\:resolveParamValue\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -2775,12 +2751,6 @@ parameters:
 		-
 			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswer\:\:setParams\(\) has parameter \$params with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
-			count: 1
-			path: src/Telegram/StateAnswers/StateAnswer.php
-
-		-
-			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswer\:\:stateData\(\) should return TelegramBotEssentials\\Essence\\Models\\StateData\|null but returns Illuminate\\Database\\Eloquent\\Collection\<int, TelegramBotEssentials\\Essence\\Models\\StateData\>\|TelegramBotEssentials\\Essence\\Models\\StateData\.$#'
-			identifier: return.type
 			count: 1
 			path: src/Telegram/StateAnswers/StateAnswer.php
 
@@ -2794,12 +2764,6 @@ parameters:
 			message: '#^Parameter \#1 \$class of function class_exists expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 2
-			path: src/Telegram/StateAnswers/StateAnswer.php
-
-		-
-			message: '#^Parameter \#1 \$column of static method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:where\(\) expects array\<int\|string, mixed\>\|\(Closure\(Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\)\: Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\)\|\(Closure\(Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\)\: void\)\|Illuminate\\Contracts\\Database\\Query\\Expression\|string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
 			path: src/Telegram/StateAnswers/StateAnswer.php
 
 		-
@@ -2827,20 +2791,8 @@ parameters:
 			path: src/Telegram/StateAnswers/StateAnswer.php
 
 		-
-			message: '#^Property TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswer\:\:\$messageMeta \(TelegramBotEssentials\\Essence\\Models\\MessageMeta\|null\) does not accept Illuminate\\Database\\Eloquent\\Collection\<int, TelegramBotEssentials\\Essence\\Models\\MessageMeta\>\|TelegramBotEssentials\\Essence\\Models\\MessageMeta\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: src/Telegram/StateAnswers/StateAnswer.php
-
-		-
 			message: '#^Property TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswer\:\:\$params type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
-			count: 1
-			path: src/Telegram/StateAnswers/StateAnswer.php
-
-		-
-			message: '#^Property TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswer\:\:\$stateData \(TelegramBotEssentials\\Essence\\Models\\StateData\|null\) does not accept Illuminate\\Database\\Eloquent\\Collection\<int, TelegramBotEssentials\\Essence\\Models\\StateData\>\|TelegramBotEssentials\\Essence\\Models\\StateData\.$#'
-			identifier: assign.propertyType
 			count: 1
 			path: src/Telegram/StateAnswers/StateAnswer.php
 
@@ -3118,12 +3070,6 @@ parameters:
 			message: '#^Parameter \#1 \$container of method Telegram\\Bot\\BotsManager\:\:setContainer\(\) expects Psr\\Container\\ContainerInterface, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: src/TelegramBotServiceProvider.php
-
-		-
-			message: '#^Parameter \#1 \$prefix of static method Illuminate\\Support\\Facades\\Route\:\:prefix\(\) expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 2
 			path: src/TelegramBotServiceProvider.php
 
 		-
@@ -3473,3 +3419,56 @@ parameters:
 			count: 1
 			path: src/Telegram/StateAnswers/StateAnswerBus.php
 
+		-
+			message: '#^Parameter \#1 \$column of static method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:where\(\) expects array\<int\|string, mixed\>\|\(Closure\(Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Query\\Builder\)\: mixed\)\|Illuminate\\Contracts\\Database\\Query\\Expression\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/CallbackQueries/CallbackQuery.php
+
+		-
+			message: '#^Parameter \#1 \$column of static method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:where\(\) expects array\<int\|string, mixed\>\|\(Closure\(Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Query\\Builder\)\: mixed\)\|Illuminate\\Contracts\\Database\\Query\\Expression\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/Commands/CommandBus.php
+
+		-
+			message: '#^Parameter \#2 \$data of method Illuminate\\Http\\Client\\PendingRequest\<false\>\:\:post\(\) expects array\<int\<0, max\>\|string, mixed\>\|object\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 3
+			path: src/Telegram/HttpClients/LaravelHttpClient.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswer\:\:messageMeta\(\) should return TelegramBotEssentials\\Essence\\Models\\MessageMeta\|null but returns Illuminate\\Database\\Eloquent\\Collection\<\(int\|string\), TelegramBotEssentials\\Essence\\Models\\MessageMeta\>\|TelegramBotEssentials\\Essence\\Models\\MessageMeta\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswer.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswer\:\:stateData\(\) should return TelegramBotEssentials\\Essence\\Models\\StateData\|null but returns Illuminate\\Database\\Eloquent\\Collection\<\(int\|string\), TelegramBotEssentials\\Essence\\Models\\StateData\>\|TelegramBotEssentials\\Essence\\Models\\StateData\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswer.php
+
+		-
+			message: '#^Parameter \#1 \$column of static method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:where\(\) expects array\<int\|string, mixed\>\|\(Closure\(Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Query\\Builder\)\: mixed\)\|Illuminate\\Contracts\\Database\\Query\\Expression\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswer.php
+
+		-
+			message: '#^Property TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswer\:\:\$messageMeta \(TelegramBotEssentials\\Essence\\Models\\MessageMeta\|null\) does not accept Illuminate\\Database\\Eloquent\\Collection\<\(int\|string\), TelegramBotEssentials\\Essence\\Models\\MessageMeta\>\|TelegramBotEssentials\\Essence\\Models\\MessageMeta\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswer.php
+
+		-
+			message: '#^Property TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswer\:\:\$stateData \(TelegramBotEssentials\\Essence\\Models\\StateData\|null\) does not accept Illuminate\\Database\\Eloquent\\Collection\<\(int\|string\), TelegramBotEssentials\\Essence\\Models\\StateData\>\|TelegramBotEssentials\\Essence\\Models\\StateData\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Telegram/StateAnswers/StateAnswer.php
+
+		-
+			message: '#^Parameter \#1 \$prefix of static method Illuminate\\Routing\\RouteRegistrar\:\:prefix\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/TelegramBotServiceProvider.php
