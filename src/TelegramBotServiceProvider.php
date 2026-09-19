@@ -24,6 +24,8 @@ use TelegramBotEssentials\Essence\Console\Commands\TranslationStats;
 use TelegramBotEssentials\Essence\Contracts\ResolvesBotLocale;
 use TelegramBotEssentials\Essence\Events\BotEventBus;
 use TelegramBotEssentials\Essence\Events\BotWebhookInitialized;
+use TelegramBotEssentials\Essence\Forms\FormEngine;
+use TelegramBotEssentials\Essence\Forms\FormRegistry;
 use TelegramBotEssentials\Essence\Listeners\SetBotLocale;
 use TelegramBotEssentials\Essence\Services\BotUserStatus;
 use TelegramBotEssentials\Essence\Services\NavState;
@@ -100,6 +102,10 @@ class TelegramBotServiceProvider extends ServiceProvider
         $this->app->singleton(StateAnswerBus::class, function ($app) {
             return new StateAnswerBus;
         });
+
+        $this->app->singleton(FormRegistry::class, fn () => new FormRegistry);
+
+        $this->app->singleton(FormEngine::class, fn () => new FormEngine);
 
         $this->app->singleton(BotEventBus::class, fn () => new BotEventBus);
 
@@ -227,6 +233,7 @@ class TelegramBotServiceProvider extends ServiceProvider
             loadReplyKeys($appTelegram.'/ReplyKeys/'.$scope);
         }
 
+        loadForms($appTelegram.'/Forms');
         loadInlineQueries($appTelegram.'/InlineQueries');
 
         foreach (config('tbe-essence.keyboard') ?? [] as $replyKeyRows) {
