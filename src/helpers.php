@@ -11,6 +11,9 @@ use TelegramBotEssentials\Essence\Exceptions\CallbackDataTooLong;
 use TelegramBotEssentials\Essence\Exceptions\FeatureIsDisabled;
 use TelegramBotEssentials\Essence\Exceptions\InvalidCallbackParam;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
+use TelegramBotEssentials\Essence\Forms\Form;
+use TelegramBotEssentials\Essence\Forms\FormEngine;
+use TelegramBotEssentials\Essence\Forms\FormRegistry;
 use TelegramBotEssentials\Essence\Models\InlineConfirmation;
 use TelegramBotEssentials\Essence\Services\ApiResponse;
 use TelegramBotEssentials\Essence\Services\BotUserStatus;
@@ -614,6 +617,38 @@ if (! function_exists('botUserStatus')) {
     function botUserStatus(): BotUserStatus
     {
         return app(BotUserStatus::class);
+    }
+}
+
+if (! function_exists('formRegistry')) {
+    function formRegistry(): FormRegistry
+    {
+        return app(FormRegistry::class);
+    }
+}
+
+if (! function_exists('formEngine')) {
+    function formEngine(): FormEngine
+    {
+        return app(FormEngine::class);
+    }
+}
+
+if (! function_exists('loadForms')) {
+    function loadForms(string $path): void
+    {
+        if (! $path || ! is_dir($path)) {
+            return;
+        }
+        $namespace = resolveNamespace($path);
+
+        foreach (File::allFiles($path) as $file) {
+            $fqcn = $namespace.'\\'.$file->getFilenameWithoutExtension();
+
+            if (class_exists($fqcn) && is_subclass_of($fqcn, Form::class)) {
+                formRegistry()->addForm($fqcn);
+            }
+        }
     }
 }
 
