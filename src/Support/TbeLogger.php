@@ -55,7 +55,7 @@ class TbeLogger implements LoggerInterface
                 'update_type' => $update->objectType(),
                 'chat_id' => rescue(fn () => $update->getChat()['id'] ?? null, report: false),
                 'user_id' => $webhook->user()->telegramUser?->peer_id,
-                'state' => $webhook->requestState(),
+                'state' => answerStateSummary($webhook->requestState()),
             ], fn ($value) => $value !== null);
         } catch (Throwable) {
             return $context;
