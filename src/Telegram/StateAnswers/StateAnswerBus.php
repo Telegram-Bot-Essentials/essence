@@ -81,6 +81,8 @@ class StateAnswerBus
     }
 
     /**
+     * @param  array{type: ?string, method: ?string, params: array<mixed>}  $decodedStates
+     *
      * @throws BindingResolutionException
      * @throws LogicException|TelegramSDKException
      */
@@ -90,8 +92,8 @@ class StateAnswerBus
             return false;
         }
 
-        $type = $decodedStates['type'];
-        $method = $decodedStates['method'];
+        $type = (string) $decodedStates['type'];
+        $method = (string) $decodedStates['method'];
         $params = $decodedStates['params'];
 
         $key = $this->stateAnswerTypes[$type] ?? null;
