@@ -23,22 +23,47 @@ beforeEach(function () {
     $this->bot = $this->makeBot();
     $this->makeBotUser($this->bot, FORM_PEER);
 
-    // Every sendMessage answers with a fresh message id, like Telegram.
+    // Every sendMessage answers with a fresh message id, like Telegram. And
+    // like Telegram, editing a message that carries a reply keyboard is
+    // refused ("message can't be edited"): such an edit is recorded as a
+    // violation, which every test asserts is empty.
+    $this->keyboardMessages = [];
+    $this->editViolations = [];
+    $test = $this;
     $counter = 1000;
     $factory = new Factory;
-    $factory->fake(function ($request) use (&$counter) {
-        if (str_ends_with((string) $request->url(), '/sendMessage')) {
+    $factory->fake(function ($request) use (&$counter, $test) {
+        $url = (string) $request->url();
+
+        if (str_ends_with($url, '/sendMessage')) {
+            $id = ++$counter;
+            $markup = is_string($request['reply_markup'] ?? null) ? $request['reply_markup'] : json_encode($request['reply_markup'] ?? '');
+
+            if (str_contains((string) $markup, '"keyboard"') && ! str_contains((string) $markup, 'inline_keyboard')) {
+                $test->keyboardMessages[$id] = true;
+            }
+
             return Http::response(['ok' => true, 'result' => [
-                'message_id' => ++$counter,
+                'message_id' => $id,
                 'date' => time(),
                 'chat' => ['id' => $request['chat_id'], 'type' => 'private'],
                 'text' => $request['text'] ?? '',
             ]]);
         }
 
+        if (str_ends_with($url, '/editMessageText') && isset($test->keyboardMessages[$request['message_id']])) {
+            $test->editViolations[] = $request['message_id'];
+
+            return Http::response(['ok' => false, 'error_code' => 400, 'description' => "Bad Request: message can't be edited"], 400);
+        }
+
         return Http::response(['ok' => true, 'result' => true]);
     });
     Http::swap($factory);
+});
+
+afterEach(function () {
+    expect($this->editViolations)->toBe([], 'the form tried to edit a message that carries a reply keyboard');
 });
 
 /** Recorded Telegram calls of one API method, oldest first. */
@@ -47,6 +72,12 @@ function tgCalls(string $method): Collection
     return Http::recorded(fn ($request) => str_ends_with((string) $request->url(), '/'.$method))
         ->map(fn ($pair) => $pair[0]->data())
         ->values();
+}
+
+/** The texts of the last few messages sent: a step is a prompt plus a keyboard message. */
+function sentTexts(int $last = 4): string
+{
+    return tgCalls('sendMessage')->slice(-$last)->pluck('text')->join("\n---\n");
 }
 
 function tgMarkup(array $call): array
@@ -100,12 +131,45 @@ it('starts on the first step, locks the message it came from and offers only Can
     expect(formStateNow()->step)->toBe('code')
         ->and(formStateNow()->ctx)->toBe(['lastPage' => 2])
         ->and(formStateNow()->meta)->not->toBeNull()
-        ->and(tgCalls('sendMessage')->last()['text'])->toContain('Code')->toContain('Required')
+        ->and(sentTexts())->toContain('Code')->toContain('Required')
         ->and(keyLabels())->toBe([__('tbe::cancel_process.reply_key')])
         ->and(tgMarkup(tgCalls('sendMessage')->last())['input_field_placeholder'])->toBe('SUMMER10');
 
     // The starting message is locked in place.
     expect(tgCalls('editMessageReplyMarkup'))->not->toBeEmpty();
+});
+
+it('sends the prompt with no reply keyboard and the keyboard on a message of its own', function () {
+    startSample();
+
+    $prompt = tgCalls('sendMessage')->first(fn ($call) => str_contains($call['text'], 'Code'));
+    $carrier = tgCalls('sendMessage')->last();
+
+    expect($prompt)->not->toHaveKey('reply_markup')
+        ->and(tgMarkup($carrier))->toHaveKey('keyboard')
+        ->and($carrier['text'])->toContain('Required')
+        ->and(formStateNow()->msgs['code'])->toHaveKeys(['p', 'k'])
+        ->and(formStateNow()->msgs['code']['p'])->not->toBe(formStateNow()->msgs['code']['k']);
+});
+
+it('removes the keyboard message of the step it leaves and remembers only the current one', function () {
+    startSample();
+    $first = formStateNow()->msgs['code']['k'];
+
+    say('SUMMER');
+
+    expect(tgCalls('deleteMessage')->pluck('message_id'))->toContain($first)
+        ->and(formStateNow()->msgs['code'])->not->toHaveKey('k')
+        ->and(formStateNow()->msgs['type'])->toHaveKey('k');
+});
+
+it('removes the keyboard message when the form is cancelled', function () {
+    startSample();
+    $carrier = formStateNow()->msgs['code']['k'];
+
+    say(__('tbe::cancel_process.reply_key'));
+
+    expect(tgCalls('deleteMessage')->pluck('message_id'))->toContain($carrier);
 });
 
 it('records an answer, edits the prompt to carry it and tidies the user reply away', function () {
@@ -176,7 +240,7 @@ it('goes back, offers Next on an answered step and goes forward without retyping
 
     expect(formStateNow()->step)->toBe('type')
         ->and(keyLabels())->toContain(label('back'), label('next'))
-        ->and(tgCalls('sendMessage')->last()['text'])->toContain('Current')->toContain('Percentage');
+        ->and(sentTexts())->toContain('Current')->toContain('Percentage');
 
     say(label('next'));
 
@@ -215,7 +279,7 @@ it('clears an answer that depends on a changed one and says so', function () {
     expect(formStateNow()->answers)->not->toHaveKey('amount')
         ->and(formStateNow()->answers['type'])->toBe('fixed')
         ->and(formStateNow()->step)->toBe('amount')
-        ->and(tgCalls('sendMessage')->last()['text'])->toContain('Amount')->toContain('Type');
+        ->and(sentTexts())->toContain('Amount')->toContain('Type');
 });
 
 it('keeps an answer that depends on nothing that changed, and Next walks through it', function () {
@@ -260,7 +324,7 @@ it('builds a prompt from the earlier answers when the step asks for that', funct
     say('Percentage');
 
     $promptId = formStateNow()->msgs['amount']['p'];
-    expect(tgCalls('sendMessage')->last()['text'])->toContain('How much? (percentage)');
+    expect(sentTexts())->toContain('How much? (percentage)');
 
     say('20');
 
@@ -298,7 +362,7 @@ it('clears a later answer whose rules stop passing after an earlier change, even
 
     expect(formStateNow()->answers)->toBe(['type' => 'percentage'])
         ->and(formStateNow()->step)->toBe('cap')
-        ->and(tgCalls('sendMessage')->last()['text'])->toContain('Cap');
+        ->and(sentTexts())->toContain('Cap');
 });
 
 it('shows the summary once everything is answered and completes on Confirm', function () {
@@ -306,7 +370,7 @@ it('shows the summary once everything is answered and completes on Confirm', fun
 
     expect(formStateNow()->step)->toBe(FormState::CONFIRM)
         ->and(keyLabels())->toContain(label('confirm'), label('back'))
-        ->and(tgCalls('sendMessage')->last()['text'])->toContain('SUMMER')->toContain('Category 3');
+        ->and(sentTexts())->toContain('SUMMER')->toContain('Category 3');
 
     say(label('confirm'));
 
@@ -360,7 +424,7 @@ it('offers a dynamic choice as paged inline buttons and takes a tap as the answe
     say('20');
     say(label('skip'));
 
-    $options = tgMarkup(tgCalls('sendMessage')->last());
+    $options = tgCalls('sendMessage')->map(fn ($call) => tgMarkup($call))->last(fn ($markup) => isset($markup['inline_keyboard']));
     $buttons = collect($options['inline_keyboard'])->flatten(1);
 
     expect($buttons->pluck('text')->all())->toContain('Category 1', 'Category 8', '1/2')
