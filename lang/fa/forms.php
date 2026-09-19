@@ -33,12 +33,9 @@ return [
         'current' => 'مقدار فعلی: :value',
         'answer' => '➜ :value',
         'skipped' => '⏭ رد شد',
-        'cancelled' => '✖ لغو شد',
-        'revised' => '↩ اصلاح شد',
         'none' => '—',
         'pickOption' => '⬇ یکی را انتخاب کنید',
         'picked' => '✔',
-        'keyboard' => '⬇',
     ],
 
     'summary' => [
