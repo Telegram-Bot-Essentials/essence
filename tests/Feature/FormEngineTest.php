@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Http;
 use TelegramBotEssentials\Essence\Forms\FormState;
 use TelegramBotEssentials\Essence\Tests\Fixtures\SafetyNetForm;
 use TelegramBotEssentials\Essence\Tests\Fixtures\SampleForm;
+use TelegramBotEssentials\Essence\Tests\Fixtures\SkippableRunForm;
 
 uses(RefreshDatabase::class);
 
@@ -17,6 +18,7 @@ const FORM_PEER = 900;
 beforeEach(function () {
     formRegistry()->addForm(SampleForm::class);
     formRegistry()->addForm(SafetyNetForm::class);
+    formRegistry()->addForm(SkippableRunForm::class);
     SampleForm::$completed = null;
     SampleForm::$cancelled = [];
 
@@ -92,9 +94,12 @@ function formStateNow(): ?FormState
     return FormState::fromStateString(test()->bot->botUsers()->where('telegram_user_peer_id', FORM_PEER)->sole()->state);
 }
 
+/** The buttons of the reply keyboard currently showing: the last message that carried one. */
 function keyLabels(): array
 {
-    return collect(tgMarkup(tgCalls('sendMessage')->last())['keyboard'] ?? [])->flatten()->all();
+    $markup = tgCalls('sendMessage')->map(fn ($call) => tgMarkup($call))->last(fn ($markup) => isset($markup['keyboard']));
+
+    return collect($markup['keyboard'] ?? [])->flatten()->all();
 }
 
 function startSample(array $ctx = ['lastPage' => 2]): void
@@ -146,26 +151,42 @@ it('sends the prompt with no reply keyboard and the keyboard on a message of its
     $carrier = tgCalls('sendMessage')->last();
 
     expect($prompt)->not->toHaveKey('reply_markup')
+        ->and($prompt['text'])->toContain('Required')
         ->and(tgMarkup($carrier))->toHaveKey('keyboard')
-        ->and($carrier['text'])->toContain('Required')
-        ->and(formStateNow()->msgs['code'])->toHaveKeys(['p', 'k'])
-        ->and(formStateNow()->msgs['code']['p'])->not->toBe(formStateNow()->msgs['code']['k']);
+        ->and($carrier['text'])->toBe(__('tbe::forms.prompt.keyboard'))
+        ->and(formStateNow()->carrier)->not->toBeNull()
+        ->and(formStateNow()->carrier)->not->toBe(formStateNow()->msgs['code']['p']);
 });
 
-it('removes the keyboard message of the step it leaves and remembers only the current one', function () {
+it('replaces the keyboard message only when the buttons change, removing the old one', function () {
     startSample();
-    $first = formStateNow()->msgs['code']['k'];
+    $first = formStateNow()->carrier;
 
-    say('SUMMER');
+    say('SUMMER');   // the type step has other buttons
 
-    expect(tgCalls('deleteMessage')->pluck('message_id'))->toContain($first)
-        ->and(formStateNow()->msgs['code'])->not->toHaveKey('k')
-        ->and(formStateNow()->msgs['type'])->toHaveKey('k');
+    expect(formStateNow()->carrier)->not->toBe($first)
+        ->and(tgCalls('deleteMessage')->pluck('message_id'))->toContain($first);
+});
+
+it('shares one keyboard message across steps that offer the same buttons', function () {
+    test()->postWebhookUpdate($this->bot, $this->makeCallbackQueryUpdate('X#y', peerId: FORM_PEER))->assertOk();
+    SkippableRunForm::start();
+    say('Ada');   // first: Back, Skip, Cancel
+    $shared = formStateNow()->carrier;
+    $keyboardMessages = tgCalls('sendMessage')->filter(fn ($call) => isset(tgMarkup($call)['keyboard']))->count();
+
+    say(label('skip'));   // second: the same buttons
+    say(label('skip'));   // third: the same buttons
+
+    expect(formStateNow()->step)->toBe('third')
+        ->and(formStateNow()->carrier)->toBe($shared)
+        ->and(tgCalls('sendMessage')->filter(fn ($call) => isset(tgMarkup($call)['keyboard']))->count())->toBe($keyboardMessages)
+        ->and(keyLabels())->toContain(label('back'), label('skip'));
 });
 
 it('removes the keyboard message when the form is cancelled', function () {
     startSample();
-    $carrier = formStateNow()->msgs['code']['k'];
+    $carrier = formStateNow()->carrier;
 
     say(__('tbe::cancel_process.reply_key'));
 
