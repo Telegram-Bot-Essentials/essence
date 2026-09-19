@@ -33,12 +33,9 @@ return [
         'current' => 'Current: :value',
         'answer' => '➜ :value',
         'skipped' => '⏭ Skipped',
-        'cancelled' => '✖ Cancelled',
-        'revised' => '↩ revised',
         'none' => '—',
         'pickOption' => '⬇ Choose one',
         'picked' => '✔',
-        'keyboard' => '⬇',
     ],
 
     'summary' => [
