@@ -8,9 +8,8 @@ namespace TelegramBotEssentials\Essence\Forms;
  * `answers` maps step key to the raw answer (null for a skipped step) and
  * only ever gains or overwrites entries: which of them count is decided when
  * reading (see FormEngine::walk), so flipping an earlier answer back restores
- * later ones. `msgs` remembers the Telegram message ids of each step's prompt
- * (`p`) and, for inline choices, its options message (`o`) so they can be
- * edited later.
+ * later ones. `options` is the message id of the inline options of the open
+ * choice step, if any, so it can be closed once a pick is made.
  */
 final class FormState
 {
@@ -23,19 +22,16 @@ final class FormState
 
     /**
      * @param  array<string, ?string>  $answers
-     * @param  array<string, array{p: int, o?: int}>  $msgs
      * @param  array<string, mixed>  $ctx
      */
     public function __construct(
         public string $form,
         public string $step,
         public array $answers = [],
-        public array $msgs = [],
         public ?int $meta = null,
         public array $ctx = [],
         public int $at = 0,
-        public ?int $carrier = null,
-        public ?string $keyboard = null,
+        public ?int $options = null,
     ) {}
 
     /**
@@ -57,30 +53,16 @@ final class FormState
             }
         }
 
-        $msgs = [];
-        foreach (is_array($params['msgs'] ?? null) ? $params['msgs'] : [] as $key => $ids) {
-            if (is_array($ids) && is_numeric($ids['p'] ?? null)) {
-                $msgs[(string) $key] = ['p' => (int) $ids['p']];
-
-                if (is_numeric($ids['o'] ?? null)) {
-                    $msgs[(string) $key]['o'] = (int) $ids['o'];
-                }
-
-            }
-        }
-
         $ctx = is_array($params['ctx'] ?? null) ? array_filter($params['ctx'], 'is_string', ARRAY_FILTER_USE_KEY) : [];
 
         return new self(
             form: $params['form'],
             step: $params['step'],
             answers: $answers,
-            msgs: $msgs,
             meta: is_numeric($params['meta'] ?? null) ? (int) $params['meta'] : null,
             ctx: $ctx,
             at: is_numeric($params['at'] ?? null) ? (int) $params['at'] : 0,
-            carrier: is_numeric($params['carrier'] ?? null) ? (int) $params['carrier'] : null,
-            keyboard: is_string($params['keyboard'] ?? null) ? $params['keyboard'] : null,
+            options: is_numeric($params['options'] ?? null) ? (int) $params['options'] : null,
         );
     }
 
@@ -99,12 +81,10 @@ final class FormState
             'form' => $this->form,
             'step' => $this->step,
             'answers' => $this->answers,
-            'msgs' => $this->msgs,
             'meta' => $this->meta,
             'ctx' => $this->ctx,
             'at' => $this->at,
-            'carrier' => $this->carrier,
-            'keyboard' => $this->keyboard,
+            'options' => $this->options,
         ];
     }
 
