@@ -17,12 +17,15 @@ use TelegramBotEssentials\Essence\Telegram\TelegramResponse;
 /**
  * Runs a Form's conversation.
  *
- * The user's whole progress lives in their state (see FormState). Each step
- * is a new message, edited once answered to carry the answer, so the chat
- * reads as a transcript. Nothing here depends on deleting a bot message
- * (Telegram refuses after 48 hours): superseded prompts are edited into a
- * struck-through line, and only the user's own replies are deleted, best
- * effort.
+ * The user's whole progress lives in their state (see FormState). The chat is
+ * a plain conversation: each step is a prompt carrying that step's reply
+ * keyboard, the user answers, the bot answers back with what it understood
+ * and asks the next question. No message is edited or deleted along the way -
+ * a message that carries a reply keyboard cannot be edited, and Telegram
+ * refuses to delete anything older than 48 hours, so a flow that can sit open
+ * for days depends on neither. The only edits are on inline messages, which
+ * Telegram does allow: paging through a choice's options and closing them once
+ * one is picked, and the message the form was started from.
  *
  * Which answers count is decided on every read by walk(), never by deleting
  * them: an answer whose step no longer applies is simply ignored, and comes
@@ -73,8 +76,6 @@ class FormEngine
      */
     public function handleMessage(Form $form, FormState $state, Collection $message): void
     {
-        $this->deleteUserMessage($message);
-
         if (! hasAccess($form->getPerm())) {
             wHook()->user()->changeState();
 
@@ -235,23 +236,14 @@ class FormEngine
         return Keyboard::make(array_filter([
             'keyboard' => $rows,
             'resize_keyboard' => true,
+            'one_time_keyboard' => true,
             'input_field_placeholder' => $placeholder,
         ], fn ($value) => $value !== null));
     }
 
-    /** Marks the open prompt cancelled and gives the starting message back. */
+    /** Gives the starting message back and runs the form's cancel hook. */
     public function cancel(Form $form, FormState $state): void
     {
-        $steps = $this->steps($form);
-        $ids = $state->msgs[$state->step] ?? [];
-        $title = $state->step === FormState::CONFIRM
-            ? __('tbe::forms.summary.title')
-            : $this->label($form, $steps[$state->step] ?? null, $state->step);
-
-        $this->editText($ids['p'] ?? null, '<s>'.e($title).'</s>'."\n".__('tbe::forms.prompt.cancelled'));
-        $this->editText($ids['o'] ?? null, __('tbe::forms.prompt.cancelled'));
-        $this->deleteBotMessage($state->carrier);
-
         $this->giveBackOriginal($state);
         $form->onCancel($state->ctx);
     }
@@ -432,7 +424,8 @@ class FormEngine
             $cleared = [...$this->clearDependents($steps, $state, $step->key), ...$this->clearInvalid($form, $steps, $state, $step->key)];
         }
 
-        $this->markAnswered($form, $state, $steps, $step, $raw);
+        $this->closeOptions($state);
+        $this->sendEcho($form, $step, $raw);
 
         [$applicable, $effective] = $this->walk($steps, $state->answers);
         $state->step = $this->stepAfter($applicable, $step->key);
@@ -555,7 +548,7 @@ class FormEngine
             return;
         }
 
-        $this->markAnswered($form, $state, $steps, $step, $effective[$step->key] ?? null);
+        $this->closeOptions($state);
         $state->step = $this->stepAfter($applicable, $step->key);
 
         $this->present($form, $state, $steps);
@@ -575,9 +568,7 @@ class FormEngine
 
         $previous = $applicable[$position - 1];
 
-        $this->supersede($form, $state, $steps, $effective, $state->step);
-        $this->supersede($form, $state, $steps, $effective, $previous->key);
-
+        $this->closeOptions($state);
         $state->step = $previous->key;
 
         $this->present($form, $state, $steps);
@@ -606,14 +597,8 @@ class FormEngine
 
         wHook()->user()->changeState();
 
-        $confirmId = $state->msgs[FormState::CONFIRM]['p'] ?? null;
-        if ($confirmId !== null) {
-            $result->update(wHook()->peerId(), $confirmId);
-        } else {
-            $result->send(wHook()->peerId());
-        }
+        $result->send(wHook()->peerId());
 
-        $this->deleteBotMessage($state->carrier);
         $this->giveBackOriginal($state, $form);
 
         wHook()->api()->sendMessage([
@@ -684,48 +669,21 @@ class FormEngine
         $position = $this->position($state, $applicable);
         $state->at = time();
         $state->step = isset($applicable[$position]) ? $applicable[$position]->key : FormState::CONFIRM;
-        // The prompt goes out with no reply markup: Telegram refuses to edit a
-        // message that carries a reply keyboard, and the prompt is edited once
-        // answered.
+        $keyboard = $this->keyboard($form, $state);
+
         if ($state->step === FormState::CONFIRM) {
-            $ids = ['p' => $this->send($this->summaryText($form, $applicable, $effective, $notice), null)];
+            $this->send($this->summaryText($form, $applicable, $effective, $notice), $keyboard);
         } else {
             $step = $applicable[$position];
-            $ids = ['p' => $this->send($this->promptText($form, $step, $applicable, $effective, $notice), null)];
+            $this->send($this->promptText($form, $step, $applicable, $effective, $notice), $keyboard);
 
             if ($step instanceof Choice && $step->isInline()) {
                 $options = $this->optionsResponse($form, $state, $position, 1);
-                $ids['o'] = $this->send((string) $options?->text, $options?->replyMarkup);
+                $state->options = $this->send((string) $options?->text, $options?->replyMarkup);
             }
         }
 
-        $state->msgs[$state->step] = $ids;
-        $this->showKeyboard($form, $state);
-
         wHook()->user()->changeState($state->toStateString());
-    }
-
-    /**
-     * Puts the step's reply keyboard on screen, but only when it differs from
-     * the one already showing: a run of steps with the same buttons (a row of
-     * skippable ones) shares a single keyboard message. The previous keyboard
-     * message is removed as tidying; nothing depends on that succeeding, since
-     * the new keyboard already replaced the old one.
-     */
-    private function showKeyboard(Form $form, FormState $state): void
-    {
-        $keyboard = $this->keyboard($form, $state);
-        $signature = md5((string) json_encode($keyboard->toArray()));
-
-        if ($state->keyboard === $signature) {
-            return;
-        }
-
-        $previous = $state->carrier;
-        $state->carrier = $this->send(__('tbe::forms.prompt.keyboard'), $keyboard);
-        $state->keyboard = $signature;
-
-        $this->deleteBotMessage($previous);
     }
 
     /**
@@ -766,49 +724,41 @@ class FormEngine
         return $text;
     }
 
-    /**
-     * The prompt turned into its answered form, and the options message closed.
-     *
-     * @param  array<string, Step>  $steps
-     */
-    private function markAnswered(Form $form, FormState $state, array $steps, Step $step, ?string $raw): void
+    /** The bot's reply to an answer: what it understood, before it asks the next question. */
+    private function sendEcho(Form $form, Step $step, ?string $raw): void
     {
-        $ids = $state->msgs[$step->key] ?? [];
-        [$applicable, $effective] = $this->walk($steps, $state->answers);
-
         $answer = $raw === null
             ? '<i>'.__('tbe::forms.prompt.skipped').'</i>'
             : __('tbe::forms.prompt.answer', ['value' => '<b>'.e($step->displayAnswer($raw)).'</b>']);
 
-        $this->editText(
-            $ids['p'] ?? null,
-            '<b>'.e($this->label($form, $step, $step->key)).'</b>'."\n".$this->promptFor($form, $step, $this->answersBefore($applicable, $effective, $step->key))."\n\n".$answer,
-        );
-        $this->editText($ids['o'] ?? null, __('tbe::forms.prompt.picked'));
+        $this->send('<b>'.e($this->label($form, $step, $step->key)).'</b> '.$answer, null);
     }
 
     /**
-     * Edits a step's message(s) into a struck-through "revised" line, for a
-     * prompt the user has gone back over.
-     *
-     * @param  array<string, Step>  $steps
-     * @param  array<string, ?string>  $effective
+     * Closes the inline options of the choice step being left, so their
+     * buttons stop looking live. Inline messages can be edited, and a tap left
+     * on one that could not be closed is caught as outdated anyway.
      */
-    private function supersede(Form $form, FormState $state, array $steps, array $effective, string $key): void
+    private function closeOptions(FormState $state): void
     {
-        $ids = $state->msgs[$key] ?? [];
+        $messageId = $state->options;
+        $state->options = null;
 
-        if ($key === FormState::CONFIRM) {
-            $line = '<s>'.e(__('tbe::forms.summary.title')).'</s>';
-        } else {
-            $step = $steps[$key] ?? null;
-            $raw = $effective[$key] ?? null;
-            $line = '<s>'.e($this->label($form, $step, $key))
-                .($step !== null && $raw !== null ? ': '.e($step->displayAnswer($raw)) : '').'</s>';
+        if ($messageId === null) {
+            return;
         }
 
-        $this->editText($ids['p'] ?? null, $line.' '.__('tbe::forms.prompt.revised'));
-        $this->editText($ids['o'] ?? null, __('tbe::forms.prompt.revised'));
+        try {
+            wHook()->api()->editMessageText([
+                'chat_id' => wHook()->peerId(),
+                'message_id' => $messageId,
+                'text' => __('tbe::forms.prompt.picked'),
+            ]);
+        } catch (Exception $e) {
+            if (! str_contains($e->getMessage(), 'message is not modified') && ! str_contains($e->getMessage(), 'message to edit not found')) {
+                exceptionReport($e);
+            }
+        }
     }
 
     /**
@@ -946,55 +896,5 @@ class FormEngine
         ], fn ($value) => $value !== null));
 
         return $message->messageId;
-    }
-
-    /** Edits a bot message's text, dropping its inline buttons; a message that cannot be edited is left. */
-    private function editText(?int $messageId, string $text): void
-    {
-        if ($messageId === null) {
-            return;
-        }
-
-        try {
-            wHook()->api()->editMessageText([
-                'chat_id' => wHook()->peerId(),
-                'message_id' => $messageId,
-                'text' => $text,
-                'parse_mode' => 'HTML',
-            ]);
-        } catch (Exception $e) {
-            if (! str_contains($e->getMessage(), 'message is not modified') && ! str_contains($e->getMessage(), 'message to edit not found')) {
-                exceptionReport($e);
-            }
-        }
-    }
-
-    /** Best effort, like deleteUserMessage(): a bot message too old to delete is simply left. */
-    private function deleteBotMessage(?int $messageId): void
-    {
-        if ($messageId === null) {
-            return;
-        }
-
-        try {
-            wHook()->api()->deleteMessage(['chat_id' => wHook()->peerId(), 'message_id' => $messageId]);
-        } catch (Exception) {
-        }
-    }
-
-    /**
-     * Best effort: Telegram refuses after 48 hours, and nothing depends on it.
-     *
-     * @param  Collection<string, mixed>  $message
-     */
-    private function deleteUserMessage(Collection $message): void
-    {
-        try {
-            wHook()->api()->deleteMessage([
-                'chat_id' => data_get($message, 'chat.id'),
-                'message_id' => data_get($message, 'message_id'),
-            ]);
-        } catch (Exception) {
-        }
     }
 }
