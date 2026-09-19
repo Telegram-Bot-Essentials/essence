@@ -158,6 +158,7 @@ class StateAnswerBus
      * @throws BindingResolutionException
      * @throws LogicException
      */
+    /** @return Keyboard<array-key, mixed>|null */
     public function keyboardFor(string $state): ?Keyboard
     {
         $decoded = decodeAnswerState($state);

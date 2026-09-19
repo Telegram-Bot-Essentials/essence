@@ -23,6 +23,7 @@ interface StateAnswerInterface
      * carries the state's method and params, so a multi-step flow can offer
      * different keys per step.
      */
+    /** @return Keyboard<array-key, mixed>|null */
     public function keyboard(): ?Keyboard;
 
     public function handle(): void;
