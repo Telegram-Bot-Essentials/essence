@@ -23,7 +23,7 @@ final class FormState
 
     /**
      * @param  array<string, ?string>  $answers
-     * @param  array<string, array{p: int, o?: int, k?: int}>  $msgs
+     * @param  array<string, array{p: int, o?: int}>  $msgs
      * @param  array<string, mixed>  $ctx
      */
     public function __construct(
@@ -34,6 +34,8 @@ final class FormState
         public ?int $meta = null,
         public array $ctx = [],
         public int $at = 0,
+        public ?int $carrier = null,
+        public ?string $keyboard = null,
     ) {}
 
     /**
@@ -64,9 +66,6 @@ final class FormState
                     $msgs[(string) $key]['o'] = (int) $ids['o'];
                 }
 
-                if (is_numeric($ids['k'] ?? null)) {
-                    $msgs[(string) $key]['k'] = (int) $ids['k'];
-                }
             }
         }
 
@@ -80,6 +79,8 @@ final class FormState
             meta: is_numeric($params['meta'] ?? null) ? (int) $params['meta'] : null,
             ctx: $ctx,
             at: is_numeric($params['at'] ?? null) ? (int) $params['at'] : 0,
+            carrier: is_numeric($params['carrier'] ?? null) ? (int) $params['carrier'] : null,
+            keyboard: is_string($params['keyboard'] ?? null) ? $params['keyboard'] : null,
         );
     }
 
@@ -102,6 +103,8 @@ final class FormState
             'meta' => $this->meta,
             'ctx' => $this->ctx,
             'at' => $this->at,
+            'carrier' => $this->carrier,
+            'keyboard' => $this->keyboard,
         ];
     }
 
