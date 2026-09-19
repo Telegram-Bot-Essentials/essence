@@ -156,6 +156,12 @@ class BotUser extends Model
     {
         $rows = [];
         if ($this->state) {
+            $stateKeyboard = is_string($this->state) ? stateAnswerBus()->keyboardFor($this->state) : null;
+
+            if ($stateKeyboard !== null) {
+                return $stateKeyboard;
+            }
+
             $rows[] = [CancelProcessKey::class];
         } elseif ($this->menu == 'main') {
             $rows = array_merge($rows, config('tbe-essence.keyboard.member') ?? []);
