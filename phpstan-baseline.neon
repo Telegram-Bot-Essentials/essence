@@ -3468,50 +3468,8 @@ parameters:
 			path: src/Models/MessageMeta.php
 
 		-
-			message: '#^Parameter \#2 \$messageId of method TelegramBotEssentials\\Essence\\Telegram\\TelegramResponse\:\:update\(\) expects int\|string\|null, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Models/MessageMeta.php
-
-		-
 			message: '#^Parameter \#1 \$stateAnswer of method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswerBus\:\:addStateAnswer\(\) expects string\|TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswerInterface, mixed given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Telegram/StateAnswers/StateAnswerBus.php
-
-		-
-			message: '#^Method TelegramBotEssentials\\Essence\\Forms\\FormEngine\:\:keyboard\(\) return type with generic class Telegram\\Bot\\Keyboard\\Keyboard does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Forms/FormEngine.php
-
-		-
-			message: '#^Method TelegramBotEssentials\\Essence\\Forms\\FormEngine\:\:optionsKeyboard\(\) return type with generic class Telegram\\Bot\\Keyboard\\Keyboard does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Forms/FormEngine.php
-
-		-
-			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\Member\\FormAnswer\:\:keyboard\(\) return type with generic class Telegram\\Bot\\Keyboard\\Keyboard does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Telegram/StateAnswers/Member/FormAnswer.php
-
-		-
-			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswer\:\:keyboard\(\) return type with generic class Telegram\\Bot\\Keyboard\\Keyboard does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Telegram/StateAnswers/StateAnswer.php
-
-		-
-			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswerBus\:\:keyboardFor\(\) return type with generic class Telegram\\Bot\\Keyboard\\Keyboard does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Telegram/StateAnswers/StateAnswerBus.php
-
-		-
-			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswerInterface\:\:keyboard\(\) return type with generic class Telegram\\Bot\\Keyboard\\Keyboard does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Telegram/StateAnswers/StateAnswerInterface.php
 
