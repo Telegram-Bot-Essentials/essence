@@ -50,7 +50,7 @@ class TelegramPaginator
         return $buttons;
     }
 
-    public static function addNavigationRow(Keyboard $replyMarkup, string $callbackType, int $page, int $lastPage, $callbackMethod = 'start', $customPageMethod = 'set_start_page', array $extraParams = [], bool $showFirstLast = true): void
+    public static function addNavigationRow(Keyboard $replyMarkup, string $callbackType, int $page, int $lastPage, string $callbackMethod = 'start', string $customPageMethod = 'set_start_page', array $extraParams = [], bool $showFirstLast = true): void
     {
         if ($lastPage <= 1) {
             return;
