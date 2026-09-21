@@ -1681,6 +1681,18 @@ parameters:
 			path: src/Services/TelegramPaginator.php
 
 		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Services\\TelegramPaginator\:\:addNavigationRow\(\) has parameter \$extraParams with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Services/TelegramPaginator.php
+
+		-
+			message: '#^Method TelegramBotEssentials\\Essence\\Services\\TelegramPaginator\:\:addNavigationRow\(\) has parameter \$replyMarkup with generic class Telegram\\Bot\\Keyboard\\Keyboard but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Services/TelegramPaginator.php
+
+		-
 			message: '#^Parameter \#2 \$method of function encodeCallback expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 5
