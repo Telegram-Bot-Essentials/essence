@@ -10,6 +10,15 @@ the first public release.
 
 ## [Unreleased]
 
+### Removed
+
+- **Breaking:** `DoneLimited`, `CannotSetItAsDone`, and `HidesDone` are gone.
+  They existed to mark a resource incomplete while a multi-step creation
+  flow filled it in field by field, saving a partial row after each answer.
+  Forms replaces that: nothing is written until the summary is confirmed, so
+  there is no longer a partial state to guard against. A host app still
+  filtering on a `done` column should drop the column and the filter.
+
 ## [0.13.0] - 2026-09-20
 
 ### Added
