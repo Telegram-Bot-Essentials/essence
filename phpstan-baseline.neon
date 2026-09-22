@@ -1557,7 +1557,7 @@ parameters:
 		-
 			message: '#^Cannot access property \$peer_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
 			identifier: property.nonObject
-			count: 9
+			count: 8
 			path: src/Services/ExceptionHandler.php
 
 		-
@@ -3179,18 +3179,6 @@ parameters:
 			identifier: function.impossibleType
 			count: 1
 			path: src/Traits/CanResolveStateAnswer.php
-
-		-
-			message: '#^Trait TelegramBotEssentials\\Essence\\Traits\\DoneLimited is used zero times and is not analysed\.$#'
-			identifier: trait.unused
-			count: 1
-			path: src/Traits/DoneLimited.php
-
-		-
-			message: '#^Trait TelegramBotEssentials\\Essence\\Traits\\HidesDone is used zero times and is not analysed\.$#'
-			identifier: trait.unused
-			count: 1
-			path: src/Traits/HidesDone.php
 
 		-
 			message: '#^Trait TelegramBotEssentials\\Essence\\Traits\\PriceBasedOnCurrency is used zero times and is not analysed\.$#'
