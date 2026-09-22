@@ -10,6 +10,8 @@ the first public release.
 
 ## [Unreleased]
 
+## [0.14.0] - 2026-09-22
+
 ### Removed
 
 - **Breaking:** `DoneLimited`, `CannotSetItAsDone`, and `HidesDone` are gone.
