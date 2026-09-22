@@ -10,7 +10,6 @@ use Illuminate\Validation\ValidationException;
 use Laravel\Telescope\Telescope;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use TelegramBotEssentials\Essence\Exceptions\CannotSetItActive;
-use TelegramBotEssentials\Essence\Exceptions\CannotSetItAsDone;
 use TelegramBotEssentials\Essence\Exceptions\FeatureIsDisabled;
 use TelegramBotEssentials\Essence\Exceptions\HandlerContextExpired;
 use TelegramBotEssentials\Essence\Exceptions\InvalidPageNumber;
@@ -31,8 +30,6 @@ class ExceptionHandler
                 $this->validationExceptionUserAlert($e);
             } catch (CannotSetItActive $e) {
                 $this->cannotSetItActiveUserAlert($e);
-            } catch (CannotSetItAsDone $e) {
-                $this->cannotSetItAsDoneUserAlert($e);
             } catch (HandlerContextExpired $e) {
                 $this->contextExpiredUserAlert($e);
             } catch (ModelNotFoundException $e) {
@@ -136,23 +133,6 @@ class ExceptionHandler
     private function cannotSetItActiveUserAlert(CannotSetItActive $e): void
     {
         tbeLog('essence')->warning('Cannot set it active: '.$e->getMessage());
-        if (wHook()->update()->inlineQuery) {
-            $this->answerInlineQueryWithError();
-
-            return;
-        }
-        wHook()->api()->sendMessage([
-            'chat_id' => wHook()->user()->telegramUser->peer_id,
-            'text' => $e->getMessage(),
-        ]);
-    }
-
-    /**
-     * @throws TelegramSDKException
-     */
-    private function cannotSetItAsDoneUserAlert(CannotSetItAsDone $e): void
-    {
-        tbeLog('essence')->warning('Cannot set it as done: '.$e->getMessage());
         if (wHook()->update()->inlineQuery) {
             $this->answerInlineQueryWithError();
 
