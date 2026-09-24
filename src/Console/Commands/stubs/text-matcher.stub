@@ -1,0 +1,19 @@
+<?php
+
+namespace {{ namespace }};
+
+use TelegramBotEssentials\Essence\Enums\Roles;
+use TelegramBotEssentials\Essence\Telegram\TextMatchers\TextMatcher;
+
+class {{ class_name }} extends TextMatcher
+{
+    protected int $perm = {{ perm_power }};
+
+    // A regex tested against the text (or caption); or override matches(Message $message).
+    protected ?string $pattern = '~^https?://~i';
+
+    public function handle(): void
+    {
+        // Logic to execute
+    }
+}
