@@ -115,6 +115,16 @@ class Webhook
     {
         $originalBot = $this->bot;
         $originalUser = $this->user;
+        // setUser() derives requestState from $user->state, which is a
+        // problem for the restore below: if $callback mutates $originalUser
+        // (the exact object, not just an equal row) - e.g. a state-answer
+        // handler that calls $user->changeState() before triggering an
+        // event whose listener runs a payment for that same user through
+        // here - setUser($originalUser) after the callback re-derives
+        // requestState from the now-changed object instead of restoring
+        // what it was before the swap. Snapshot the value itself so the
+        // restore is a real restore, not a re-derivation.
+        $originalRequestState = $this->requestState;
 
         self::setBot($user->bot);
         self::setUser($user);
@@ -125,8 +135,9 @@ class Webhook
             exceptionHandler()->handle($e);
         }
 
-        self::setBot($originalBot);
-        self::setUser($originalUser);
+        $this->bot = $originalBot;
+        $this->user = $originalUser;
+        $this->requestState = $originalRequestState;
 
         return $result ?? null;
     }
