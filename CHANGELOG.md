@@ -10,6 +10,22 @@ the first public release.
 
 ## [Unreleased]
 
+## [0.14.1] - 2026-09-24
+
+### Fixed
+
+- `Webhook::runForUser()` restored the original bot/user by calling
+  `setUser()` again, which re-derives `requestState()` from the
+  original user object's *current* `state` rather than restoring what
+  it was before the callback ran. When the callback runs for that
+  same user and the callback (or code before it, in the same request)
+  already changed that state - a payment gateway's auto-accept firing
+  `InvoicePaid` from inside the paying user's own state-answer handler
+  is the real case - the "restore" silently kept the new value instead
+  of putting back the old one. `TelegramWebhookController` reads
+  `requestState()` right after the handler returns to build
+  `BotStateAnswerHandled`, so a null there crashed with a `TypeError`.
+
 ## [0.14.0] - 2026-09-22
 
 ### Removed
