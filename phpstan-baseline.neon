@@ -913,12 +913,6 @@ parameters:
 			path: src/Http/Controllers/TelegramWebhookController.php
 
 		-
-			message: '#^Parameter \#1 \$haystack of function str_starts_with expects string, string\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Http/Controllers/TelegramWebhookController.php
-
-		-
 			message: '#^Parameter \#1 \$input of function decodeCallback expects string, string\|null given\.$#'
 			identifier: argument.type
 			count: 1

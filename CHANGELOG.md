@@ -10,6 +10,27 @@ the first public release.
 
 ## [Unreleased]
 
+### Added
+
+- Text matchers: a handler for a message that no reply key, command or state
+  answer claimed, matched by rule rather than by an exact button label.
+  Subclass `TextMatcher`, set `$pattern` for a plain regex or override
+  `matches(Message $message)` to judge the whole message (text, caption,
+  entities, attachments), and put it under `app/Telegram/TextMatchers/`
+  (`tbe:make:text-matcher` scaffolds one). The first registered enabled
+  matcher that matches wins; one the user has no access to is skipped, and
+  the message falls through to the invalid-request reply if nothing else
+  takes it. A matcher never runs ahead of a reply key or a state answer, so
+  it cannot steal a button press or a form answer. `urls()` returns the URLs
+  Telegram itself recognised (`url` and `text_link` entities, or the caption's
+  for a media message) and `text()` the text or caption. Fires
+  `BotTextMatcherHandled`.
+
+### Fixed
+
+- The webhook no longer calls `str_starts_with()` on a null `text` when a
+  message carries no text (a photo, a sticker).
+
 ## [0.14.1] - 2026-09-24
 
 ### Fixed
