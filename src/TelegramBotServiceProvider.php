@@ -18,6 +18,7 @@ use TelegramBotEssentials\Essence\Console\Commands\MakeFeature;
 use TelegramBotEssentials\Essence\Console\Commands\MakeInlineQuery;
 use TelegramBotEssentials\Essence\Console\Commands\MakeReplyKey;
 use TelegramBotEssentials\Essence\Console\Commands\MakeStateAnswer;
+use TelegramBotEssentials\Essence\Console\Commands\MakeTextMatcher;
 use TelegramBotEssentials\Essence\Console\Commands\PublishCommand;
 use TelegramBotEssentials\Essence\Console\Commands\SetWebhook;
 use TelegramBotEssentials\Essence\Console\Commands\TranslationStats;
@@ -38,6 +39,7 @@ use TelegramBotEssentials\Essence\Telegram\HttpClients\LaravelHttpClient;
 use TelegramBotEssentials\Essence\Telegram\InlineQueries\InlineQueryBus;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKeyBus;
 use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswerBus;
+use TelegramBotEssentials\Essence\Telegram\TextMatchers\TextMatcherBus;
 
 class TelegramBotServiceProvider extends ServiceProvider
 {
@@ -110,6 +112,10 @@ class TelegramBotServiceProvider extends ServiceProvider
         $this->app->singleton(BotEventBus::class, fn () => new BotEventBus);
 
         $this->app->singleton(TranslationScanner::class, fn () => new TranslationScanner);
+
+        $this->app->singleton(TextMatcherBus::class, function ($app) {
+            return new TextMatcherBus;
+        });
 
         $this->app->singleton(InlineQueryBus::class, function ($app) {
             return new InlineQueryBus;
@@ -231,6 +237,7 @@ class TelegramBotServiceProvider extends ServiceProvider
             loadStateAnswers($appTelegram.'/StateAnswers/'.$scope);
             loadCommands($appTelegram.'/Commands/'.$scope);
             loadReplyKeys($appTelegram.'/ReplyKeys/'.$scope);
+            loadTextMatchers($appTelegram.'/TextMatchers/'.$scope);
         }
 
         loadForms($appTelegram.'/Forms');
@@ -264,6 +271,7 @@ class TelegramBotServiceProvider extends ServiceProvider
                 MakeReplyKey::class,
                 MakeCallbackQuery::class,
                 MakeInlineQuery::class,
+                MakeTextMatcher::class,
                 MakeStateAnswer::class,
                 MakeFeature::class,
                 MakeCommand::class,
