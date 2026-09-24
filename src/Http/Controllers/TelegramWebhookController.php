@@ -11,6 +11,7 @@ use TelegramBotEssentials\Essence\Events\BotDeepLinkReceived;
 use TelegramBotEssentials\Essence\Events\BotInlineQueryHandled;
 use TelegramBotEssentials\Essence\Events\BotReplyKeyHandled;
 use TelegramBotEssentials\Essence\Events\BotStateAnswerHandled;
+use TelegramBotEssentials\Essence\Events\BotTextMatcherHandled;
 use TelegramBotEssentials\Essence\Events\BotUpdateReceived;
 use TelegramBotEssentials\Essence\Events\BotUpdateUnhandled;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
@@ -95,9 +96,10 @@ class TelegramWebhookController extends Controller
         $commandProcessed = false;
         $keyProcessed = false;
         $answerProcessed = false;
+        $matcherProcessed = false;
 
         if ($update->message) {
-            if (str_starts_with($update->message->text, '/')) {
+            if (str_starts_with((string) $update->message->text, '/')) {
                 [$command, $payload] = array_pad(explode(' ', $update->message->text, 2), 2, null);
 
                 stateAnswerBus()->cancelHandler(wHook()->requestState());
@@ -117,9 +119,18 @@ class TelegramWebhookController extends Controller
                         botEventBus()->fire(new BotStateAnswerHandled($context, wHook()->requestState()));
                     }
                 }
+
+                // Last resort, so a matcher never steals a button or a form answer.
+                if (! $keyProcessed && ! $answerProcessed) {
+                    $matcher = textMatcherBus()->processTextMatchers();
+                    if ($matcher !== null) {
+                        $matcherProcessed = true;
+                        botEventBus()->fire(new BotTextMatcherHandled($context, $matcher));
+                    }
+                }
             }
 
-            $requestIsInvalid = ! ($commandProcessed || $keyProcessed || $answerProcessed);
+            $requestIsInvalid = ! ($commandProcessed || $keyProcessed || $answerProcessed || $matcherProcessed);
             if ($requestIsInvalid) {
                 botEventBus()->fire(new BotUpdateUnhandled($context));
 
