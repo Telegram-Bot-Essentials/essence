@@ -25,6 +25,34 @@ the first public release.
   Telegram itself recognised (`url` and `text_link` entities, or the caption's
   for a media message) and `text()` the text or caption. Fires
   `BotTextMatcherHandled`.
+- `adminAlert($key, $text, ?$bot, ?$throttle)`: tells a bot's owner and every
+  reachable, unsuspended admin about something only they can fix (a setting
+  that stopped working, a permission the bot lost). Throttled per bot and key
+  for `admin_alerts.throttle` seconds (6h by default), so a condition seen on
+  every update reaches each admin once per window. A Closure `$text` is
+  rendered in the bot's locale. Works outside a webhook (queued jobs, the
+  scheduler) by building the bot's own API client. Bugs still go to the
+  developer through `exceptionReport()`.
+- `tbeLog()->audit()`: logs what an admin or the owner did to
+  `logging.audit_channel` (`TBE_LOG_AUDIT_CHANNEL`), flagged `audit: true`,
+  falling back to the package's channel when unset.
+- `tbeLog()->for($botUser)`: binds an entry to a bot user (bot_id, user_id,
+  username), for code that knows whose entry it is better than the webhook
+  does: a queued job, a gateway callback.
+- `logging.channels`: per-package channel overrides keyed by the `tbeLog()`
+  tag, e.g. `['billing' => 'payments']`.
+
+### Changed
+
+- Every `tbeLog()` message is prefixed with its subject,
+  `bot#3 user#12345 @alice | Invoice paid`, from the `bot_id`, `user_id`
+  and `username` context keys, so a line says whose it is without expanding
+  it. Outside a webhook, use `for($botUser)` to get the same prefix.
+  The webhook context now also carries `username`.
+- `tbeLog()` fills PSR-3 `{placeholders}` in the message from the context
+  itself (`'Invoice #{invoice_id} paid'`), whatever the host channel's
+  `replace_placeholders` setting, so messages can name the ids they are
+  about without concatenation.
 
 ### Fixed
 
