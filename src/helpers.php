@@ -14,7 +14,9 @@ use TelegramBotEssentials\Essence\Exceptions\LogicException;
 use TelegramBotEssentials\Essence\Forms\Form;
 use TelegramBotEssentials\Essence\Forms\FormEngine;
 use TelegramBotEssentials\Essence\Forms\FormRegistry;
+use TelegramBotEssentials\Essence\Models\Bot;
 use TelegramBotEssentials\Essence\Models\InlineConfirmation;
+use TelegramBotEssentials\Essence\Services\AdminAlerts;
 use TelegramBotEssentials\Essence\Services\ApiResponse;
 use TelegramBotEssentials\Essence\Services\BotUserStatus;
 use TelegramBotEssentials\Essence\Services\ExceptionHandler;
@@ -49,6 +51,18 @@ if (! function_exists('tbeLog')) {
     function tbeLog(?string $package = null): TbeLogger
     {
         return new TbeLogger($package);
+    }
+}
+
+if (! function_exists('adminAlert')) {
+    /**
+     * Tell the bot's owner and admins about something only they can fix.
+     *
+     * @see AdminAlerts::send()
+     */
+    function adminAlert(string $key, Closure|string $text, ?Bot $bot = null, ?int $throttle = null): bool
+    {
+        return app(AdminAlerts::class)->send($key, $text, $bot, $throttle);
     }
 }
 
