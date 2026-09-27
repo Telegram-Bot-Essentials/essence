@@ -10,6 +10,8 @@ the first public release.
 
 ## [Unreleased]
 
+## [0.15.0] - 2026-09-27
+
 ### Added
 
 - Text matchers: a handler for a message that no reply key, command or state
