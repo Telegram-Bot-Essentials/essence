@@ -137,7 +137,7 @@ class BotUserStatus
             }
         }
 
-        tbeLog('essence')->info('Bot user reachability changed', [
+        tbeLog('essence')->for($botUser)->info('Reachability changed: {from} -> {to} (via {source})', [
             'bot_user_id' => $botUser->getKey(),
             'peer_id' => $telegramUser?->peer_id,
             'from' => $from,
