@@ -3,7 +3,7 @@ parameters:
 		-
 			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
 			identifier: larastan.noEnvCallsOutsideOfConfig
-			count: 17
+			count: 19
 			path: config/tbe-essence.php
 
 		-
@@ -1747,20 +1747,8 @@ parameters:
 			path: src/Services/TranslationScanner.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$peer_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Support/TbeLogger.php
-
-		-
 			message: '#^Method TelegramBotEssentials\\Essence\\Support\\TbeLogger\:\:defaultContext\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
-			count: 1
-			path: src/Support/TbeLogger.php
-
-		-
-			message: '#^Parameter \#1 \$channel of static method Illuminate\\Log\\LogManager\:\:channel\(\) expects string\|UnitEnum\|null, mixed given\.$#'
-			identifier: argument.type
 			count: 1
 			path: src/Support/TbeLogger.php
 
