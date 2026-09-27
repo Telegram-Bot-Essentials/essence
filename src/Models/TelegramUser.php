@@ -11,6 +11,7 @@ use TelegramBotEssentials\Essence\Services\BotUserStatus;
 
 /**
  * @property int $peer_id
+ * @property string|null $username
  */
 class TelegramUser extends Model
 {
