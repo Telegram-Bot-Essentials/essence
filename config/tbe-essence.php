@@ -38,8 +38,17 @@ return [
     'logging' => [
         // Log channel for all TBE packages; null uses the app's default channel.
         'channel' => env('TBE_LOG_CHANNEL'),
+        // Per-package overrides, keyed by the tbeLog() tag: ['billing' => 'payments'].
+        'channels' => [],
+        // Where tbeLog()->audit() entries go (admin actions); null uses the package's channel.
+        'audit_channel' => env('TBE_LOG_AUDIT_CHANNEL'),
         // Also push debug/bug reports to the bug_report Telegram chat.
         'telegram_notify' => env('TBE_LOG_TELEGRAM_NOTIFY', true),
+    ],
+
+    'admin_alerts' => [
+        // Seconds before the same alert reaches a bot's admins again.
+        'throttle' => env('TBE_ADMIN_ALERT_THROTTLE', 21600),
     ],
 
     'developer' => [
