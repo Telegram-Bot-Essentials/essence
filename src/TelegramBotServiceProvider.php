@@ -2,6 +2,7 @@
 
 namespace TelegramBotEssentials\Essence;
 
+use Illuminate\Contracts\Foundation\CachesConfiguration;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
@@ -51,6 +52,7 @@ class TelegramBotServiceProvider extends ServiceProvider
         $this->app->singleton(LaravelHttpClient::class);
 
         $this->mergeConfigFrom(__DIR__.'/../config/tbe-essence.php', 'tbe-essence');
+        $this->mergeLoggingConfig();
         $this->mergeConfigFrom(__DIR__.'/../config/tenancy.php', 'tenancy');
         $this->mergeConfigFrom(__DIR__.'/../config/telegram.php', 'telegram');
 
@@ -173,6 +175,7 @@ class TelegramBotServiceProvider extends ServiceProvider
 
         $this->loadConsoleRoutes();
 
+        $this->registerLogChannels();
         $this->registerCommands();
         $this->registerPublishing();
 
@@ -245,6 +248,68 @@ class TelegramBotServiceProvider extends ServiceProvider
 
         foreach (config('tbe-essence.keyboard') ?? [] as $replyKeyRows) {
             addUserReplyKeys($replyKeyRows);
+        }
+    }
+
+    /**
+     * mergeConfigFrom() only fills top-level keys, so an app that publishes a
+     * logging block would lose every default route it does not repeat. Merge
+     * that block over the package's instead: key by key, and channels and
+     * retention_days entry by entry, so the app lists only what it adds or
+     * changes (a route set to null falls back to logging.channel).
+     */
+    protected function mergeLoggingConfig(): void
+    {
+        if ($this->app instanceof CachesConfiguration && $this->app->configurationIsCached()) {
+            return;
+        }
+
+        /** @var array{logging: array{channels: array<string, string|null>, retention_days: array<string, int>}} $package */
+        $package = require __DIR__.'/../config/tbe-essence.php';
+        $defaults = $package['logging'];
+        $logging = config('tbe-essence.logging');
+        if (! is_array($logging) || $logging === $defaults) {
+            return;
+        }
+
+        foreach (['channels', 'retention_days'] as $map) {
+            $logging[$map] = array_merge($defaults[$map], is_array($logging[$map] ?? null) ? $logging[$map] : []);
+        }
+
+        config()->set('tbe-essence.logging', $logging + $defaults);
+    }
+
+    /**
+     * Define every channel tbe-essence.logging routes to that the app has not
+     * defined itself, so the defaults work without touching config/logging.php
+     * and an app keeps full control over any channel it does declare.
+     */
+    protected function registerLogChannels(): void
+    {
+        $logging = config('tbe-essence.logging');
+        if (! is_array($logging)) {
+            return;
+        }
+
+        $routes = is_array($logging['channels'] ?? null) ? $logging['channels'] : [];
+        $retention = is_array($logging['retention_days'] ?? null) ? $logging['retention_days'] : [];
+        $names = array_filter(
+            [$logging['channel'] ?? null, $logging['audit_channel'] ?? null, ...array_values($routes)],
+            fn ($name) => is_string($name) && $name !== '',
+        );
+
+        foreach (array_unique($names) as $name) {
+            if (config()->has("logging.channels.$name")) {
+                continue;
+            }
+
+            config()->set("logging.channels.$name", [
+                'driver' => 'daily',
+                'path' => storage_path("logs/$name.log"),
+                'level' => config('logging.channels.daily.level', 'debug'),
+                'days' => $retention[$name] ?? 14,
+                'replace_placeholders' => true,
+            ]);
         }
     }
 
