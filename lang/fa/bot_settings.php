@@ -33,7 +33,6 @@ return [
         ],
         'keys' => [
             'toCard' => 'کارت به کارت :status',
-            'zirgozar' => 'زیرگذر :status',
             'zibal' => 'زیبال :status',
             'zarinpal' => 'زرین‌پال :status',
             'idpay' => 'آیدی‌پی :status',
@@ -89,25 +88,6 @@ return [
         'keys' => [
             'activation' => 'وضعیت زیبال :statusEmoji',
             'merchant' => '✏️ مرچنت',
-        ],
-    ],
-
-    'zirgozar' => [
-        'name' => 'زیرگذر',
-        'text' => [
-            'information' => '⚙️ <b><i>زیرگذر</i></b>'
-                ."\r\n"
-                ."\r\n❔ <b>وضعیت فعال‌سازی:</b> :activationStatus"
-                ."\r\n"
-                ."\r\n❔ <b>توکن:</b> <tg-spoiler>:zirgozarToken</tg-spoiler>",
-            'setToken' => '❓ توکن جدید زیرگذر را وارد کنید: ',
-        ],
-        'answers' => [
-            'updatingToken' => '⏳ در حال به‌روزرسانی توکن زیرگذر...',
-        ],
-        'keys' => [
-            'activation' => 'وضعیت زیرگذر :statusEmoji',
-            'token' => '✏️ توکن',
         ],
     ],
 
