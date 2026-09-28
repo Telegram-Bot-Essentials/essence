@@ -33,7 +33,6 @@ return [
         ],
         'keys' => [
             'toCard' => 'To Card :status',
-            'zirgozar' => 'Zirgozar :status',
             'zibal' => 'Zibal :status',
             'zarinpal' => 'Zarinpal :status',
             'idpay' => 'IDPay :status',
@@ -89,25 +88,6 @@ return [
         'keys' => [
             'activation' => 'Zibal Status :statusEmoji',
             'merchant' => '✏️ Merchant',
-        ],
-    ],
-
-    'zirgozar' => [
-        'name' => 'Zirgozar',
-        'text' => [
-            'information' => '⚙️ <b><i>Zirgozar</i></b>'
-                ."\r\n"
-                ."\r\n❔ <b>Activation Status:</b> :activationStatus"
-                ."\r\n"
-                ."\r\n❔ <b>Token:</b> <tg-spoiler>:zirgozarToken</tg-spoiler>",
-            'setToken' => '❓ Enter new zirgozar/token: ',
-        ],
-        'answers' => [
-            'updatingToken' => '⏳ Updating zirgozar/token...',
-        ],
-        'keys' => [
-            'activation' => 'Zirgozar Status :statusEmoji',
-            'token' => '✏️ Token',
         ],
     ],
 
