@@ -10,6 +10,8 @@ the first public release.
 
 ## [Unreleased]
 
+## [0.16.0] - 2026-09-28
+
 ### Changed
 
 - `tbeLog()` routes each package to its own channel out of the box:
