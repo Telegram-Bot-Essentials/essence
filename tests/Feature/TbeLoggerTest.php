@@ -5,8 +5,16 @@ declare(strict_types=1);
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Log;
 use Monolog\Handler\TestHandler;
+use TelegramBotEssentials\Essence\TelegramBotServiceProvider;
 
 uses(RefreshDatabase::class);
+
+// The routing tests below start from no routes; the shipped defaults are
+// covered by the channel registration tests at the end.
+beforeEach(function () {
+    config()->set('tbe-essence.logging.channels', []);
+    config()->set('tbe-essence.logging.audit_channel', null);
+});
 
 function tbeTestChannel(string $name): TestHandler
 {
@@ -104,3 +112,43 @@ it('never throws over a malformed channel map', function () {
     tbeLog('billing')->info('still fine');
     tbeLog('billing')->audit('still fine');
 })->throwsNoExceptions();
+
+it('defines the channels it routes to as daily files', function () {
+    expect(config('logging.channels.billing'))->toMatchArray([
+        'driver' => 'daily',
+        'path' => storage_path('logs/billing.log'),
+        'days' => 90,
+    ])
+        ->and(config('logging.channels.admin-audit.days'))->toBe(90)
+        ->and(config('logging.channels.activity.days'))->toBe(14)
+        ->and(config('logging.channels.essence.path'))->toBe(storage_path('logs/essence.log'));
+});
+
+it('leaves a channel the app defines alone', function () {
+    config()->set('logging.channels.billing', ['driver' => 'single', 'path' => '/tmp/app-billing.log']);
+    config()->set('tbe-essence.logging.channels', ['billing' => 'billing', 'announcements' => 'broadcasts']);
+
+    (fn () => $this->registerLogChannels())->call(app()->getProvider(TelegramBotServiceProvider::class));
+
+    expect(config('logging.channels.billing'))->toBe(['driver' => 'single', 'path' => '/tmp/app-billing.log'])
+        ->and(config('logging.channels.broadcasts.driver'))->toBe('daily');
+});
+
+it('merges an app logging block over the defaults instead of replacing them', function () {
+    config()->set('tbe-essence.logging', [
+        'channels' => ['orders' => 'billing', 'settings' => 'app_settings'],
+        'retention_days' => ['activity' => 30],
+    ]);
+
+    (fn () => $this->mergeLoggingConfig())->call(app()->getProvider(TelegramBotServiceProvider::class));
+
+    expect(config('tbe-essence.logging.channels'))->toMatchArray([
+        'orders' => 'billing',
+        'settings' => 'app_settings',
+        'billing' => 'billing',
+        'user-management' => 'activity',
+    ])
+        ->and(config('tbe-essence.logging.retention_days'))->toBe(['billing' => 90, 'admin-audit' => 90, 'activity' => 30])
+        ->and(config('tbe-essence.logging.channel'))->toBe('essence')
+        ->and(config('tbe-essence.logging.audit_channel'))->toBe('admin-audit');
+});
