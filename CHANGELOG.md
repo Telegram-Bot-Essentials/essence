@@ -10,6 +10,12 @@ the first public release.
 
 ## [Unreleased]
 
+### Removed
+
+- The Zirgozar gateway: its controller, the `invoice.zirgozar.*` routes and
+  its `bot_settings` strings. The service has shut down, and the controller
+  no longer ran (it referenced models that had moved out of essence).
+
 ## [0.15.0] - 2026-09-27
 
 ### Added
