@@ -10,6 +10,24 @@ the first public release.
 
 ## [Unreleased]
 
+### Changed
+
+- `tbeLog()` routes each package to its own channel out of the box:
+  `billing` (billing, the gateways, user-wallet, affiliates), `activity`
+  (user-management), `announcements`, `settings`, and `essence` for any tag
+  without a route. `->audit()` entries go to `admin-audit`. Every channel
+  the app's `config/logging.php` does not define is registered as a daily
+  file, `storage/logs/<name>.log`, kept 14 days, or as listed in
+  `logging.retention_days` (90 for `billing` and `admin-audit`). A channel
+  the app defines is left alone.
+- A `logging` block in the app's `config/tbe-essence.php` is merged over
+  the package's rather than replacing it: key by key, and `channels` and
+  `retention_days` entry by entry, so the app lists only the routes it adds
+  or changes.
+- **Breaking:** `TBE_LOG_CHANNEL` and `TBE_LOG_AUDIT_CHANNEL` are gone. Set
+  `logging.channel`, `logging.channels` and `logging.audit_channel` in the
+  published `config/tbe-essence.php` instead.
+
 ### Removed
 
 - The Zirgozar gateway: its controller, the `invoice.zirgozar.*` routes and
