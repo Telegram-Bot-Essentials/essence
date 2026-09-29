@@ -4,16 +4,14 @@ namespace TelegramBotEssentials\Essence\Support;
 
 use Illuminate\Support\Facades\App;
 use TelegramBotEssentials\Essence\Contracts\ResolvesBotLocale;
+use TelegramBotEssentials\Essence\Enums\Roles;
 use TelegramBotEssentials\Essence\Models\Bot;
-use TelegramBotEssentials\Essence\Traits\CanResolveBotCommand;
 
 /**
  * Publishes the configured command list to a bot's Telegram menu.
  */
 class BotCommandMenu
 {
-    use CanResolveBotCommand;
-
     public function register(Bot $bot): void
     {
         $previousLocale = App::getLocale();
@@ -21,8 +19,11 @@ class BotCommandMenu
 
         try {
             $commands = [];
-            foreach (config('tbe-essence.commands') as $command) {
-                $command = $this->resolveBotCommand($command);
+            foreach (commandBus()->getCommands() as $command) {
+                if (! $command->isEnabled() || $command->getPerm() > Roles::MEMBER->value) {
+                    continue;
+                }
+
                 $commands[] = [
                     'command' => $command->getName(),
                     'description' => $command->getDescription(),

@@ -10,6 +10,15 @@ the first public release.
 
 ## [Unreleased]
 
+## [0.16.2] - 2026-09-29
+
+### Fixed
+
+- The bot command menu is now built from the commands registered on the
+  command bus (member-level, enabled ones) instead of
+  `tbe-essence.commands`, which held only `/help`. The app's own commands,
+  such as `/start`, were never published to Telegram.
+
 ## [0.16.1] - 2026-09-29
 
 ### Fixed

@@ -16,7 +16,7 @@ it('publishes the configured commands to the bot menu', function () {
 
     $this->assertTelegramSent(
         fn ($request) => $request->url() === 'https://api.telegram.org/bot'.$bot->bot_token.'/setMyCommands'
-            && count(json_decode((string) $request['commands'], true)) === count(config('tbe-essence.commands'))
+            && in_array('help', array_column(json_decode((string) $request['commands'], true), 'command'), true)
     );
 });
 
