@@ -13,6 +13,8 @@ use TelegramBotEssentials\Essence\Http\Requests\BotRequest;
 use TelegramBotEssentials\Essence\Http\Resources\BotResource;
 use TelegramBotEssentials\Essence\Models\Bot;
 use TelegramBotEssentials\Essence\Models\TelegramUser;
+use TelegramBotEssentials\Essence\Support\BotCommandMenu;
+use Throwable;
 
 class BotController extends Controller
 {
@@ -40,6 +42,7 @@ class BotController extends Controller
 
             TelegramUser::firstOrCreate(['peer_id' => $data['bot_owner_peer_id']]);
             $bot = Bot::create($data);
+            $this->registerCommandMenu($bot);
 
             $botResource = new BotResource($bot);
 
@@ -86,6 +89,19 @@ class BotController extends Controller
             'drop_pending_updates' => true,
             'secret_token' => $secretToken,
         ]);
+    }
+
+    /**
+     * The bot is usable without its command menu, so a failure here is
+     * logged rather than failing the request.
+     */
+    private function registerCommandMenu(Bot $bot): void
+    {
+        try {
+            app(BotCommandMenu::class)->register($bot);
+        } catch (Throwable $e) {
+            tbeLog('essence')->error('Failed to register commands for bot: '.$e->getMessage(), ['exception' => $e, 'bot_unique_id' => $bot->unique_id]);
+        }
     }
 
     /**
@@ -140,6 +156,7 @@ class BotController extends Controller
         if ($shouldRefreshSecret && $secretTokenPlain) {
             try {
                 $this->setWebhook($bot->bot_token, $bot->unique_id, $secretTokenPlain);
+                $this->registerCommandMenu($bot);
             } catch (TelegramSDKException $e) {
                 tbeLog('essence')->error('Failed to set webhook after bot token update: '.$e->getMessage(), ['exception' => $e, 'bot_unique_id' => $bot->unique_id]);
             }

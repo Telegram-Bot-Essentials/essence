@@ -10,6 +10,16 @@ the first public release.
 
 ## [Unreleased]
 
+## [0.16.1] - 2026-09-29
+
+### Fixed
+
+- Bots created or re-tokened through the `/bots` API now get their command
+  menu registered; before, only `tbe:set-webhook` did, so new bots showed no
+  commands.
+- `tbe:set-webhook --all` reports a bot that fails (for example a revoked
+  token) and carries on with the rest, exiting non-zero at the end.
+
 ## [0.16.0] - 2026-09-28
 
 ### Changed

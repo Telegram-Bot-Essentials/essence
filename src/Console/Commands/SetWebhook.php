@@ -3,15 +3,12 @@
 namespace TelegramBotEssentials\Essence\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\App;
-use TelegramBotEssentials\Essence\Contracts\ResolvesBotLocale;
 use TelegramBotEssentials\Essence\Models\Bot;
-use TelegramBotEssentials\Essence\Traits\CanResolveBotCommand;
+use TelegramBotEssentials\Essence\Support\BotCommandMenu;
+use Throwable;
 
 class SetWebhook extends Command
 {
-    use CanResolveBotCommand;
-
     /**
      * The name and signature of the console command.
      *
@@ -32,7 +29,7 @@ class SetWebhook extends Command
     /**
      * Execute the console command.
      */
-    public function handle(): void
+    public function handle(): int
     {
         $endpointTemplate = $this->option('endpoint')
             ?? config('tbe-essence.webhook_endpoint', '/api/{unique_id}/telegram/bot/webhook');
@@ -43,14 +40,26 @@ class SetWebhook extends Command
             if ($bots->isEmpty()) {
                 $this->error('No bots found');
 
-                return;
+                return self::FAILURE;
             }
 
+            $failed = 0;
+
+            // One bot with a revoked token must not stop the rest.
             foreach ($bots as $bot) {
-                $this->rotateWebhook($bot, $endpointTemplate);
+                try {
+                    $this->rotateWebhook($bot, $endpointTemplate);
+                } catch (Throwable $e) {
+                    $failed++;
+                    $this->error('Failed for bot '.$bot->unique_id.': '.$e->getMessage());
+                }
             }
 
-            return;
+            if ($failed > 0) {
+                $this->error($failed.' of '.$bots->count().' bots failed');
+            }
+
+            return $failed > 0 ? self::FAILURE : self::SUCCESS;
         }
 
         $uniqueID = $this->option('unique-id') ?? config('tbe-essence.main.unique_id');
@@ -60,10 +69,12 @@ class SetWebhook extends Command
         if (! $bot) {
             $this->error('Bot with unique id: '.$uniqueID.' not found');
 
-            return;
+            return self::FAILURE;
         }
 
         $this->rotateWebhook($bot, $endpointTemplate);
+
+        return self::SUCCESS;
     }
 
     private function rotateWebhook(Bot $bot, string $endpointTemplate): void
@@ -90,26 +101,7 @@ class SetWebhook extends Command
             'secret_token' => $secretToken,
         ]);
 
-        // A console command has no webhook request to hang a locale-setting
-        // listener off of, so this loop is the only chance to get each
-        // bot's command menu translated into the right locale.
-        App::setLocale(app(ResolvesBotLocale::class)->resolve($bot));
-
-        $commands = [];
-        foreach (config('tbe-essence.commands') as $command) {
-            $command = $this->resolveBotCommand($command);
-            $commands[] = [
-                'command' => $command->getName(),
-                'description' => $command->getDescription(),
-            ];
-        }
-
-        $telegram->setMyCommands([
-            'commands' => $commands,
-            'scope' => [
-                'type' => 'all_private_chats',
-            ],
-        ]);
+        app(BotCommandMenu::class)->register($bot);
 
         $this->info('Telegram webhook has been set for '.$bot->unique_id);
         $this->info('Bot url: https://t.me/'.$telegram->getMe()->username);
