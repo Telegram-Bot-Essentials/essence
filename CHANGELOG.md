@@ -10,6 +10,8 @@ the first public release.
 
 ## [Unreleased]
 
+## [0.16.3] - 2026-10-01
+
 ### Changed
 
 - Reworded the user-facing English and Persian strings to read more naturally; no keys or placeholders changed.
