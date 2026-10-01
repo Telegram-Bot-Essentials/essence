@@ -3,8 +3,8 @@
 return [
     'main' => [
         'text' => [
-            'response' => '❕ فرآیند با موفقیت لغو شد.',
-            'cancelDueToNewProcess' => '❕ فرآیند لغو شد، به دلیل شروع فرآیند جدید.',
+            'response' => '❕ لغو شد.',
+            'cancelDueToNewProcess' => '❕ چون کار جدیدی را شروع کردید، کار قبلی لغو شد.',
         ],
     ],
     'reply_key' => 'لغو فرآیند ❌',

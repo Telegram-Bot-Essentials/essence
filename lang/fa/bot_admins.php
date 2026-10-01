@@ -8,14 +8,14 @@ return [
                 ."\r\n❔ <b>مالک ربات:</b> <i>:botOwner</i>"
                 ."\r\n❔ <b>تعداد ادمین‌ها:</b> <i>:adminCount</i>"
                 ."\r\n"
-                ."\r\nمی‌توانید مدیران ربات را از طریق گزینه‌های زیر مدیریت کنید 👇",
+                ."\r\nبا دکمه‌های زیر می‌توانید مدیران ربات را مدیریت کنید 👇",
             'enterNewAdminId' => '❓ نام کاربری تلگرام یا آیدی عددی مدیر جدید را وارد کنید:',
-            'adminAddedSuccessfully' => '✅ مدیر با موفقیت اضافه شد.',
+            'adminAddedSuccessfully' => '✅ مدیر اضافه شد.',
         ],
         'answers' => [
             'addingNewAdmin' => 'در حال افزودن مدیر جدید...',
             'ownerInfo' => ':ownerName از تاریخ :fromDate مالک این ربات است.',
-            'adminRemoved' => 'مدیر ":adminName" با موفقیت حذف شد.',
+            'adminRemoved' => 'مدیر «:adminName» حذف شد.',
         ],
         'keys' => [
             'addNewAdmin' => '➕ افزودن مدیر جدید',

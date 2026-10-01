@@ -13,12 +13,12 @@ return [
         'answers' => [
             'botStatusUpdated' => 'وضعیت ربات :newStatus',
 
-            'botLanguage' => 'زبان ربات به :language تغییر یافت',
+            'botLanguage' => 'زبان ربات به :language تغییر کرد',
         ],
         'keys' => [
             'botLanguage' => '🌍 زبان :language',
             'manageGateways' => 'مدیریت درگاه‌ها 💵',
-            'manageCurrencies' => 'مدیریت ارز ها 🛠',
+            'manageCurrencies' => 'مدیریت ارزها 🛠',
             'botStatus' => 'وضعیت ربات :status',
         ],
     ],
@@ -27,7 +27,7 @@ return [
         'text' => [
             'information' => '⚙️ <b><i>درگاه‌ها</i></b>'
                 ."\r\n"
-                ."\r\n❕ درگاهی که می‌خواهید مدیریت کنید را انتخاب کنید",
+                ."\r\n❕ درگاه موردنظر را برای مدیریت انتخاب کنید",
         ],
         'answers' => [
         ],

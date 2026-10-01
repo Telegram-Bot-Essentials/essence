@@ -3,7 +3,7 @@
 return [
     'main' => [
         'text' => [
-            'confirmationQuestion' => 'آیا این اقدام را تأیید می‌کنید؟',
+            'confirmationQuestion' => 'مطمئن هستید؟',
         ],
         'keys' => [
             'accept' => 'تأیید',

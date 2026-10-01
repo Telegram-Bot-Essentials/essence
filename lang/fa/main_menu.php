@@ -3,7 +3,7 @@
 return [
     'main' => [
         'text' => [
-            'menu_changed' => '❕ منوی اصلی بارگذاری شد.',
+            'menu_changed' => '❕ به منوی اصلی برگشتید.',
         ],
     ],
     'reply_key' => 'منوی اصلی 🔰',

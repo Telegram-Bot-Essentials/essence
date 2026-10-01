@@ -3,7 +3,7 @@
 return [
     'text' => [
         'enterResourcesNewField' => 'مقدار جدید :field برای :resourceName را وارد کنید:',
-        'resourceFieldUpdated' => 'فیلد :field برای ":resource" با موفقیت به روزرسانی شد ✅.',
+        'resourceFieldUpdated' => ':field «:resource» به‌روزرسانی شد ✅',
     ],
 
     'status' => [
@@ -26,50 +26,50 @@ return [
     ],
 
     'callbackQuery' => [
-        'willBeAddedInTheFuture' => '❕ این قابلیت در آینده اضافه خواهد شد.',
+        'willBeAddedInTheFuture' => '❕ به‌زودی اضافه می‌شود.',
     ],
 
     'command' => [
-        'notFound' => '❕ دستور مورد نظر یافت نشد.',
-        'helpDescription' => 'دریافت لیست دستورات موجود',
+        'notFound' => '❕ چنین دستوری وجود ندارد.',
+        'helpDescription' => 'نمایش دستورات موجود',
         'availableCommands' => 'دستورات موجود:',
     ],
 
     'alerts' => [
-        'unableToActivateAttributeMissing' => 'امکان فعالسازی وجود ندارد، ویژگی مورد نیاز ":attribute" موجود نیست یا خالی است.',
-        'unableToSetDoneAttributeMissing' => 'ویژگی مورد نیاز ":attribute" موجود نیست یا مقدار ندارد.',
-        'botIsOff' => '❗️ ربات در حال حاضر غیرفعال است.',
-        'disabledFeature' => '❗️ قابلیت ":feature" در حال حاضر غیرفعال است.',
-        'invalidPageNumber' => '❗️ شماره صفحه هدف نامعتبر است.',
-        'samePageNumber' => '❗️ شماره صفحه فعلی با شماره صفحه هدف یکسان است.',
-        'outOfBoundPageNumber' => '❗️ شماره صفحه هدف خارج از محدوده است.',
-        'notFound' => '❗️ :resource مورد نظر پیدا نشد.',
-        'requestIsInvalid' => '❗️ درخواست نامعتبر است، لطفاً از کیبورد پاسخ استفاده کنید.',
-        'contextExpired' => '⏳ این مرحله منقضی شده است — لطفاً دوباره از منو شروع کنید.',
+        'unableToActivateAttributeMissing' => 'فعال‌سازی ممکن نیست؛ «:attribute» وجود ندارد یا خالی است.',
+        'unableToSetDoneAttributeMissing' => '«:attribute» وجود ندارد یا خالی است.',
+        'botIsOff' => '❗️ ربات الان غیرفعال است.',
+        'disabledFeature' => '❗️ «:feature» الان غیرفعال است.',
+        'invalidPageNumber' => '❗️ شماره صفحه درست نیست.',
+        'samePageNumber' => '❗️ همین الان در همین صفحه هستید.',
+        'outOfBoundPageNumber' => '❗️ این صفحه وجود ندارد.',
+        'notFound' => '❗️ :resource پیدا نشد.',
+        'requestIsInvalid' => '❗️ متوجه نشدم. لطفاً از دکمه‌های کیبورد استفاده کنید.',
+        'contextExpired' => '⏳ این مرحله منقضی شده. لطفاً دوباره از منو شروع کنید.',
     ],
 
     'messages' => [
-        'valueUpdatedSuccessfully' => '❕ مقدار با موفقیت به روزرسانی شد ✅',
-        'enterNewValueOfField' => '❓ مقدار :field را وارد کنید:',
+        'valueUpdatedSuccessfully' => '✅ ذخیره شد.',
+        'enterNewValueOfField' => '❓ مقدار جدید :field را بفرستید:',
         'deleteConfirmationQuestion' => 'مطمئنید می‌خواهید :resource ":resourceName" را حذف کنید؟',
     ],
 
     'keys' => [
         'generateInvoiceAndPay' => 'پرداخت 💵 - :price',
-        'bunchDeletion' => 'حذف دسته ای 🗑',
-        'bunchActivation' => 'فعالسازی دسته ای 🔥',
+        'bunchDeletion' => 'حذف گروهی 🗑',
+        'bunchActivation' => 'فعال‌سازی گروهی 🔥',
         'delete' => 'حذف 🗑',
         'back' => 'بازگشت 🔙',
     ],
 
     'lock-keys' => [
-        'waitingForFieldUpdate' => 'در انتظار تغییر :field',
+        'waitingForFieldUpdate' => 'در انتظار :field جدید',
     ],
 
     'answers' => [
-        'updatedResourceField' => 'در حال به روزرسانی فیلد :field برای ":resource"...',
-        'resourceFieldUpdatedSuccessfully' => ':resource با موفقیت به‌روزرسانی شد.',
-        'resourceDeletedSuccessfully' => ':resource با موفقیت حذف شد.',
+        'updatedResourceField' => 'در حال به‌روزرسانی :field «:resource»…',
+        'resourceFieldUpdatedSuccessfully' => ':resource به‌روزرسانی شد.',
+        'resourceDeletedSuccessfully' => ':resource حذف شد.',
     ],
 
     'roles' => [
