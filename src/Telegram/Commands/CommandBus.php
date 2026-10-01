@@ -25,9 +25,18 @@ class CommandBus
     /** @var array<string, CommandInterface> Keyed by alias (without leading slash). */
     private array $aliases = [];
 
+    /**
+     * Registered commands, highest priority first. uasort() is stable, so
+     * commands sharing a priority keep their registration order.
+     *
+     * @return array<string, CommandInterface>
+     */
     public function getCommands(): array
     {
-        return $this->commands;
+        $commands = $this->commands;
+        uasort($commands, fn (CommandInterface $a, CommandInterface $b) => $b->getPriority() <=> $a->getPriority());
+
+        return $commands;
     }
 
     /**

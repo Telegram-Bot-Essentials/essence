@@ -12,6 +12,9 @@ abstract class Command implements CommandInterface
 
     protected int $perm;
 
+    /** Where the command sits in the Telegram menu and /help: higher comes first, ties keep registration order. */
+    protected int $priority = 0;
+
     protected array $params = [];
 
     /** Maps a bound model's FQCN to the column its param value should be looked up by (default: "id"). */
@@ -41,6 +44,11 @@ abstract class Command implements CommandInterface
     public function getPerm(): int
     {
         return $this->perm;
+    }
+
+    public function getPriority(): int
+    {
+        return $this->priority;
     }
 
     public function isEnabled(): bool

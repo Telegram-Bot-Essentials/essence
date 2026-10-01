@@ -14,6 +14,8 @@ interface CommandInterface
 
     public function getPerm(): int;
 
+    public function getPriority(): int;
+
     public function isEnabled(): bool;
 
     public function setParams(array $params): void;
