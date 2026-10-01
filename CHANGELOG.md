@@ -10,6 +10,17 @@ the first public release.
 
 ## [Unreleased]
 
+### Changed
+
+- Reworded the user-facing English and Persian strings to read more naturally; no keys or placeholders changed.
+
+### Fixed
+
+- The inline lock and cancel buttons a `MessageMeta` puts on a message ("Locked For
+  Action", "Cancel") were hard-coded in English. They are translated now, in English
+  and Persian, and follow the user's locale. A label passed to `lockAction()` or
+  `cancelableLockAction()` is still used as given.
+
 ## [0.16.2] - 2026-09-29
 
 ### Fixed
