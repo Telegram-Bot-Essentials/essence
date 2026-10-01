@@ -1981,12 +1981,6 @@ parameters:
 			path: src/Telegram/Commands/CommandBus.php
 
 		-
-			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\Commands\\CommandBus\:\:getCommands\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Telegram/Commands/CommandBus.php
-
-		-
 			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\Commands\\CommandBus\:\:handler\(\) has parameter \$params with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -2115,36 +2109,6 @@ parameters:
 		-
 			message: '#^Cannot access property \$peer_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
 			identifier: property.nonObject
-			count: 1
-			path: src/Telegram/Commands/Member/HelpCommand.php
-
-		-
-			message: '#^Cannot call method getDescription\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Telegram/Commands/Member/HelpCommand.php
-
-		-
-			message: '#^Cannot call method getPerm\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Telegram/Commands/Member/HelpCommand.php
-
-		-
-			message: '#^Cannot call method isEnabled\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Telegram/Commands/Member/HelpCommand.php
-
-		-
-			message: '#^Parameter \#1 \$power of function hasAccess expects int\|null, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Telegram/Commands/Member/HelpCommand.php
-
-		-
-			message: '#^Parameter \#3 \.\.\.\$values of function sprintf expects bool\|float\|int\|string\|null, mixed given\.$#'
-			identifier: argument.type
 			count: 1
 			path: src/Telegram/Commands/Member/HelpCommand.php
 
