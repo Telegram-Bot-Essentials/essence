@@ -3,8 +3,8 @@
 return [
     'main' => [
         'text' => [
-            'response' => '❕ Process Cancelled successfully.',
-            'cancelDueToNewProcess' => '❕ Process cancelled, due to starting new process.',
+            'response' => '❕ Cancelled.',
+            'cancelDueToNewProcess' => '❕ Your previous action was cancelled because you started a new one.',
         ],
     ],
     'reply_key' => 'Cancel Process ❌',

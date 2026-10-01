@@ -3,7 +3,7 @@
 return [
     'main' => [
         'text' => [
-            'confirmationQuestion' => 'Do you confirm this action?',
+            'confirmationQuestion' => 'Are you sure?',
         ],
         'keys' => [
             'accept' => 'Accept',

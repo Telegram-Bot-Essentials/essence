@@ -5,7 +5,7 @@ return [
         'text' => [
             'information' => '⚙️ <b><i>Settings</i></b>'
                 ."\r\n"
-                ."\r\n❔ <b>Bot Status</b> :botStatus"
+                ."\r\n❔ <b>Bot status:</b> :botStatus"
                 ."\r\n"
                 ."\r\n❔ <b>Language:</b> :language"
                 ."\r\n❔ <b>Currency:</b> :defaultCurrency",
@@ -17,9 +17,9 @@ return [
         ],
         'keys' => [
             'botLanguage' => '🌍 Language :language',
-            'manageGateways' => 'Manage Gateways 💵',
-            'manageCurrencies' => 'Manage Currencies 🛠',
-            'botStatus' => 'Bot Status :status',
+            'manageGateways' => 'Manage gateways 💵',
+            'manageCurrencies' => 'Manage currencies 🛠',
+            'botStatus' => 'Bot status :status',
         ],
     ],
 
@@ -27,7 +27,7 @@ return [
         'text' => [
             'information' => '⚙️ <b><i>Gateways</i></b>'
                 ."\r\n"
-                ."\r\n❕ Choose the gateways you want to manage",
+                ."\r\n❕ Pick a gateway to manage",
         ],
         'answers' => [
         ],
@@ -45,30 +45,30 @@ return [
     'to_card' => [
         'name' => 'To Card',
         'text' => [
-            'information' => '⚙️ <b><i>Pay With Card</i></b>'
+            'information' => '⚙️ <b><i>Pay with card</i></b>'
                 ."\r\n"
-                ."\r\n❔ <b>Activation Status:</b> :activationStatus"
+                ."\r\n❔ <b>Activation status:</b> :activationStatus"
                 ."\r\n"
-                ."\r\n❔ <b>Payments Card Number:</b> <i>:paymentCardNumber</i>"
-                ."\r\n❔ <b>Payments Card Name:</b> <i>:paymentCardName</i>"
+                ."\r\n❔ <b>Payment card number:</b> <i>:paymentCardNumber</i>"
+                ."\r\n❔ <b>Payment card name:</b> <i>:paymentCardName</i>"
                 ."\r\n"
                 ."\r\n❔ <b>Transactions chat ID:</b> <i>:transactionsChatId</i>",
-            'changePaymentCardNumber' => '❓ Enter new payment card number: ',
-            'changePaymentCardName' => '❓ Enter new payment card name: ',
-            'transactionsChatId' => '❓ Enter new transactions chat ID: ',
+            'changePaymentCardNumber' => '❓ Send the new payment card number:',
+            'changePaymentCardName' => '❓ Send the new payment card name:',
+            'transactionsChatId' => '❓ Send the new transactions chat ID:',
         ],
         'answers' => [
-            'paymentCardNumber' => '⏳ Updating payment card number...',
-            'paymentCardName' => '⏳ Updating payment card name...',
-            'transactionsChatId' => '⏳ Updating transactions chat ID...',
+            'paymentCardNumber' => '⏳ Updating the payment card number…',
+            'paymentCardName' => '⏳ Updating the payment card name…',
+            'transactionsChatId' => '⏳ Updating the transactions chat ID…',
 
             'payWithCardStatusUpdated' => 'Pay with card Status :newStatus',
         ],
         'keys' => [
-            'payWithCardStatus' => 'Pay with Card Status :statusEmoji',
-            'paymentCardNumber' => '✏️ Payment Card Number',
-            'paymentCardName' => '✏️ Payment Card Name',
-            'transactionsChatId' => '✏️ Transactions Chat ID',
+            'payWithCardStatus' => 'Pay with card status :statusEmoji',
+            'paymentCardNumber' => '✏️ Payment card number',
+            'paymentCardName' => '✏️ Payment card name',
+            'transactionsChatId' => '✏️ Transactions chat ID',
         ],
     ],
 
@@ -77,16 +77,16 @@ return [
         'text' => [
             'information' => '⚙️ <b><i>Zibal</i></b>'
                 ."\r\n"
-                ."\r\n❔ <b>Activation Status:</b> :activationStatus"
+                ."\r\n❔ <b>Activation status:</b> :activationStatus"
                 ."\r\n"
                 ."\r\n❔ <b>Zibal/Merchant:</b> <tg-spoiler>:zibalMerchant</tg-spoiler>",
-            'setMerchant' => '❓ Enter new zibal/merchant: ',
+            'setMerchant' => '❓ Send the new Zibal merchant:',
         ],
         'answers' => [
-            'updatingMerchant' => '⏳ Updating zibal/merchant...',
+            'updatingMerchant' => '⏳ Updating the Zibal merchant…',
         ],
         'keys' => [
-            'activation' => 'Zibal Status :statusEmoji',
+            'activation' => 'Zibal status :statusEmoji',
             'merchant' => '✏️ Merchant',
         ],
     ],
@@ -96,16 +96,16 @@ return [
         'text' => [
             'information' => '⚙️ <b><i>Zarinpal</i></b>'
                 ."\r\n"
-                ."\r\n❔ <b>Activation Status:</b> :activationStatus"
+                ."\r\n❔ <b>Activation status:</b> :activationStatus"
                 ."\r\n"
                 ."\r\n❔ <b>Merchant ID:</b> <tg-spoiler>:merchantID</tg-spoiler>",
-            'setMerchant' => '❓ Enter new zarinpal/merchantID: ',
+            'setMerchant' => '❓ Send the new Zarinpal merchant ID:',
         ],
         'answers' => [
-            'updatingToken' => '⏳ Updating zarinpal/merchantID...',
+            'updatingToken' => '⏳ Updating the Zarinpal merchant ID…',
         ],
         'keys' => [
-            'activation' => 'Zarinpal Status :statusEmoji',
+            'activation' => 'Zarinpal status :statusEmoji',
             'merchantID' => '✏️ Merchant ID',
         ],
     ],
@@ -115,14 +115,14 @@ return [
         'text' => [
             'information' => '⚙️ <b><i>Wallet</i></b>'
                 ."\r\n"
-                ."\r\n❔ <b>Activation Status:</b> :activationStatus"
+                ."\r\n❔ <b>Activation status:</b> :activationStatus"
                 ."\r\n"
                 ."\r\n❔ <b>Bot currency:</b> :botCurrency",
         ],
         'answers' => [
         ],
         'keys' => [
-            'activation' => 'Wallet Status :statusEmoji',
+            'activation' => 'Wallet status :statusEmoji',
         ],
     ],
 

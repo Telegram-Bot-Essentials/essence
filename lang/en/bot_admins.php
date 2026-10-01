@@ -5,20 +5,20 @@ return [
         'text' => [
             'information' => '⚙️ <b><i>Admins</i></b>'
                 ."\r\n"
-                ."\r\n❔ <b>Bot Owner:</b> <i>:botOwner</i>"
-                ."\r\n❔ <b>Admin Count:</b> <i>:adminCount</i>"
+                ."\r\n❔ <b>Bot owner:</b> <i>:botOwner</i>"
+                ."\r\n❔ <b>Admins:</b> <i>:adminCount</i>"
                 ."\r\n"
-                ."\r\nYou can manage bot admins by options in the below 👇",
-            'enterNewAdminId' => '❓ Enter new admin\'s Telegram Username or Peer ID: ',
-            'adminAddedSuccessfully' => '✅ Admin added successfully.',
+                ."\r\nUse the buttons below to manage the bot's admins 👇",
+            'enterNewAdminId' => '❓ Send the new admin\'s Telegram username or ID:',
+            'adminAddedSuccessfully' => '✅ Admin added.',
         ],
         'answers' => [
-            'addingNewAdmin' => 'Adding new admin...',
-            'ownerInfo' => ':ownerName is owner of this bot from date :fromDate',
-            'adminRemoved' => 'Admin ":adminName" removed successfully.',
+            'addingNewAdmin' => 'Adding a new admin…',
+            'ownerInfo' => ':ownerName has owned this bot since :fromDate',
+            'adminRemoved' => 'Admin ":adminName" removed.',
         ],
         'keys' => [
-            'addNewAdmin' => 'Add new Admin ➕',
+            'addNewAdmin' => 'Add new admin ➕',
             'removeAdmin' => ':adminName 🗑',
             'owner' => 'Owner - :ownerName 👑',
         ],

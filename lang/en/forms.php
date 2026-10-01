@@ -40,7 +40,7 @@ return [
     ],
 
     'summary' => [
-        'title' => 'Please review',
+        'title' => 'Review your answers',
     ],
 
     'notice' => [
@@ -52,9 +52,9 @@ return [
     'expired' => '⌛ This form expired after being left idle, so it was cancelled.',
 
     'errors' => [
-        'invalidChoice' => '❗️ Please pick one of the offered options.',
-        'useButtons' => '❗️ Please use the buttons below.',
-        'outdated' => 'That button is outdated.',
-        'incomplete' => '❗️ Some answers are missing or no longer valid, please review them.',
+        'invalidChoice' => '❗️ Pick one of the options below.',
+        'useButtons' => '❗️ Use the buttons below to answer.',
+        'outdated' => 'That button has expired.',
+        'incomplete' => '❗️ Some answers are missing or no longer valid. Please check them.',
     ],
 ];
