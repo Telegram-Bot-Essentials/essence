@@ -134,3 +134,45 @@ it('rejects an alias that collides with an existing command name', function () {
 
     expect(fn () => $bus->addCommand($clashing))->toThrow(LogicException::class);
 });
+
+class LowPriorityCommand extends Command
+{
+    protected string $name = 'low';
+
+    protected int $perm = 0;
+
+    public function handle(): ?bool
+    {
+        return true;
+    }
+}
+
+class HighPriorityCommand extends Command
+{
+    protected string $name = 'high';
+
+    protected int $perm = 0;
+
+    protected int $priority = 100;
+
+    public function handle(): ?bool
+    {
+        return true;
+    }
+}
+
+it('orders commands by priority, highest first', function () {
+    $bus = new CommandBus;
+    $bus->addCommand(LowPriorityCommand::class);
+    $bus->addCommand(HighPriorityCommand::class);
+
+    expect(array_keys($bus->getCommands()))->toBe(['high', 'low']);
+});
+
+it('keeps registration order between commands of equal priority', function () {
+    $bus = new CommandBus;
+    $bus->addCommand(LowPriorityCommand::class);
+    $bus->addCommand(AppGreetCommand::class);
+
+    expect(array_keys($bus->getCommands()))->toBe(['low', 'greet']);
+});
