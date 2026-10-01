@@ -10,6 +10,18 @@ the first public release.
 
 ## [Unreleased]
 
+### Added
+
+- Commands take a `protected int $priority` (default `0`). The command bus
+  returns commands highest priority first, which sets their order in the
+  Telegram menu and in `/help`; commands with equal priority keep their
+  registration order.
+
+### Removed
+
+- The `tbe-essence.commands` config key. Nothing has read it since 0.16.2;
+  order commands with `$priority` instead.
+
 ## [0.16.3] - 2026-10-01
 
 ### Changed
