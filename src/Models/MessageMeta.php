@@ -124,7 +124,7 @@ class MessageMeta extends Model
             ->inline()
             ->row([
                 Keyboard::inlineButton([
-                    'text' => $customEmoji.' '.($lockMessage ?? 'Locked For Action'),
+                    'text' => $customEmoji.' '.($lockMessage ?? __('tbe::message_meta.main.keys.locked')),
                     'callback_data' => encodeCallback(self::$type, 'action_is_locked', [$this->id]),
                 ]),
             ]);
@@ -158,13 +158,13 @@ class MessageMeta extends Model
             ->inline()
             ->row([
                 Keyboard::inlineButton([
-                    'text' => '🔒 '.($lockMessage ?? 'Locked For Action'),
+                    'text' => '🔒 '.($lockMessage ?? __('tbe::message_meta.main.keys.locked')),
                     'callback_data' => encodeCallback(self::$type, 'action_is_locked', [$this->id]),
                 ]),
             ])
             ->row([
                 Keyboard::inlineButton([
-                    'text' => '🗑️ Cancel',
+                    'text' => '🗑️ '.__('tbe::message_meta.main.keys.cancel'),
                     'callback_data' => encodeCallback(self::$type, 'cancel_action', [$this->id]),
                 ]),
             ]);
