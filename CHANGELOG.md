@@ -10,6 +10,8 @@ the first public release.
 
 ## [Unreleased]
 
+## [0.16.4] - 2026-10-01
+
 ### Added
 
 - Commands take a `protected int $priority` (default `0`). The command bus
