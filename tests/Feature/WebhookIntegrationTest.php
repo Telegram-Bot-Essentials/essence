@@ -22,7 +22,7 @@ it('replies with the main menu text when its reply key button is pressed', funct
 
     $this->assertTelegramSent(
         fn ($request) => $request->url() === 'https://api.telegram.org/bot'.$bot->bot_token.'/sendMessage'
-            && str_contains((string) $request['text'], 'Main Menu loaded')
+            && str_contains((string) $request['text'], 'Back at the main menu')
     );
 });
 
