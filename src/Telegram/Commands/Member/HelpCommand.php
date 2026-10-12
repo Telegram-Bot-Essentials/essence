@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace TelegramBotEssentials\Essence\Telegram\Commands\Member;
 
-use TelegramBotEssentials\Essence\Enums\Roles;
 use TelegramBotEssentials\Essence\Telegram\Commands\Command;
 
 class HelpCommand extends Command
@@ -12,8 +11,6 @@ class HelpCommand extends Command
     protected string $name = 'help';
 
     protected array $aliases = ['listcommands'];
-
-    protected int $perm = Roles::MEMBER->value;
 
     protected function description(): string
     {
@@ -28,7 +25,7 @@ class HelpCommand extends Command
             if (! $command->isEnabled()) {
                 continue;
             }
-            if (! hasAccess($command->getPerm())) {
+            if (! canUseHandler($command)) {
                 continue;
             }
 
