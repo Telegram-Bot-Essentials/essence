@@ -10,6 +10,8 @@ the first public release.
 
 ## [Unreleased]
 
+## [0.18.1] - 2026-10-12
+
 ### Fixed
 
 - Resolving a conversation reads before it inserts. It used to attempt an
