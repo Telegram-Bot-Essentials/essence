@@ -14,8 +14,6 @@ class FormQuery extends CallbackQuery
 {
     protected string $type = FormState::TYPE;
 
-    protected int $perm = 0;
-
     public function pick(int $step, string $value): void
     {
         $state = FormState::fromStateString(wHook()->requestState());
