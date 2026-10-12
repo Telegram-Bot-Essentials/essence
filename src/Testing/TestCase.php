@@ -78,18 +78,28 @@ abstract class TestCase extends Orchestra
      * auto-creating a fresh one - pair it with grant() to test a handler
      * that needs a permission.
      *
-     * @param  array<string, mixed>  $attributes
+     * @param  array<string, mixed>  $attributes  bot_users columns, plus
+     *                                            state and menu for the private chat
      */
     protected function makeBotUser(Bot $bot, int $peerId, array $attributes = []): BotUser
     {
         TelegramUser::factory()->create(['peer_id' => $peerId]);
 
-        return BotUser::factory()->create(array_merge([
+        // State and menu live on the conversation; given here they go to
+        // the user's private chat, where a test's updates come from.
+        $conversation = array_intersect_key($attributes, array_flip(['state', 'menu']));
+
+        $user = BotUser::factory()->create(array_merge([
             'bot_id' => $bot->id,
             'telegram_user_peer_id' => $peerId,
-            'state' => null,
             'suspend' => false,
-        ], $attributes));
+        ], array_diff_key($attributes, $conversation)));
+
+        if ($conversation !== []) {
+            $user->privateConversation()->update($conversation);
+        }
+
+        return $user;
     }
 
     /**
