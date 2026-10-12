@@ -129,7 +129,7 @@ class ReplyKeyBus
         if (! $resolvedKey->isEnabled()) {
             return;
         }
-        if (! hasAccess($resolvedKey->getPerm())) {
+        if (! canUseHandler($resolvedKey)) {
             return;
         }
         $currentState = wHook()->user()->state;

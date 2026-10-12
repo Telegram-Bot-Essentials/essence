@@ -6,7 +6,7 @@ interface ReplyKeyInterface
 {
     public function getText(): string;
 
-    public function getPerm(): int;
+    public function getPermission(): ?string;
 
     public function getResponse(): string;
 

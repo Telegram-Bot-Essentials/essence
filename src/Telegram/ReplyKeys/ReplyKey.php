@@ -2,9 +2,12 @@
 
 namespace TelegramBotEssentials\Essence\Telegram\ReplyKeys;
 
-abstract class ReplyKey implements ReplyKeyInterface
+use TelegramBotEssentials\Essence\Contracts\DeclaresPermission;
+use TelegramBotEssentials\Essence\Traits\HasPermission;
+
+abstract class ReplyKey implements DeclaresPermission, ReplyKeyInterface
 {
-    protected int $perm = 0;
+    use HasPermission;
 
     /**
      * The button's label, calling __() directly rather than storing a key
@@ -25,11 +28,6 @@ abstract class ReplyKey implements ReplyKeyInterface
     public function getText(): string
     {
         return $this->text();
-    }
-
-    public function getPerm(): int
-    {
-        return $this->perm;
     }
 
     public function getResponse(): string
