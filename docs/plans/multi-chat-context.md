@@ -1,6 +1,6 @@
 # Plan: multi-chat context (groups, supergroups, forum topics)
 
-Status: **proposed** — open decisions at the bottom must be settled before Phase 1.
+Status: **in progress** — Phase 0 shipped in 0.17.1; decisions settled 2026-10-12 (see bottom).
 
 ## Problem
 
@@ -55,7 +55,7 @@ Split **who** (`BotUser`) from **where** (chat):
 
 ## Phases (one release each)
 
-### Phase 0 — guard patch (0.16.5), ship now
+### Phase 0 — guard patch (0.17.1), shipped
 
 Drop non-private `message` / `callback_query` updates in `TelegramBotAuthentication`, **before**
 `fetchUserData()` (so no `BotUser` is minted and `markActive` doesn't fire for group lurkers).
@@ -67,7 +67,7 @@ Drop non-private `message` / `callback_query` updates in `TelegramBotAuthenticat
 
 Fixes all four bugs above in production. Superseded later by default-`Private` scope.
 
-### Phase 1 — chat context + per-conversation state (0.17, non-breaking)
+### Phase 1 — chat context + per-conversation state (0.18, breaking)
 
 - `wHook()->chat()`, `chatId()`, `threadId()`, `conversation()`, filled from `message.chat` /
   `callbackQuery.message.chat`; null for chatless inline traffic.
@@ -113,14 +113,17 @@ Fixes all four bugs above in production. Superseded later by default-`Private` s
 
 After all companions have migrated off `BotUser::state` / `changeState()`.
 
-## Open decisions
+## Decisions (2026-10-12)
 
-1. **State granularity** — user × chat only? Also chat-shared state (e.g. a group settings
-   form any admin can continue)? Separate state per forum topic?
-2. **First real group feature** (from the other project using essence) — becomes the
-   Phase 2 acceptance test.
-3. **Errors in group context** — post in the group or DM the user (DM fails if they never
-   started the bot)?
+1. **Breaking, no shims.** Like the 0.17 permissions wave: `bot_users.state`,
+   `changeState()` and `addParamToState()` go away in Phase 1 and state lives on the
+   conversation. Essence, every companion and vshop convert in the same release wave. This
+   replaces the backward-compatibility strategy above and folds Phase 4 into Phase 1.
+2. **State is keyed by user × chat × topic** (`bot_user_id, chat_id, thread_id`). No
+   chat-shared state for now.
+3. **Errors in a group reply in the group** (and topic) where they happened, since a DM fails
+   for users who never started the bot.
+4. **First real group feature** — still open; it becomes the Phase 2 acceptance test.
 
 ## Related
 
