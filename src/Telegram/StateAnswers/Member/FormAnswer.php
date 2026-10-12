@@ -18,8 +18,6 @@ class FormAnswer extends StateAnswer
 {
     protected string $type = FormState::TYPE;
 
-    protected int $perm = 0;
-
     /** @return list<string> */
     public function getAllowedFields(): array
     {
