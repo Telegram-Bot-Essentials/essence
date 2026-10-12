@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Testing\TestResponse;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Symfony\Component\HttpFoundation\Response;
-use TelegramBotEssentials\Essence\Enums\Roles;
+use TelegramBotEssentials\Essence\Contracts\AuthorizesAccess;
 use TelegramBotEssentials\Essence\Models\Bot;
 use TelegramBotEssentials\Essence\Models\BotUser;
 use TelegramBotEssentials\Essence\Models\TelegramUser;
@@ -75,8 +75,8 @@ abstract class TestCase extends Orchestra
     /**
      * Pre-create a bot's user at a given Telegram peer id, so a subsequent
      * postWebhookUpdate() with the same $peerId finds this row instead of
-     * auto-creating a fresh member-level one - the only way to test a
-     * role-gated handler (e.g. an admin-only ReplyKey).
+     * auto-creating a fresh one - pair it with grant() to test a handler
+     * that needs a permission.
      *
      * @param  array<string, mixed>  $attributes
      */
@@ -87,10 +87,27 @@ abstract class TestCase extends Orchestra
         return BotUser::factory()->create(array_merge([
             'bot_id' => $bot->id,
             'telegram_user_peer_id' => $peerId,
-            'power' => Roles::MEMBER->value,
             'state' => null,
             'suspend' => false,
         ], $attributes));
+    }
+
+    /**
+     * Let $user hold $permissions under essence's default access model,
+     * which on its own only lets the bot owner and developer through.
+     * Returns $user, so it wraps makeBotUser().
+     */
+    protected function grant(BotUser $user, string ...$permissions): BotUser
+    {
+        if (! app(AuthorizesAccess::class) instanceof GrantingAuthorizer) {
+            app()->instance(AuthorizesAccess::class, new GrantingAuthorizer);
+        }
+
+        $authorizer = app(AuthorizesAccess::class);
+        assert($authorizer instanceof GrantingAuthorizer);
+        $authorizer->grant($user, ...$permissions);
+
+        return $user;
     }
 
     /**
