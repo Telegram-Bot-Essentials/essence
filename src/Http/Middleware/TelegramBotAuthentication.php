@@ -14,6 +14,7 @@ use TelegramBotEssentials\Essence\Events\BotWebhookInitialized;
 use TelegramBotEssentials\Essence\Exceptions\WebhookAuthException;
 use TelegramBotEssentials\Essence\Models\Bot;
 use TelegramBotEssentials\Essence\Models\BotUser;
+use TelegramBotEssentials\Essence\Models\Conversation;
 use TelegramBotEssentials\Essence\Models\TelegramUser;
 use TelegramBotEssentials\Essence\Support\WebhookContext;
 
@@ -79,7 +80,7 @@ class TelegramBotAuthentication
 
         try {
             $botUser = $this->fetchUserData();
-            wHook()->setUser($botUser);
+            wHook()->setUser($botUser, self::conversationFor($botUser));
 
             // An update can only reach us from someone who has not blocked the bot
             // and whose account still exists, so any inbound update other than the
@@ -136,6 +137,26 @@ class TelegramBotAuthentication
         $botUser->interact();
 
         return $botUser;
+    }
+
+    /**
+     * The conversation an update belongs to: its chat and forum topic. An
+     * update without a chat (an inline query, a press on an inline-mode
+     * message, a private my_chat_member) belongs to the private chat.
+     */
+    private static function conversationFor(BotUser $botUser): Conversation
+    {
+        $update = wHook()->update();
+        $message = $update->message ?? $update->callbackQuery?->message;
+        $chatId = $message?->chat?->id;
+
+        if ($message === null || ! is_numeric($chatId)) {
+            return $botUser->privateConversation();
+        }
+
+        $threadId = $message->get('is_topic_message') === true ? $message->get('message_thread_id') : 0;
+
+        return $botUser->conversationIn((int) $chatId, is_numeric($threadId) ? (int) $threadId : 0);
     }
 
     /**
