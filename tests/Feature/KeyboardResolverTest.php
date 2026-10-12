@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Telegram\Bot\Keyboard\Keyboard;
 use TelegramBotEssentials\Essence\Contracts\ResolvesKeyboard;
-use TelegramBotEssentials\Essence\Models\BotUser;
+use TelegramBotEssentials\Essence\Models\Conversation;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Admin\AdminPanelKey;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Member\MainMenuKey;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKey;
@@ -58,9 +58,9 @@ beforeEach(function () {
 it('uses a rebound resolver for every replyKeyboard() call', function () {
     app()->bind(ResolvesKeyboard::class, fn () => new class implements ResolvesKeyboard
     {
-        public function for(BotUser $user): Keyboard
+        public function for(Conversation $conversation): Keyboard
         {
-            return Keyboard::make()->row(['custom '.$user->telegram_user_peer_id]);
+            return Keyboard::make()->row(['custom '.$conversation->chat_id]);
         }
     });
 
@@ -70,7 +70,7 @@ it('uses a rebound resolver for every replyKeyboard() call', function () {
 it('shows the menu named on the user, including ones beyond main and admin', function () {
     config(['tbe-essence.keyboard.menus.support' => [[KeyboardSupportKey::class, MainMenuKey::class]]]);
 
-    $this->member->update(['menu' => 'support']);
+    $this->member->privateConversation()->changeMenu('support');
 
     expect(keyboardRows(replyKeyboard($this->member->fresh())))
         ->toBe([['Support', __('tbe::main_menu.reply_key')]]);
@@ -79,7 +79,7 @@ it('shows the menu named on the user, including ones beyond main and admin', fun
 it('falls back to the main menu for a menu nothing configures', function () {
     config(['tbe-essence.keyboard.menus.main' => [[KeyboardSupportKey::class]]]);
 
-    $this->member->update(['menu' => 'gone']);
+    $this->member->privateConversation()->changeMenu('gone');
 
     expect(keyboardRows(replyKeyboard($this->member->fresh())))->toBe([['Support']]);
 });
@@ -104,7 +104,7 @@ it('removes the reply keyboard when keyboards are turned off', function () {
 
     expect(replyKeyboard($this->member)->toArray())->toMatchArray(['remove_keyboard' => true]);
 
-    $this->member->changeState(encodeAnswerState('STEPWISE', 'answer', ['step' => 'other']));
+    $this->member->privateConversation()->changeState(encodeAnswerState('STEPWISE', 'answer', ['step' => 'other']));
 
     // No automatic Cancel key either.
     expect(replyKeyboard($this->member)->toArray())->toMatchArray(['remove_keyboard' => true]);
@@ -113,13 +113,13 @@ it('removes the reply keyboard when keyboards are turned off', function () {
 it('still shows a state answer its own keyboard when keyboards are turned off', function () {
     config(['tbe-essence.keyboard.enabled' => false]);
 
-    $this->member->changeState(encodeAnswerState('STEPWISE', 'answer', ['step' => 'code']));
+    $this->member->privateConversation()->changeState(encodeAnswerState('STEPWISE', 'answer', ['step' => 'code']));
 
     expect(keyboardRows(replyKeyboard($this->member)))->toBe([['Skip', 'Cancel']]);
 });
 
-it('stores any menu name on the user', function () {
-    $this->member->update(['menu' => 'a-menu-the-old-enum-never-had']);
+it('stores any menu name on the conversation', function () {
+    $this->member->privateConversation()->changeMenu('a-menu-the-old-enum-never-had');
 
-    expect($this->member->fresh()->menu)->toBe('a-menu-the-old-enum-never-had');
+    expect($this->member->privateConversation()->menu)->toBe('a-menu-the-old-enum-never-had');
 });

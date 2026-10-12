@@ -44,7 +44,7 @@ it('leaves the sender\'s private-chat state alone', function () {
 
     $this->postWebhookUpdate($this->bot, inGroup($this->makeMessageUpdate('/start', peerId: 4002)))->assertOk();
 
-    expect($user->fresh()->state)->toBe('SOMEFLOW|step');
+    expect($user->privateConversation()->state)->toBe('SOMEFLOW|step');
 });
 
 it('drops a button press on a group message', function () {

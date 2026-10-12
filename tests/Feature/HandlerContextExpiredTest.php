@@ -46,7 +46,7 @@ it('turns HandlerContextExpired into an expiry notice and clears the stuck state
             && str_contains((string) $request['text'], __('tbe::general.alerts.contextExpired'))
     );
 
-    expect($bot->botUsers()->where('telegram_user_peer_id', 555)->sole()->state)->toBeNull();
+    expect($bot->botUsers()->where('telegram_user_peer_id', 555)->sole()->privateConversation()->state)->toBeNull();
 });
 
 it('does not recurse into itself when it fails with no webhook context', function () {

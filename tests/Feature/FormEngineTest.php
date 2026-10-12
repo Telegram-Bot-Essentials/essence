@@ -92,7 +92,7 @@ function tgMarkup(array $call): array
 
 function formStateNow(): ?FormState
 {
-    return FormState::fromStateString(test()->bot->botUsers()->where('telegram_user_peer_id', FORM_PEER)->sole()->state);
+    return FormState::fromStateString(test()->bot->botUsers()->where('telegram_user_peer_id', FORM_PEER)->sole()->privateConversation()->state);
 }
 
 /** The buttons of the reply keyboard currently showing: the last message that carried one. */
@@ -221,7 +221,7 @@ it('offers Finish once only optional steps are left, and Finish skips them and s
 
     say(label('confirm'));
 
-    expect($this->bot->botUsers()->where('telegram_user_peer_id', FORM_PEER)->sole()->state)->toBeNull()
+    expect($this->bot->botUsers()->where('telegram_user_peer_id', FORM_PEER)->sole()->privateConversation()->state)->toBeNull()
         ->and(sentTexts())->toContain('Done');
 });
 
@@ -421,7 +421,7 @@ it('shows the summary once everything is answered and completes on Confirm', fun
     [$answers, $ctx] = SampleForm::$completed;
     expect($answers)->toBe(['code' => 'SUMMER', 'type' => 'percentage', 'amount' => 20.0, 'max_discount' => '50', 'category' => 'c3'])
         ->and($ctx)->toBe(['lastPage' => 2])
-        ->and($this->bot->botUsers()->where('telegram_user_peer_id', FORM_PEER)->sole()->state)->toBeNull()
+        ->and($this->bot->botUsers()->where('telegram_user_peer_id', FORM_PEER)->sole()->privateConversation()->state)->toBeNull()
         ->and(sentTexts())->toContain('Created')
         ->and(tgCalls('editMessageText')->pluck('text')->all())->toBe([__('tbe::forms.prompt.picked'), 'Refreshed list']);
 });
@@ -443,7 +443,7 @@ it('cancels: gives the starting message back and runs onCancel', function () {
 
     say(__('tbe::cancel_process.reply_key'));
 
-    expect($this->bot->botUsers()->where('telegram_user_peer_id', FORM_PEER)->sole()->state)->toBeNull()
+    expect($this->bot->botUsers()->where('telegram_user_peer_id', FORM_PEER)->sole()->privateConversation()->state)->toBeNull()
         ->and(SampleForm::$cancelled)->toBe([['lastPage' => 2]]);
 });
 
@@ -452,11 +452,11 @@ it('expires a form left idle, cancelling it', function () {
     $user = $this->bot->botUsers()->where('telegram_user_peer_id', FORM_PEER)->sole();
     $state = formStateNow();
     $state->at = time() - 90000;
-    $user->changeState($state->toStateString());
+    $user->privateConversation()->changeState($state->toStateString());
 
     say('SUMMER');
 
-    expect($this->bot->botUsers()->where('telegram_user_peer_id', FORM_PEER)->sole()->state)->toBeNull()
+    expect($this->bot->botUsers()->where('telegram_user_peer_id', FORM_PEER)->sole()->privateConversation()->state)->toBeNull()
         ->and(tgCalls('sendMessage')->last()['text'])->toBe(__('tbe::forms.expired'))
         ->and(SampleForm::$cancelled)->toBe([['lastPage' => 2]]);
 });
@@ -514,5 +514,5 @@ function fillSampleUntilCategory(): void
 it('keeps the whole state small however long the transcript grows', function () {
     fillSample();
 
-    expect(strlen(test()->bot->botUsers()->where('telegram_user_peer_id', FORM_PEER)->sole()->state))->toBeLessThan(600);
+    expect(strlen(test()->bot->botUsers()->where('telegram_user_peer_id', FORM_PEER)->sole()->privateConversation()->state))->toBeLessThan(600);
 });

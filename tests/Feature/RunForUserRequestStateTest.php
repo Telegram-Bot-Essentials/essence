@@ -22,7 +22,7 @@ it('does not lose requestState when a handler runs a callback for its own user',
     stateAnswerBus()->addStateAnswer(RunsForUserStateAnswer::class);
 
     $bot = $this->makeBot();
-    $this->makeBotUser($bot, 777)->changeState(encodeAnswerState('RUNS_FOR_USER', 'answer'));
+    $this->makeBotUser($bot, 777)->privateConversation()->changeState(encodeAnswerState('RUNS_FOR_USER', 'answer'));
 
     $this->postWebhookUpdate($bot, $this->makeMessageUpdate('go', peerId: 777))
         ->assertOk();

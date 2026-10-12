@@ -19,7 +19,7 @@ class RunsForUserStateAnswer extends StateAnswer
 
     public function answer(): void
     {
-        wHook()->user()->changeState();
+        wHook()->conversation()->changeState();
 
         wHook()->runForUser(wHook()->user(), fn () => null);
     }

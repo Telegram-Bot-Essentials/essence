@@ -71,7 +71,7 @@ it('never lets a text matcher take a message a reply key handles', function () {
 });
 
 it('never lets a text matcher take an answer a state answer handles', function () {
-    $this->bot->botUsers()->where('telegram_user_peer_id', 777)->sole()
+    $this->bot->botUsers()->where('telegram_user_peer_id', 777)->sole()->privateConversation()
         ->changeState(encodeAnswerState('STEPWISE', 'answer', ['step' => 'text']));
 
     $this->postWebhookUpdate($this->bot, urlUpdate('https://example.com/v/1'))->assertOk();
@@ -81,7 +81,7 @@ it('never lets a text matcher take an answer a state answer handles', function (
 });
 
 it('offers text a state answer declined to the text matchers', function () {
-    $this->bot->botUsers()->where('telegram_user_peer_id', 777)->sole()
+    $this->bot->botUsers()->where('telegram_user_peer_id', 777)->sole()->privateConversation()
         ->changeState(encodeAnswerState('STEPWISE', 'answer', ['step' => 'photo']));
 
     $this->postWebhookUpdate($this->bot, urlUpdate('https://example.com/v/1'))->assertOk();
