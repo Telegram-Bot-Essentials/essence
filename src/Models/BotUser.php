@@ -140,7 +140,9 @@ class BotUser extends Model
     public function conversationIn(int $chatId, int $threadId = 0): Conversation
     {
         /** @var Conversation $conversation */
-        $conversation = $this->conversations()->createOrFirst(
+        // Read first; only a miss tries the insert, which the unique key
+        // turns into a read if a concurrent update created the row.
+        $conversation = $this->conversations()->firstOrCreate(
             ['chat_id' => $chatId, 'thread_id' => $threadId],
             ['bot_id' => $this->getAttribute('bot_id')],
         );
