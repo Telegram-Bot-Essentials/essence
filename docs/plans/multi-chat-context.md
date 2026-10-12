@@ -1,6 +1,7 @@
 # Plan: multi-chat context (groups, supergroups, forum topics)
 
-Status: **in progress** — Phase 0 shipped in 0.17.1; decisions settled 2026-10-12 (see bottom).
+Status: **in progress** — Phase 0 shipped in 0.17.1; Phase 1 (conversations) in 0.18.0;
+decisions settled 2026-10-12 (see bottom).
 
 ## Problem
 
@@ -78,6 +79,10 @@ Fixes all four bugs above in production. Superseded later by default-`Private` s
   or the shim writes state into whatever group the admin is in.
 - `markActive` only on private-chat updates — presence in a group doesn't prove the user
   hasn't blocked the bot in DM.
+- Shipped in 0.18 as the storage and API move only: `conversations` (no `bot_chats` yet),
+  `wHook()->conversation()`, `WebhookContext` chat/thread. The items below that only matter
+  once group updates get through (private-only `markActive`, `has_private_chat`) move to
+  Phase 2, where they can be tested.
 - `has_private_chat` flag on `BotUser`. Announcements / campaigns broadcasts filter on it, and
   `BotUserStatus` must not mark group-only users blocked on "bot can't initiate conversation".
   Cross-package change — coordinate the release wave.
