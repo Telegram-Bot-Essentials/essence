@@ -10,6 +10,8 @@ the first public release.
 
 ## [Unreleased]
 
+## [0.17.0] - 2026-10-12
+
 Access moves from numeric power levels to named permissions. This release is
 breaking: every handler that set `protected int $perm` must name a
 permission instead, and the app moves its existing admins over itself (see
