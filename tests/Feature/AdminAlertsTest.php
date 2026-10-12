@@ -5,9 +5,9 @@ declare(strict_types=1);
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use TelegramBotEssentials\Essence\Contracts\ResolvesBotLocale;
-use TelegramBotEssentials\Essence\Enums\Roles;
 use TelegramBotEssentials\Essence\Models\Bot;
 use TelegramBotEssentials\Essence\Models\BotUser;
+use TelegramBotEssentials\Essence\Services\AdminAlerts;
 
 uses(RefreshDatabase::class);
 
@@ -21,12 +21,12 @@ function sentAlertRecipients(): array
         ->all();
 }
 
-it('alerts the owner and every reachable, unsuspended admin', function () {
+it('alerts the owner and every reachable, unsuspended user granted alerts', function () {
     $bot = $this->makeBot();
-    $this->makeBotUser($bot, 111, ['power' => Roles::ADMIN->value]);
-    $this->makeBotUser($bot, 222, ['power' => Roles::ADMIN->value, 'suspend' => true]);
-    $this->makeBotUser($bot, 333, ['power' => Roles::ADMIN->value, 'status' => BotUser::STATUS_BLOCKED]);
-    $this->makeBotUser($bot, 444, ['power' => Roles::MODERATOR->value]);
+    $this->grant($this->makeBotUser($bot, 111), AdminAlerts::PERMISSION);
+    $this->grant($this->makeBotUser($bot, 222, ['suspend' => true]), AdminAlerts::PERMISSION);
+    $this->grant($this->makeBotUser($bot, 333, ['status' => BotUser::STATUS_BLOCKED]), AdminAlerts::PERMISSION);
+    $this->grant($this->makeBotUser($bot, 444), 'something.else');
 
     expect(adminAlert('test.alert', 'Channel lock is broken', $bot))->toBeTrue()
         ->and(sentAlertRecipients())->toBe(collect([111, (int) $bot->bot_owner_peer_id])->sort()->values()->all());
@@ -34,13 +34,12 @@ it('alerts the owner and every reachable, unsuspended admin', function () {
     $this->assertTelegramSent(fn ($request) => $request['text'] === '⚠️ Channel lock is broken');
 });
 
-it('does not alert the owner twice when they are also an admin', function () {
+it('does not alert the owner twice when they are also granted alerts', function () {
     $bot = $this->makeBot();
-    BotUser::factory()->create([
+    $this->grant(BotUser::factory()->create([
         'bot_id' => $bot->id,
         'telegram_user_peer_id' => $bot->bot_owner_peer_id,
-        'power' => Roles::ADMIN->value,
-    ]);
+    ]), AdminAlerts::PERMISSION);
 
     adminAlert('test.alert', 'x', $bot);
 

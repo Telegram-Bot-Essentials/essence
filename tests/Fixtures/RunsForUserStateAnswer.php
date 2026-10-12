@@ -17,8 +17,6 @@ class RunsForUserStateAnswer extends StateAnswer
 {
     protected string $type = 'RUNS_FOR_USER';
 
-    protected int $perm = 0;
-
     public function answer(): void
     {
         wHook()->user()->changeState();

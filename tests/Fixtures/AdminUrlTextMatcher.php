@@ -4,15 +4,13 @@ declare(strict_types=1);
 
 namespace TelegramBotEssentials\Essence\Tests\Fixtures;
 
-use TelegramBotEssentials\Essence\Enums\Roles;
-
-/** Claims the same URLs as UrlTextMatcher, but only for admins. */
+/** Claims the same URLs as UrlTextMatcher, but only for users holding urls.admin. */
 class AdminUrlTextMatcher extends UrlTextMatcher
 {
     /** @var list<list<string>> */
     public static array $handled = [];
 
-    protected int $perm = Roles::ADMIN->value;
+    protected ?string $permission = 'urls.admin';
 
     public function handle(): void
     {

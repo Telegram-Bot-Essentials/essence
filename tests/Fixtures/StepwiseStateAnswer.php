@@ -18,8 +18,6 @@ class StepwiseStateAnswer extends StateAnswer
 
     protected string $type = 'STEPWISE';
 
-    protected int $perm = 0;
-
     public function getAllowedFields(): array
     {
         return ($this->params['step'] ?? null) === 'photo'

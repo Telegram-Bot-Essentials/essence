@@ -6,7 +6,6 @@ use TelegramBotEssentials\Essence\Http\Controllers\TelegramWebhookController;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQueryBus;
 use TelegramBotEssentials\Essence\Telegram\Commands\CommandBus;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Admin\AdminPanelKey;
-use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Admin\BotAdminsKey;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Member\CancelProcessKey;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Member\MainMenuKey;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKeyBus;
@@ -19,7 +18,7 @@ use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswerBus;
 
 it('registers essence built-in reply keys at boot', function () {
     expect(array_keys(app(ReplyKeyBus::class)->getReplyKeys()))
-        ->toContain(CancelProcessKey::class, MainMenuKey::class, AdminPanelKey::class, BotAdminsKey::class);
+        ->toContain(CancelProcessKey::class, MainMenuKey::class, AdminPanelKey::class);
 });
 
 it('registers essence built-in commands at boot', function () {

@@ -16,8 +16,6 @@ class ResumingStateAnswer extends StateAnswer
 {
     protected string $type = 'RESUMING';
 
-    protected int $perm = 0;
-
     public function continueFlow(): MessageMeta
     {
         return $this->requireMessageMeta();

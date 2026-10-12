@@ -21,8 +21,6 @@ class AppGreetCommand extends Command
 {
     protected string $name = 'greet';
 
-    protected int $perm = 0;
-
     protected function description(): string
     {
         return __('from the app');
@@ -37,8 +35,6 @@ class AppGreetCommand extends Command
 class PackageGreetCommand extends Command
 {
     protected string $name = 'greet';
-
-    protected int $perm = 0;
 
     protected function description(): string
     {
@@ -57,8 +53,6 @@ class AliasedCommand extends Command
 
     protected array $aliases = ['a1', 'a2'];
 
-    protected int $perm = 0;
-
     public function handle(): ?bool
     {
         return true;
@@ -70,8 +64,6 @@ class RivalAliasCommand extends Command
     protected string $name = 'rival';
 
     protected array $aliases = ['a1'];
-
-    protected int $perm = 0;
 
     public function handle(): ?bool
     {
@@ -124,8 +116,6 @@ it('rejects an alias that collides with an existing command name', function () {
 
         protected array $aliases = ['greet'];
 
-        protected int $perm = 0;
-
         public function handle(): ?bool
         {
             return true;
@@ -139,8 +129,6 @@ class LowPriorityCommand extends Command
 {
     protected string $name = 'low';
 
-    protected int $perm = 0;
-
     public function handle(): ?bool
     {
         return true;
@@ -150,8 +138,6 @@ class LowPriorityCommand extends Command
 class HighPriorityCommand extends Command
 {
     protected string $name = 'high';
-
-    protected int $perm = 0;
 
     protected int $priority = 100;
 

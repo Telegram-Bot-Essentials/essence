@@ -25,7 +25,7 @@ it('shows the keyboard the active state answer asks for', function () {
     $user = wHook()->user();
     $user->changeState(stepwiseState('code'));
 
-    $rows = $user->getKeyboard()->toArray()['keyboard'];
+    $rows = replyKeyboard($user)->toArray()['keyboard'];
 
     expect($rows)->toBe([['Skip', 'Cancel']]);
 });
@@ -35,7 +35,7 @@ it('falls back to the lone Cancel key when the state answer keeps the default', 
     $user = wHook()->user();
     $user->changeState(stepwiseState('other'));
 
-    expect($user->getKeyboard()->toArray()['keyboard'])->toBe([[__('tbe::cancel_process.reply_key')]]);
+    expect(replyKeyboard($user)->toArray()['keyboard'])->toBe([[__('tbe::cancel_process.reply_key')]]);
 });
 
 it('falls back to the lone Cancel key for a state nothing is registered for', function () {
@@ -43,7 +43,7 @@ it('falls back to the lone Cancel key for a state nothing is registered for', fu
     $user = wHook()->user();
     $user->changeState(encodeAnswerState('NOT_REGISTERED', 'answer'));
 
-    expect($user->getKeyboard()->toArray()['keyboard'])->toBe([[__('tbe::cancel_process.reply_key')]]);
+    expect(replyKeyboard($user)->toArray()['keyboard'])->toBe([[__('tbe::cancel_process.reply_key')]]);
 });
 
 it('lets a state answer decide per step which message contents it accepts', function () {
