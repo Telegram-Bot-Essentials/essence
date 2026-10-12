@@ -5,7 +5,9 @@ use Telegram\Bot\Api;
 use Telegram\Bot\FileUpload\InputFile;
 use Telegram\Bot\Keyboard\Button;
 use Telegram\Bot\Keyboard\Keyboard;
-use TelegramBotEssentials\Essence\Enums\Roles;
+use TelegramBotEssentials\Essence\Contracts\AuthorizesAccess;
+use TelegramBotEssentials\Essence\Contracts\DeclaresPermission;
+use TelegramBotEssentials\Essence\Contracts\ResolvesKeyboard;
 use TelegramBotEssentials\Essence\Events\BotEventBus;
 use TelegramBotEssentials\Essence\Exceptions\CallbackDataTooLong;
 use TelegramBotEssentials\Essence\Exceptions\FeatureIsDisabled;
@@ -15,6 +17,7 @@ use TelegramBotEssentials\Essence\Forms\Form;
 use TelegramBotEssentials\Essence\Forms\FormEngine;
 use TelegramBotEssentials\Essence\Forms\FormRegistry;
 use TelegramBotEssentials\Essence\Models\Bot;
+use TelegramBotEssentials\Essence\Models\BotUser;
 use TelegramBotEssentials\Essence\Models\InlineConfirmation;
 use TelegramBotEssentials\Essence\Services\AdminAlerts;
 use TelegramBotEssentials\Essence\Services\ApiResponse;
@@ -22,6 +25,7 @@ use TelegramBotEssentials\Essence\Services\BotUserStatus;
 use TelegramBotEssentials\Essence\Services\ExceptionHandler;
 use TelegramBotEssentials\Essence\Services\NavState;
 use TelegramBotEssentials\Essence\Services\StateDataService;
+use TelegramBotEssentials\Essence\Support\PermissionRegistry;
 use TelegramBotEssentials\Essence\Support\TbeLogger;
 use TelegramBotEssentials\Essence\Support\Webhook;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQuery;
@@ -505,13 +509,63 @@ if (! function_exists('dependsOn')) {
     }
 }
 
-if (! function_exists('hasAccess')) {
-
-    function hasAccess(?int $power = null): bool
+if (! function_exists('replyKeyboard')) {
+    /**
+     * The reply markup to send with a message: for $user, or for the
+     * webhook's user (and, later, chat) when none is given. Built by
+     * whichever ResolvesKeyboard is bound.
+     *
+     * @return Keyboard<array-key, mixed>
+     */
+    function replyKeyboard(?BotUser $user = null): Keyboard
     {
-        return (wHook()->user()->power >= ($power ?? Roles::ADMIN->value)) ||
-            (wHook()->bot()->botOwner->id == wHook()->user()->telegramUser->id) ||
-            (wHook()->user()->telegramUser->peer_id == config('tbe-essence.developer.peer_id'));
+        return app(ResolvesKeyboard::class)->for($user ?? wHook()->user());
+    }
+}
+
+if (! function_exists('hasAccess')) {
+    /** Whether the webhook's user may use something needing $permission. */
+    function hasAccess(?string $permission): bool
+    {
+        return authorizer()->allows(wHook()->user(), $permission);
+    }
+}
+
+if (! function_exists('authorizer')) {
+    function authorizer(): AuthorizesAccess
+    {
+        return app(AuthorizesAccess::class);
+    }
+}
+
+if (! function_exists('permissionRegistry')) {
+    function permissionRegistry(): PermissionRegistry
+    {
+        return app(PermissionRegistry::class);
+    }
+}
+
+if (! function_exists('handlerPermission')) {
+    /** The permission a handler asks for, or null when anyone may use it. */
+    function handlerPermission(object $handler): ?string
+    {
+        return $handler instanceof DeclaresPermission ? $handler->getPermission() : null;
+    }
+}
+
+if (! function_exists('canUseHandler')) {
+    /** Whether $user (the webhook's user by default) may use $handler. */
+    function canUseHandler(object $handler, ?BotUser $user = null): bool
+    {
+        return authorizer()->allows($user ?? wHook()->user(), handlerPermission($handler));
+    }
+}
+
+if (! function_exists('isPublicHandler')) {
+    /** Whether $handler is open to everyone, independent of any user. */
+    function isPublicHandler(object $handler): bool
+    {
+        return handlerPermission($handler) === null;
     }
 }
 

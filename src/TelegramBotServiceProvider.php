@@ -23,16 +23,22 @@ use TelegramBotEssentials\Essence\Console\Commands\MakeTextMatcher;
 use TelegramBotEssentials\Essence\Console\Commands\PublishCommand;
 use TelegramBotEssentials\Essence\Console\Commands\SetWebhook;
 use TelegramBotEssentials\Essence\Console\Commands\TranslationStats;
+use TelegramBotEssentials\Essence\Contracts\AuthorizesAccess;
 use TelegramBotEssentials\Essence\Contracts\ResolvesBotLocale;
+use TelegramBotEssentials\Essence\Contracts\ResolvesKeyboard;
 use TelegramBotEssentials\Essence\Events\BotEventBus;
 use TelegramBotEssentials\Essence\Events\BotWebhookInitialized;
 use TelegramBotEssentials\Essence\Forms\FormEngine;
 use TelegramBotEssentials\Essence\Forms\FormRegistry;
 use TelegramBotEssentials\Essence\Listeners\SetBotLocale;
+use TelegramBotEssentials\Essence\Services\AdminAlerts;
 use TelegramBotEssentials\Essence\Services\BotUserStatus;
 use TelegramBotEssentials\Essence\Services\NavState;
 use TelegramBotEssentials\Essence\Services\TranslationScanner;
+use TelegramBotEssentials\Essence\Support\DefaultAuthorizer;
 use TelegramBotEssentials\Essence\Support\DefaultBotLocaleResolver;
+use TelegramBotEssentials\Essence\Support\DefaultKeyboardResolver;
+use TelegramBotEssentials\Essence\Support\PermissionRegistry;
 use TelegramBotEssentials\Essence\Support\Webhook;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQueryBus;
 use TelegramBotEssentials\Essence\Telegram\Commands\CommandBus;
@@ -64,6 +70,14 @@ class TelegramBotServiceProvider extends ServiceProvider
         // that package back. Bound (not singleton) since it's a swappable
         // strategy, not shared state.
         $this->app->bind(ResolvesBotLocale::class, DefaultBotLocaleResolver::class);
+
+        // Same swap-a-strategy pattern: an app or companion that owns its own
+        // menu model or role system rebinds these; essence never names it.
+        // bindIf, not bind: package discovery registers providers in name
+        // order, so "access" registers before "essence" and a plain bind()
+        // here would silently overwrite its binding.
+        $this->app->bindIf(ResolvesKeyboard::class, DefaultKeyboardResolver::class);
+        $this->app->bindIf(AuthorizesAccess::class, DefaultAuthorizer::class);
 
         // Event::listen resolves a string-class listener fresh from the
         // container on every dispatch, so this always picks up whichever
@@ -130,6 +144,10 @@ class TelegramBotServiceProvider extends ServiceProvider
         $this->app->singleton(NavState::class, fn () => new NavState);
 
         $this->app->singleton(BotUserStatus::class, fn () => new BotUserStatus);
+
+        // Singleton: packages register their permission names into it from
+        // their own boot(), and every later read must see them.
+        $this->app->singleton(PermissionRegistry::class, fn () => new PermissionRegistry);
     }
 
     private function registerBotsManager(): void
@@ -194,11 +212,31 @@ class TelegramBotServiceProvider extends ServiceProvider
         $this->loadTranslationsFrom(__DIR__.'/../lang', 'tbe-essence');
 
         $this->registerPackageHandlers();
+        $this->registerPermissions();
 
         // The consuming app's handlers are scanned after every provider has
         // booted, so app/Telegram/** is registered last and therefore wins
         // any collision with a companion package or with essence itself.
         $this->app->booted(fn () => $this->registerAppHandlers());
+    }
+
+    /**
+     * The permission names essence asks for. Under the default authorizer
+     * only the owner and developer hold them; a role package lets the owner
+     * grant them to others.
+     */
+    protected function registerPermissions(): void
+    {
+        permissionRegistry()->register(
+            'essence.admin_panel',
+            fn () => __('tbe::admin_panel.permission'),
+            'essence',
+        );
+        permissionRegistry()->register(
+            AdminAlerts::PERMISSION,
+            fn () => __('tbe::admin_panel.alerts_permission'),
+            'essence',
+        );
     }
 
     /**
@@ -246,7 +284,7 @@ class TelegramBotServiceProvider extends ServiceProvider
         loadForms($appTelegram.'/Forms');
         loadInlineQueries($appTelegram.'/InlineQueries');
 
-        foreach (config('tbe-essence.keyboard') ?? [] as $replyKeyRows) {
+        foreach (DefaultKeyboardResolver::configuredMenus() as $replyKeyRows) {
             addUserReplyKeys($replyKeyRows);
         }
     }
