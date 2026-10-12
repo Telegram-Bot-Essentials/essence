@@ -9,7 +9,7 @@ interface StateAnswerInterface
 {
     public function getType(): string;
 
-    public function getPerm(): int;
+    public function getPermission(): ?string;
 
     public function getAllowedFields(): array;
 

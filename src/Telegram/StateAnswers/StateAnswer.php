@@ -6,19 +6,20 @@ use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use ReflectionMethod;
 use Telegram\Bot\Keyboard\Keyboard;
+use TelegramBotEssentials\Essence\Contracts\DeclaresPermission;
 use TelegramBotEssentials\Essence\Enums\AllowableFields;
 use TelegramBotEssentials\Essence\Exceptions\HandlerContextExpired;
 use TelegramBotEssentials\Essence\Models\MessageMeta;
 use TelegramBotEssentials\Essence\Models\StateData;
 use TelegramBotEssentials\Essence\Support\ResolvesParameters;
+use TelegramBotEssentials\Essence\Traits\HasPermission;
 
-abstract class StateAnswer implements StateAnswerInterface
+abstract class StateAnswer implements DeclaresPermission, StateAnswerInterface
 {
+    use HasPermission;
     use ResolvesParameters;
 
     protected string $type;
-
-    protected int $perm;
 
     protected string $method;
 
@@ -35,11 +36,6 @@ abstract class StateAnswer implements StateAnswerInterface
     public function getType(): string
     {
         return $this->type;
-    }
-
-    public function getPerm(): int
-    {
-        return $this->perm;
     }
 
     public function setParams(?array $params): void
@@ -78,7 +74,7 @@ abstract class StateAnswer implements StateAnswerInterface
             wHook()->api()->sendMessage([
                 'chat_id' => wHook()->peerId(),
                 'text' => __('tbe::general.status.unavailable'),
-                'reply_markup' => wHook()->user()->getKeyboard(),
+                'reply_markup' => replyKeyboard(),
             ]);
 
             return;

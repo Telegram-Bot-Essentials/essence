@@ -9,6 +9,7 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\Keyboard\Keyboard;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
+use TelegramBotEssentials\Essence\Models\BotUser;
 use TelegramBotEssentials\Essence\Traits\CanResolveStateAnswer;
 
 /**
@@ -143,7 +144,7 @@ class StateAnswerBus
         if (! $resolvedStateAnswer->isEnabled()) {
             return;
         }
-        if (! hasAccess($resolvedStateAnswer->getPerm())) {
+        if (! canUseHandler($resolvedStateAnswer)) {
             return;
         }
         $resolvedStateAnswer->setParams($params);
@@ -159,7 +160,7 @@ class StateAnswerBus
      * @throws LogicException
      */
     /** @return Keyboard<array-key, mixed>|null */
-    public function keyboardFor(string $state): ?Keyboard
+    public function keyboardFor(string $state, ?BotUser $user = null): ?Keyboard
     {
         $decoded = decodeAnswerState($state);
         $registered = $this->stateAnswerTypes[(string) $decoded['type']] ?? null;
@@ -170,7 +171,7 @@ class StateAnswerBus
 
         $stateAnswer = $this->resolveStateAnswer($registered::class);
 
-        if (! $stateAnswer->isEnabled() || ! hasAccess($stateAnswer->getPerm())) {
+        if (! $stateAnswer->isEnabled() || ! canUseHandler($stateAnswer, $user)) {
             return null;
         }
 
