@@ -57,6 +57,14 @@ class TelegramBotAuthentication
             return tbeApiResponse()->error('Failed to initialize API service', 503);
         }
 
+        // Essence does not model group chats yet: a group update would run
+        // against the sender's private-chat state and reply in their DM.
+        // Acknowledge and drop it before a BotUser is minted for a group
+        // lurker.
+        if (self::isFromNonPrivateChat()) {
+            return tbeApiResponse()->success();
+        }
+
         // Telegram redelivers an update whenever it does not see a prompt
         // response, and can otherwise send the same update_id twice. Claim it
         // atomically before doing any work: a duplicate finds the claim
@@ -128,6 +136,20 @@ class TelegramBotAuthentication
         $botUser->interact();
 
         return $botUser;
+    }
+
+    /**
+     * A message or button press in a group, supergroup or channel. Inline
+     * queries have no chat, and a press on an inline-mode message has no
+     * message, so both still go through.
+     */
+    public static function isFromNonPrivateChat(): bool
+    {
+        $update = wHook()->update();
+        $message = $update->message ?? $update->callbackQuery?->message;
+        $chat = $message?->chat;
+
+        return $chat !== null && $chat->type !== 'private';
     }
 
     /**
