@@ -3,10 +3,11 @@
 namespace TelegramBotEssentials\Essence\Contracts;
 
 use Telegram\Bot\Keyboard\Keyboard;
-use TelegramBotEssentials\Essence\Models\BotUser;
+use TelegramBotEssentials\Essence\Models\Conversation;
 
 /**
- * Builds the reply markup sent alongside a bot's messages to a user.
+ * Builds the reply markup sent alongside a bot's messages in a
+ * conversation: one user in one chat, where the state and menu live.
  *
  * replyKeyboard() delegates here, so every call site picks up whichever
  * implementation is bound. Essence binds
@@ -17,5 +18,5 @@ use TelegramBotEssentials\Essence\Models\BotUser;
 interface ResolvesKeyboard
 {
     /** @return Keyboard<array-key, mixed> */
-    public function for(BotUser $user): Keyboard;
+    public function for(Conversation $conversation): Keyboard;
 }
