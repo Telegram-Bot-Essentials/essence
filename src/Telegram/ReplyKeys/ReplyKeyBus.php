@@ -132,7 +132,7 @@ class ReplyKeyBus
         if (! canUseHandler($resolvedKey)) {
             return;
         }
-        $currentState = wHook()->user()->state;
+        $currentState = wHook()->conversation()->state;
         $this->cancelOldProcess();
         $resolvedKey->handle();
         stateAnswerBus()->cancelHandler($currentState);
