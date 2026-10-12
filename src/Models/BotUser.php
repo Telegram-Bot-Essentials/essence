@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 use TelegramBotEssentials\Essence\Database\factories\BotUserFactory;
 use TelegramBotEssentials\Essence\Services\BotUserStatus;
@@ -129,22 +130,33 @@ class BotUser extends Model
         return $this->status ?? self::STATUS_ACTIVE;
     }
 
-    public function changeState(?string $state = null): void
+    /** @return HasMany<Conversation, $this> */
+    public function conversations(): HasMany
     {
-        $this->attributes['state'] = $state;
-        $this->save();
+        return $this->hasMany(Conversation::class);
     }
 
-    public function addParamToState(array $params): void
+    /** This user's conversation in one chat (and forum topic), created on first use. */
+    public function conversationIn(int $chatId, int $threadId = 0): Conversation
     {
-        $state = decodeAnswerState($this->attributes['state'] ?? null);
+        /** @var Conversation $conversation */
+        $conversation = $this->conversations()->createOrFirst(
+            ['chat_id' => $chatId, 'thread_id' => $threadId],
+            ['bot_id' => $this->getAttribute('bot_id')],
+        );
 
-        if ($state['type'] === null) {
-            return;
-        }
+        return $conversation;
+    }
 
-        $this->attributes['state'] = encodeAnswerState($state['type'], $state['method'], array_merge($state['params'], $params));
-        $this->save();
+    /**
+     * This user's private chat with the bot - the conversation to write to
+     * when acting on a user other than the one the update came from.
+     */
+    public function privateConversation(): Conversation
+    {
+        $peerId = $this->getAttribute('telegram_user_peer_id');
+
+        return $this->conversationIn(is_numeric($peerId) ? (int) $peerId : 0);
     }
 
     public function interact(): void
