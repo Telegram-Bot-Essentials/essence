@@ -23,8 +23,6 @@ class BotUserFactory extends Factory
                 'bot_owner_peer_id' => $telegramUser->peer_id,
             ])->id,
             'telegram_user_peer_id' => $telegramUser->peer_id,
-            'state' => ['test', null][rand(0, 1)],
-            'menu' => 'main',
             'suspend' => fake()->boolean(),
         ];
     }
