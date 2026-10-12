@@ -72,12 +72,6 @@ return [
         'resourceDeletedSuccessfully' => ':resource حذف شد.',
     ],
 
-    'roles' => [
-        'admin' => 'مدیر',
-        'moderator' => 'ناظر',
-        'member' => 'عضو',
-    ],
-
     'intervals' => [
         'year' => 'سال',
         'month' => 'ماه',
