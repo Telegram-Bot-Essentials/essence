@@ -103,7 +103,7 @@ class CallbackQueryBus
         if (! $resolvedCallbackQuery->isEnabled()) {
             return false;
         }
-        if (! hasAccess($resolvedCallbackQuery->getPerm())) {
+        if (! canUseHandler($resolvedCallbackQuery)) {
             return false;
         }
         $resolvedCallbackQuery->setParams($params);

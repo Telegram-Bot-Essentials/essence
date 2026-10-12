@@ -6,12 +6,14 @@ use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use ReflectionMethod;
 use Telegram\Bot\Exceptions\TelegramSDKException;
+use TelegramBotEssentials\Essence\Contracts\DeclaresPermission;
+use TelegramBotEssentials\Essence\Traits\HasPermission;
 
-abstract class CallbackQuery implements CallbackQueryInterface
+abstract class CallbackQuery implements CallbackQueryInterface, DeclaresPermission
 {
-    protected string $type;
+    use HasPermission;
 
-    protected int $perm;
+    protected string $type;
 
     protected string $method;
 
@@ -20,11 +22,6 @@ abstract class CallbackQuery implements CallbackQueryInterface
     public function getType(): string
     {
         return $this->type;
-    }
-
-    public function getPerm(): int
-    {
-        return $this->perm;
     }
 
     public function setMethod(string $method): void
