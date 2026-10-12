@@ -10,6 +10,8 @@ the first public release.
 
 ## [Unreleased]
 
+## [0.17.1] - 2026-10-12
+
 ### Fixed
 
 - Messages and button presses from groups, supergroups and channels are
