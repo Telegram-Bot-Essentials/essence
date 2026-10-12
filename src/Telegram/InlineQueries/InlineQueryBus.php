@@ -48,7 +48,7 @@ class InlineQueryBus
         if (! $handler->isEnabled()) {
             return false;
         }
-        if (! hasAccess($handler->getPerm())) {
+        if (! canUseHandler($handler)) {
             return false;
         }
 

@@ -3,15 +3,12 @@
 namespace TelegramBotEssentials\Essence\Telegram\InlineQueries;
 
 use Telegram\Bot\Exceptions\TelegramSDKException;
+use TelegramBotEssentials\Essence\Contracts\DeclaresPermission;
+use TelegramBotEssentials\Essence\Traits\HasPermission;
 
-abstract class InlineQuery implements InlineQueryInterface
+abstract class InlineQuery implements DeclaresPermission, InlineQueryInterface
 {
-    protected int $perm;
-
-    public function getPerm(): int
-    {
-        return $this->perm;
-    }
+    use HasPermission;
 
     public function query(): string
     {

@@ -4,7 +4,7 @@ namespace TelegramBotEssentials\Essence\Telegram\InlineQueries;
 
 interface InlineQueryInterface
 {
-    public function getPerm(): int;
+    public function getPermission(): ?string;
 
     public function handle(): void;
 
