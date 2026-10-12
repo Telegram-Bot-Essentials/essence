@@ -2,24 +2,17 @@
 
 namespace TelegramBotEssentials\Essence\Models;
 
-use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
-use Telegram\Bot\Keyboard\Keyboard;
 use TelegramBotEssentials\Essence\Database\factories\BotUserFactory;
-use TelegramBotEssentials\Essence\Enums\Roles;
-use TelegramBotEssentials\Essence\Exceptions\LogicException;
 use TelegramBotEssentials\Essence\Services\BotUserStatus;
-use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Member\CancelProcessKey;
-use TelegramBotEssentials\Essence\Traits\CanResolveReplyKey;
 
 class BotUser extends Model
 {
     use BelongsToTenant;
-    use CanResolveReplyKey;
     use HasFactory;
 
     /** Telegram delivers to this user. */
@@ -48,7 +41,7 @@ class BotUser extends Model
      */
     public const STATUS_DEACTIVATED = 'deactivated';
 
-    protected $appends = ['role', 'suspend'];
+    protected $appends = ['suspend'];
 
     protected $guarded = [
         'id',
@@ -75,18 +68,6 @@ class BotUser extends Model
     {
         $this->attributes['suspended_at'] = $value ? now() : null;
         $this->save();
-    }
-
-    public function getRoleAttribute(): string
-    {
-        switch ($this->power) {
-            case Roles::ADMIN->value:
-                return __('tbe::general.roles.admin');
-            case Roles::MODERATOR->value:
-                return __('tbe::general.roles.moderator');
-            default:
-                return __('tbe::general.roles.member');
-        }
     }
 
     public function bot(): BelongsTo
@@ -146,63 +127,6 @@ class BotUser extends Model
         }
 
         return $this->status ?? self::STATUS_ACTIVE;
-    }
-
-    /**
-     * @throws BindingResolutionException
-     * @throws LogicException
-     */
-    public function getKeyboard(): Keyboard
-    {
-        $rows = [];
-        if ($this->state) {
-            $stateKeyboard = is_string($this->state) ? stateAnswerBus()->keyboardFor($this->state) : null;
-
-            if ($stateKeyboard !== null) {
-                return $stateKeyboard;
-            }
-
-            $rows[] = [CancelProcessKey::class];
-        } elseif ($this->menu == 'main') {
-            $rows = array_merge($rows, config('tbe-essence.keyboard.member') ?? []);
-        } elseif ($this->menu == 'admin') {
-            $rows = array_merge($rows, config('tbe-essence.keyboard.admin') ?? []);
-        }
-
-        return $this->keyboardGenerator($rows);
-    }
-
-    /**
-     * @throws LogicException
-     * @throws BindingResolutionException
-     */
-    private function keyboardGenerator(array $rows): Keyboard
-    {
-        $replyMarkup = Keyboard::make()
-            ->setResizeKeyboard(true)
-            ->setOneTimeKeyboard(true);
-
-        $addedKeys = [];
-        foreach ($rows as $keys) {
-            $processedRow = [];
-            foreach ($keys as $key) {
-                $resolvedKey = $this->resolveReplyKey($key);
-                if (! hasAccess($resolvedKey->getPerm())) {
-                    continue;
-                }
-                if (! $resolvedKey->isEnabled()) {
-                    continue;
-                }
-                if (in_array($resolvedKey->getText(), $addedKeys)) {
-                    continue;
-                }
-                $addedKeys[] = $resolvedKey->getText();
-                $processedRow[] = $resolvedKey->getText();
-            }
-            $replyMarkup->row($processedRow);
-        }
-
-        return $replyMarkup;
     }
 
     public function changeState(?string $state = null): void
