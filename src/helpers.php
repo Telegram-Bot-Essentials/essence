@@ -18,6 +18,7 @@ use TelegramBotEssentials\Essence\Forms\FormEngine;
 use TelegramBotEssentials\Essence\Forms\FormRegistry;
 use TelegramBotEssentials\Essence\Models\Bot;
 use TelegramBotEssentials\Essence\Models\BotUser;
+use TelegramBotEssentials\Essence\Models\Conversation;
 use TelegramBotEssentials\Essence\Models\InlineConfirmation;
 use TelegramBotEssentials\Essence\Services\AdminAlerts;
 use TelegramBotEssentials\Essence\Services\ApiResponse;
@@ -511,15 +512,21 @@ if (! function_exists('dependsOn')) {
 
 if (! function_exists('replyKeyboard')) {
     /**
-     * The reply markup to send with a message: for $user, or for the
-     * webhook's user (and, later, chat) when none is given. Built by
-     * whichever ResolvesKeyboard is bound.
+     * The reply markup to send with a message: for the webhook's
+     * conversation, or for $for - a conversation, or a user, meaning their
+     * private chat. Built by whichever ResolvesKeyboard is bound.
      *
      * @return Keyboard<array-key, mixed>
      */
-    function replyKeyboard(?BotUser $user = null): Keyboard
+    function replyKeyboard(BotUser|Conversation|null $for = null): Keyboard
     {
-        return app(ResolvesKeyboard::class)->for($user ?? wHook()->user());
+        $conversation = match (true) {
+            $for instanceof Conversation => $for,
+            $for instanceof BotUser => $for->privateConversation(),
+            default => wHook()->conversation(),
+        };
+
+        return app(ResolvesKeyboard::class)->for($conversation);
     }
 }
 
