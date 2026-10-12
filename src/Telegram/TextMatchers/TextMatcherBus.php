@@ -100,7 +100,7 @@ class TextMatcherBus
             if (! $matcher->isEnabled() || ! $matcher->matches($message)) {
                 continue;
             }
-            if (! hasAccess($matcher->getPerm())) {
+            if (! canUseHandler($matcher)) {
                 continue;
             }
 

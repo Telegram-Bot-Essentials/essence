@@ -3,6 +3,8 @@
 namespace TelegramBotEssentials\Essence\Telegram\TextMatchers;
 
 use Telegram\Bot\Objects\Message;
+use TelegramBotEssentials\Essence\Contracts\DeclaresPermission;
+use TelegramBotEssentials\Essence\Traits\HasPermission;
 
 /**
  * A handler for a free-form message that no reply key, command or state
@@ -11,9 +13,9 @@ use Telegram\Bot\Objects\Message;
  * against the text (or the caption of a media message), or override
  * `matches()` for anything else (entities, attachments, a lookup...).
  */
-abstract class TextMatcher implements TextMatcherInterface
+abstract class TextMatcher implements DeclaresPermission, TextMatcherInterface
 {
-    protected int $perm = 0;
+    use HasPermission;
 
     /** A regex tested against the message's text or caption by the default `matches()`. */
     protected ?string $pattern = null;
@@ -24,11 +26,6 @@ abstract class TextMatcher implements TextMatcherInterface
     }
 
     abstract public function handle(): void;
-
-    public function getPerm(): int
-    {
-        return $this->perm;
-    }
 
     public function isEnabled(): bool
     {

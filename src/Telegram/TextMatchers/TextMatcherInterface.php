@@ -12,7 +12,7 @@ interface TextMatcherInterface
      */
     public function matches(Message $message): bool;
 
-    public function getPerm(): int;
+    public function getPermission(): ?string;
 
     public function handle(): void;
 
