@@ -10,6 +10,13 @@ the first public release.
 
 ## [Unreleased]
 
+### Fixed
+
+- Resolving a conversation reads before it inserts. It used to attempt an
+  insert on every update and fall back to a read on the unique-key
+  violation, which wasted a query and, on MySQL, an auto-increment id per
+  update.
+
 ## [0.18.0] - 2026-10-12
 
 State and the reply menu move from the user to the conversation: one user

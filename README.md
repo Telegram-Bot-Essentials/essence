@@ -89,7 +89,7 @@ The full documentation site — the single source of truth — is maintained sep
 being published. It covers:
 
 - **Architecture** — webhook flow, buses, encoding formats
-- **State & StateData** — `bot_users.state` vs the `state_data` table
+- **State & StateData** — a conversation's `state` vs the `state_data` table
 - **Extending** — building CallbackQueries, StateAnswers, Features
 - **Commands** — CommandBus, aliases, programmatic routing
 - **Events & Listeners** — the bot event bus
