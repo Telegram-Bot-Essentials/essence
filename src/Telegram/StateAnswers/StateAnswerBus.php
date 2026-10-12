@@ -103,7 +103,7 @@ class StateAnswerBus
         if (empty($key)) {
             tbeLog('essence')->warning('State answer "'.$type.'" is not registered');
             try {
-                wHook()->user()->changeState();
+                wHook()->conversation()->changeState();
             } catch (Exception $e) {
                 tbeLog('essence')->error('Failed to reset user state: '.$e->getMessage(), ['exception' => $e]);
             }
@@ -188,7 +188,7 @@ class StateAnswerBus
      */
     public function processStateAnswers(bool $cancelOldProcess = false): bool
     {
-        $answerState = decodeAnswerState(wHook()->user()->state);
+        $answerState = decodeAnswerState(wHook()->conversation()->state);
 
         return $this->handleStateAnswer($answerState);
     }
