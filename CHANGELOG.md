@@ -10,6 +10,90 @@ the first public release.
 
 ## [Unreleased]
 
+Access moves from numeric power levels to named permissions. This release is
+breaking: every handler that set `protected int $perm` must name a
+permission instead, and the app moves its existing admins over itself (see
+**Upgrading**).
+
+### Added
+
+- `AuthorizesAccess` contract, which every bus checks through. The default
+  `DefaultAuthorizer` lets anyone use a handler without a permission, and
+  only the bot owner and the configured developer use the rest. A role
+  package (tbe-access) rebinds it to grant permissions to other users.
+- Handlers name the permission they need with
+  `protected ?string $permission`; `null` (the default) is open to everyone.
+- `PermissionRegistry` (`permissionRegistry()`) for packages to declare
+  their permission names, labels and groups.
+- Helpers `authorizer()`, `canUseHandler()`, `handlerPermission()` and
+  `isPublicHandler()`.
+- `DefaultAuthorizer::isOwnerOrDeveloper()`, public so a role package shares
+  the same owner and developer check.
+- `essence.admin_panel` (the admin panel key) and `essence.admin_alerts`
+  (who besides the owner gets `adminAlert()`) permissions.
+- `ResolvesKeyboard` contract and a `replyKeyboard(?BotUser $user = null)`
+  helper that delegates to it, so an app or companion can replace the reply
+  keyboard without touching any call site. Without a user it builds the
+  keyboard for the webhook's user. The default `DefaultKeyboardResolver` keeps the old precedence
+  (state answer keyboard, then Cancel, then the user's menu).
+- Named menus under `tbe-essence.keyboard.menus`. Any name stored in
+  `bot_users.menu` works, and an unknown one falls back to `main`.
+- `tbe-essence.keyboard.enabled` (default `true`). When `false`, no menus or
+  automatic Cancel key are shown and any keyboard on screen is removed. A
+  state answer's own keyboard is still shown. `keyboard.resize` and
+  `keyboard.one_time` replace the hardcoded flags.
+- `tbe:make:*` commands take `--permission=`; with `--admin` alone the
+  generated handler asks for `app.<snake_name>`.
+- `Testing\TestCase::grant($user, ...$permissions)` lets a test give a plain
+  user permissions without a role package.
+
+### Changed
+
+- `bot_users.menu` is a string column instead of `enum('main','admin')`.
+- `hasAccess()` takes the permission name (`?string`) and no longer has a
+  default.
+- Every handler interface declares `getPermission(): ?string` in place of
+  `getPerm(): int`.
+- `adminAlert()` reaches the owner plus whoever `AuthorizesAccess::usersWith()`
+  returns for `essence.admin_alerts`.
+- `StateAnswerBus::keyboardFor()` takes an optional user to check access for.
+- The keyboard and access contracts are bound with `bindIf()`, so a companion
+  that registers before essence (package discovery goes by name) keeps its
+  binding.
+- Menu keys are filtered against the user the keyboard is built for, not the
+  webhook's current user, so building a keyboard outside a webhook no longer
+  aborts. A row whose keys are all hidden is left out.
+
+### Removed
+
+- `bot_users.power` (dropped by a migration), the `Roles` enum,
+  `BotUser::$role`, and the `tbe::general.roles` strings.
+- `$perm` and `getPerm()` on every handler base class and interface.
+- `BotUser::getKeyboard()`: call `replyKeyboard()` (or `replyKeyboard($user)`
+  outside a webhook) instead.
+- The bot admins screen (`BotAdminsKey`, `BotAdminsQuery`, `BotAdminsAnswer`,
+  `BotAdminsFeature` and `tbe::bot_admins`). Granting access to other users
+  belongs to a role package.
+- The pre-0.17 `tbe-essence.keyboard.member` / `keyboard.admin` config keys.
+
+### Upgrading
+
+1. Replace `protected int $perm = Roles::ADMIN->value;` with
+   `protected ?string $permission = 'your.permission';` and register the
+   name with `permissionRegistry()->register()` in a service provider.
+   Delete `$perm = Roles::MEMBER->value` / `$perm = 0` lines. A handler left
+   with only `$perm` becomes public, so search for `$perm` before
+   upgrading.
+2. Replace `wHook()->user()->getKeyboard()` with `replyKeyboard()` and
+   `$user->getKeyboard()` with `replyKeyboard($user)`.
+3. Move `tbe-essence.keyboard.member` / `.admin` under
+   `tbe-essence.keyboard.menus.main` / `.admin`, and drop `BotAdminsKey`
+   from your menus.
+4. Without a role package, only the owner and developer reach admin
+   handlers. To keep other admins, install tbe-access and, in an app
+   migration timestamped before `2026_10_12_120000_drop_power_from_bot_users`,
+   give users with `power >= 100` a role holding `*`.
+
 ## [0.16.4] - 2026-10-01
 
 ### Added

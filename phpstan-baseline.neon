@@ -793,30 +793,6 @@ parameters:
 			path: src/Models/BotUser.php
 
 		-
-			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\BotUser\:\:\$menu\.$#'
-			identifier: property.notFound
-			count: 2
-			path: src/Models/BotUser.php
-
-		-
-			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\BotUser\:\:\$power\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Models/BotUser.php
-
-		-
-			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\BotUser\:\:\$state\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Models/BotUser.php
-
-		-
-			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 1
-			path: src/Models/BotUser.php
-
-		-
 			message: '#^Cannot call method interact\(\) on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
 			identifier: method.nonObject
 			count: 1
@@ -841,37 +817,7 @@ parameters:
 			path: src/Models/BotUser.php
 
 		-
-			message: '#^Method TelegramBotEssentials\\Essence\\Models\\BotUser\:\:buildDependencyInjectedClass\(\) should return object but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Models/BotUser.php
-
-		-
-			message: '#^Method TelegramBotEssentials\\Essence\\Models\\BotUser\:\:getKeyboard\(\) return type with generic class Telegram\\Bot\\Keyboard\\Keyboard does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Models/BotUser.php
-
-		-
-			message: '#^Method TelegramBotEssentials\\Essence\\Models\\BotUser\:\:keyboardGenerator\(\) has parameter \$rows with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Models/BotUser.php
-
-		-
-			message: '#^Method TelegramBotEssentials\\Essence\\Models\\BotUser\:\:keyboardGenerator\(\) return type with generic class Telegram\\Bot\\Keyboard\\Keyboard does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Models/BotUser.php
-
-		-
 			message: '#^Method TelegramBotEssentials\\Essence\\Models\\BotUser\:\:reachability\(\) should return string but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Models/BotUser.php
-
-		-
-			message: '#^Method TelegramBotEssentials\\Essence\\Models\\BotUser\:\:resolveReplyKey\(\) should return TelegramBotEssentials\\Essence\\Telegram\\ReplyKeys\\ReplyKeyInterface but returns object\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Models/BotUser.php
@@ -940,18 +886,6 @@ parameters:
 			message: '#^Method TelegramBotEssentials\\Essence\\Models\\BotUser\:\:telegramUser\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
 			identifier: missingType.generics
 			count: 1
-			path: src/Models/BotUser.php
-
-		-
-			message: '#^Parameter \#1 \$replyKey of method TelegramBotEssentials\\Essence\\Models\\BotUser\:\:resolveReplyKey\(\) expects string\|TelegramBotEssentials\\Essence\\Telegram\\ReplyKeys\\ReplyKeyInterface, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Models/BotUser.php
-
-		-
-			message: '#^Parameter \#2 \.\.\.\$arrays of function array_merge expects array, mixed given\.$#'
-			identifier: argument.type
-			count: 2
 			path: src/Models/BotUser.php
 
 		-
@@ -1675,42 +1609,6 @@ parameters:
 			path: src/Support/WebhookContext.php
 
 		-
-			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\BotUser\:\:\$power\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Telegram/CallbackQueries/Admin/BotAdminsQuery.php
-
-		-
-			message: '#^Cannot access property \$created_at on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: src/Telegram/CallbackQueries/Admin/BotAdminsQuery.php
-
-		-
-			message: '#^Cannot access property \$full_name on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
-			identifier: property.nonObject
-			count: 2
-			path: src/Telegram/CallbackQueries/Admin/BotAdminsQuery.php
-
-		-
-			message: '#^Cannot access property \$id on Telegram\\Bot\\Objects\\CallbackQuery\|null\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: src/Telegram/CallbackQueries/Admin/BotAdminsQuery.php
-
-		-
-			message: '#^Cannot access property \$peer_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: src/Telegram/CallbackQueries/Admin/BotAdminsQuery.php
-
-		-
-			message: '#^Parameter \#2 \$replace of function __ expects array\<string, .+\>, array.+ given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/Telegram/CallbackQueries/Admin/BotAdminsQuery.php
-
-		-
 			message: '#^Call to an undefined method ReflectionType\:\:getName\(\)\.$#'
 			identifier: method.notFound
 			count: 1
@@ -2119,36 +2017,6 @@ parameters:
 			path: src/Telegram/Commands/Member/HelpCommand.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Telegram/Features/BotAdminsFeature.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$telegramUser\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Telegram/Features/BotAdminsFeature.php
-
-		-
-			message: '#^Cannot access property \$full_name on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
-			identifier: property.nonObject
-			count: 2
-			path: src/Telegram/Features/BotAdminsFeature.php
-
-		-
-			message: '#^Cannot access property \$full_name on mixed\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: src/Telegram/Features/BotAdminsFeature.php
-
-		-
-			message: '#^Parameter \#2 \$replace of function __ expects array\<string, .+\>, array.+ given\.$#'
-			identifier: argument.type
-			count: 3
-			path: src/Telegram/Features/BotAdminsFeature.php
-
-		-
 			message: '#^Parameter \$text of class TelegramBotEssentials\\Essence\\Telegram\\TelegramResponse constructor expects string\|null, mixed given\.$#'
 			identifier: argument.type
 			count: 1
@@ -2345,36 +2213,6 @@ parameters:
 			identifier: nullsafe.neverNull
 			count: 1
 			path: src/Telegram/ReplyKeys/ReplyKeyBus.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$power\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Telegram/StateAnswers/Admin/BotAdminsAnswer.php
-
-		-
-			message: '#^Cannot access property \$peer_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: src/Telegram/StateAnswers/Admin/BotAdminsAnswer.php
-
-		-
-			message: '#^Cannot access property \$text on Telegram\\Bot\\Objects\\Message\|null\.$#'
-			identifier: property.nonObject
-			count: 3
-			path: src/Telegram/StateAnswers/Admin/BotAdminsAnswer.php
-
-		-
-			message: '#^Parameter \#1 \$haystack of function str_starts_with expects string, string\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Telegram/StateAnswers/Admin/BotAdminsAnswer.php
-
-		-
-			message: '#^Parameter \#3 \$subject of function str_replace expects array\<string\>\|string, string\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Telegram/StateAnswers/Admin/BotAdminsAnswer.php
 
 		-
 			message: '#^Call to an undefined method ReflectionType\:\:getName\(\)\.$#'
@@ -2659,12 +2497,6 @@ parameters:
 			path: src/Telegram/TelegramResponse.php
 
 		-
-			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 1
-			path: src/TelegramBotServiceProvider.php
-
-		-
 			message: '#^Cannot access offset ''Telegram\\\\Bot\\\\BotsManager'' on mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
@@ -2732,12 +2564,6 @@ parameters:
 
 		-
 			message: '#^Parameter \#1 \$container of method Telegram\\Bot\\BotsManager\:\:setContainer\(\) expects Psr\\Container\\ContainerInterface, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/TelegramBotServiceProvider.php
-
-		-
-			message: '#^Parameter \#1 \$replyKeys of function addUserReplyKeys expects array, mixed given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/TelegramBotServiceProvider.php
@@ -2845,12 +2671,6 @@ parameters:
 			path: src/Traits/ValidationOnModelLevel.php
 
 		-
-			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\BotUser\:\:\$power\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/helpers.php
-
-		-
 			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
 			count: 1
@@ -2871,18 +2691,6 @@ parameters:
 		-
 			message: '#^Cannot access offset ''text'' on mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: src/helpers.php
-
-		-
-			message: '#^Cannot access property \$id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
-			identifier: property.nonObject
-			count: 2
-			path: src/helpers.php
-
-		-
-			message: '#^Cannot access property \$peer_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
-			identifier: property.nonObject
 			count: 1
 			path: src/helpers.php
 
@@ -3118,9 +2926,3 @@ parameters:
 			identifier: assign.propertyType
 			count: 1
 			path: src/Telegram/StateAnswers/StateAnswer.php
-
-		-
-			message: '#^Parameter \#1 \$prefix of static method Illuminate\\Routing\\RouteRegistrar\:\:prefix\(\) expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/TelegramBotServiceProvider.php
