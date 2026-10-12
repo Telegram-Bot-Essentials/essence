@@ -10,6 +10,16 @@ the first public release.
 
 ## [Unreleased]
 
+### Fixed
+
+- Messages and button presses from groups, supergroups and channels are
+  acknowledged and dropped before anything runs. They used to run against
+  the sender's private-chat state (a `/command@bot` in a group cancelled
+  their half-finished DM flow, and group text could be read as its next
+  answer) and every reply went to their DM. Inline queries and presses on
+  inline-mode messages are unaffected. Groups get real support with
+  per-chat state later.
+
 ## [0.17.0] - 2026-10-12
 
 Access moves from numeric power levels to named permissions. This release is
