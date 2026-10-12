@@ -9,8 +9,6 @@ use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKey;
 
 class MainMenuKey extends ReplyKey
 {
-    protected int $perm = 0;
-
     protected function text(): string
     {
         return __('tbe::main_menu.reply_key');
@@ -32,7 +30,7 @@ class MainMenuKey extends ReplyKey
         wHook()->api()->sendMessage([
             'chat_id' => wHook()->user()->telegramUser->peer_id,
             'text' => $this->getResponse(),
-            'reply_markup' => wHook()->user()->getKeyboard(),
+            'reply_markup' => replyKeyboard(),
         ]);
     }
 }
