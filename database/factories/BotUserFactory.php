@@ -3,7 +3,6 @@
 namespace TelegramBotEssentials\Essence\Database\factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use TelegramBotEssentials\Essence\Enums\Roles;
 use TelegramBotEssentials\Essence\Models\Bot;
 use TelegramBotEssentials\Essence\Models\BotUser;
 use TelegramBotEssentials\Essence\Models\TelegramUser;
@@ -17,7 +16,6 @@ class BotUserFactory extends Factory
 
     public function definition(): array
     {
-        $role = Roles::cases()[rand(0, count(Roles::cases()) - 1)];
         $telegramUser = TelegramUser::factory()->create();
 
         return [
@@ -25,9 +23,8 @@ class BotUserFactory extends Factory
                 'bot_owner_peer_id' => $telegramUser->peer_id,
             ])->id,
             'telegram_user_peer_id' => $telegramUser->peer_id,
-            'power' => $role,
             'state' => ['test', null][rand(0, 1)],
-            'menu' => $role->value >= Roles::ADMIN->value ? 'admin' : 'main',
+            'menu' => 'main',
             'suspend' => fake()->boolean(),
         ];
     }
