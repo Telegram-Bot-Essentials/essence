@@ -2,13 +2,12 @@
 
 namespace {{ namespace }};
 
-use TelegramBotEssentials\Essence\Enums\Roles;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQuery;
 
 class {{ class_name }} extends CallbackQuery
 {
     protected string $type = '{{ type }}';
-    protected int $perm = {{ perm_power }};
+    protected ?string $permission = {{ permission }};
 
     public function start(): void
     {

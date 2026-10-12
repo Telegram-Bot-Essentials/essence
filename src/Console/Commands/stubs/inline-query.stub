@@ -2,12 +2,11 @@
 
 namespace {{ namespace }};
 
-use TelegramBotEssentials\Essence\Enums\Roles;
 use TelegramBotEssentials\Essence\Telegram\InlineQueries\InlineQuery;
 
 class {{ class_name }} extends InlineQuery
 {
-    protected int $perm = {{ perm_power }};
+    protected ?string $permission = {{ permission }};
 
     public function handle(): void
     {
