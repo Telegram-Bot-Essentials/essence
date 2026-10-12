@@ -77,7 +77,7 @@ class FormEngine
     public function handleMessage(Form $form, FormState $state, Collection $message): void
     {
         if (! canUseHandler($form)) {
-            wHook()->user()->changeState();
+            wHook()->conversation()->changeState();
 
             return;
         }
@@ -654,7 +654,7 @@ class FormEngine
 
         $result = $form->onComplete($cast, $state->ctx);
 
-        wHook()->user()->changeState();
+        wHook()->conversation()->changeState();
 
         $result->send(wHook()->peerId());
 
@@ -742,7 +742,7 @@ class FormEngine
             }
         }
 
-        wHook()->user()->changeState($state->toStateString());
+        wHook()->conversation()->changeState($state->toStateString());
     }
 
     /**
@@ -846,7 +846,7 @@ class FormEngine
         }
 
         $this->cancel($form, $state);
-        wHook()->user()->changeState();
+        wHook()->conversation()->changeState();
 
         wHook()->api()->sendMessage([
             'chat_id' => wHook()->peerId(),
