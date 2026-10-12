@@ -120,7 +120,7 @@ class TextMatcherBus
      */
     protected function handler(TextMatcherInterface $resolved): void
     {
-        $currentState = wHook()->user()->state;
+        $currentState = wHook()->conversation()->state;
         $this->cancelOldProcess();
         $resolved->handle();
         stateAnswerBus()->cancelHandler($currentState);
