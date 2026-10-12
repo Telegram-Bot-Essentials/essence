@@ -54,7 +54,6 @@ class TelegramBotAndUserSeeder extends Seeder
         ]);
 
         $botUser->update([
-            'state' => 'test',
             'balance' => 1000000,
         ]);
 
@@ -70,7 +69,6 @@ class TelegramBotAndUserSeeder extends Seeder
         BotUser::firstOrCreate([
             'bot_id' => $bot->id,
             'telegram_user_peer_id' => $telegramTestUser->peer_id,
-            'state' => 'test',
             'balance' => 1000000,
         ]);
     }
