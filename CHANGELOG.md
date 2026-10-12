@@ -10,6 +10,8 @@ the first public release.
 
 ## [Unreleased]
 
+## [0.18.0] - 2026-10-12
+
 State and the reply menu move from the user to the conversation: one user
 in one chat and forum topic. This release is breaking: every
 `$user->state` / `changeState()` / `addParamToState()` call moves to a
