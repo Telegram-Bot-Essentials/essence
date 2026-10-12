@@ -57,7 +57,7 @@ class ExceptionHandler
                         wHook()->api()->sendMessage([
                             'chat_id' => wHook()->user()->telegramUser->peer_id,
                             'text' => '😭 Something went wrong, please contact the bot support',
-                            'reply_markup' => wHook()->user()->getKeyboard(),
+                            'reply_markup' => replyKeyboard(),
                         ]);
                     }
                 } catch (Throwable $notifyError) {
@@ -123,7 +123,7 @@ class ExceptionHandler
         wHook()->api()->sendMessage([
             'chat_id' => wHook()->user()->telegramUser->peer_id,
             'text' => $e->getMessage(),
-            'reply_markup' => wHook()->user()->getKeyboard(),
+            'reply_markup' => replyKeyboard(),
         ]);
     }
 
@@ -166,7 +166,7 @@ class ExceptionHandler
             wHook()->api()->sendMessage([
                 'chat_id' => wHook()->user()->telegramUser->peer_id,
                 'text' => __('tbe::general.alerts.notFound', ['resource' => $resourceName]),
-                'reply_markup' => wHook()->user()->getKeyboard(),
+                'reply_markup' => replyKeyboard(),
             ]);
         }
     }
@@ -200,7 +200,7 @@ class ExceptionHandler
             wHook()->api()->sendMessage([
                 'chat_id' => wHook()->peerId(),
                 'text' => __('tbe::general.alerts.contextExpired'),
-                'reply_markup' => wHook()->user()->getKeyboard(),
+                'reply_markup' => replyKeyboard(),
             ]);
         }
     }
@@ -258,7 +258,7 @@ class ExceptionHandler
             wHook()->api()->sendMessage([
                 'chat_id' => wHook()->user()->telegramUser->peer_id,
                 'text' => $e->getMessage(),
-                'reply_markup' => wHook()->user()->getKeyboard(),
+                'reply_markup' => replyKeyboard(),
             ]);
         }
     }
@@ -291,7 +291,7 @@ class ExceptionHandler
             wHook()->api()->sendMessage([
                 'chat_id' => wHook()->user()->telegramUser->peer_id,
                 'text' => 'Requested item not found.',
-                'reply_markup' => wHook()->user()->getKeyboard(),
+                'reply_markup' => replyKeyboard(),
             ]);
         }
     }

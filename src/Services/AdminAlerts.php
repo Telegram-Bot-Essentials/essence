@@ -5,12 +5,9 @@ namespace TelegramBotEssentials\Essence\Services;
 use Closure;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
-use Stancl\Tenancy\Database\TenantScope;
 use Telegram\Bot\Api;
 use TelegramBotEssentials\Essence\Contracts\ResolvesBotLocale;
-use TelegramBotEssentials\Essence\Enums\Roles;
 use TelegramBotEssentials\Essence\Models\Bot;
-use TelegramBotEssentials\Essence\Models\BotUser;
 use Throwable;
 
 /**
@@ -23,6 +20,9 @@ use Throwable;
  */
 class AdminAlerts
 {
+    /** Who besides the owner gets alerts, for an access model that grants it. */
+    public const PERMISSION = 'essence.admin_alerts';
+
     /**
      * @param  string  $key  what the alert is about, e.g. "settings.channel_lock.bot_not_admin"
      * @param  Closure(): string|string  $text  a Closure is rendered in the bot's locale
@@ -92,16 +92,15 @@ class AdminAlerts
     }
 
     /**
-     * The owner plus every admin still reachable and not suspended.
+     * The owner plus every user granted the alerts permission, still
+     * reachable and not suspended.
      *
      * @return list<int>
      */
     private function recipients(Bot $bot): array
     {
         /** @var list<int|string> $admins */
-        $admins = BotUser::withoutGlobalScope(TenantScope::class)
-            ->where('bot_id', $bot->id)
-            ->where('power', '>=', Roles::ADMIN->value)
+        $admins = authorizer()->usersWith($bot, self::PERMISSION)
             ->reachable()
             ->notSuspended()
             ->pluck('telegram_user_peer_id')

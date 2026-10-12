@@ -137,7 +137,7 @@ class TelegramWebhookController extends Controller
                 wHook()->api()->sendMessage([
                     'chat_id' => wHook()->user()->telegramUser->peer_id,
                     'text' => __('tbe::general.alerts.requestIsInvalid'),
-                    'reply_markup' => wHook()->user()->getKeyboard(),
+                    'reply_markup' => replyKeyboard(),
                 ]);
             }
         } elseif ($update->callbackQuery) {
