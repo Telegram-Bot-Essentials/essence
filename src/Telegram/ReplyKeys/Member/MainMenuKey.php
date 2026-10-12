@@ -26,7 +26,7 @@ class MainMenuKey extends ReplyKey
      */
     public function handle(): void
     {
-        wHook()->user()->update(['menu' => 'main']);
+        wHook()->conversation()->changeMenu('main');
         wHook()->api()->sendMessage([
             'chat_id' => wHook()->user()->telegramUser->peer_id,
             'text' => $this->getResponse(),
