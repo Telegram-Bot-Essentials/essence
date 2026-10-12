@@ -4,7 +4,6 @@ namespace TelegramBotEssentials\Essence\Support;
 
 use Illuminate\Support\Facades\App;
 use TelegramBotEssentials\Essence\Contracts\ResolvesBotLocale;
-use TelegramBotEssentials\Essence\Enums\Roles;
 use TelegramBotEssentials\Essence\Models\Bot;
 
 /**
@@ -20,7 +19,7 @@ class BotCommandMenu
         try {
             $commands = [];
             foreach (commandBus()->getCommands() as $command) {
-                if (! $command->isEnabled() || $command->getPerm() > Roles::MEMBER->value) {
+                if (! $command->isEnabled() || ! isPublicHandler($command)) {
                     continue;
                 }
 
