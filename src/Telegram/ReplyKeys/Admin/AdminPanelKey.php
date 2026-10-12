@@ -7,7 +7,7 @@ use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKey;
 
 class AdminPanelKey extends ReplyKey
 {
-    protected int $perm = 100;
+    protected ?string $permission = 'essence.admin_panel';
 
     protected function text(): string
     {
@@ -28,7 +28,7 @@ class AdminPanelKey extends ReplyKey
         wHook()->api()->sendMessage([
             'chat_id' => wHook()->user()->telegramUser->peer_id,
             'text' => $this->getResponse(),
-            'reply_markup' => wHook()->user()->getKeyboard(),
+            'reply_markup' => replyKeyboard(),
         ]);
     }
 }
