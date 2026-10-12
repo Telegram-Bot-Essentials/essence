@@ -49,7 +49,6 @@ class MainSeeder extends Seeder
         BotUser::firstOrCreate([
             'bot_id' => $bot->id,
             'telegram_user_peer_id' => $telegramUser->peer_id,
-            'power' => 100,
         ]);
     }
 }

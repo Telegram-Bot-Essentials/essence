@@ -55,7 +55,6 @@ class TelegramBotAndUserSeeder extends Seeder
 
         $botUser->update([
             'state' => 'test',
-            'power' => 100,
             'balance' => 1000000,
         ]);
 
@@ -72,7 +71,6 @@ class TelegramBotAndUserSeeder extends Seeder
             'bot_id' => $bot->id,
             'telegram_user_peer_id' => $telegramTestUser->peer_id,
             'state' => 'test',
-            'power' => 100,
             'balance' => 1000000,
         ]);
     }
