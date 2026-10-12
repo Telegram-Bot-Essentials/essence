@@ -3,8 +3,10 @@
 namespace TelegramBotEssentials\Essence\Forms;
 
 use Illuminate\Support\Facades\Lang;
+use TelegramBotEssentials\Essence\Contracts\DeclaresPermission;
 use TelegramBotEssentials\Essence\Forms\Steps\Step;
 use TelegramBotEssentials\Essence\Telegram\TelegramResponse;
+use TelegramBotEssentials\Essence\Traits\HasPermission;
 
 /**
  * A multi-step data-collection flow. Subclass it, list the steps, and say
@@ -27,13 +29,12 @@ use TelegramBotEssentials\Essence\Telegram\TelegramResponse;
  * Text lives under $lang: `fields.{step}.prompt` (required), `fields.{step}.label`,
  * `lockLabel`, `summary`, `finished`.
  */
-abstract class Form
+abstract class Form implements DeclaresPermission
 {
+    use HasPermission;
+
     /** The key stored in a user's state while the form runs. */
     protected string $type;
-
-    /** Minimum role power needed to run it, as for a StateAnswer. */
-    protected int $perm = 0;
 
     /** Translation prefix for this form's texts, e.g. `tbe-billing::offers.wizard`. */
     protected string $lang;
@@ -77,11 +78,6 @@ abstract class Form
     public function getType(): string
     {
         return $this->type;
-    }
-
-    public function getPerm(): int
-    {
-        return $this->perm;
     }
 
     public function idleSeconds(): ?int

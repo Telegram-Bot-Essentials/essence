@@ -43,7 +43,7 @@ class FormEngine
      */
     public function start(Form $form, array $ctx = [], array $prefill = []): void
     {
-        if (! hasAccess($form->getPerm())) {
+        if (! canUseHandler($form)) {
             return;
         }
 
@@ -76,7 +76,7 @@ class FormEngine
      */
     public function handleMessage(Form $form, FormState $state, Collection $message): void
     {
-        if (! hasAccess($form->getPerm())) {
+        if (! canUseHandler($form)) {
             wHook()->user()->changeState();
 
             return;
@@ -156,7 +156,7 @@ class FormEngine
      */
     public function handlePick(Form $form, FormState $state, int $stepIndex, string $value): bool
     {
-        if (! hasAccess($form->getPerm())) {
+        if (! canUseHandler($form)) {
             return false;
         }
 
@@ -664,7 +664,7 @@ class FormEngine
             'chat_id' => wHook()->peerId(),
             'text' => $form->hasText('finished') ? $form->text('finished') : __('tbe::forms.finished'),
             'parse_mode' => 'HTML',
-            'reply_markup' => wHook()->user()->getKeyboard(),
+            'reply_markup' => replyKeyboard(),
         ]);
     }
 
@@ -851,7 +851,7 @@ class FormEngine
         wHook()->api()->sendMessage([
             'chat_id' => wHook()->peerId(),
             'text' => __('tbe::forms.expired'),
-            'reply_markup' => wHook()->user()->getKeyboard(),
+            'reply_markup' => replyKeyboard(),
         ]);
 
         return true;
