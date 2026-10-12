@@ -113,7 +113,7 @@ class TelegramWebhookController extends Controller
                 $keyProcessed = replyKeyBus()->processReplyKey();
                 if ($keyProcessed) {
                     botEventBus()->fire(new BotReplyKeyHandled($context, $update->message->text));
-                } elseif (wHook()->user()->state) {
+                } elseif (wHook()->conversation()->state) {
                     $answerProcessed = stateAnswerBus()->processStateAnswers();
                     if ($answerProcessed) {
                         botEventBus()->fire(new BotStateAnswerHandled($context, wHook()->requestState()));

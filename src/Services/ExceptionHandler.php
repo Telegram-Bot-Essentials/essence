@@ -184,7 +184,7 @@ class ExceptionHandler
         tbeLog('essence')->warning('Handler context expired: '.($e->getMessage() ?: 'no message'));
 
         if (wHook()->check()) {
-            wHook()->user()->changeState();
+            wHook()->conversation()->changeState();
         }
 
         if (wHook()->update()->callbackQuery) {
