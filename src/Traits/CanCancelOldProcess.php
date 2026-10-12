@@ -25,7 +25,7 @@ trait CanCancelOldProcess
                 wHook()->api()->sendMessage([
                     'chat_id' => wHook()->user()->telegramUser->peer_id,
                     'text' => __('tbe::cancel_process.main.text.cancelDueToNewProcess'),
-                    'reply_markup' => wHook()->user()->getKeyboard(),
+                    'reply_markup' => replyKeyboard(),
                 ]);
             }
         }

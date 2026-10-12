@@ -3,7 +3,6 @@
 namespace TelegramBotEssentials\Essence\Traits;
 
 use Illuminate\Support\Str;
-use TelegramBotEssentials\Essence\Enums\Roles;
 
 /**
  * Name-parsing and text-generation helpers shared by every `tbe:make:*`
@@ -14,9 +13,7 @@ trait TgClassMaker
 {
     private string $nameValue;
 
-    private int $permValue;
-
-    private string $permEnumValue;
+    private ?string $permissionValue = null;
 
     private string $typeValue;
 
@@ -62,8 +59,11 @@ trait TgClassMaker
             $arguments = [
                 'name' => $this->nameValue,
             ];
-            if ($this->permValue == 100) {
+            if (($this->input->getOptions()['admin'] ?? false) === true) {
                 $arguments['--admin'] = true;
+            }
+            if ($this->permissionValue !== null) {
+                $arguments['--permission'] = $this->permissionValue;
             }
 
             $this->call($command, $arguments);
@@ -73,10 +73,35 @@ trait TgClassMaker
     private function initializeValues(): void
     {
         $this->typeValue = strtoupper($this->nameValue);
-        if ($this->hasOption('admin')) {
-            $this->permValue = $this->option('admin') ? Roles::ADMIN->value : Roles::MEMBER->value;
-            $this->permEnumValue = $this->option('admin') ? 'Roles::ADMIN->value' : 'Roles::MEMBER->value';
+        $this->permissionValue = $this->resolvePermission();
+    }
+
+    /**
+     * --permission when given; with --admin alone, "app.<snake_name>", which
+     * the app still has to register with permissionRegistry().
+     */
+    private function resolvePermission(): ?string
+    {
+        // Raw options rather than option(): not every command using this trait
+        // defines both.
+        $options = $this->input->getOptions();
+        $permission = $options['permission'] ?? null;
+
+        if (is_string($permission) && $permission !== '') {
+            return $permission;
         }
+
+        if (($options['admin'] ?? false) === true) {
+            return 'app.'.$this->generateTranslationKeyFromName($this->nameValue);
+        }
+
+        return null;
+    }
+
+    /** The generated `$permission` value as PHP source. */
+    private function permissionLiteral(): string
+    {
+        return $this->permissionValue === null ? 'null' : var_export($this->permissionValue, true);
     }
 
     protected function generateTextFromName(string $name): string
