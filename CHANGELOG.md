@@ -10,6 +10,50 @@ the first public release.
 
 ## [Unreleased]
 
+State and the reply menu move from the user to the conversation: one user
+in one chat and forum topic. This release is breaking: every
+`$user->state` / `changeState()` / `addParamToState()` call moves to a
+conversation (see **Upgrading**). Group chats are still dropped at the
+webhook; this lays the ground for them.
+
+### Added
+
+- `conversations` table and `Conversation` model, keyed by user, chat and
+  forum topic (`thread_id`, 0 outside a topic), holding `state` and `menu`.
+- `wHook()->conversation()`, `chatId()` and `threadId()`, bound from the
+  update's chat and topic. Updates without a chat (inline queries, presses
+  on inline-mode messages) belong to the private chat.
+- `BotUser::conversations()`, `conversationIn($chatId, $threadId = 0)` and
+  `privateConversation()`.
+- `WebhookContext` carries `chat_id` and `thread_id`, so a queued job
+  resumes in the right conversation. A payload queued before this release
+  falls back to the private chat.
+
+### Changed
+
+- `ResolvesKeyboard::for()` takes a `Conversation`. `replyKeyboard()` takes
+  a conversation, or a user meaning their private chat.
+- `Webhook::setUser()` takes the conversation to bind; without one it binds
+  the user's private chat, as `runForUser()` does.
+- `Testing\TestCase::makeBotUser()` puts `state` and `menu` attributes on
+  the user's private conversation.
+
+### Removed
+
+- `bot_users.state` and `bot_users.menu` (moved into each user's private
+  conversation by a migration).
+- `BotUser::changeState()` and `BotUser::addParamToState()`.
+
+### Upgrading
+
+1. Where the update's own flow is meant, replace `wHook()->user()->state`,
+   `->changeState()` and `->addParamToState()` with the same calls on
+   `wHook()->conversation()`, and `wHook()->user()->update(['menu' => …])`
+   with `wHook()->conversation()->changeMenu(…)`.
+2. Where another user is meant (an admin acting on a user, a job), call
+   them on `$user->privateConversation()`.
+3. Custom `ResolvesKeyboard` implementations take a `Conversation`.
+
 ## [0.17.1] - 2026-10-12
 
 ### Fixed

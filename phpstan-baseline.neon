@@ -529,12 +529,6 @@ parameters:
 			path: src/Http/Controllers/TelegramWebhookController.php
 
 		-
-			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\BotUser\:\:\$state\.$#'
-			identifier: property.notFound
-			count: 2
-			path: src/Http/Controllers/TelegramWebhookController.php
-
-		-
 			message: '#^Cannot access property \$newChatMember on Telegram\\Bot\\Objects\\ChatMemberUpdated\|null\.$#'
 			identifier: property.nonObject
 			count: 1
@@ -801,12 +795,6 @@ parameters:
 		-
 			message: '#^Class TelegramBotEssentials\\Essence\\Models\\BotUser uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
 			identifier: missingType.generics
-			count: 1
-			path: src/Models/BotUser.php
-
-		-
-			message: '#^Method TelegramBotEssentials\\Essence\\Models\\BotUser\:\:addParamToState\(\) has parameter \$params with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
 			count: 1
 			path: src/Models/BotUser.php
 
@@ -1447,12 +1435,6 @@ parameters:
 			path: src/Support/Webhook.php
 
 		-
-			message: '#^Cannot access property \$state on TelegramBotEssentials\\Essence\\Models\\BotUser\|null\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: src/Support/Webhook.php
-
-		-
 			message: '#^Cannot call method isType\(\) on Telegram\\Bot\\Objects\\Update\|null\.$#'
 			identifier: method.nonObject
 			count: 3
@@ -1497,12 +1479,6 @@ parameters:
 		-
 			message: '#^Parameter \$botUserId of class TelegramBotEssentials\\Essence\\Support\\WebhookContext constructor expects int\|null, mixed given\.$#'
 			identifier: argument.type
-			count: 1
-			path: src/Support/Webhook.php
-
-		-
-			message: '#^Property TelegramBotEssentials\\Essence\\Support\\Webhook\:\:\$requestState \(string\|null\) does not accept mixed\.$#'
-			identifier: assign.propertyType
 			count: 1
 			path: src/Support/Webhook.php
 
@@ -1781,12 +1757,6 @@ parameters:
 			identifier: argument.type
 			count: 2
 			path: src/Telegram/CallbackQueries/Member/InlineConfirmationQuery.php
-
-		-
-			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\BotUser\:\:\$state\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Telegram/CallbackQueries/Member/MessageMetaQuery.php
 
 		-
 			message: '#^Cannot access property \$id on Telegram\\Bot\\Objects\\CallbackQuery\|null\.$#'
@@ -2125,12 +2095,6 @@ parameters:
 			path: src/Telegram/ReplyKeys/Member/MainMenuKey.php
 
 		-
-			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\BotUser\:\:\$state\.$#'
-			identifier: property.notFound
-			count: 2
-			path: src/Telegram/ReplyKeys/ReplyKeyBus.php
-
-		-
 			message: '#^Cannot access property \$peer_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
 			identifier: property.nonObject
 			count: 1
@@ -2186,12 +2150,6 @@ parameters:
 
 		-
 			message: '#^Parameter \#1 \$replyKey of method TelegramBotEssentials\\Essence\\Telegram\\ReplyKeys\\ReplyKeyBus\:\:addReplyKey\(\) expects string\|TelegramBotEssentials\\Essence\\Telegram\\ReplyKeys\\ReplyKeyInterface, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Telegram/ReplyKeys/ReplyKeyBus.php
-
-		-
-			message: '#^Parameter \#1 \$state of method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswerBus\:\:cancelHandler\(\) expects string\|null, mixed given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Telegram/ReplyKeys/ReplyKeyBus.php
@@ -2297,12 +2255,6 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Telegram/StateAnswers/StateAnswer.php
-
-		-
-			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\BotUser\:\:\$state\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Telegram/StateAnswers/StateAnswerBus.php
 
 		-
 			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\StateAnswers\\StateAnswerBus\:\:addStateAnswers\(\) has parameter \$stateAnswers with no value type specified in iterable type iterable\.$#'
