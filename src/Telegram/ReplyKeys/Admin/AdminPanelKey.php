@@ -24,7 +24,7 @@ class AdminPanelKey extends ReplyKey
      */
     public function handle(): void
     {
-        wHook()->user()->update(['menu' => 'admin']);
+        wHook()->conversation()->changeMenu('admin');
         wHook()->api()->sendMessage([
             'chat_id' => wHook()->user()->telegramUser->peer_id,
             'text' => $this->getResponse(),
