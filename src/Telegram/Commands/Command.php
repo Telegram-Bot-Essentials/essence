@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace TelegramBotEssentials\Essence\Telegram\Commands;
 
-abstract class Command implements CommandInterface
+use TelegramBotEssentials\Essence\Contracts\DeclaresPermission;
+use TelegramBotEssentials\Essence\Traits\HasPermission;
+
+abstract class Command implements CommandInterface, DeclaresPermission
 {
+    use HasPermission;
+
     protected string $name;
 
     protected array $aliases = [];
-
-    protected int $perm;
 
     /** Where the command sits in the Telegram menu and /help: higher comes first, ties keep registration order. */
     protected int $priority = 0;
@@ -39,11 +42,6 @@ abstract class Command implements CommandInterface
     public function getDescription(): string
     {
         return $this->description() ?? '';
-    }
-
-    public function getPerm(): int
-    {
-        return $this->perm;
     }
 
     public function getPriority(): int

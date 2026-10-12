@@ -131,7 +131,7 @@ class CommandBus
         if (! $command->isEnabled()) {
             return false;
         }
-        if (! hasAccess($command->getPerm())) {
+        if (! canUseHandler($command)) {
             return false;
         }
 

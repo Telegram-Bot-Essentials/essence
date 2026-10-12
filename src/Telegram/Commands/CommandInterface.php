@@ -12,7 +12,7 @@ interface CommandInterface
 
     public function getDescription(): string;
 
-    public function getPerm(): int;
+    public function getPermission(): ?string;
 
     public function getPriority(): int;
 
