@@ -18,9 +18,9 @@ trait CanCancelOldProcess
      */
     public function cancelOldProcess(): void
     {
-        if (wHook()->user()->state) {
+        if (wHook()->conversation()->state) {
             $CancelProcessKey = $this->resolveReplyKey(CancelProcessKey::class);
-            wHook()->user()->changeState();
+            wHook()->conversation()->changeState();
             if (wHook()->update()?->message?->text !== $CancelProcessKey->getText()) {
                 wHook()->api()->sendMessage([
                     'chat_id' => wHook()->user()->telegramUser->peer_id,
