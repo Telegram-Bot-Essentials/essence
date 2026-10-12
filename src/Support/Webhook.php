@@ -9,6 +9,7 @@ use Telegram\Bot\Objects\Update;
 use TelegramBotEssentials\Essence\Exceptions\WebhookAuthException;
 use TelegramBotEssentials\Essence\Models\Bot;
 use TelegramBotEssentials\Essence\Models\BotUser;
+use TelegramBotEssentials\Essence\Models\Conversation;
 use Throwable;
 
 class Webhook
@@ -21,6 +22,8 @@ class Webhook
 
     private ?BotUser $user = null;
 
+    private ?Conversation $conversation = null;
+
     private ?string $requestState = null;
 
     public function clear(): void
@@ -29,6 +32,7 @@ class Webhook
         $this->update = null;
         $this->bot = null;
         $this->user = null;
+        $this->conversation = null;
         $this->requestState = null;
     }
 
@@ -98,6 +102,38 @@ class Webhook
         }
     }
 
+    /**
+     * Where the update came from: the user in this chat (and forum topic).
+     * State and the reply menu live here.
+     */
+    public function conversation(): Conversation
+    {
+        try {
+            if ($this->conversation == null) {
+                throw new WebhookAuthException('Failed to retrieve conversation.');
+            }
+
+            return $this->conversation;
+        } catch (WebhookAuthException $e) {
+            exceptionHandler()->handle($e);
+            abort(200, $e->getMessage());
+        }
+    }
+
+    public function chatId(): int
+    {
+        return (int) $this->conversation()->chat_id;
+    }
+
+    /** The forum topic, or null outside one. */
+    public function threadId(): ?int
+    {
+        $threadId = (int) $this->conversation()->thread_id;
+
+        return $threadId === 0 ? null : $threadId;
+    }
+
+    /** The conversation's state when the update arrived, before any handler changed it. */
     public function requestState(): ?string
     {
         return $this->requestState;
@@ -107,6 +143,7 @@ class Webhook
     {
         return $this->bot !== null
             && $this->user !== null
+            && $this->conversation !== null
             && $this->api !== null
             && $this->update !== null;
     }
@@ -115,17 +152,18 @@ class Webhook
     {
         $originalBot = $this->bot;
         $originalUser = $this->user;
-        // setUser() derives requestState from $user->state, which is a
-        // problem for the restore below: if $callback mutates $originalUser
-        // (the exact object, not just an equal row) - e.g. a state-answer
-        // handler that calls $user->changeState() before triggering an
-        // event whose listener runs a payment for that same user through
-        // here - setUser($originalUser) after the callback re-derives
-        // requestState from the now-changed object instead of restoring
-        // what it was before the swap. Snapshot the value itself so the
-        // restore is a real restore, not a re-derivation.
+        $originalConversation = $this->conversation;
+        // setUser() derives requestState from the conversation's state,
+        // which is a problem for the restore below: if $callback changes
+        // the original conversation (the exact object, not just an equal
+        // row) - e.g. a state-answer handler that changes state before
+        // triggering an event whose listener runs a payment for that same
+        // user through here - re-deriving after the callback would read
+        // the changed state instead of what it was before the swap.
+        // Snapshot the value itself so the restore is a real restore.
         $originalRequestState = $this->requestState;
 
+        // Acting on a user from outside their update: their private chat.
         self::setBot($user->bot);
         self::setUser($user);
 
@@ -137,6 +175,7 @@ class Webhook
 
         $this->bot = $originalBot;
         $this->user = $originalUser;
+        $this->conversation = $originalConversation;
         $this->requestState = $originalRequestState;
 
         return $result ?? null;
@@ -147,10 +186,15 @@ class Webhook
         $this->bot = $bot;
     }
 
-    public function setUser(?BotUser $user): void
+    /**
+     * Bind the user and the conversation the update belongs to; without a
+     * conversation, the user's private chat.
+     */
+    public function setUser(?BotUser $user, ?Conversation $conversation = null): void
     {
         $this->user = $user;
-        $this->requestState = $user->state;
+        $this->conversation = $user === null ? null : ($conversation ?? $user->privateConversation());
+        $this->requestState = $this->conversation?->state;
     }
 
     public function exportContext(): ?WebhookContext
@@ -162,6 +206,8 @@ class Webhook
         return new WebhookContext(
             botId: $this->bot?->getKey(),
             botUserId: $this->user?->getKey(),
+            chatId: $this->conversation?->chat_id,
+            threadId: $this->conversation?->thread_id,
             updatePayload: $this->update?->toArray() ?? [],
             botToken: $this->bot?->bot_token,
             bot: $this->bot,
@@ -194,7 +240,11 @@ class Webhook
         }
 
         self::setBot($bot);
-        self::setUser($botUser);
+        // A context queued before conversations existed has no chat: fall
+        // back to the user's private chat, which is where it came from.
+        self::setUser($botUser, $snapshot->chatId === null
+            ? null
+            : $botUser->conversationIn($snapshot->chatId, $snapshot->threadId ?? 0));
 
         $providedApi = null;
 

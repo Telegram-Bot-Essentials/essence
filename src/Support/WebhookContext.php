@@ -16,6 +16,8 @@ class WebhookContext
         public readonly ?string $botToken = null,
         public readonly ?Bot $bot = null,
         public readonly ?BotUser $botUser = null,
+        public readonly ?int $chatId = null,
+        public readonly ?int $threadId = null,
     ) {}
 
     public static function capture(): ?self
@@ -27,6 +29,7 @@ class WebhookContext
         try {
             $bot = wHook()->bot();
             $botUser = wHook()->user();
+            $conversation = wHook()->conversation();
             $update = wHook()->update();
         } catch (\Throwable) {
             return null;
@@ -39,6 +42,8 @@ class WebhookContext
             botToken: $bot?->bot_token,
             bot: $bot,
             botUser: $botUser,
+            chatId: $conversation->chat_id,
+            threadId: $conversation->thread_id,
         );
     }
 
@@ -51,6 +56,8 @@ class WebhookContext
             botToken: $payload['bot_token'] ?? null,
             bot: $payload['bot'] ?? null,
             botUser: $payload['bot_user'] ?? null,
+            chatId: is_numeric($payload['chat_id'] ?? null) ? (int) $payload['chat_id'] : null,
+            threadId: is_numeric($payload['thread_id'] ?? null) ? (int) $payload['thread_id'] : null,
         );
     }
 
@@ -102,6 +109,8 @@ class WebhookContext
             'update' => $this->updatePayload,
             'bot' => $this->bot,
             'bot_user' => $this->botUser,
+            'chat_id' => $this->chatId,
+            'thread_id' => $this->threadId,
         ];
     }
 
