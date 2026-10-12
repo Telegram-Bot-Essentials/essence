@@ -5,11 +5,22 @@ use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Member\MainMenuKey;
 
 return [
     'keyboard' => [
-        'admin' => [
-            [MainMenuKey::class],
-        ],
-        'member' => [
-            [AdminPanelKey::class],
+        // Off: no menus and no automatic Cancel key; any reply keyboard on
+        // screen is removed. A state answer's own keyboard is still shown.
+        'enabled' => true,
+        'resize' => true,
+        'one_time' => true,
+
+        // Named menus, rows of ReplyKey classes. A user sees the menu named
+        // in bot_users.menu ("main" by default); keys they may not use are
+        // left out.
+        'menus' => [
+            'main' => [
+                [AdminPanelKey::class],
+            ],
+            'admin' => [
+                [MainMenuKey::class],
+            ],
         ],
     ],
 
