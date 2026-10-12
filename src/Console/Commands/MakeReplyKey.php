@@ -11,6 +11,7 @@ class MakeReplyKey extends PackageGeneratorCommand
     protected $signature = 'tbe:make:reply-key
         {name : The name of the feature}
         {--admin : Make feature for admin}
+        {--permission= : The permission it asks for (default with --admin: app.<snake_name>)}
         {--a|all : Generate all types}
         {--f|feature : Generate feature class}
         {--c|callback : Generate callback query}
@@ -31,9 +32,9 @@ class MakeReplyKey extends PackageGeneratorCommand
 
     protected function getDefaultNamespace($rootNamespace): string
     {
-        $perm = $this->option('admin') ? 'Admin' : 'Member';
+        $scope = $this->option('admin') ? 'Admin' : 'Member';
 
-        return $rootNamespace.'\\Telegram\\ReplyKeys\\'.$perm;
+        return $rootNamespace.'\\Telegram\\ReplyKeys\\'.$scope;
     }
 
     protected function getNameInput(): string
@@ -60,14 +61,14 @@ class MakeReplyKey extends PackageGeneratorCommand
                 '{{ class_name }}',
                 '{{ text }}',
                 '{{ response }}',
-                '{{ perm_power }}',
+                '{{ permission }}',
             ],
             [
                 $namespace,
                 $className,
                 $text,
                 $response,
-                $this->permEnumValue,
+                $this->permissionLiteral(),
             ],
             $stub
         );

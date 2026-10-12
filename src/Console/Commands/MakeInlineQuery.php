@@ -40,12 +40,12 @@ class MakeInlineQuery extends PackageGeneratorCommand
             [
                 '{{ namespace }}',
                 '{{ class_name }}',
-                '{{ perm_power }}',
+                '{{ permission }}',
             ],
             [
                 $namespace,
                 $className,
-                'Roles::MEMBER->value',
+                'null',
             ],
             $stub
         );

@@ -10,7 +10,8 @@ class MakeTextMatcher extends PackageGeneratorCommand
 
     protected $signature = 'tbe:make:text-matcher
         {name : The name of the text matcher}
-        {--admin : Make the matcher admin-only}';
+        {--admin : Make the matcher admin-only}
+        {--permission= : The permission it asks for (default with --admin: app.<snake_name>)}';
 
     protected $description = 'Create a new TextMatcher class';
 
@@ -36,14 +37,16 @@ class MakeTextMatcher extends PackageGeneratorCommand
 
     protected function buildClass($name): string
     {
+        $this->initializeValues();
+
         $stub = $this->files->get($this->getStub());
 
         return str_replace(
-            ['{{ namespace }}', '{{ class_name }}', '{{ perm_power }}'],
+            ['{{ namespace }}', '{{ class_name }}', '{{ permission }}'],
             [
                 $this->getNamespace($name),
                 class_basename($name),
-                $this->option('admin') ? 'Roles::ADMIN->value' : 'Roles::MEMBER->value',
+                $this->permissionLiteral(),
             ],
             $stub
         );

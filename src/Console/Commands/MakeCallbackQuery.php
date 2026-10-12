@@ -11,6 +11,7 @@ class MakeCallbackQuery extends PackageGeneratorCommand
     protected $signature = 'tbe:make:callback-query
         {name : The name of the feature}
         {--admin : Make feature for admin}
+        {--permission= : The permission it asks for (default with --admin: app.<snake_name>)}
         {--a|all : Generate all types}
         {--f|feature : Generate feature class}
         {--r|reply-key : Generate reply key}
@@ -31,9 +32,9 @@ class MakeCallbackQuery extends PackageGeneratorCommand
 
     protected function getDefaultNamespace($rootNamespace): string
     {
-        $perm = $this->option('admin') ? 'Admin' : 'Member';
+        $scope = $this->option('admin') ? 'Admin' : 'Member';
 
-        return $rootNamespace.'\\Telegram\\CallbackQueries\\'.$perm;
+        return $rootNamespace.'\\Telegram\\CallbackQueries\\'.$scope;
     }
 
     protected function getNameInput(): string
@@ -56,13 +57,13 @@ class MakeCallbackQuery extends PackageGeneratorCommand
                 '{{ namespace }}',
                 '{{ class_name }}',
                 '{{ type }}',
-                '{{ perm_power }}',
+                '{{ permission }}',
             ],
             [
                 $namespace,
                 $className,
                 $this->typeValue,
-                $this->permEnumValue,
+                $this->permissionLiteral(),
             ],
             $stub
         );
