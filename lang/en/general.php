@@ -72,12 +72,6 @@ return [
         'resourceDeletedSuccessfully' => ':resource deleted.',
     ],
 
-    'roles' => [
-        'admin' => 'Admin',
-        'moderator' => 'Moderator',
-        'member' => 'Member',
-    ],
-
     'intervals' => [
         'year' => 'year',
         'month' => 'month',
