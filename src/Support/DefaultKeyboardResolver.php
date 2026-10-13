@@ -8,6 +8,7 @@ use TelegramBotEssentials\Essence\Contracts\ResolvesKeyboard;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
 use TelegramBotEssentials\Essence\Models\BotUser;
 use TelegramBotEssentials\Essence\Models\Conversation;
+use TelegramBotEssentials\Essence\Telegram\CallbackQueries\Member\GroupKeyQuery;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Member\CancelProcessKey;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKeyInterface;
 
@@ -28,6 +29,14 @@ use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKeyInterface;
  * there is no menu, or nothing in it is left to show, the keyboard on
  * screen is removed rather than replaced with an empty one, which
  * Telegram would ignore.
+ *
+ * Group chats never get a reply keyboard: a client shows only the newest
+ * reply markup in a group, so one user's keyboard would hide everyone
+ * else's, and anyone could press it. There, a flow's keys become inline
+ * buttons on the prompt (see GroupKeyQuery), a flow without keys gets an
+ * inline Cancel, and outside a flow a markup with no buttons is sent, which
+ * leaves every keyboard on screen alone. Never a removal: in a group that
+ * would hide other users' keyboards too.
  */
 class DefaultKeyboardResolver implements ResolvesKeyboard
 {
@@ -41,6 +50,10 @@ class DefaultKeyboardResolver implements ResolvesKeyboard
      */
     public function for(Conversation $conversation): Keyboard
     {
+        if (! $conversation->isPrivate()) {
+            return $this->forGroup($conversation);
+        }
+
         $user = $conversation->botUser;
         $state = $conversation->state;
 
@@ -156,5 +169,71 @@ class DefaultKeyboardResolver implements ResolvesKeyboard
         }
 
         return $resolved;
+    }
+
+    /**
+     * @return Keyboard<array-key, mixed>
+     *
+     * @throws BindingResolutionException
+     * @throws LogicException
+     */
+    protected function forGroup(Conversation $conversation): Keyboard
+    {
+        $state = $conversation->state;
+
+        if (! is_string($state) || $state === '') {
+            // A markup with no buttons: Telegram accepts it and leaves the
+            // keyboards on screen as they are.
+            return Keyboard::make()->setResizeKeyboard(true)->setOneTimeKeyboard(true);
+        }
+
+        $inline = Keyboard::make()->inline();
+        foreach (self::groupButtons($conversation) as $index => $text) {
+            $inline->row([Keyboard::inlineButton([
+                'text' => $text,
+                'callback_data' => GroupKeyQuery::callbackData($index, $state),
+            ])]);
+        }
+
+        return $inline;
+    }
+
+    /**
+     * The buttons a flow offers in a group, in order: the open state
+     * answer's own keys, then Cancel unless they already have it. Pressing
+     * one replays its text as if the user had typed it.
+     *
+     * @return list<string>
+     *
+     * @throws BindingResolutionException
+     * @throws LogicException
+     */
+    public static function groupButtons(Conversation $conversation): array
+    {
+        $user = $conversation->botUser;
+        $state = $conversation->state;
+
+        if (! $user instanceof BotUser || ! is_string($state) || $state === '') {
+            return [];
+        }
+
+        $rows = stateAnswerBus()->keyboardFor($state, $user)?->toArray()['keyboard'] ?? [];
+
+        $texts = [];
+        foreach (is_array($rows) ? $rows : [] as $row) {
+            foreach (is_array($row) ? $row : [] as $button) {
+                $text = is_array($button) ? ($button['text'] ?? null) : $button;
+                if (is_string($text) && $text !== '' && ! in_array($text, $texts, true)) {
+                    $texts[] = $text;
+                }
+            }
+        }
+
+        $cancel = app(CancelProcessKey::class)->getText();
+        if (! in_array($cancel, $texts, true)) {
+            $texts[] = $cancel;
+        }
+
+        return $texts;
     }
 }

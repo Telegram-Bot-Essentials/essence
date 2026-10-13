@@ -125,6 +125,43 @@ class Webhook
         return (int) $this->conversation()->chat_id;
     }
 
+    /** Whether a conversation is bound: inside a webhook or a job that resumed one. */
+    public function hasConversation(): bool
+    {
+        return $this->conversation !== null;
+    }
+
+    /** Whether the update came from a group chat rather than the user's private chat. */
+    public function inGroup(): bool
+    {
+        return $this->conversation !== null && ! $this->conversation->isPrivate();
+    }
+
+    /**
+     * Where a reply to this update goes: the conversation's chat, and its
+     * forum topic when it is in one. Spread into a send:
+     * `sendMessage([...wHook()->replyTo(), 'text' => ...])`. In a private
+     * chat this is the user's peer id, as before.
+     *
+     * @return array{chat_id: int, message_thread_id?: int}
+     */
+    public function replyTo(): array
+    {
+        // No conversation bound yet (an error before the user was resolved):
+        // the private chat, as every reply used to go.
+        if ($this->conversation === null) {
+            $peerId = $this->user()->getAttribute('telegram_user_peer_id');
+
+            return ['chat_id' => is_numeric($peerId) ? (int) $peerId : 0];
+        }
+
+        $threadId = $this->threadId();
+
+        return $threadId === null
+            ? ['chat_id' => $this->chatId()]
+            : ['chat_id' => $this->chatId(), 'message_thread_id' => $threadId];
+    }
+
     /** The forum topic, or null outside one. */
     public function threadId(): ?int
     {
