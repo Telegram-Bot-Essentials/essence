@@ -117,7 +117,7 @@ class TelegramResponse
     public function send(string|int|null $chatId = null): Message
     {
         $params = array_filter([
-            'chat_id' => $chatId ?? wHook()->user()->telegramUser->peer_id,
+            ...($chatId === null ? wHook()->replyTo() : ['chat_id' => $chatId]),
             'reply_markup' => $this->replyMarkup?->isEmpty() ? null : $this->replyMarkup,
             'parse_mode' => $this->parseMode,
         ]);
@@ -161,6 +161,12 @@ class TelegramResponse
         }
 
         $user = wHook()->user();
+
+        // Only a send to the private chat says anything about the user: one
+        // to a group fails when the bot left the group, not when they blocked it.
+        if ($chatId === null && wHook()->inGroup()) {
+            return null;
+        }
 
         if ($chatId !== null && (int) $chatId !== (int) $user->telegramUser?->peer_id) {
             return null;
