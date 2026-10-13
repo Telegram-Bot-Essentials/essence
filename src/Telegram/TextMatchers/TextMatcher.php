@@ -3,7 +3,9 @@
 namespace TelegramBotEssentials\Essence\Telegram\TextMatchers;
 
 use Telegram\Bot\Objects\Message;
+use TelegramBotEssentials\Essence\Contracts\DeclaresChatScope;
 use TelegramBotEssentials\Essence\Contracts\DeclaresPermission;
+use TelegramBotEssentials\Essence\Traits\HasChatScope;
 use TelegramBotEssentials\Essence\Traits\HasPermission;
 
 /**
@@ -13,8 +15,9 @@ use TelegramBotEssentials\Essence\Traits\HasPermission;
  * against the text (or the caption of a media message), or override
  * `matches()` for anything else (entities, attachments, a lookup...).
  */
-abstract class TextMatcher implements DeclaresPermission, TextMatcherInterface
+abstract class TextMatcher implements DeclaresChatScope, DeclaresPermission, TextMatcherInterface
 {
+    use HasChatScope;
     use HasPermission;
 
     /** A regex tested against the message's text or caption by the default `matches()`. */
