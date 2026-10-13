@@ -95,8 +95,21 @@ Fixes all four bugs above in production. Superseded later by default-`Private` s
 - Callback ownership: in a group anyone can press any button. Bind the owner on `MessageMeta`
   (not in callback data — 64-byte limit, `CallbackDataTooLong`) and reject foreign clicks with
   an `answerCallbackQuery` alert.
-- No reply keyboards in groups (`replyKeyboard()` returns none there: it already reads the
-  webhook context, so no call site changes).
+- Keyboards in groups (decided from the prototype, see **Group keyboard findings**). No
+  reply keyboard is ever sent to a group, and no call site changes: `replyKeyboard()`
+  decides from the conversation.
+  - No state: a markup with no buttons, which leaves keyboards on screen alone. Never
+    `remove_keyboard`: in a group it hides other users' keyboards.
+  - Mid-flow with a state answer keyboard: the same buttons as an **inline** keyboard on
+    the prompt. A press carries the button index and a short hash of the state; it is
+    replayed as if the presser typed the button text, against the **presser's**
+    conversation. A presser who is not at that step (not the flow's owner, or a stale
+    step) gets an `answerCallbackQuery` alert. Used buttons are taken off the message.
+  - Mid-flow without one: an inline Cancel button.
+  - Free-text steps: `force_reply` + `selective`, so the answer reaches the bot under
+    privacy mode. The answer is routed by sender (per-user conversation), not by which
+    bot message it replies to; in a group a text answer counts only when it is a reply to
+    the bot.
 - Forum topics: echo `message_thread_id` on every send in context.
 - `migrate_to_chat_id` (group → supergroup) rewrites `bot_chats` + `conversations`.
 - Anonymous admins (`GroupAnonymousBot`) and `sender_chat` messages have no real `from`:
@@ -117,6 +130,23 @@ Fixes all four bugs above in production. Superseded later by default-`Private` s
 ### Phase 4 — drop the shims (0.18 / 1.0)
 
 After all companions have migrated off `BotUser::state` / `changeState()`.
+
+## Group keyboard findings (2026-10-13)
+
+Live test in a supergroup, privacy mode on, bot a plain member, two accounts. Prototype
+kept on `proto/group-keyboards` in tg-essential-downloader-bot.
+
+| Behaviour | Result |
+|---|---|
+| Reply keyboard press | Arrives as a reply to the keyboard message, so privacy mode lets it through. Anyone can press a non-selective one. |
+| `selective` + reply | Only the target sees it; the press arrives. |
+| Two users, each a selective keyboard | Not possible: a client shows only the newest reply markup message in the group. A keyboard, a `force_reply` or a selective remove for one user hides everyone else's. |
+| Selective `remove_keyboard` | Clears the target, and as the newest markup also hides other users' keyboards. |
+| Markup with no buttons | Accepted; keyboards on screen stay. |
+| Inline buttons | Presses arrive whatever the privacy mode; anyone can press. |
+| `force_reply` | The answer arrives as a reply to the bot. With two users at once, the older prompt's user replied to an older bot message, not their own prompt. |
+| Plain group message, not a reply | Not delivered (privacy mode). |
+| `message_thread_id` | Present on plain replies in a non-forum group (the reply chain); only `is_topic_message` means a forum topic. |
 
 ## Decisions (2026-10-12)
 
