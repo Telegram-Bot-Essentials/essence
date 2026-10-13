@@ -2,11 +2,14 @@
 
 namespace TelegramBotEssentials\Essence\Telegram\ReplyKeys;
 
+use TelegramBotEssentials\Essence\Contracts\DeclaresChatScope;
 use TelegramBotEssentials\Essence\Contracts\DeclaresPermission;
+use TelegramBotEssentials\Essence\Traits\HasChatScope;
 use TelegramBotEssentials\Essence\Traits\HasPermission;
 
-abstract class ReplyKey implements DeclaresPermission, ReplyKeyInterface
+abstract class ReplyKey implements DeclaresChatScope, DeclaresPermission, ReplyKeyInterface
 {
+    use HasChatScope;
     use HasPermission;
 
     /**
