@@ -105,11 +105,14 @@ Fixes all four bugs above in production. Superseded later by default-`Private` s
     replayed as if the presser typed the button text, against the **presser's**
     conversation. A presser who is not at that step (not the flow's owner, or a stale
     step) gets an `answerCallbackQuery` alert. Used buttons are taken off the message.
-  - Mid-flow without one: an inline Cancel button.
-  - Free-text steps: `force_reply` + `selective`, so the answer reaches the bot under
-    privacy mode. The answer is routed by sender (per-user conversation), not by which
-    bot message it replies to; in a group a text answer counts only when it is a reply to
-    the bot.
+  - Mid-flow without one (a free-text step): an inline Cancel button. `/cancel@bot` works
+    too. No `force_reply`: one message carries one markup, and inline Cancel was chosen.
+  - A typed answer is routed by sender (per-user conversation), not by which bot message
+    it replies to. Any message from the user in that chat and topic counts while their
+    flow is open, reply or not. Under privacy mode only replies to the bot arrive, so the
+    user replies to the prompt by hand; with privacy off every message arrives.
+  - No reply keyboards in groups at all, so flows never collide; choices are inline buttons
+    and commands.
 - Forum topics: echo `message_thread_id` on every send in context.
 - `migrate_to_chat_id` (group → supergroup) rewrites `bot_chats` + `conversations`.
 - Anonymous admins (`GroupAnonymousBot`) and `sender_chat` messages have no real `from`:
@@ -130,6 +133,15 @@ Fixes all four bugs above in production. Superseded later by default-`Private` s
 ### Phase 4 — drop the shims (0.18 / 1.0)
 
 After all companions have migrated off `BotUser::state` / `changeState()`.
+
+## Decisions (2026-10-13)
+
+1. Free-text steps in groups: inline Cancel button plus `/cancel@bot`; no `force_reply`.
+2. Steps with buttons in groups: inline buttons and commands; no reply keyboards.
+3. While a user's flow is open in a group, any message of theirs in that chat and topic is
+   the answer, reply or not.
+4. First group feature (the Phase 2 acceptance test): tg-essential-downloader-bot with privacy
+   mode off, picking up links from any group message.
 
 ## Group keyboard findings (2026-10-13)
 
