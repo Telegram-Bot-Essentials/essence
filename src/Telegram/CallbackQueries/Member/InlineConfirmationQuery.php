@@ -4,6 +4,7 @@ namespace TelegramBotEssentials\Essence\Telegram\CallbackQueries\Member;
 
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Telegram\Bot\Exceptions\TelegramSDKException;
+use TelegramBotEssentials\Essence\Enums\ChatScope;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
 use TelegramBotEssentials\Essence\Exceptions\TbeLogicException;
 use TelegramBotEssentials\Essence\Models\InlineConfirmation;
@@ -13,6 +14,8 @@ use TelegramBotEssentials\Essence\Telegram\Features\Member\InlineConfirmationFea
 class InlineConfirmationQuery extends CallbackQuery
 {
     protected string $type = 'INLINECONFIRMATION';
+
+    protected ChatScope $chatScope = ChatScope::Any;
 
     /**
      * @throws BindingResolutionException
