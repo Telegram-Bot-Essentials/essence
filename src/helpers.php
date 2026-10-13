@@ -6,8 +6,10 @@ use Telegram\Bot\FileUpload\InputFile;
 use Telegram\Bot\Keyboard\Button;
 use Telegram\Bot\Keyboard\Keyboard;
 use TelegramBotEssentials\Essence\Contracts\AuthorizesAccess;
+use TelegramBotEssentials\Essence\Contracts\DeclaresChatScope;
 use TelegramBotEssentials\Essence\Contracts\DeclaresPermission;
 use TelegramBotEssentials\Essence\Contracts\ResolvesKeyboard;
+use TelegramBotEssentials\Essence\Enums\ChatScope;
 use TelegramBotEssentials\Essence\Events\BotEventBus;
 use TelegramBotEssentials\Essence\Exceptions\CallbackDataTooLong;
 use TelegramBotEssentials\Essence\Exceptions\FeatureIsDisabled;
@@ -560,10 +562,26 @@ if (! function_exists('handlerPermission')) {
     }
 }
 
+if (! function_exists('handlerChatScope')) {
+    /** The chats a handler runs in; private only unless it says otherwise. */
+    function handlerChatScope(object $handler): ChatScope
+    {
+        return $handler instanceof DeclaresChatScope ? $handler->getChatScope() : ChatScope::Private;
+    }
+}
+
 if (! function_exists('canUseHandler')) {
-    /** Whether $user (the webhook's user by default) may use $handler. */
+    /**
+     * Whether $user (the webhook's user by default) may use $handler. For the
+     * webhook's own user, the handler must also run in the chat the update
+     * came from (see ChatScope).
+     */
     function canUseHandler(object $handler, ?BotUser $user = null): bool
     {
+        if ($user === null && wHook()->hasConversation() && ! handlerChatScope($handler)->allows(wHook()->conversation())) {
+            return false;
+        }
+
         return authorizer()->allows($user ?? wHook()->user(), handlerPermission($handler));
     }
 }
