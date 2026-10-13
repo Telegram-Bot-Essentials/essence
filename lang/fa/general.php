@@ -32,6 +32,7 @@ return [
     'command' => [
         'notFound' => '❕ چنین دستوری وجود ندارد.',
         'helpDescription' => 'نمایش دستورات موجود',
+        'cancelDescription' => 'لغو کار در حال انجام',
         'availableCommands' => 'دستورات موجود:',
     ],
 
@@ -39,6 +40,7 @@ return [
         'unableToActivateAttributeMissing' => 'فعال‌سازی ممکن نیست؛ «:attribute» وجود ندارد یا خالی است.',
         'unableToSetDoneAttributeMissing' => '«:attribute» وجود ندارد یا خالی است.',
         'botIsOff' => '❗️ ربات الان غیرفعال است.',
+        'notYourButton' => 'این دکمه برای شما نیست یا دیگر معتبر نیست.',
         'disabledFeature' => '❗️ «:feature» الان غیرفعال است.',
         'invalidPageNumber' => '❗️ شماره صفحه درست نیست.',
         'samePageNumber' => '❗️ همین الان در همین صفحه هستید.',
