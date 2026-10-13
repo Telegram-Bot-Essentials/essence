@@ -185,6 +185,30 @@ abstract class TestCase extends Orchestra
         ];
     }
 
+    /**
+     * Move a message or callback_query update into a group chat, and into a
+     * forum topic when $topicId is given. Groups are opt-in, so pair it with
+     * config(['tbe-essence.groups.enabled' => true]) to get past the guard.
+     *
+     * @param  array<string, mixed>  $update
+     * @return array<string, mixed>
+     */
+    protected function inGroupChat(array $update, int $chatId = -100123456, string $type = 'supergroup', ?int $topicId = null): array
+    {
+        $chat = ['id' => $chatId, 'type' => $type, 'title' => 'A group'];
+        $path = isset($update['message']) ? 'message' : 'callback_query.message';
+
+        data_set($update, $path.'.chat', $chat);
+
+        if ($topicId !== null) {
+            data_set($update, $path.'.is_topic_message', true);
+            data_set($update, $path.'.message_thread_id', $topicId);
+        }
+
+        /** @var array<string, mixed> $update */
+        return $update;
+    }
+
     /** Assert a Telegram Bot API call was made matching $callback - e.g. fn ($request) => $request['text'] === 'hi'. */
     protected function assertTelegramSent(callable $callback): void
     {
