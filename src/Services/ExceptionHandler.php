@@ -55,7 +55,7 @@ class ExceptionHandler
                         $this->answerInlineQueryWithError();
                     } else {
                         wHook()->api()->sendMessage([
-                            'chat_id' => wHook()->user()->telegramUser->peer_id,
+                            ...wHook()->replyTo(),
                             'text' => '😭 Something went wrong, please contact the bot support',
                             'reply_markup' => replyKeyboard(),
                         ]);
@@ -101,7 +101,7 @@ class ExceptionHandler
             $this->answerInlineQueryWithError();
         } else {
             wHook()->api()->sendMessage([
-                'chat_id' => wHook()->user()->telegramUser->peer_id,
+                ...wHook()->replyTo(),
                 'text' => $e->getMessage() == '' ? __('tbe::general.alerts.invalidPageNumber') : $e->getMessage(),
             ]);
         }
@@ -121,7 +121,7 @@ class ExceptionHandler
             return;
         }
         wHook()->api()->sendMessage([
-            'chat_id' => wHook()->user()->telegramUser->peer_id,
+            ...wHook()->replyTo(),
             'text' => $e->getMessage(),
             'reply_markup' => replyKeyboard(),
         ]);
@@ -139,7 +139,7 @@ class ExceptionHandler
             return;
         }
         wHook()->api()->sendMessage([
-            'chat_id' => wHook()->user()->telegramUser->peer_id,
+            ...wHook()->replyTo(),
             'text' => $e->getMessage(),
         ]);
     }
@@ -164,7 +164,7 @@ class ExceptionHandler
             $this->answerInlineQueryWithError();
         } else {
             wHook()->api()->sendMessage([
-                'chat_id' => wHook()->user()->telegramUser->peer_id,
+                ...wHook()->replyTo(),
                 'text' => __('tbe::general.alerts.notFound', ['resource' => $resourceName]),
                 'reply_markup' => replyKeyboard(),
             ]);
@@ -198,7 +198,7 @@ class ExceptionHandler
             $this->answerInlineQueryWithError();
         } else {
             wHook()->api()->sendMessage([
-                'chat_id' => wHook()->peerId(),
+                ...wHook()->replyTo(),
                 'text' => __('tbe::general.alerts.contextExpired'),
                 'reply_markup' => replyKeyboard(),
             ]);
@@ -231,7 +231,7 @@ class ExceptionHandler
             $this->answerInlineQueryWithError();
         } else {
             wHook()->api()->sendMessage([
-                'chat_id' => wHook()->user()->telegramUser->peer_id,
+                ...wHook()->replyTo(),
                 'text' => $e->getMessage() == '' ? __('tbe::general.alerts.disabledFeature', ['feature' => wHook()->update()?->message?->text ?? 'N/A']) : $e->getMessage(),
             ]);
         }
@@ -256,7 +256,7 @@ class ExceptionHandler
             $this->answerInlineQueryWithError();
         } else {
             wHook()->api()->sendMessage([
-                'chat_id' => wHook()->user()->telegramUser->peer_id,
+                ...wHook()->replyTo(),
                 'text' => $e->getMessage(),
                 'reply_markup' => replyKeyboard(),
             ]);
@@ -289,7 +289,7 @@ class ExceptionHandler
             $this->answerInlineQueryWithError();
         } else {
             wHook()->api()->sendMessage([
-                'chat_id' => wHook()->user()->telegramUser->peer_id,
+                ...wHook()->replyTo(),
                 'text' => 'Requested item not found.',
                 'reply_markup' => replyKeyboard(),
             ]);
