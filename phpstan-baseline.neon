@@ -3,7 +3,7 @@ parameters:
 		-
 			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
 			identifier: larastan.noEnvCallsOutsideOfConfig
-			count: 17
+			count: 19
 			path: config/tbe-essence.php
 
 		-
@@ -535,12 +535,6 @@ parameters:
 			path: src/Http/Controllers/TelegramWebhookController.php
 
 		-
-			message: '#^Cannot access property \$peer_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
-			identifier: property.nonObject
-			count: 2
-			path: src/Http/Controllers/TelegramWebhookController.php
-
-		-
 			message: '#^Cannot call method isFuture\(\) on mixed\.$#'
 			identifier: method.nonObject
 			count: 1
@@ -632,12 +626,6 @@ parameters:
 
 		-
 			message: '#^Parameter \#2 \$state of class TelegramBotEssentials\\Essence\\Events\\BotStateAnswerHandled constructor expects string, string\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Http/Controllers/TelegramWebhookController.php
-
-		-
-			message: '#^Parameter \#2 \$string of function explode expects string, string\|null given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Http/Controllers/TelegramWebhookController.php
@@ -1174,12 +1162,6 @@ parameters:
 			message: '#^Cannot access property \$id on Telegram\\Bot\\Objects\\InlineQuery\|null\.$#'
 			identifier: property.nonObject
 			count: 1
-			path: src/Services/ExceptionHandler.php
-
-		-
-			message: '#^Cannot access property \$peer_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
-			identifier: property.nonObject
-			count: 8
 			path: src/Services/ExceptionHandler.php
 
 		-
@@ -1765,12 +1747,6 @@ parameters:
 			path: src/Telegram/CallbackQueries/Member/MessageMetaQuery.php
 
 		-
-			message: '#^Cannot access property \$peer_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: src/Telegram/CallbackQueries/Member/MessageMetaQuery.php
-
-		-
 			message: '#^Method TelegramBotEssentials\\Essence\\Telegram\\CallbackQueries\\Member\\MessageMetaQuery\:\:buildDependencyInjectedClass\(\) should return object but returns mixed\.$#'
 			identifier: return.type
 			count: 1
@@ -1975,12 +1951,6 @@ parameters:
 			path: src/Telegram/Commands/CommandInterface.php
 
 		-
-			message: '#^Cannot access property \$peer_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: src/Telegram/Commands/Member/HelpCommand.php
-
-		-
 			message: '#^Property TelegramBotEssentials\\Essence\\Telegram\\Commands\\Member\\HelpCommand\:\:\$aliases type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -2075,18 +2045,6 @@ parameters:
 			identifier: return.type
 			count: 1
 			path: src/Telegram/InlineQueries/InlineQueryBus.php
-
-		-
-			message: '#^Cannot access property \$peer_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: src/Telegram/ReplyKeys/Member/CancelProcessKey.php
-
-		-
-			message: '#^Cannot access property \$peer_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: src/Telegram/ReplyKeys/ReplyKeyBus.php
 
 		-
 			message: '#^Cannot call method getText\(\) on mixed\.$#'
@@ -2332,12 +2290,6 @@ parameters:
 			message: '#^Cannot access property \$messageId on Telegram\\Bot\\Objects\\Message\|null\.$#'
 			identifier: property.nonObject
 			count: 3
-			path: src/Telegram/TelegramResponse.php
-
-		-
-			message: '#^Cannot access property \$peer_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
-			identifier: property.nonObject
-			count: 1
 			path: src/Telegram/TelegramResponse.php
 
 		-

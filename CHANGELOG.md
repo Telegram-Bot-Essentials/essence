@@ -14,6 +14,33 @@ Menus are the app's: essence no longer ships or registers one. This release
 is breaking for any app that showed essence's Admin Panel / Main Menu keys
 (see **Upgrading**).
 
+Group chats can be turned on (`tbe-essence.groups.enabled`, off by default).
+With it off nothing changes: group updates are dropped as before.
+
+### Added
+
+- Group chats, opt-in through `tbe-essence.groups.enabled`
+  (`TBE_GROUPS_ENABLED`). Handlers say where they run with
+  `protected ChatScope $chatScope` (`Private`, the default, `Groups` or
+  `Any`), checked by `canUseHandler()` alongside the permission, so every
+  existing handler stays private-only.
+- `wHook()->replyTo()` (the current chat, plus its forum topic), `inGroup()`
+  and `hasConversation()`. Essence's own replies, errors, forms and
+  `TelegramResponse::send()` now answer in the chat the update came from.
+- `/cancel`, which cancels the flow open in the current chat (in any chat).
+- Group keyboards. No reply keyboard is ever sent to a group: a client shows
+  only the newest one in a group, so one user's would hide everyone else's.
+  A flow's keys become inline buttons on the prompt, with an inline Cancel;
+  a press is replayed as if the presser typed the key, against their own
+  conversation (`GroupKeyQuery`). Outside a flow, a markup with no buttons
+  leaves keyboards on screen alone.
+- `message_owners` and `MessageOwner`: a group message with inline buttons
+  is recorded against the user it was sent for, and only they can press its
+  buttons. `protected bool $anyoneCanPress = true` on a callback query opts
+  out. Pruned after `pruning.message_owners_days` (7).
+- `Bot::username()`, from getMe and cached, so `/command@otherbot` in a group
+  is left alone instead of cancelling the sender's flow.
+
 ### Changed
 
 - `tbe-essence.keyboard.menus` is empty by default. A bot without menus is
@@ -29,6 +56,11 @@ is breaking for any app that showed essence's Admin Panel / Main Menu keys
   `tbe::main_menu` strings, and the `essence.admin_panel` permission.
   The only reply key essence still registers is `CancelProcessKey`.
 - The admin alerts permission label moved to `tbe::admin_alerts.permission`.
+
+- With groups on, group traffic no handler can act on is dropped before a
+  user is created: channel posts, messages sent as a chat (anonymous admins,
+  linked channels) and service messages. Unhandled group text gets no
+  "request is invalid" reply, and only private updates mark a user active.
 
 ### Upgrading
 
