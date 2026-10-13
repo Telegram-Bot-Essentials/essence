@@ -32,6 +32,7 @@ return [
     'command' => [
         'notFound' => '❕ That command doesn\'t exist.',
         'helpDescription' => 'Show the available commands',
+        'cancelDescription' => 'Cancel what you are doing',
         'availableCommands' => 'Available commands:',
     ],
 
@@ -39,6 +40,7 @@ return [
         'unableToActivateAttributeMissing' => 'Can\'t activate yet: :attribute is missing or empty.',
         'unableToSetDoneAttributeMissing' => ':attribute is missing or empty.',
         'botIsOff' => '❗️ The bot is currently out of service.',
+        'notYourButton' => 'This button is not for you, or it has expired.',
         'disabledFeature' => '❗️ :feature is currently disabled.',
         'invalidPageNumber' => '❗️ That page number isn\'t valid.',
         'samePageNumber' => '❗️ You\'re already on that page.',
