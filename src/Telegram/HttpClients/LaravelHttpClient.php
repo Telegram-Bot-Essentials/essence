@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Http;
 use Psr\Http\Message\ResponseInterface;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\HttpClients\HttpClientInterface;
+use TelegramBotEssentials\Essence\Support\GroupMessageOwners;
 
 class LaravelHttpClient implements HttpClientInterface
 {
@@ -28,6 +29,8 @@ class LaravelHttpClient implements HttpClientInterface
         try {
             $pending = $this->pendingRequest($headers, $options);
             $response = $this->dispatch($pending, $url, strtoupper($method), $options);
+
+            GroupMessageOwners::capture($url, $options, $response);
 
             return $this->toPsrResponse($response);
         } catch (ConnectionException $e) {
