@@ -21,9 +21,12 @@ trait CanCancelOldProcess
         if (wHook()->conversation()->state) {
             $CancelProcessKey = $this->resolveReplyKey(CancelProcessKey::class);
             wHook()->conversation()->changeState();
-            if (wHook()->update()?->message?->text !== $CancelProcessKey->getText()) {
+            $text = (string) wHook()->update()?->message?->text;
+            $isCancelRequest = $text === $CancelProcessKey->getText()
+                || preg_match('~^/cancel(@\w+)?(\s|$)~i', $text) === 1;
+            if (! $isCancelRequest) {
                 wHook()->api()->sendMessage([
-                    'chat_id' => wHook()->user()->telegramUser->peer_id,
+                    ...wHook()->replyTo(),
                     'text' => __('tbe::cancel_process.main.text.cancelDueToNewProcess'),
                     'reply_markup' => replyKeyboard(),
                 ]);
