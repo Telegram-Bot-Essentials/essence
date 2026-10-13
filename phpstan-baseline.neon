@@ -2080,19 +2080,7 @@ parameters:
 			message: '#^Cannot access property \$peer_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
 			identifier: property.nonObject
 			count: 1
-			path: src/Telegram/ReplyKeys/Admin/AdminPanelKey.php
-
-		-
-			message: '#^Cannot access property \$peer_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
-			identifier: property.nonObject
-			count: 1
 			path: src/Telegram/ReplyKeys/Member/CancelProcessKey.php
-
-		-
-			message: '#^Cannot access property \$peer_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: src/Telegram/ReplyKeys/Member/MainMenuKey.php
 
 		-
 			message: '#^Cannot access property \$peer_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'

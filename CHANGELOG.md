@@ -10,6 +10,38 @@ the first public release.
 
 ## [Unreleased]
 
+Menus are the app's: essence no longer ships or registers one. This release
+is breaking for any app that showed essence's Admin Panel / Main Menu keys
+(see **Upgrading**).
+
+### Changed
+
+- `tbe-essence.keyboard.menus` is empty by default. A bot without menus is
+  a supported setup: it shows no reply keyboard.
+- When there is no menu to show, or every key in it is hidden from the
+  user, the default resolver removes the keyboard on screen. It used to
+  send an empty keyboard, which Telegram ignores, leaving a stale one up
+  (for example after a user lost a permission).
+
+### Removed
+
+- `AdminPanelKey` and `MainMenuKey`, their `tbe::admin_panel` and
+  `tbe::main_menu` strings, and the `essence.admin_panel` permission.
+  The only reply key essence still registers is `CancelProcessKey`.
+- The admin alerts permission label moved to `tbe::admin_alerts.permission`.
+
+### Upgrading
+
+1. If your menus listed `AdminPanelKey` or `MainMenuKey`, add your own
+   reply keys that call `wHook()->conversation()->changeMenu('admin')` /
+   `changeMenu('main')`, give the admin one a permission of your own, and
+   list them in `tbe-essence.keyboard.menus`.
+2. An app that relied on the package's default menus (no `keyboard` block
+   in its published `config/tbe-essence.php`) now shows no keyboard until it
+   configures `menus`.
+3. A role holding `essence.admin_panel` keeps the string but grants nothing;
+   grant the app's own permission instead.
+
 ## [0.18.1] - 2026-10-12
 
 ### Fixed
