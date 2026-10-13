@@ -7,33 +7,20 @@ use Illuminate\Support\Facades\Http;
 use TelegramBotEssentials\Essence\Models\BotUser;
 
 /*
- * Until essence models group chats, messages and button presses from a
- * group are acknowledged and dropped before anything runs: no BotUser is
- * created, no state is touched and nothing is sent to the sender's DM.
+ * Groups are opt-in (tbe-essence.groups.enabled, off by default). Until a
+ * bot turns them on, messages and button presses from a group are
+ * acknowledged and dropped before anything runs: no BotUser is created, no
+ * state is touched and nothing is sent to the sender's DM.
  */
 
 uses(RefreshDatabase::class);
-
-function inGroup(array $update, string $type = 'supergroup'): array
-{
-    $key = array_key_first($update);
-    $chat = ['id' => -100123456, 'type' => $type, 'title' => 'A group'];
-
-    if ($key === 'message') {
-        $update['message']['chat'] = $chat;
-    } else {
-        $update['callback_query']['message']['chat'] = $chat;
-    }
-
-    return $update;
-}
 
 beforeEach(function () {
     $this->bot = $this->makeBot();
 });
 
 it('drops a group message without minting a user or replying', function (string $type) {
-    $this->postWebhookUpdate($this->bot, inGroup($this->makeMessageUpdate('/start', peerId: 4001), $type))->assertOk();
+    $this->postWebhookUpdate($this->bot, $this->inGroupChat($this->makeMessageUpdate('/start', peerId: 4001), type: $type))->assertOk();
 
     expect(BotUser::query()->where('telegram_user_peer_id', 4001)->exists())->toBeFalse();
     Http::assertNothingSent();
@@ -42,13 +29,13 @@ it('drops a group message without minting a user or replying', function (string 
 it('leaves the sender\'s private-chat state alone', function () {
     $user = $this->makeBotUser($this->bot, 4002, ['state' => 'SOMEFLOW|step']);
 
-    $this->postWebhookUpdate($this->bot, inGroup($this->makeMessageUpdate('/start', peerId: 4002)))->assertOk();
+    $this->postWebhookUpdate($this->bot, $this->inGroupChat($this->makeMessageUpdate('/start', peerId: 4002)))->assertOk();
 
     expect($user->privateConversation()->state)->toBe('SOMEFLOW|step');
 });
 
 it('drops a button press on a group message', function () {
-    $this->postWebhookUpdate($this->bot, inGroup($this->makeCallbackQueryUpdate('X|y', peerId: 4003)))->assertOk();
+    $this->postWebhookUpdate($this->bot, $this->inGroupChat($this->makeCallbackQueryUpdate('X|y', peerId: 4003)))->assertOk();
 
     expect(BotUser::query()->where('telegram_user_peer_id', 4003)->exists())->toBeFalse();
     Http::assertNothingSent();
