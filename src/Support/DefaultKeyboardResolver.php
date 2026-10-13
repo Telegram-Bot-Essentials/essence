@@ -24,7 +24,10 @@ use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKeyInterface;
  *     under tbe-essence.keyboard.menus, falling back to "main".
  *
  * Keys the user may not use, or that are disabled, are left out, and so
- * are rows left empty by that.
+ * are rows left empty by that. No menus are configured by default; when
+ * there is no menu, or nothing in it is left to show, the keyboard on
+ * screen is removed rather than replaced with an empty one, which
+ * Telegram would ignore.
  */
 class DefaultKeyboardResolver implements ResolvesKeyboard
 {
@@ -109,6 +112,7 @@ class DefaultKeyboardResolver implements ResolvesKeyboard
             ->setOneTimeKeyboard(config()->boolean('tbe-essence.keyboard.one_time', true));
 
         $addedKeys = [];
+        $hasRows = false;
         foreach ($rows as $keys) {
             $processedRow = [];
             foreach (is_array($keys) ? $keys : [] as $key) {
@@ -128,10 +132,11 @@ class DefaultKeyboardResolver implements ResolvesKeyboard
             // A row whose keys are all hidden would leave a gap.
             if ($processedRow !== []) {
                 $replyMarkup->row($processedRow);
+                $hasRows = true;
             }
         }
 
-        return $replyMarkup;
+        return $hasRows ? $replyMarkup : Keyboard::remove();
     }
 
     /**
