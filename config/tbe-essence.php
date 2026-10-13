@@ -16,6 +16,13 @@ return [
         'menus' => [],
     ],
 
+    'groups' => [
+        // Off: messages and button presses from groups are acknowledged and
+        // dropped, as before. On: they reach the handlers that opt into groups
+        // (ChatScope::Groups or ::Any); everything else stays private-only.
+        'enabled' => env('TBE_GROUPS_ENABLED', false),
+    ],
+
     'bot_access' => [
         'token' => env('BOT_MANAGEMENT_ACCESS_TOKEN'),
     ],
@@ -85,6 +92,8 @@ return [
     'pruning' => [
         'state_data_days' => env('TBE_PRUNE_STATE_DATA_DAYS', 7),
         'message_metas_days' => env('TBE_PRUNE_MESSAGE_METAS_DAYS', 7),
+        // Who may press the buttons on a group message is forgotten after this.
+        'message_owners_days' => env('TBE_PRUNE_MESSAGE_OWNERS_DAYS', 7),
         'inline_confirmations_hours' => env('TBE_PRUNE_INLINE_CONFIRMATIONS_HOURS', 6),
     ],
 
