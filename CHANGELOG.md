@@ -10,6 +10,8 @@ the first public release.
 
 ## [Unreleased]
 
+## [0.19.0-beta.1] - 2026-10-13
+
 Menus are the app's: essence no longer ships or registers one. This release
 is breaking for any app that showed essence's Admin Panel / Main Menu keys
 (see **Upgrading**).
