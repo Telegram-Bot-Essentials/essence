@@ -1,7 +1,9 @@
 # Plan: multi-chat context (groups, supergroups, forum topics)
 
 Status: **in progress** — Phase 0 shipped in 0.17.1; Phase 1 (conversations) in 0.18.0;
-decisions settled 2026-10-12 (see bottom).
+Phase 2 on `feat/groups` (opt-in switch, chat scope, replies to the chat, group keyboards,
+button ownership); `bot_chats`, group `my_chat_member`, `migrate_to_chat_id` and
+`has_private_chat` still to do. Decisions settled 2026-10-12 and 2026-10-13 (see bottom).
 
 ## Problem
 
