@@ -228,13 +228,8 @@ class TelegramBotServiceProvider extends ServiceProvider
     protected function registerPermissions(): void
     {
         permissionRegistry()->register(
-            'essence.admin_panel',
-            fn () => __('tbe::admin_panel.permission'),
-            'essence',
-        );
-        permissionRegistry()->register(
             AdminAlerts::PERMISSION,
-            fn () => __('tbe::admin_panel.alerts_permission'),
+            fn () => __('tbe::admin_alerts.permission'),
             'essence',
         );
     }
@@ -255,7 +250,6 @@ class TelegramBotServiceProvider extends ServiceProvider
         loadStateAnswers($telegram.'/StateAnswers/Member');
         loadStateAnswers($telegram.'/StateAnswers/Admin');
         loadReplyKeys($telegram.'/ReplyKeys/Member');
-        loadReplyKeys($telegram.'/ReplyKeys/Admin');
         loadCommands($telegram.'/Commands/Member');
         loadCommands($telegram.'/Commands/Admin');
     }
