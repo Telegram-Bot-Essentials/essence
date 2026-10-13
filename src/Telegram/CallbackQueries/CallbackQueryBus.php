@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace TelegramBotEssentials\Essence\Telegram\CallbackQueries;
 
 use Illuminate\Contracts\Container\BindingResolutionException;
+use Telegram\Bot\Exceptions\TelegramSDKException;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
 use TelegramBotEssentials\Essence\Exceptions\TbeLogicException;
+use TelegramBotEssentials\Essence\Models\MessageOwner;
 use TelegramBotEssentials\Essence\Traits\CanResolveCallbackQuery;
 
 /**
@@ -106,6 +108,18 @@ class CallbackQueryBus
         if (! canUseHandler($resolvedCallbackQuery)) {
             return false;
         }
+        if (! $this->pressedByOwner($resolvedCallbackQuery)) {
+            try {
+                wHook()->api()->answerCallbackQuery([
+                    'callback_query_id' => wHook()->update()->callbackQuery?->id,
+                    'text' => __('tbe::general.alerts.notYourButton'),
+                    'show_alert' => true,
+                ]);
+            } catch (TelegramSDKException) {
+            }
+
+            return true;
+        }
         $resolvedCallbackQuery->setParams($params);
         $resolvedCallbackQuery->setMethod($method);
 
@@ -127,5 +141,28 @@ class CallbackQueryBus
         $callbackQueryData = decodeCallback($update->callbackQuery->data);
 
         return $this->route($callbackQueryData);
+    }
+
+    /** In a group, whether the presser is who the message was sent for (when that is on record). */
+    private function pressedByOwner(CallbackQueryInterface $callbackQuery): bool
+    {
+        if (! wHook()->inGroup()) {
+            return true;
+        }
+        if ($callbackQuery instanceof CallbackQuery && $callbackQuery->anyoneCanPress()) {
+            return true;
+        }
+
+        $message = wHook()->update()->callbackQuery?->message;
+        $chatId = $message?->chat?->id;
+        if ($message === null || ! is_numeric($chatId)) {
+            return true;
+        }
+
+        $owner = MessageOwner::ownerOf((int) $chatId, $message->messageId);
+
+        $presser = wHook()->user()->getKey();
+
+        return $owner === null || (is_numeric($presser) && $owner === (int) $presser);
     }
 }
