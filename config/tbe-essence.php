@@ -1,8 +1,5 @@
 <?php
 
-use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Admin\AdminPanelKey;
-use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Member\MainMenuKey;
-
 return [
     'keyboard' => [
         // Off: no menus and no automatic Cancel key; any reply keyboard on
@@ -11,17 +8,12 @@ return [
         'resize' => true,
         'one_time' => true,
 
-        // Named menus, rows of ReplyKey classes. A user sees the menu named
-        // in bot_users.menu ("main" by default); keys they may not use are
-        // left out.
-        'menus' => [
-            'main' => [
-                [AdminPanelKey::class],
-            ],
-            'admin' => [
-                [MainMenuKey::class],
-            ],
-        ],
+        // Named menus, rows of ReplyKey classes, e.g.
+        //     'main' => [[ShopKey::class, WalletKey::class], [SupportKey::class]],
+        // A conversation sees the menu it is on ("main" by default); keys the
+        // user may not use are left out. None by default: a bot without menus
+        // shows no reply keyboard, and any keyboard on screen is removed.
+        'menus' => [],
     ],
 
     'bot_access' => [
