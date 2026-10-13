@@ -6,29 +6,18 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Telegram\Bot\Keyboard\Keyboard;
 use TelegramBotEssentials\Essence\Contracts\ResolvesKeyboard;
 use TelegramBotEssentials\Essence\Models\Conversation;
-use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Admin\AdminPanelKey;
-use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Member\MainMenuKey;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKey;
 use TelegramBotEssentials\Essence\Tests\Fixtures\StepwiseStateAnswer;
+use TelegramBotEssentials\Essence\Tests\Fixtures\SupportReplyKey;
 
 /*
  * replyKeyboard() delegates to the bound ResolvesKeyboard. The
  * default builds named menus from config, still honours a state answer's
  * own keyboard, and can be turned off entirely for bots with no reply
- * keyboard.
+ * keyboard. Essence configures no menu itself.
  */
 
 uses(RefreshDatabase::class);
-
-class KeyboardSupportKey extends ReplyKey
-{
-    protected function text(): string
-    {
-        return 'Support';
-    }
-
-    public function handle(): void {}
-}
 
 class KeyboardReportsKey extends ReplyKey
 {
@@ -67,17 +56,24 @@ it('uses a rebound resolver for every replyKeyboard() call', function () {
     expect(keyboardRows(replyKeyboard($this->member)))->toBe([['custom 601']]);
 });
 
+it('ships no menus', function () {
+    expect(config('tbe-essence.keyboard.menus'))->toBe([])
+        ->and(replyKeyboard($this->member)->toArray())->toMatchArray(['remove_keyboard' => true]);
+});
+
 it('shows the menu named on the user, including ones beyond main and admin', function () {
-    config(['tbe-essence.keyboard.menus.support' => [[KeyboardSupportKey::class, MainMenuKey::class]]]);
+    config(['tbe-essence.keyboard.menus' => [
+        'main' => [[KeyboardReportsKey::class]],
+        'support' => [[SupportReplyKey::class]],
+    ]]);
 
     $this->member->privateConversation()->changeMenu('support');
 
-    expect(keyboardRows(replyKeyboard($this->member->fresh())))
-        ->toBe([['Support', __('tbe::main_menu.reply_key')]]);
+    expect(keyboardRows(replyKeyboard($this->member->fresh())))->toBe([['Support']]);
 });
 
 it('falls back to the main menu for a menu nothing configures', function () {
-    config(['tbe-essence.keyboard.menus.main' => [[KeyboardSupportKey::class]]]);
+    config(['tbe-essence.keyboard.menus.main' => [[SupportReplyKey::class]]]);
 
     $this->member->privateConversation()->changeMenu('gone');
 
@@ -85,14 +81,28 @@ it('falls back to the main menu for a menu nothing configures', function () {
 });
 
 it('drops a row whose keys are all hidden', function () {
-    config(['tbe-essence.keyboard.menus.main' => [[KeyboardSupportKey::class], [AdminPanelKey::class]]]);
+    config(['tbe-essence.keyboard.menus.main' => [[SupportReplyKey::class], [KeyboardReportsKey::class]]]);
 
     expect(keyboardRows(replyKeyboard($this->member)))->toBe([['Support']])
         ->and(replyKeyboard($this->member)->toArray())->toMatchArray(['resize_keyboard' => true, 'one_time_keyboard' => true]);
 });
 
+it('removes the keyboard when every key in the menu is hidden', function () {
+    // An empty keyboard markup is ignored by Telegram and would leave a stale
+    // keyboard on screen, e.g. the one a user saw before losing a permission.
+    config(['tbe-essence.keyboard.menus.main' => [[KeyboardReportsKey::class]]]);
+
+    expect(replyKeyboard($this->member)->toArray())->toMatchArray(['remove_keyboard' => true]);
+});
+
+it('keeps the automatic Cancel key for a bot without menus', function () {
+    $this->member->privateConversation()->changeState(encodeAnswerState('STEPWISE', 'answer', ['step' => 'other']));
+
+    expect(keyboardRows(replyKeyboard($this->member)))->toBe([[__('tbe::cancel_process.reply_key')]]);
+});
+
 it('filters menu keys by the permission they name', function () {
-    config(['tbe-essence.keyboard.menus.main' => [[KeyboardSupportKey::class, KeyboardReportsKey::class]]]);
+    config(['tbe-essence.keyboard.menus.main' => [[SupportReplyKey::class, KeyboardReportsKey::class]]]);
     $this->grant($this->admin, 'reports.view');
 
     expect(keyboardRows(replyKeyboard($this->member)))->toBe([['Support']])

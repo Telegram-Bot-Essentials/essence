@@ -9,7 +9,6 @@ use TelegramBotEssentials\Essence\Models\BotUser;
 use TelegramBotEssentials\Essence\Support\BotCommandMenu;
 use TelegramBotEssentials\Essence\Support\DefaultAuthorizer;
 use TelegramBotEssentials\Essence\Telegram\Commands\Command;
-use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Admin\AdminPanelKey;
 
 /*
  * Access goes through the AuthorizesAccess contract. Essence's default
@@ -144,12 +143,3 @@ it('registers permissions once, grouped by package', function () {
 
     permissionRegistry()->register('reports.view', 'again');
 })->throws(TbeException::class, 'Permission "reports.view" is already registered');
-
-it('gates the admin panel key by name', function () {
-    $key = new AdminPanelKey;
-
-    expect(handlerPermission($key))->toBe('essence.admin_panel')
-        ->and(permissionRegistry()->has('essence.admin_panel'))->toBeTrue()
-        ->and(canUseHandler($key, $this->member))->toBeFalse()
-        ->and(canUseHandler($key, $this->owner))->toBeTrue();
-});

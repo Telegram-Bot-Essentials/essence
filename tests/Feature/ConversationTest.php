@@ -7,8 +7,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use TelegramBotEssentials\Essence\Models\Conversation;
 use TelegramBotEssentials\Essence\Support\WebhookContext;
-use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Member\MainMenuKey;
 use TelegramBotEssentials\Essence\Tests\Fixtures\StepwiseStateAnswer;
+use TelegramBotEssentials\Essence\Tests\Fixtures\SupportReplyKey;
 
 /*
  * State and the reply menu belong to a conversation - one user in one chat
@@ -76,10 +76,10 @@ it('restores a queued context into its conversation, or the private chat for an 
 });
 
 it('builds a user\'s keyboard from their private conversation\'s menu', function () {
-    config(['tbe-essence.keyboard.menus.other' => [[MainMenuKey::class]]]);
+    config(['tbe-essence.keyboard.menus.other' => [[SupportReplyKey::class]]]);
     $this->user->privateConversation()->changeMenu('other');
 
-    expect(replyKeyboard($this->user)->toArray()['keyboard'])->toBe([[__('tbe::main_menu.reply_key')]]);
+    expect(replyKeyboard($this->user)->toArray()['keyboard'])->toBe([['Support']]);
 });
 
 it('moves state and menu off bot_users and back', function () {
