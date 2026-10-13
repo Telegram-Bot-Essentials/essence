@@ -4,6 +4,7 @@ namespace TelegramBotEssentials\Essence\Telegram\StateAnswers\Member;
 
 use Telegram\Bot\Keyboard\Keyboard;
 use TelegramBotEssentials\Essence\Enums\AllowableFields;
+use TelegramBotEssentials\Essence\Enums\ChatScope;
 use TelegramBotEssentials\Essence\Exceptions\HandlerContextExpired;
 use TelegramBotEssentials\Essence\Forms\Form;
 use TelegramBotEssentials\Essence\Forms\FormState;
@@ -17,6 +18,8 @@ use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswer;
 class FormAnswer extends StateAnswer
 {
     protected string $type = FormState::TYPE;
+
+    protected ChatScope $chatScope = ChatScope::Any;
 
     /** @return list<string> */
     public function getAllowedFields(): array
