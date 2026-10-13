@@ -20,6 +20,18 @@ use TelegramBotEssentials\Essence\Support\WebhookContext;
 
 class TelegramBotAuthentication
 {
+    /** Message fields that mark a group service message rather than something a user wrote. */
+    private const SERVICE_MESSAGE_FIELDS = [
+        'new_chat_members', 'left_chat_member', 'new_chat_title', 'new_chat_photo',
+        'delete_chat_photo', 'group_chat_created', 'supergroup_chat_created',
+        'migrate_to_chat_id', 'migrate_from_chat_id', 'pinned_message',
+        'message_auto_delete_timer_changed', 'video_chat_started', 'video_chat_ended',
+        'video_chat_scheduled', 'video_chat_participants_invited', 'forum_topic_created',
+        'forum_topic_edited', 'forum_topic_closed', 'forum_topic_reopened',
+        'general_forum_topic_hidden', 'general_forum_topic_unhidden',
+        'chat_shared', 'users_shared', 'boost_added', 'chat_background_set',
+    ];
+
     /**
      * Handle an incoming request.
      *
@@ -58,11 +70,11 @@ class TelegramBotAuthentication
             return tbeApiResponse()->error('Failed to initialize API service', 503);
         }
 
-        // Essence does not model group chats yet: a group update would run
-        // against the sender's private-chat state and reply in their DM.
-        // Acknowledge and drop it before a BotUser is minted for a group
-        // lurker.
-        if (self::isFromNonPrivateChat()) {
+        // Group chats are opt-in (tbe-essence.groups.enabled). Without it, or
+        // for group traffic no handler can act on (channel posts, messages sent
+        // as a chat, service messages), acknowledge and drop the update before
+        // a BotUser is minted for a group lurker.
+        if (self::isFromNonPrivateChat() && (! config()->boolean('tbe-essence.groups.enabled', false) || self::isIgnoredGroupUpdate())) {
             return tbeApiResponse()->success();
         }
 
@@ -87,7 +99,9 @@ class TelegramBotAuthentication
             // membership change itself proves the user is reachable. This is what
             // recovers a user whose unblock event was lost to drop_pending_updates,
             // and what undoes a deactivation recorded by mistake.
-            if (! wHook()->update()->myChatMember) {
+            // Only the private chat proves it: a user can talk in a group while
+            // having blocked the bot (or never started it) in private.
+            if (! wHook()->update()->myChatMember && wHook()->conversation()->isPrivate()) {
                 botUserStatus()->markActive($botUser);
             }
 
@@ -171,6 +185,38 @@ class TelegramBotAuthentication
         $chat = $message?->chat;
 
         return $chat !== null && $chat->type !== 'private';
+    }
+
+    /**
+     * Group traffic that never reaches a handler: anything from a channel,
+     * messages posted as a chat (anonymous admins, linked channels) which
+     * have no real sender, and service messages (joins, leaves, pins, title
+     * and photo changes, group migration).
+     */
+    public static function isIgnoredGroupUpdate(): bool
+    {
+        $update = wHook()->update();
+        $message = $update->message ?? $update->callbackQuery?->message;
+
+        if ($message?->chat?->type === 'channel') {
+            return true;
+        }
+
+        if ($update->message === null) {
+            return false;
+        }
+
+        if ($update->message->has('sender_chat')) {
+            return true;
+        }
+
+        foreach (self::SERVICE_MESSAGE_FIELDS as $field) {
+            if ($update->message->has($field)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
