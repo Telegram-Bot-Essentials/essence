@@ -151,7 +151,7 @@ class TelegramResponse
 
     /**
      * The bot user whose reachability this send tells us about, or null when it
-     * tells us nothing: a send aimed at another chat (an admin group, a
+     * tells us nothing: a send aimed at another chat (a group, a
      * channel) says nothing about the user currently in context.
      */
     private function statusTarget(string|int|null $chatId): ?BotUser
