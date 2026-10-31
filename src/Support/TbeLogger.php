@@ -16,8 +16,8 @@ use Throwable;
  * Writes to the channel configured for the package at
  * tbe-essence.logging.channels.<package>, falling back to
  * tbe-essence.logging.channel (the app's default channel when null). audit()
- * entries go to tbe-essence.logging.audit_channel instead, so what admins did
- * is kept apart from operational noise.
+ * entries go to tbe-essence.logging.audit_channel instead, so who changed
+ * what is kept apart from operational noise.
  *
  * Every entry carries the common keys below: from the current webhook when
  * there is one, from for($botUser) when the caller knows whose entry it is
@@ -77,7 +77,7 @@ class TbeLogger implements LoggerInterface
     }
 
     /**
-     * Something an admin or the owner did (a role change, a setting, a manual
+     * Something a user changed on purpose (a setting, a suspension, a manual
      * payment decision), kept on the audit channel.
      *
      * @param  array<string, mixed>  $context
