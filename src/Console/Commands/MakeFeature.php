@@ -10,8 +10,7 @@ class MakeFeature extends PackageGeneratorCommand
 
     protected $signature = 'tbe:make:feature
         {name : The name of the feature}
-        {--admin : Make object for admin}
-        {--ability= : The Gate ability it asks for (default with --admin: app.<snake_name>)}
+        {--ability= : The Gate ability it asks for (none: open to everyone)}
         {--a|all : Generate all types}
         {--c|callback : Generate callback query}
         {--r|reply-key : Generate reply key}
@@ -32,9 +31,7 @@ class MakeFeature extends PackageGeneratorCommand
 
     protected function getDefaultNamespace($rootNamespace): string
     {
-        $scope = $this->option('admin') ? 'Admin' : 'Member';
-
-        return $rootNamespace.'\\Telegram\\Features\\'.$scope;
+        return $rootNamespace.'\\Telegram\\Features';
     }
 
     protected function getNameInput(): string

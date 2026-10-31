@@ -10,8 +10,7 @@ class MakeTextMatcher extends PackageGeneratorCommand
 
     protected $signature = 'tbe:make:text-matcher
         {name : The name of the text matcher}
-        {--admin : Make the matcher admin-only}
-        {--ability= : The Gate ability it asks for (default with --admin: app.<snake_name>)}';
+        {--ability= : The Gate ability it asks for (none: open to everyone)}';
 
     protected $description = 'Create a new TextMatcher class';
 
@@ -24,10 +23,7 @@ class MakeTextMatcher extends PackageGeneratorCommand
 
     protected function getDefaultNamespace($rootNamespace): string
     {
-        // The scope folder is what the service provider scans at boot.
-        $scope = $this->option('admin') ? 'Admin' : 'Member';
-
-        return $rootNamespace.'\\Telegram\\TextMatchers\\'.$scope;
+        return $rootNamespace.'\\Telegram\\TextMatchers';
     }
 
     protected function getNameInput(): string
