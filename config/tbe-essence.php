@@ -55,14 +55,14 @@ return [
             'announcements' => 'announcements',
             'settings' => 'settings',
         ],
-        // Where tbeLog()->audit() entries go (admin actions); null uses the package's channel.
-        'audit_channel' => 'admin-audit',
+        // Where tbeLog()->audit() entries go (who changed what); null uses the package's channel.
+        'audit_channel' => 'audit',
         // Each channel named above that the app's config/logging.php does not
         // define is registered as a daily file, storage/logs/<name>.log, kept
         // this many days (14 unless listed).
         'retention_days' => [
             'billing' => 90,
-            'admin-audit' => 90,
+            'audit' => 90,
         ],
         // Also push debug/bug reports to the bug_report Telegram chat.
         'telegram_notify' => env('TBE_LOG_TELEGRAM_NOTIFY', true),
