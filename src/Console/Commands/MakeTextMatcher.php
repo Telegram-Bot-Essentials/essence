@@ -11,7 +11,7 @@ class MakeTextMatcher extends PackageGeneratorCommand
     protected $signature = 'tbe:make:text-matcher
         {name : The name of the text matcher}
         {--admin : Make the matcher admin-only}
-        {--permission= : The permission it asks for (default with --admin: app.<snake_name>)}';
+        {--ability= : The Gate ability it asks for (default with --admin: app.<snake_name>)}';
 
     protected $description = 'Create a new TextMatcher class';
 
@@ -42,11 +42,11 @@ class MakeTextMatcher extends PackageGeneratorCommand
         $stub = $this->files->get($this->getStub());
 
         return str_replace(
-            ['{{ namespace }}', '{{ class_name }}', '{{ permission }}'],
+            ['{{ namespace }}', '{{ class_name }}', '{{ ability }}'],
             [
                 $this->getNamespace($name),
                 class_basename($name),
-                $this->permissionLiteral(),
+                $this->abilityLiteral(),
             ],
             $stub
         );

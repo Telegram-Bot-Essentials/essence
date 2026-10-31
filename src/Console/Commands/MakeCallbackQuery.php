@@ -11,7 +11,7 @@ class MakeCallbackQuery extends PackageGeneratorCommand
     protected $signature = 'tbe:make:callback-query
         {name : The name of the feature}
         {--admin : Make feature for admin}
-        {--permission= : The permission it asks for (default with --admin: app.<snake_name>)}
+        {--ability= : The Gate ability it asks for (default with --admin: app.<snake_name>)}
         {--a|all : Generate all types}
         {--f|feature : Generate feature class}
         {--r|reply-key : Generate reply key}
@@ -57,13 +57,13 @@ class MakeCallbackQuery extends PackageGeneratorCommand
                 '{{ namespace }}',
                 '{{ class_name }}',
                 '{{ type }}',
-                '{{ permission }}',
+                '{{ ability }}',
             ],
             [
                 $namespace,
                 $className,
                 $this->typeValue,
-                $this->permissionLiteral(),
+                $this->abilityLiteral(),
             ],
             $stub
         );
