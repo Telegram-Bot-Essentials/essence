@@ -9,8 +9,6 @@ interface StateAnswerInterface
 {
     public function getType(): string;
 
-    public function getPermission(): ?string;
-
     public function getAllowedFields(): array;
 
     public function setParams(?array $params): void;
