@@ -11,18 +11,15 @@ use TelegramBotEssentials\Essence\Models\Bot;
 use Throwable;
 
 /**
- * Tells a bot's owner and admins about something only they can fix: a
+ * Tells a bot's owner about something only they can fix: a
  * misconfigured setting, a permission the bot lost, an order that could not
  * be delivered. Not for bugs - those go to the developer via exceptionReport().
  *
  * Alerts are throttled per bot and key, so a condition detected on every
- * update reaches each admin once per window rather than once per update.
+ * update reaches the owner once per window rather than once per update.
  */
 class AdminAlerts
 {
-    /** Who besides the owner gets alerts, for an access model that grants it. */
-    public const PERMISSION = 'essence.admin_alerts';
-
     /**
      * @param  string  $key  what the alert is about, e.g. "settings.channel_lock.bot_not_admin"
      * @param  Closure(): string|string  $text  a Closure is rendered in the bot's locale
@@ -92,24 +89,16 @@ class AdminAlerts
     }
 
     /**
-     * The owner plus every user granted the alerts permission, still
-     * reachable and not suspended.
+     * The peer ids an alert goes to: the bot's owner. An app that wants more
+     * people told extends this class, overrides this and rebinds it.
      *
      * @return list<int>
      */
-    private function recipients(Bot $bot): array
+    protected function recipients(Bot $bot): array
     {
-        /** @var list<int|string> $admins */
-        $admins = authorizer()->usersWith($bot, self::PERMISSION)
-            ->reachable()
-            ->notSuspended()
-            ->pluck('telegram_user_peer_id')
-            ->all();
-
         $owner = $bot->getAttribute('bot_owner_peer_id');
-        $peerIds = array_map(intval(...), [is_numeric($owner) ? $owner : 0, ...$admins]);
 
-        return array_values(array_unique(array_filter($peerIds)));
+        return is_numeric($owner) && (int) $owner !== 0 ? [(int) $owner] : [];
     }
 
     private function render(Bot $bot, Closure|string $text): string
