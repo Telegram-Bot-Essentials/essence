@@ -68,9 +68,9 @@ return [
         'telegram_notify' => env('TBE_LOG_TELEGRAM_NOTIFY', true),
     ],
 
-    'admin_alerts' => [
-        // Seconds before the same alert reaches a bot's admins again.
-        'throttle' => env('TBE_ADMIN_ALERT_THROTTLE', 21600),
+    'owner_alerts' => [
+        // Seconds before the same alert reaches a bot's owner again.
+        'throttle' => env('TBE_OWNER_ALERT_THROTTLE', 21600),
     ],
 
     'developer' => [
