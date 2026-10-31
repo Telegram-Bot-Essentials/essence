@@ -12,8 +12,6 @@ interface TextMatcherInterface
      */
     public function matches(Message $message): bool;
 
-    public function getPermission(): ?string;
-
     public function handle(): void;
 
     public function isEnabled(): bool;
