@@ -1,13 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Gate;
 use Telegram\Bot\Api;
 use Telegram\Bot\FileUpload\InputFile;
 use Telegram\Bot\Keyboard\Button;
 use Telegram\Bot\Keyboard\Keyboard;
-use TelegramBotEssentials\Essence\Contracts\AuthorizesAccess;
+use TelegramBotEssentials\Essence\Contracts\DeclaresAbility;
 use TelegramBotEssentials\Essence\Contracts\DeclaresChatScope;
-use TelegramBotEssentials\Essence\Contracts\DeclaresPermission;
 use TelegramBotEssentials\Essence\Contracts\ResolvesKeyboard;
 use TelegramBotEssentials\Essence\Enums\ChatScope;
 use TelegramBotEssentials\Essence\Events\BotEventBus;
@@ -28,7 +28,6 @@ use TelegramBotEssentials\Essence\Services\BotUserStatus;
 use TelegramBotEssentials\Essence\Services\ExceptionHandler;
 use TelegramBotEssentials\Essence\Services\NavState;
 use TelegramBotEssentials\Essence\Services\StateDataService;
-use TelegramBotEssentials\Essence\Support\PermissionRegistry;
 use TelegramBotEssentials\Essence\Support\TbeLogger;
 use TelegramBotEssentials\Essence\Support\Webhook;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQuery;
@@ -533,32 +532,21 @@ if (! function_exists('replyKeyboard')) {
 }
 
 if (! function_exists('hasAccess')) {
-    /** Whether the webhook's user may use something needing $permission. */
-    function hasAccess(?string $permission): bool
+    /**
+     * Whether the webhook's user holds $ability on the app's Gate; a null
+     * ability is open to everyone.
+     */
+    function hasAccess(?string $ability): bool
     {
-        return authorizer()->allows(wHook()->user(), $permission);
+        return $ability === null || Gate::forUser(wHook()->user())->allows($ability);
     }
 }
 
-if (! function_exists('authorizer')) {
-    function authorizer(): AuthorizesAccess
+if (! function_exists('handlerAbility')) {
+    /** The Gate ability a handler asks for, or null when anyone may use it. */
+    function handlerAbility(object $handler): ?string
     {
-        return app(AuthorizesAccess::class);
-    }
-}
-
-if (! function_exists('permissionRegistry')) {
-    function permissionRegistry(): PermissionRegistry
-    {
-        return app(PermissionRegistry::class);
-    }
-}
-
-if (! function_exists('handlerPermission')) {
-    /** The permission a handler asks for, or null when anyone may use it. */
-    function handlerPermission(object $handler): ?string
-    {
-        return $handler instanceof DeclaresPermission ? $handler->getPermission() : null;
+        return $handler instanceof DeclaresAbility ? $handler->getAbility() : null;
     }
 }
 
@@ -582,7 +570,11 @@ if (! function_exists('canUseHandler')) {
             return false;
         }
 
-        return authorizer()->allows($user ?? wHook()->user(), handlerPermission($handler));
+        $ability = handlerAbility($handler);
+
+        // Public handlers never reach the Gate, so they cost nothing and
+        // leave no trace in Telescope's gate watcher.
+        return $ability === null || Gate::forUser($user ?? wHook()->user())->allows($ability);
     }
 }
 
@@ -590,7 +582,7 @@ if (! function_exists('isPublicHandler')) {
     /** Whether $handler is open to everyone, independent of any user. */
     function isPublicHandler(object $handler): bool
     {
-        return handlerPermission($handler) === null;
+        return handlerAbility($handler) === null;
     }
 }
 
