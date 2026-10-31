@@ -3,12 +3,12 @@
 namespace TelegramBotEssentials\Essence\Forms;
 
 use Illuminate\Support\Facades\Lang;
+use TelegramBotEssentials\Essence\Contracts\DeclaresAbility;
 use TelegramBotEssentials\Essence\Contracts\DeclaresChatScope;
-use TelegramBotEssentials\Essence\Contracts\DeclaresPermission;
 use TelegramBotEssentials\Essence\Forms\Steps\Step;
 use TelegramBotEssentials\Essence\Telegram\TelegramResponse;
+use TelegramBotEssentials\Essence\Traits\HasAbility;
 use TelegramBotEssentials\Essence\Traits\HasChatScope;
-use TelegramBotEssentials\Essence\Traits\HasPermission;
 
 /**
  * A multi-step data-collection flow. Subclass it, list the steps, and say
@@ -31,10 +31,10 @@ use TelegramBotEssentials\Essence\Traits\HasPermission;
  * Text lives under $lang: `fields.{step}.prompt` (required), `fields.{step}.label`,
  * `lockLabel`, `summary`, `finished`.
  */
-abstract class Form implements DeclaresChatScope, DeclaresPermission
+abstract class Form implements DeclaresAbility, DeclaresChatScope
 {
+    use HasAbility;
     use HasChatScope;
-    use HasPermission;
 
     /** The key stored in a user's state while the form runs. */
     protected string $type;
