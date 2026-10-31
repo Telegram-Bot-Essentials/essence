@@ -6,15 +6,15 @@ use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use ReflectionMethod;
 use Telegram\Bot\Exceptions\TelegramSDKException;
+use TelegramBotEssentials\Essence\Contracts\DeclaresAbility;
 use TelegramBotEssentials\Essence\Contracts\DeclaresChatScope;
-use TelegramBotEssentials\Essence\Contracts\DeclaresPermission;
+use TelegramBotEssentials\Essence\Traits\HasAbility;
 use TelegramBotEssentials\Essence\Traits\HasChatScope;
-use TelegramBotEssentials\Essence\Traits\HasPermission;
 
-abstract class CallbackQuery implements CallbackQueryInterface, DeclaresChatScope, DeclaresPermission
+abstract class CallbackQuery implements CallbackQueryInterface, DeclaresAbility, DeclaresChatScope
 {
+    use HasAbility;
     use HasChatScope;
-    use HasPermission;
 
     protected string $type;
 
