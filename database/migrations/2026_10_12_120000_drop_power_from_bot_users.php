@@ -5,9 +5,9 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Access is decided by named permissions (see AuthorizesAccess), so the
- * numeric power level is gone. An app that granted admin through it moves
- * those users to its own access model in a migration that runs before this.
+ * The app's Gate decides who may use a handler, so the numeric level is
+ * gone. An app that relied on it moves those users to its own model in a
+ * migration that runs before this.
  */
 return new class extends Migration
 {
