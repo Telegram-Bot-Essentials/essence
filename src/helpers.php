@@ -22,11 +22,11 @@ use TelegramBotEssentials\Essence\Models\Bot;
 use TelegramBotEssentials\Essence\Models\BotUser;
 use TelegramBotEssentials\Essence\Models\Conversation;
 use TelegramBotEssentials\Essence\Models\InlineConfirmation;
-use TelegramBotEssentials\Essence\Services\AdminAlerts;
 use TelegramBotEssentials\Essence\Services\ApiResponse;
 use TelegramBotEssentials\Essence\Services\BotUserStatus;
 use TelegramBotEssentials\Essence\Services\ExceptionHandler;
 use TelegramBotEssentials\Essence\Services\NavState;
+use TelegramBotEssentials\Essence\Services\OwnerAlerts;
 use TelegramBotEssentials\Essence\Services\StateDataService;
 use TelegramBotEssentials\Essence\Support\TbeLogger;
 use TelegramBotEssentials\Essence\Support\Webhook;
@@ -60,15 +60,15 @@ if (! function_exists('tbeLog')) {
     }
 }
 
-if (! function_exists('adminAlert')) {
+if (! function_exists('ownerAlert')) {
     /**
-     * Tell the bot's owner and admins about something only they can fix.
+     * Tell the bot's owner about something only they can fix.
      *
-     * @see AdminAlerts::send()
+     * @see OwnerAlerts::send()
      */
-    function adminAlert(string $key, Closure|string $text, ?Bot $bot = null, ?int $throttle = null): bool
+    function ownerAlert(string $key, Closure|string $text, ?Bot $bot = null, ?int $throttle = null): bool
     {
-        return app(AdminAlerts::class)->send($key, $text, $bot, $throttle);
+        return app(OwnerAlerts::class)->send($key, $text, $bot, $throttle);
     }
 }
 
@@ -731,17 +731,8 @@ if (! function_exists('formEngine')) {
 if (! function_exists('loadForms')) {
     function loadForms(string $path): void
     {
-        if (! $path || ! is_dir($path)) {
-            return;
-        }
-        $namespace = resolveNamespace($path);
-
-        foreach (File::allFiles($path) as $file) {
-            $fqcn = $namespace.'\\'.$file->getFilenameWithoutExtension();
-
-            if (class_exists($fqcn) && is_subclass_of($fqcn, Form::class)) {
-                formRegistry()->addForm($fqcn);
-            }
+        foreach (handlerClassesIn($path, Form::class) as $fqcn) {
+            formRegistry()->addForm($fqcn);
         }
     }
 }
@@ -749,17 +740,8 @@ if (! function_exists('loadForms')) {
 if (! function_exists('loadStateAnswers')) {
     function loadStateAnswers(string $path): void
     {
-        if (! $path || ! is_dir($path)) {
-            return;
-        }
-        $namespace = resolveNamespace($path);
-
-        foreach (File::allFiles($path) as $file) {
-            $fqcn = $namespace.'\\'.$file->getFilenameWithoutExtension();
-
-            if (class_exists($fqcn) && is_subclass_of($fqcn, StateAnswer::class)) {
-                stateAnswerBus()->addStateAnswer($fqcn);
-            }
+        foreach (handlerClassesIn($path, StateAnswer::class) as $fqcn) {
+            stateAnswerBus()->addStateAnswer($fqcn);
         }
     }
 }
@@ -767,17 +749,8 @@ if (! function_exists('loadStateAnswers')) {
 if (! function_exists('loadCallbackQueries')) {
     function loadCallbackQueries(string $path): void
     {
-        if (! $path || ! is_dir($path)) {
-            return;
-        }
-        $namespace = resolveNamespace($path);
-
-        foreach (File::allFiles($path) as $file) {
-            $fqcn = $namespace.'\\'.$file->getFilenameWithoutExtension();
-
-            if (class_exists($fqcn) && is_subclass_of($fqcn, CallbackQuery::class)) {
-                callbackQueryBus()->addCallbackQuery($fqcn);
-            }
+        foreach (handlerClassesIn($path, CallbackQuery::class) as $fqcn) {
+            callbackQueryBus()->addCallbackQuery($fqcn);
         }
     }
 }
@@ -785,17 +758,8 @@ if (! function_exists('loadCallbackQueries')) {
 if (! function_exists('loadCommands')) {
     function loadCommands(string $path): void
     {
-        if (! $path || ! is_dir($path)) {
-            return;
-        }
-        $namespace = resolveNamespace($path);
-
-        foreach (File::allFiles($path) as $file) {
-            $fqcn = $namespace.'\\'.$file->getFilenameWithoutExtension();
-
-            if (class_exists($fqcn) && is_subclass_of($fqcn, Command::class)) {
-                commandBus()->addCommand($fqcn);
-            }
+        foreach (handlerClassesIn($path, Command::class) as $fqcn) {
+            commandBus()->addCommand($fqcn);
         }
     }
 }
