@@ -13,6 +13,9 @@ trait TgClassMaker
 {
     private string $nameValue;
 
+    /** Sub-folders given with the name ("Shop/" for Shop/BuyKey), kept as typed. */
+    private string $namePrefix = '';
+
     private ?string $abilityValue = null;
 
     private string $typeValue;
@@ -26,6 +29,11 @@ trait TgClassMaker
             $name = Str::substr($name, 0, -4);
         }
 
+        $name = str_replace('\\', '/', $name);
+        $slash = strrpos($name, '/');
+        $this->namePrefix = $slash === false ? '' : Str::substr($name, 0, $slash + 1);
+        $name = $slash === false ? $name : Str::substr($name, $slash + 1);
+
         $stripped = preg_replace([
             '/answer/i',
             '/query/i',
@@ -37,7 +45,7 @@ trait TgClassMaker
 
         $this->nameValue = is_string($stripped) ? $stripped : $name;
 
-        return $this->nameValue;
+        return $this->namePrefix.$this->nameValue;
     }
 
     private function handleOptions(): void
@@ -57,11 +65,8 @@ trait TgClassMaker
             $command = $this->map[$type];
 
             $arguments = [
-                'name' => $this->nameValue,
+                'name' => $this->namePrefix.$this->nameValue,
             ];
-            if (($this->input->getOptions()['admin'] ?? false) === true) {
-                $arguments['--admin'] = true;
-            }
             if ($this->abilityValue !== null) {
                 $arguments['--ability'] = $this->abilityValue;
             }
@@ -76,26 +81,14 @@ trait TgClassMaker
         $this->abilityValue = $this->resolveAbility();
     }
 
-    /**
-     * --ability when given; with --admin alone, "app.<snake_name>", which
-     * the app still has to define on its Gate.
-     */
+    /** --ability when given; none leaves the handler open to everyone. */
     private function resolveAbility(): ?string
     {
         // Raw options rather than option(): not every command using this trait
-        // defines both.
-        $options = $this->input->getOptions();
-        $ability = $options['ability'] ?? null;
+        // defines it.
+        $ability = $this->input->getOptions()['ability'] ?? null;
 
-        if (is_string($ability) && $ability !== '') {
-            return $ability;
-        }
-
-        if (($options['admin'] ?? false) === true) {
-            return 'app.'.$this->generateTranslationKeyFromName($this->nameValue);
-        }
-
-        return null;
+        return is_string($ability) && $ability !== '' ? $ability : null;
     }
 
     /** The generated `$ability` value as PHP source. */
