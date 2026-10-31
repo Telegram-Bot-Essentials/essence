@@ -220,13 +220,10 @@ class TelegramBotServiceProvider extends ServiceProvider
     {
         $telegram = __DIR__.'/Telegram';
 
-        loadCallbackQueries($telegram.'/CallbackQueries/Member');
-        loadCallbackQueries($telegram.'/CallbackQueries/Admin');
-        loadStateAnswers($telegram.'/StateAnswers/Member');
-        loadStateAnswers($telegram.'/StateAnswers/Admin');
-        loadReplyKeys($telegram.'/ReplyKeys/Member');
-        loadCommands($telegram.'/Commands/Member');
-        loadCommands($telegram.'/Commands/Admin');
+        loadCallbackQueries($telegram.'/CallbackQueries');
+        loadStateAnswers($telegram.'/StateAnswers');
+        loadReplyKeys($telegram.'/ReplyKeys');
+        loadCommands($telegram.'/Commands');
     }
 
     /**
@@ -242,13 +239,12 @@ class TelegramBotServiceProvider extends ServiceProvider
     {
         $appTelegram = base_path('app/Telegram');
 
-        foreach (['Admin', 'Member'] as $scope) {
-            loadCallbackQueries($appTelegram.'/CallbackQueries/'.$scope);
-            loadStateAnswers($appTelegram.'/StateAnswers/'.$scope);
-            loadCommands($appTelegram.'/Commands/'.$scope);
-            loadReplyKeys($appTelegram.'/ReplyKeys/'.$scope);
-            loadTextMatchers($appTelegram.'/TextMatchers/'.$scope);
-        }
+        // Every folder under each type, however the app names them.
+        loadCallbackQueries($appTelegram.'/CallbackQueries');
+        loadStateAnswers($appTelegram.'/StateAnswers');
+        loadCommands($appTelegram.'/Commands');
+        loadReplyKeys($appTelegram.'/ReplyKeys');
+        loadTextMatchers($appTelegram.'/TextMatchers');
 
         loadForms($appTelegram.'/Forms');
         loadInlineQueries($appTelegram.'/InlineQueries');
