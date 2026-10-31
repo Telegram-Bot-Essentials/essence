@@ -2,15 +2,15 @@
 
 namespace TelegramBotEssentials\Essence\Telegram\ReplyKeys;
 
+use TelegramBotEssentials\Essence\Contracts\DeclaresAbility;
 use TelegramBotEssentials\Essence\Contracts\DeclaresChatScope;
-use TelegramBotEssentials\Essence\Contracts\DeclaresPermission;
+use TelegramBotEssentials\Essence\Traits\HasAbility;
 use TelegramBotEssentials\Essence\Traits\HasChatScope;
-use TelegramBotEssentials\Essence\Traits\HasPermission;
 
-abstract class ReplyKey implements DeclaresChatScope, DeclaresPermission, ReplyKeyInterface
+abstract class ReplyKey implements DeclaresAbility, DeclaresChatScope, ReplyKeyInterface
 {
+    use HasAbility;
     use HasChatScope;
-    use HasPermission;
 
     /**
      * The button's label, calling __() directly rather than storing a key
