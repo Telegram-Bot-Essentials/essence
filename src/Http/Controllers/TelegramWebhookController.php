@@ -36,7 +36,6 @@ class TelegramWebhookController extends Controller
                 is_null(wHook()->bot()->activated_until) || wHook()->bot()->activated_until->isFuture(),
                 __('tbe::general.alerts.botIsOff'
                 ));
-            //            if (!hasAccess()) dependsOn(wHook()->bot()->settings->bot_status, __('tbe::general.alerts.botIsOff'));
             // Blocking or unblocking the bot routes through no handler, so
             // it is answered before processUpdate() consults the buses.
             if ($this->processChatMemberUpdate()) {
