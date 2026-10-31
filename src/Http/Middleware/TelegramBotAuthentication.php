@@ -189,7 +189,7 @@ class TelegramBotAuthentication
 
     /**
      * Group traffic that never reaches a handler: anything from a channel,
-     * messages posted as a chat (anonymous admins, linked channels) which
+     * messages posted as a chat (anonymous chat administrators, linked channels) which
      * have no real sender, and service messages (joins, leaves, pins, title
      * and photo changes, group migration).
      */
@@ -221,10 +221,10 @@ class TelegramBotAuthentication
 
     /**
      * my_chat_member also fires when the bot is added to or removed from a
-     * group or channel, where "from" is the admin who did it rather than
+     * group or channel, where "from" is the chat administrator who did it rather than
      * someone in a conversation with the bot. Nothing here models group
      * membership, so those keep the old behaviour of being rejected outright
-     * instead of minting a BotUser or rewriting that admin's status.
+     * instead of minting a BotUser or rewriting that administrator's status.
      */
     public static function isPrivateChatMemberUpdate(): bool
     {
