@@ -6,7 +6,7 @@ use TelegramBotEssentials\Essence\Telegram\InlineQueries\InlineQuery;
 
 class {{ class_name }} extends InlineQuery
 {
-    protected ?string $permission = {{ permission }};
+    protected ?string $ability = {{ ability }};
 
     public function handle(): void
     {

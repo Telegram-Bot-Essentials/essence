@@ -6,7 +6,7 @@ use TelegramBotEssentials\Essence\Telegram\TextMatchers\TextMatcher;
 
 class {{ class_name }} extends TextMatcher
 {
-    protected ?string $permission = {{ permission }};
+    protected ?string $ability = {{ ability }};
 
     // A regex tested against the text (or caption); or override matches(Message $message).
     protected ?string $pattern = '~^https?://~i';

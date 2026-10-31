@@ -8,7 +8,7 @@ use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswer;
 class {{ class_name }} extends StateAnswer
 {
     protected string $type = '{{ type }}';
-    protected ?string $permission = {{ permission }};
+    protected ?string $ability = {{ ability }};
     protected array $allowedFields = [
         AllowableFields::TEXT->value
     ];

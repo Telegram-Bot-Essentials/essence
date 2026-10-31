@@ -7,7 +7,7 @@ use TelegramBotEssentials\Essence\Telegram\Commands\Command;
 class {{ class_name }} extends Command
 {
     protected string $name = '{{ command_name }}';
-    protected ?string $permission = {{ permission }};
+    protected ?string $ability = {{ ability }};
 
     // Multilingual: return __('') instead of a literal.
     protected function description(): ?string
