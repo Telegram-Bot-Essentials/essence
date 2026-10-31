@@ -803,19 +803,10 @@ if (! function_exists('loadCommands')) {
 if (! function_exists('loadInlineQueries')) {
     function loadInlineQueries(string $path): void
     {
-        if (! $path || ! is_dir($path)) {
+        foreach (handlerClassesIn($path, InlineQuery::class) as $fqcn) {
+            inlineQueryBus()->setHandler($fqcn);
+
             return;
-        }
-        $namespace = resolveNamespace($path);
-
-        foreach (File::allFiles($path) as $file) {
-            $fqcn = $namespace.'\\'.$file->getFilenameWithoutExtension();
-
-            if (class_exists($fqcn) && is_subclass_of($fqcn, InlineQuery::class)) {
-                inlineQueryBus()->setHandler($fqcn);
-
-                return;
-            }
         }
     }
 }
@@ -837,17 +828,8 @@ if (! function_exists('addUserReplyKeys')) {
 if (! function_exists('loadReplyKeys')) {
     function loadReplyKeys(string $path): void
     {
-        if (! $path || ! is_dir($path)) {
-            return;
-        }
-        $namespace = resolveNamespace($path);
-
-        foreach (File::allFiles($path) as $file) {
-            $fqcn = $namespace.'\\'.$file->getFilenameWithoutExtension();
-
-            if (class_exists($fqcn) && is_subclass_of($fqcn, ReplyKey::class)) {
-                replyKeyBus()->addReplyKey($fqcn);
-            }
+        foreach (handlerClassesIn($path, ReplyKey::class) as $fqcn) {
+            replyKeyBus()->addReplyKey($fqcn);
         }
     }
 }
@@ -855,18 +837,40 @@ if (! function_exists('loadReplyKeys')) {
 if (! function_exists('loadTextMatchers')) {
     function loadTextMatchers(string $path): void
     {
+        foreach (handlerClassesIn($path, TextMatcher::class) as $fqcn) {
+            textMatcherBus()->addTextMatcher($fqcn);
+        }
+    }
+}
+
+if (! function_exists('handlerClassesIn')) {
+    /**
+     * The concrete subclasses of $base under $path, sub-folders included:
+     * a handler's folder is the app's own layout, never a rule.
+     *
+     * @template T of object
+     *
+     * @param  class-string<T>  $base
+     * @return list<class-string<T>>
+     */
+    function handlerClassesIn(string $path, string $base): array
+    {
         if (! $path || ! is_dir($path)) {
-            return;
+            return [];
         }
         $namespace = resolveNamespace($path);
 
+        $classes = [];
         foreach (File::allFiles($path) as $file) {
-            $fqcn = $namespace.'\\'.$file->getFilenameWithoutExtension();
+            $relative = str_replace(DIRECTORY_SEPARATOR, '\\', $file->getRelativePath());
+            $fqcn = $namespace.'\\'.($relative === '' ? '' : $relative.'\\').$file->getFilenameWithoutExtension();
 
-            if (class_exists($fqcn) && is_subclass_of($fqcn, TextMatcher::class)) {
-                textMatcherBus()->addTextMatcher($fqcn);
+            if (class_exists($fqcn) && is_subclass_of($fqcn, $base) && ! (new ReflectionClass($fqcn))->isAbstract()) {
+                $classes[] = $fqcn;
             }
         }
+
+        return $classes;
     }
 }
 
