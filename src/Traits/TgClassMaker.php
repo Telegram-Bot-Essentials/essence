@@ -13,7 +13,7 @@ trait TgClassMaker
 {
     private string $nameValue;
 
-    private ?string $permissionValue = null;
+    private ?string $abilityValue = null;
 
     private string $typeValue;
 
@@ -62,8 +62,8 @@ trait TgClassMaker
             if (($this->input->getOptions()['admin'] ?? false) === true) {
                 $arguments['--admin'] = true;
             }
-            if ($this->permissionValue !== null) {
-                $arguments['--permission'] = $this->permissionValue;
+            if ($this->abilityValue !== null) {
+                $arguments['--ability'] = $this->abilityValue;
             }
 
             $this->call($command, $arguments);
@@ -73,22 +73,22 @@ trait TgClassMaker
     private function initializeValues(): void
     {
         $this->typeValue = strtoupper($this->nameValue);
-        $this->permissionValue = $this->resolvePermission();
+        $this->abilityValue = $this->resolveAbility();
     }
 
     /**
-     * --permission when given; with --admin alone, "app.<snake_name>", which
-     * the app still has to register with permissionRegistry().
+     * --ability when given; with --admin alone, "app.<snake_name>", which
+     * the app still has to define on its Gate.
      */
-    private function resolvePermission(): ?string
+    private function resolveAbility(): ?string
     {
         // Raw options rather than option(): not every command using this trait
         // defines both.
         $options = $this->input->getOptions();
-        $permission = $options['permission'] ?? null;
+        $ability = $options['ability'] ?? null;
 
-        if (is_string($permission) && $permission !== '') {
-            return $permission;
+        if (is_string($ability) && $ability !== '') {
+            return $ability;
         }
 
         if (($options['admin'] ?? false) === true) {
@@ -98,10 +98,10 @@ trait TgClassMaker
         return null;
     }
 
-    /** The generated `$permission` value as PHP source. */
-    private function permissionLiteral(): string
+    /** The generated `$ability` value as PHP source. */
+    private function abilityLiteral(): string
     {
-        return $this->permissionValue === null ? 'null' : var_export($this->permissionValue, true);
+        return $this->abilityValue === null ? 'null' : var_export($this->abilityValue, true);
     }
 
     protected function generateTextFromName(string $name): string
