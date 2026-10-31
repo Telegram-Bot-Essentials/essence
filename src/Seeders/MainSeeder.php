@@ -16,7 +16,7 @@ class MainSeeder extends Seeder
     {
         if (! config('tbe-essence.main.unique_id') ||
             ! config('tbe-essence.main.telegram_bot_token') ||
-            ! config('tbe-essence.main.admin_chat_id') ||
+            ! config('tbe-essence.main.owner_peer_id') ||
             ! config('tbe-essence.main.currency')
         ) {
             $this->command->info('Main bot is not configured');
@@ -25,7 +25,7 @@ class MainSeeder extends Seeder
         }
 
         $telegramUser = TelegramUser::firstOrCreate([
-            'peer_id' => config('tbe-essence.main.admin_chat_id'),
+            'peer_id' => config('tbe-essence.main.owner_peer_id'),
         ]);
 
         $bot = Bot::where('unique_id', config('tbe-essence.main.unique_id'))->first();
