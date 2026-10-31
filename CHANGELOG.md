@@ -10,6 +10,8 @@ the first public release.
 
 ## [Unreleased]
 
+## [0.19.0-beta.3] - 2026-10-31
+
 Essence knows the bot's owner, the developer and abilities, and nothing
 else about who may do what. The last admin names go, and a test keeps them
 out. Breaking for anything that called `adminAlert()`, used `--admin`, or
