@@ -10,7 +10,7 @@ class AdminUrlTextMatcher extends UrlTextMatcher
     /** @var list<list<string>> */
     public static array $handled = [];
 
-    protected ?string $permission = 'urls.admin';
+    protected ?string $ability = 'urls.admin';
 
     public function handle(): void
     {

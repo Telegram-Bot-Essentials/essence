@@ -6,7 +6,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use TelegramBotEssentials\Essence\Contracts\ResolvesBotLocale;
 use TelegramBotEssentials\Essence\Models\Bot;
-use TelegramBotEssentials\Essence\Models\BotUser;
 use TelegramBotEssentials\Essence\Services\AdminAlerts;
 
 uses(RefreshDatabase::class);
@@ -21,29 +20,28 @@ function sentAlertRecipients(): array
         ->all();
 }
 
-it('alerts the owner and every reachable, unsuspended user granted alerts', function () {
+it('alerts the bot owner', function () {
     $bot = $this->makeBot();
-    $this->grant($this->makeBotUser($bot, 111), AdminAlerts::PERMISSION);
-    $this->grant($this->makeBotUser($bot, 222, ['suspend' => true]), AdminAlerts::PERMISSION);
-    $this->grant($this->makeBotUser($bot, 333, ['status' => BotUser::STATUS_BLOCKED]), AdminAlerts::PERMISSION);
-    $this->grant($this->makeBotUser($bot, 444), 'something.else');
 
     expect(adminAlert('test.alert', 'Channel lock is broken', $bot))->toBeTrue()
-        ->and(sentAlertRecipients())->toBe(collect([111, (int) $bot->bot_owner_peer_id])->sort()->values()->all());
+        ->and(sentAlertRecipients())->toBe([(int) $bot->bot_owner_peer_id]);
 
     $this->assertTelegramSent(fn ($request) => $request['text'] === '⚠️ Channel lock is broken');
 });
 
-it('does not alert the owner twice when they are also granted alerts', function () {
+it('alerts whoever an app that extends AdminAlerts names', function () {
     $bot = $this->makeBot();
-    $this->grant(BotUser::factory()->create([
-        'bot_id' => $bot->id,
-        'telegram_user_peer_id' => $bot->bot_owner_peer_id,
-    ]), AdminAlerts::PERMISSION);
+    app()->singleton(AdminAlerts::class, fn () => new class extends AdminAlerts
+    {
+        protected function recipients(Bot $bot): array
+        {
+            return [...parent::recipients($bot), 111];
+        }
+    });
 
     adminAlert('test.alert', 'x', $bot);
 
-    expect(sentAlertRecipients())->toBe([(int) $bot->bot_owner_peer_id]);
+    expect(sentAlertRecipients())->toBe(collect([111, (int) $bot->bot_owner_peer_id])->sort()->values()->all());
 });
 
 it('throttles the same key per bot', function () {

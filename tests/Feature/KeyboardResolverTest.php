@@ -21,7 +21,7 @@ uses(RefreshDatabase::class);
 
 class KeyboardReportsKey extends ReplyKey
 {
-    protected ?string $permission = 'reports.view';
+    protected ?string $ability = 'reports.view';
 
     protected function text(): string
     {
@@ -89,7 +89,7 @@ it('drops a row whose keys are all hidden', function () {
 
 it('removes the keyboard when every key in the menu is hidden', function () {
     // An empty keyboard markup is ignored by Telegram and would leave a stale
-    // keyboard on screen, e.g. the one a user saw before losing a permission.
+    // keyboard on screen, e.g. the one a user saw before losing access.
     config(['tbe-essence.keyboard.menus.main' => [[KeyboardReportsKey::class]]]);
 
     expect(replyKeyboard($this->member)->toArray())->toMatchArray(['remove_keyboard' => true]);
@@ -101,7 +101,7 @@ it('keeps the automatic Cancel key for a bot without menus', function () {
     expect(keyboardRows(replyKeyboard($this->member)))->toBe([[__('tbe::cancel_process.reply_key')]]);
 });
 
-it('filters menu keys by the permission they name', function () {
+it('filters menu keys by the ability they name', function () {
     config(['tbe-essence.keyboard.menus.main' => [[SupportReplyKey::class, KeyboardReportsKey::class]]]);
     $this->grant($this->admin, 'reports.view');
 
