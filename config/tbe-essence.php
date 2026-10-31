@@ -30,7 +30,7 @@ return [
     'main' => [
         'unique_id' => env('MAIN_UNIQUE_ID', 'main'),
         'telegram_bot_token' => env('MAIN_TELEGRAM_BOT_TOKEN'),
-        'admin_chat_id' => env('MAIN_ADMIN_CHAT_ID'),
+        'owner_peer_id' => env('MAIN_OWNER_PEER_ID'),
         'currency' => env('MAIN_CURRENCY', 'USD'),
     ],
 
