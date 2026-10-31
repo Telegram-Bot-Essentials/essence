@@ -10,6 +10,61 @@ the first public release.
 
 ## [Unreleased]
 
+Essence no longer has an access model. A handler names a Laravel Gate
+ability, and the app's Gate decides who holds it. This release is breaking
+for every handler that named a permission and for anything that called the
+authorizer or the permission registry (see **Upgrading**).
+
+### Changed
+
+- Handlers name the ability they need with `protected ?string $ability`
+  (`HasAbility`, `DeclaresAbility::getAbility()`) in place of
+  `$permission`. `null` (the default) is still open to everyone.
+- `canUseHandler()` and `hasAccess()` ask
+  `Gate::forUser($botUser)->allows($ability)`. A handler without an
+  ability never reaches the Gate.
+- With no Gate rule, an ability is denied to everyone, **the bot owner
+  included**. Essence's default used to let the owner and developer through.
+- `adminAlert()` goes to the bot's owner only. An app that wants more
+  recipients extends `AdminAlerts`, overrides `recipients()` and rebinds it.
+- `tbe:make:*` take `--ability=` in place of `--permission=`; `--admin`
+  alone still generates `app.<snake_name>`.
+- `Testing\TestCase::grant($user, ...$abilities)` grants through a
+  `Gate::before` that answers only for what it granted.
+
+### Removed
+
+- `AuthorizesAccess`, `DefaultAuthorizer` (with `isOwnerOrDeveloper()`),
+  `PermissionRegistry`, `Permission`, `DeclaresPermission`, `HasPermission`,
+  `Testing\GrantingAuthorizer`, and the `authorizer()`,
+  `permissionRegistry()` and `handlerPermission()` helpers
+  (`handlerAbility()` replaces the last).
+- `getPermission()` from every handler interface.
+- The `essence.admin_alerts` permission (`AdminAlerts::PERMISSION`) and its
+  `tbe::admin_alerts` label.
+
+### Upgrading
+
+1. Rename `protected ?string $permission` to `protected ?string $ability`
+   in every handler and form.
+2. Drop every `permissionRegistry()->register(...)` call; there is nothing
+   to register.
+3. Define who holds which ability on the Gate, which receives the
+   `BotUser`. To keep the old behaviour (owner and developer only):
+
+   ```php
+   Gate::before(fn (mixed $user) => $user instanceof BotUser
+       && in_array((string) $user->telegram_user_peer_id, [
+           (string) $user->bot?->bot_owner_peer_id,
+           (string) config('tbe-essence.developer.peer_id'),
+       ], true) ? true : null);
+   ```
+
+   Any `Gate::before` / `Gate::after` the app already has now also sees
+   `BotUser`s: one that type-hints the web `User` will throw.
+4. tbe-access rebinds `AuthorizesAccess`, which no longer exists. Uninstall
+   it until it moves onto the Gate.
+
 ## [0.19.0-beta.1] - 2026-10-13
 
 Menus are the app's: essence no longer ships or registers one. This release
