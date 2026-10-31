@@ -10,6 +10,41 @@ the first public release.
 
 ## [Unreleased]
 
+Essence knows the bot's owner, the developer and abilities, and nothing
+else about who may do what. The last admin names go, and a test keeps them
+out. Breaking for anything that called `adminAlert()`, used `--admin`, or
+set `MAIN_ADMIN_CHAT_ID` (see **Upgrading**).
+
+### Changed
+
+- `adminAlert()` is `ownerAlert()` and `AdminAlerts` is `OwnerAlerts`: it
+  only ever told the owner. Config `admin_alerts.throttle` is
+  `owner_alerts.throttle` (`TBE_OWNER_ALERT_THROTTLE`).
+- `tbe-essence.main.admin_chat_id` (`MAIN_ADMIN_CHAT_ID`) is
+  `main.owner_peer_id` (`MAIN_OWNER_PEER_ID`): it is the main bot's owner.
+- The audit log channel defaults to `audit` instead of `admin-audit`.
+- App handlers are found in every sub-folder of `app/Telegram/<Type>/`,
+  not only `Admin/` and `Member/`, and under their real class names
+  (sub-folders used to be scanned but resolved to the wrong class).
+  Abstract classes are skipped.
+- `tbe:make:*` put the class straight under its type's folder; give a
+  path (`Shop/BuyKey`) for a sub-folder.
+
+### Removed
+
+- The `--admin` option of `tbe:make:*`; use `--ability=`.
+- `TelegramBotAndUserSeeder` and `TestDataSeeder`, which read config that
+  no longer exists.
+
+### Upgrading
+
+- Rename `adminAlert(` to `ownerAlert(` and any `AdminAlerts` binding to
+  `OwnerAlerts`.
+- Rename `MAIN_ADMIN_CHAT_ID` to `MAIN_OWNER_PEER_ID` in `.env`, and
+  `TBE_ADMIN_ALERT_THROTTLE` to `TBE_OWNER_ALERT_THROTTLE` if set.
+- To keep writing to `storage/logs/admin-audit.log`, set
+  `tbe-essence.logging.audit_channel` to `admin-audit`.
+
 ## [0.19.0-beta.2] - 2026-10-31
 
 Essence no longer has an access model. A handler names a Laravel Gate
