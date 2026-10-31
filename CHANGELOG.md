@@ -10,6 +10,8 @@ the first public release.
 
 ## [Unreleased]
 
+## [0.19.0-beta.2] - 2026-10-31
+
 Essence no longer has an access model. A handler names a Laravel Gate
 ability, and the app's Gate decides who holds it. This release is breaking
 for every handler that named a permission and for anything that called the
