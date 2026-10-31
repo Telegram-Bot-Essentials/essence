@@ -2,11 +2,11 @@
 
 namespace TelegramBotEssentials\Essence\Testing;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Testing\TestResponse;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Symfony\Component\HttpFoundation\Response;
-use TelegramBotEssentials\Essence\Contracts\AuthorizesAccess;
 use TelegramBotEssentials\Essence\Models\Bot;
 use TelegramBotEssentials\Essence\Models\BotUser;
 use TelegramBotEssentials\Essence\Models\TelegramUser;
@@ -27,6 +27,9 @@ use TelegramBotEssentials\Essence\TelegramBotServiceProvider;
  */
 abstract class TestCase extends Orchestra
 {
+    /** @var array<int, list<string>> abilities granted by grant(), by bot user id */
+    private array $grants = [];
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -76,7 +79,7 @@ abstract class TestCase extends Orchestra
      * Pre-create a bot's user at a given Telegram peer id, so a subsequent
      * postWebhookUpdate() with the same $peerId finds this row instead of
      * auto-creating a fresh one - pair it with grant() to test a handler
-     * that needs a permission.
+     * that needs an ability.
      *
      * @param  array<string, mixed>  $attributes  bot_users columns, plus
      *                                            state and menu for the private chat
@@ -103,21 +106,34 @@ abstract class TestCase extends Orchestra
     }
 
     /**
-     * Let $user hold $permissions under essence's default access model,
-     * which on its own only lets the bot owner and developer through.
-     * Returns $user, so it wraps makeBotUser().
+     * Let $user hold $abilities on the Gate, which on its own denies every
+     * ability to everyone. Returns $user, so it wraps makeBotUser().
      */
-    protected function grant(BotUser $user, string ...$permissions): BotUser
+    protected function grant(BotUser $user, string ...$abilities): BotUser
     {
-        if (! app(AuthorizesAccess::class) instanceof GrantingAuthorizer) {
-            app()->instance(AuthorizesAccess::class, new GrantingAuthorizer);
+        if ($this->grants === []) {
+            // Answers only for the users and abilities granted here (null
+            // otherwise), so the app's own Gate rules still apply.
+            Gate::before(fn (mixed $user, string $ability) => $user instanceof BotUser
+                && in_array($ability, $this->grantsOf($user), true) ? true : null);
         }
 
-        $authorizer = app(AuthorizesAccess::class);
-        assert($authorizer instanceof GrantingAuthorizer);
-        $authorizer->grant($user, ...$permissions);
+        $this->grants[self::grantKey($user)] = array_values(array_unique([...$this->grantsOf($user), ...$abilities]));
 
         return $user;
+    }
+
+    /** @return list<string> */
+    private function grantsOf(BotUser $user): array
+    {
+        return $this->grants[self::grantKey($user)] ?? [];
+    }
+
+    private static function grantKey(BotUser $user): int
+    {
+        $key = $user->getKey();
+
+        return is_numeric($key) ? (int) $key : 0;
     }
 
     /**
