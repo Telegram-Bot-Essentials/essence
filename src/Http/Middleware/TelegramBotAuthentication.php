@@ -164,7 +164,7 @@ class TelegramBotAuthentication
         );
 
         if ($inPrivateChat && ! $botUser->has_private_chat) {
-            $botUser->forceFill(['has_private_chat' => true])->save();
+            $botUser->markPrivateChatOpened();
         }
 
         $botUser->interact();
