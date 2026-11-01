@@ -153,3 +153,28 @@ it('leaves existing and privately met users reachable', function () {
 
     expect(BotUser::where('telegram_user_peer_id', MIGRATION_MEMBER)->first()->has_private_chat)->toBeTrue();
 });
+
+it('counts someone first met in a group as new when they open the private chat', function () {
+    $this->postWebhookUpdate($this->bot, $this->inGroupChat($this->makeMessageUpdate('/migrationgroup', MIGRATION_MEMBER), MIGRATION_GROUP))->assertOk();
+
+    $this->postWebhookUpdate($this->bot, $this->makeMessageUpdate('/help', MIGRATION_MEMBER))->assertOk();
+    expect(wHook()->user()->isNewToPrivateChat())->toBeTrue();
+
+    $this->postWebhookUpdate($this->bot, $this->makeMessageUpdate('/help', MIGRATION_MEMBER))->assertOk();
+    expect(wHook()->user()->isNewToPrivateChat())->toBeFalse();
+});
+
+it('counts a brand new private user as new and a returning one as not', function () {
+    $this->postWebhookUpdate($this->bot, $this->makeMessageUpdate('/help', MIGRATION_MEMBER))->assertOk();
+    expect(wHook()->user()->isNewToPrivateChat())->toBeTrue();
+
+    $this->makeBotUser($this->bot, 7005);
+    $this->postWebhookUpdate($this->bot, $this->makeMessageUpdate('/help', 7005))->assertOk();
+    expect(wHook()->user()->isNewToPrivateChat())->toBeFalse();
+});
+
+it('does not count a user as new in a group', function () {
+    $this->postWebhookUpdate($this->bot, $this->inGroupChat($this->makeMessageUpdate('/migrationgroup', MIGRATION_MEMBER), MIGRATION_GROUP))->assertOk();
+
+    expect(wHook()->user()->isNewToPrivateChat())->toBeFalse();
+});
