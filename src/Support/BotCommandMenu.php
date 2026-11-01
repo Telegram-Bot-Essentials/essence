@@ -10,8 +10,8 @@ use TelegramBotEssentials\Essence\Models\Bot;
 
 /**
  * Publishes the configured command list to a bot's Telegram menu: one list
- * for private chats and, once groups are on, one for group chats. Each list
- * holds the commands that run there (see ChatScope).
+ * for private chats and one for group chats. Each holds the commands that run
+ * there (see ChatScope).
  */
 class BotCommandMenu
 {
@@ -53,9 +53,7 @@ class BotCommandMenu
 
         $this->publish($api, $private, 'all_private_chats');
 
-        if (config()->boolean('tbe-essence.groups.enabled', false)) {
-            $this->publish($api, $groups, 'all_group_chats');
-        }
+        $this->publish($api, $groups, 'all_group_chats');
     }
 
     /** @param  array<int, array{command: string, description: string}>  $commands */
