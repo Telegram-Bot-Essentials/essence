@@ -10,6 +10,8 @@ the first public release.
 
 ## [Unreleased]
 
+## [0.19.0-beta.6] - 2026-11-01
+
 ### Changed
 
 - Group chats are always on: `tbe-essence.groups.enabled` and
