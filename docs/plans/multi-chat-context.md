@@ -1,9 +1,12 @@
 # Plan: multi-chat context (groups, supergroups, forum topics)
 
-Status: **in progress** — Phase 0 shipped in 0.17.1; Phase 1 (conversations) in 0.18.0;
-Phase 2 on `feat/groups` (opt-in switch, chat scope, replies to the chat, group keyboards,
-button ownership); `bot_chats`, group `my_chat_member`, `migrate_to_chat_id` and
-`has_private_chat` still to do. Decisions settled 2026-10-12 and 2026-10-13 (see bottom).
+Status: **Phases 0 to 3 done** (2026-11-01). Phase 0 shipped in 0.17.1, Phase 1 (conversations)
+in 0.18.0, the rest on `feat/groups`: opt-in switch, chat scope, replies to the chat, group
+keyboards, button ownership, `bot_chats` with group approval, group `my_chat_member`,
+`migrate_to_chat_id` and `has_private_chat`. Phase 3 needed no `toUser()`: `send()` already
+defaults to the current chat and `send($chatId)` targets someone. Companions keep direct sends
+to the private chat until they opt into groups. Decisions settled 2026-10-12, 2026-10-13
+and 2026-11-01 (see bottom).
 
 ## Problem
 
@@ -144,6 +147,14 @@ After all companions have migrated off `BotUser::state` / `changeState()`.
    the answer, reply or not.
 4. Superseded 2026-11-01, see decision 4 under **Decisions (2026-10-12)**: the first group
    feature is vshop's buy service, not tg-essential-downloader-bot.
+
+## Decisions (2026-11-01)
+
+1. Groups need approval by default. Anyone can add a bot to a group and this suite takes
+   payments, so `tbe-essence.groups.require_approval` is on unless a bot turns it off.
+2. Removing the bot takes approval back. A supergroup upgrade keeps it.
+3. `has_private_chat` lives in `reachable()` and `isReachable()`, so companions that use those
+   need no change.
 
 ## Group keyboard findings (2026-10-13)
 
