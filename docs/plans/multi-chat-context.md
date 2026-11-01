@@ -155,6 +155,9 @@ After all companions have migrated off `BotUser::state` / `changeState()`.
    the bot. Tried and removed the same day.
 2. `has_private_chat` lives in `reachable()` and `isReachable()`, so companions that use those
    need no change.
+3. Nothing is stored about people just talking in a group. Someone gets a row by using a
+   command or button there, marked by `has_private_chat`, unless the bot has a text matcher
+   that runs in groups and so needs to hear everyone.
 
 ## Group keyboard findings (2026-10-13)
 
