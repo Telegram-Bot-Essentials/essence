@@ -9,6 +9,7 @@ use Illuminate\Container\Container;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Model;
 use ReflectionMethod;
+use TelegramBotEssentials\Essence\Enums\ChatScope;
 use TelegramBotEssentials\Essence\Events\BotCommandHandled;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
 use TelegramBotEssentials\Essence\Exceptions\TbeLogicException;
@@ -208,6 +209,34 @@ class CommandBus
         [$name, $params] = $this->parseCommandText($text);
 
         return $this->route($name, $params);
+    }
+
+    /** `/command@otherbot` belongs to another bot. An unknown username counts as this bot. */
+    public function isForAnotherBot(string $command): bool
+    {
+        $at = strpos($command, '@');
+        if ($at === false) {
+            return false;
+        }
+
+        $username = wHook()->bot()->username();
+
+        return $username !== null && strcasecmp(substr($command, $at + 1), $username) !== 0;
+    }
+
+    /** Whether this command text names a command that runs in groups. */
+    public function runsInGroups(string $text): bool
+    {
+        [$name] = $this->parseCommandText($text);
+
+        foreach ($this->commands as $command) {
+            if (($command->getName() === $name || in_array($name, $command->getAliases(), true))
+                && handlerChatScope($command) !== ChatScope::Private) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function parseCommandText(string $text): array
