@@ -21,6 +21,11 @@ return [
         // dropped, as before. On: they reach the handlers that opt into groups
         // (ChatScope::Groups or ::Any); everything else stays private-only.
         'enabled' => env('TBE_GROUPS_ENABLED', false),
+
+        // On: a group stays silent until someone with the groups.manage ability
+        // approves it with /groups. Anyone can add a bot to a group, so turn
+        // this off only for a bot that is fine running in strangers' groups.
+        'require_approval' => env('TBE_GROUPS_REQUIRE_APPROVAL', true),
     ],
 
     'bot_access' => [
