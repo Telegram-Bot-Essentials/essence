@@ -1,6 +1,11 @@
 <?php
 
 return [
+    'continue_in_private' => [
+        'text' => 'Continue in your private chat with the bot.',
+        'key' => 'Continue in private',
+    ],
+
     'text' => [
         'enterResourcesNewField' => 'Send the new :field for :resourceName:',
         'resourceFieldUpdated' => ':resource\'s :field was updated.',
