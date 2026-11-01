@@ -16,7 +16,7 @@ use TelegramBotEssentials\Essence\Models\Bot;
 use TelegramBotEssentials\Essence\Models\BotUser;
 use TelegramBotEssentials\Essence\Models\Conversation;
 use TelegramBotEssentials\Essence\Models\TelegramUser;
-use TelegramBotEssentials\Essence\Services\GroupChats;
+use TelegramBotEssentials\Essence\Services\GroupChatMigration;
 use TelegramBotEssentials\Essence\Support\WebhookContext;
 
 class TelegramBotAuthentication
@@ -71,31 +71,18 @@ class TelegramBotAuthentication
             return tbeApiResponse()->error('Failed to initialize API service', 503);
         }
 
-        // Group chats are opt-in (tbe-essence.groups.enabled). Without it, for a
-        // group not allowed to use the bot, or for group traffic no handler can
-        // act on (channel posts, messages sent as a chat, service messages),
-        // acknowledge and drop the update before a BotUser is minted for a
-        // group lurker.
-        $groupsEnabled = config()->boolean('tbe-essence.groups.enabled', false);
-
-        $membership = $update->myChatMember;
-
-        if ($groupsEnabled && $membership !== null && in_array($membership->chat?->type, ['group', 'supergroup'], true)) {
-            app(GroupChats::class)->recordMembership($membership);
-
-            return tbeApiResponse()->success();
-        }
-
+        // Group chats are opt-in (tbe-essence.groups.enabled). Without it, or
+        // for group traffic no handler can act on (channel posts, messages sent
+        // as a chat, service messages), acknowledge and drop the update before
+        // a BotUser is minted for a group lurker.
         if (self::isFromNonPrivateChat()) {
-            if (! $groupsEnabled) {
+            if (! config()->boolean('tbe-essence.groups.enabled', false)) {
                 return tbeApiResponse()->success();
             }
 
             self::recordGroupMigration();
 
-            $chat = ($update->message ?? $update->callbackQuery?->message)?->chat;
-
-            if ($chat === null || self::isIgnoredGroupUpdate() || ! app(GroupChats::class)->mayUse($chat)) {
+            if (self::isIgnoredGroupUpdate()) {
                 return tbeApiResponse()->success();
             }
         }
@@ -235,9 +222,9 @@ class TelegramBotAuthentication
         $from = $message->get('migrate_from_chat_id');
 
         if (is_numeric($to)) {
-            app(GroupChats::class)->migrate((int) $chatId, (int) $to);
+            app(GroupChatMigration::class)->run((int) $chatId, (int) $to);
         } elseif (is_numeric($from)) {
-            app(GroupChats::class)->migrate((int) $from, (int) $chatId);
+            app(GroupChatMigration::class)->run((int) $from, (int) $chatId);
         }
     }
 
@@ -290,8 +277,9 @@ class TelegramBotAuthentication
     /**
      * my_chat_member also fires when the bot is added to or removed from a
      * group or channel, where "from" is the chat administrator who did it rather than
-     * someone in a conversation with the bot, so those never mint a BotUser or
-     * rewrite that administrator's status. Groups are recorded by GroupChats.
+     * someone in a conversation with the bot. Nothing here models group
+     * membership, so those keep the old behaviour of being rejected outright
+     * instead of minting a BotUser or rewriting that administrator's status.
      */
     public static function isPrivateChatMemberUpdate(): bool
     {
