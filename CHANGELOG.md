@@ -17,13 +17,8 @@ the first public release.
   link payload, for anything the group should not see.
 - `BotCommandMenu` publishes a second list to group chats once
   `tbe-essence.groups.enabled` is on, holding the commands that run there.
-- Groups need approval. A group the bot joins stays silent, minting nobody,
-  until someone with the `groups.manage` ability approves it with `/groups`;
-  the owner is told when one appears. Removing the bot takes approval back.
-  Set `TBE_GROUPS_REQUIRE_APPROVAL=false` for a bot fine with any group.
-- `bot_chats` and `BotChat`, with `BotChatJoined` and `BotChatLeft` events.
-- A group becoming a supergroup keeps its approval, open flows and button
-  owners under the new chat id.
+- A group becoming a supergroup keeps its open flows and button owners under
+  the new chat id.
 - `bot_users.has_private_chat`: false for someone first met in a group or by
   an inline query, until they use the private chat. `reachable()` and
   `isReachable()` respect it, so broadcasts skip people the bot cannot message.
