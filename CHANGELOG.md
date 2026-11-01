@@ -10,6 +10,8 @@ the first public release.
 
 ## [Unreleased]
 
+## [0.19.0-beta.4] - 2026-11-01
+
 ### Added
 
 - `abilities()`: the catalog of every Gate ability the bot's handlers ask
