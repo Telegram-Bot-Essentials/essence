@@ -10,6 +10,23 @@ the first public release.
 
 ## [Unreleased]
 
+### Added
+
+- `privateChatLink()` and `TelegramResponse::continueInPrivate()`: point a
+  group member at their private chat with the bot, with an optional deep
+  link payload, for anything the group should not see.
+- `BotCommandMenu` publishes a second list to group chats once
+  `tbe-essence.groups.enabled` is on, holding the commands that run there.
+
+### Fixed
+
+- The command menu's scope was form-encoded, which Telegram cannot read, so
+  the list went to the default scope and showed in every chat. It is JSON
+  now, and the stale default list is cleared. Run `tbe:set-webhook` to
+  republish.
+- `BotDeepLinkReceived` no longer fires for `/start@bot <payload>` typed in a
+  group: its listeners answer with private things.
+
 ## [0.19.0-beta.4] - 2026-11-01
 
 ### Added
