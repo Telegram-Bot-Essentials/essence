@@ -9,7 +9,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Symfony\Component\HttpFoundation\Response;
 use Telegram\Bot\Exceptions\TelegramSDKException;
+use Telegram\Bot\Objects\Message;
 use Telegram\Bot\Objects\User;
+use TelegramBotEssentials\Essence\Enums\ChatScope;
 use TelegramBotEssentials\Essence\Events\BotWebhookInitialized;
 use TelegramBotEssentials\Essence\Exceptions\WebhookAuthException;
 use TelegramBotEssentials\Essence\Models\Bot;
@@ -73,8 +75,8 @@ class TelegramBotAuthentication
 
         // Group chats are opt-in (tbe-essence.groups.enabled). Without it, or
         // for group traffic no handler can act on (channel posts, messages sent
-        // as a chat, service messages), acknowledge and drop the update before
-        // a BotUser is minted for a group lurker.
+        // as a chat, service messages, people just talking), acknowledge and
+        // drop the update before anything is stored about a group lurker.
         if (self::isFromNonPrivateChat()) {
             if (! config()->boolean('tbe-essence.groups.enabled', false)) {
                 return tbeApiResponse()->success();
@@ -82,7 +84,7 @@ class TelegramBotAuthentication
 
             self::recordGroupMigration();
 
-            if (self::isIgnoredGroupUpdate()) {
+            if (self::isIgnoredGroupUpdate() || self::isGroupChatter()) {
                 return tbeApiResponse()->success();
             }
         }
@@ -187,9 +189,58 @@ class TelegramBotAuthentication
             return $botUser->privateConversation();
         }
 
+        return $botUser->conversationIn((int) $chatId, self::threadIdOf($message));
+    }
+
+    private static function threadIdOf(Message $message): int
+    {
         $threadId = $message->get('is_topic_message') === true ? $message->get('message_thread_id') : 0;
 
-        return $botUser->conversationIn((int) $chatId, is_numeric($threadId) ? (int) $threadId : 0);
+        return is_numeric($threadId) ? (int) $threadId : 0;
+    }
+
+    /**
+     * A group message no handler here will act on: people talking to each
+     * other, or a command this bot would not run there. A command still counts
+     * for someone mid-flow, since any command ends a flow. Button presses are
+     * never this: they are aimed at the bot.
+     */
+    private static function isGroupChatter(): bool
+    {
+        $message = wHook()->update()->message;
+
+        if ($message === null) {
+            return false;
+        }
+
+        $text = (string) $message->text;
+
+        if (str_starts_with($text, '/')) {
+            $command = explode(' ', $text, 2)[0];
+
+            return commandBus()->isForAnotherBot($command)
+                || (! commandBus()->runsInGroups($text) && ! self::hasOpenFlow($message));
+        }
+
+        foreach (textMatcherBus()->getTextMatchers() as $matcher) {
+            if (handlerChatScope($matcher) !== ChatScope::Private) {
+                return false;
+            }
+        }
+
+        return ! self::hasOpenFlow($message);
+    }
+
+    /** Whether the sender is partway through a flow in this chat and forum topic. */
+    private static function hasOpenFlow(Message $message): bool
+    {
+        $botUserId = BotUser::where('telegram_user_peer_id', $message->from?->id)->value('id');
+
+        return $botUserId !== null && Conversation::where('bot_user_id', $botUserId)
+            ->where('chat_id', $message->chat->id)
+            ->where('thread_id', self::threadIdOf($message))
+            ->whereNotNull('state')
+            ->exists();
     }
 
     /**
