@@ -74,7 +74,6 @@ function nothingStored(): bool
 }
 
 beforeEach(function () {
-    config(['tbe-essence.groups.enabled' => true]);
     commandBus()->addCommand(ChatterGroupCommand::class);
     commandBus()->addCommand(ChatterPrivateCommand::class);
     ChatterGroupCommand::$runs = 0;

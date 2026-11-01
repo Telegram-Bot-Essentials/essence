@@ -52,7 +52,6 @@ function migrationUpdate(string $field, int $chatId, int $otherId, string $type)
 }
 
 beforeEach(function () {
-    config(['tbe-essence.groups.enabled' => true]);
     commandBus()->addCommand(MigrationGroupCommand::class);
     MigrationGroupCommand::$runs = 0;
 
@@ -107,16 +106,6 @@ it('leaves another bot in the same group alone', function () {
 
     tenancy()->initialize($otherBot);
     expect(Conversation::where('chat_id', MIGRATION_GROUP)->where('bot_user_id', $other->getKey())->exists())->toBeTrue();
-});
-
-it('does nothing with migration messages while groups are off', function () {
-    config(['tbe-essence.groups.enabled' => false]);
-    $user = $this->makeBotUser($this->bot, MIGRATION_MEMBER);
-    $user->conversationIn(MIGRATION_GROUP)->changeState('flow');
-
-    $this->postWebhookUpdate($this->bot, migrationUpdate('migrate_to_chat_id', MIGRATION_GROUP, MIGRATION_SUPERGROUP, 'group'))->assertOk();
-
-    expect($user->conversationIn(MIGRATION_GROUP)->state)->toBe('flow');
 });
 
 it('counts a user met in a group as having no private chat, until they use one', function () {

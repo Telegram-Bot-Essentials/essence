@@ -21,8 +21,7 @@ use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswer;
 use TelegramBotEssentials\Essence\Telegram\TelegramResponse;
 
 /*
- * With tbe-essence.groups.enabled on, group updates reach the handlers that
- * opt into groups (ChatScope). Everything else stays private-only and quiet,
+ * Group updates reach the handlers that opt into groups (ChatScope). Everything else stays private-only and quiet,
  * replies go to the group (and topic), groups never get a reply keyboard,
  * and only the user a group message was sent for can press its buttons.
  * See docs/plans/multi-chat-context.md for the findings behind this.
@@ -149,7 +148,6 @@ function sentTo(int $chatId): Closure
 }
 
 beforeEach(function () {
-    config(['tbe-essence.groups.enabled' => true]);
 
     commandBus()->addCommand(GroupOnlyCommand::class);
     commandBus()->addCommand(PrivateOnlyCommand::class);
@@ -370,16 +368,6 @@ it('publishes commands to the menu of each kind of chat they run in', function (
 
     expect($published('all_group_chats'))->toContain('grouponly')->not->toContain('privateonly')
         ->and($published('all_private_chats'))->toContain('privateonly')->not->toContain('grouponly');
-});
-
-it('leaves the group menu alone while groups are off', function () {
-    config(['tbe-essence.groups.enabled' => false]);
-    Http::fake(['*' => Http::response(['ok' => true, 'result' => true])]);
-
-    app(BotCommandMenu::class)->register($this->bot);
-
-    Http::assertNotSent(fn ($request) => str_ends_with($request->url(), '/setMyCommands')
-        && json_decode((string) $request['scope'], true)['type'] === 'all_group_chats');
 });
 
 it('points a group member at the private chat with a deep link', function () {
