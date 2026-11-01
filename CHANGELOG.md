@@ -22,6 +22,9 @@ the first public release.
 - `bot_users.has_private_chat`: false for someone first met in a group or by
   an inline query, until they use the private chat. `reachable()` and
   `isReachable()` respect it, so broadcasts skip people the bot cannot message.
+- `BotUser::isNewToPrivateChat()`: created by this update, or met elsewhere and
+  opening the private chat with it. For what `wasRecentlyCreated` meant before
+  a user could be met in a group first.
 
 ### Fixed
 
