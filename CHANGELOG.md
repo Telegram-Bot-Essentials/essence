@@ -22,6 +22,9 @@ the first public release.
 - `bot_users.has_private_chat`: false for someone first met in a group or by
   an inline query, until they use the private chat. `reachable()` and
   `isReachable()` respect it, so broadcasts skip people the bot cannot message.
+- People just talking in a group leave no trace: their messages are dropped
+  before anything is stored. Someone gets a row by using a command or button
+  there, or when the bot has a text matcher that runs in groups.
 - `BotUser::isNewToPrivateChat()`: created by this update, or met elsewhere and
   opening the private chat with it. For what `wasRecentlyCreated` meant before
   a user could be met in a group first.
