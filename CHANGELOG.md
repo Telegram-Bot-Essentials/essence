@@ -10,6 +10,8 @@ the first public release.
 
 ## [Unreleased]
 
+## [0.19.0-beta.5] - 2026-11-01
+
 ### Added
 
 - `privateChatLink()` and `TelegramResponse::continueInPrivate()`: point a
