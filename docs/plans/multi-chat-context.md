@@ -142,8 +142,8 @@ After all companions have migrated off `BotUser::state` / `changeState()`.
 2. Steps with buttons in groups: inline buttons and commands; no reply keyboards.
 3. While a user's flow is open in a group, any message of theirs in that chat and topic is
    the answer, reply or not.
-4. First group feature (the Phase 2 acceptance test): tg-essential-downloader-bot with privacy
-   mode off, picking up links from any group message.
+4. Superseded 2026-11-01, see decision 4 under **Decisions (2026-10-12)**: the first group
+   feature is vshop's buy service, not tg-essential-downloader-bot.
 
 ## Group keyboard findings (2026-10-13)
 
@@ -172,7 +172,9 @@ kept on `proto/group-keyboards` in tg-essential-downloader-bot.
    chat-shared state for now.
 3. **Errors in a group reply in the group** (and topic) where they happened, since a DM fails
    for users who never started the bot.
-4. **First real group feature** — still open; it becomes the Phase 2 acceptance test.
+4. **First real group feature** — vshop's buy service (decided 2026-11-01): commands stand in
+   for reply keys, choosing runs in the group, and paying and anything personal hand off to
+   the private chat by deep link. It is the Phase 2 acceptance test.
 
 ## Related
 
