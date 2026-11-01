@@ -53,6 +53,8 @@ class BotUser extends Model
         'updated_at',
     ];
 
+    private bool $openedPrivateChatNow = false;
+
     protected $casts = [
         'suspended_at' => 'datetime',
         'last_interaction' => 'datetime',
@@ -166,6 +168,24 @@ class BotUser extends Model
         $peerId = $this->getAttribute('telegram_user_peer_id');
 
         return $this->conversationIn(is_numeric($peerId) ? (int) $peerId : 0);
+    }
+
+    /** This update is the first this user sent from their private chat with the bot. */
+    public function markPrivateChatOpened(): void
+    {
+        $this->forceFill(['has_private_chat' => true])->save();
+        $this->openedPrivateChatNow = true;
+    }
+
+    /**
+     * Whether this user arrived in their private chat with this very update.
+     * Referrals and campaigns count this as new: someone met in a group first
+     * already has a row, but has never really started the bot.
+     */
+    public function isNewToPrivateChat(): bool
+    {
+        return $this->has_private_chat !== false
+            && ($this->wasRecentlyCreated || $this->openedPrivateChatNow);
     }
 
     public function interact(): void
