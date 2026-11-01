@@ -10,6 +10,15 @@ the first public release.
 
 ## [Unreleased]
 
+### Changed
+
+- Group chats are always on: `tbe-essence.groups.enabled` and
+  `TBE_GROUPS_ENABLED` are gone. Handlers still run in private chats only
+  unless they opt in with `ChatScope`, so a bot that opts in nothing just
+  stays quiet there, apart from `/help`.
+- A button on a channel message now reaches the handlers, for chats such as a
+  channel used to review payments. Messages in a channel are still dropped.
+
 ## [0.19.0-beta.5] - 2026-11-01
 
 ### Added
