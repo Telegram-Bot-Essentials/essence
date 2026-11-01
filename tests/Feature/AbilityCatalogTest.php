@@ -73,7 +73,7 @@ beforeEach(function () {
 });
 
 it('lists every ability a registered handler asks for, once, sorted', function () {
-    expect(abilities()->all())->toBe(['groups.manage', 'reports.view', 'shop.panels.manage']);
+    expect(abilities()->all())->toBe(['reports.view', 'shop.panels.manage']);
 });
 
 it('lists an ability that only code checks once it is declared', function () {
@@ -103,7 +103,6 @@ it('sees a handler registered after it was first asked', function () {
 
 it('groups abilities by their first segment', function () {
     expect(abilities()->grouped())->toBe([
-        'groups' => ['groups.manage'],
         'reports' => ['reports.view'],
         'shop' => ['shop.panels.manage'],
     ]);

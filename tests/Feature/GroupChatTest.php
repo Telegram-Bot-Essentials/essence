@@ -149,7 +149,7 @@ function sentTo(int $chatId): Closure
 }
 
 beforeEach(function () {
-    config(['tbe-essence.groups.enabled' => true, 'tbe-essence.groups.require_approval' => false]);
+    config(['tbe-essence.groups.enabled' => true]);
 
     commandBus()->addCommand(GroupOnlyCommand::class);
     commandBus()->addCommand(PrivateOnlyCommand::class);
