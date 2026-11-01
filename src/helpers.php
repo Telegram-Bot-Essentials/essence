@@ -559,6 +559,24 @@ if (! function_exists('handlerAbility')) {
     }
 }
 
+if (! function_exists('privateChatLink')) {
+    /**
+     * A link that opens the bot's private chat, sending /start with $payload
+     * when given (listen for BotDeepLinkReceived). Null when the bot's username
+     * cannot be found.
+     */
+    function privateChatLink(?string $payload = null): ?string
+    {
+        $username = wHook()->bot()->username();
+
+        if ($username === null) {
+            return null;
+        }
+
+        return 'https://t.me/'.$username.($payload === null ? '' : '?start='.$payload);
+    }
+}
+
 if (! function_exists('handlerChatScope')) {
     /** The chats a handler runs in; private only unless it says otherwise. */
     function handlerChatScope(object $handler): ChatScope
