@@ -1,6 +1,11 @@
 <?php
 
 return [
+    'continue_in_private' => [
+        'text' => 'این بخش را در چت خصوصی با ربات ادامه دهید.',
+        'key' => 'ادامه در چت خصوصی',
+    ],
+
     'text' => [
         'enterResourcesNewField' => 'مقدار جدید :field برای :resourceName را وارد کنید:',
         'resourceFieldUpdated' => ':field «:resource» به‌روزرسانی شد ✅',
