@@ -108,19 +108,6 @@ class TelegramWebhookController extends Controller
         }
     }
 
-    /** Whether "/command@name" names a bot other than this one. */
-    private function isForAnotherBot(string $command): bool
-    {
-        $at = strpos($command, '@');
-        if ($at === false) {
-            return false;
-        }
-
-        $username = wHook()->bot()->username();
-
-        return $username !== null && strcasecmp(substr($command, $at + 1), $username) !== 0;
-    }
-
     /**
      * Route a message update: a command, a reply key, an answer to the open
      * flow, or a text matcher, in that order. Public so a pressed group
@@ -152,7 +139,7 @@ class TelegramWebhookController extends Controller
 
             // In a group, /command@otherbot belongs to another bot: leave
             // it alone rather than cancel this user's flow over it.
-            if ($this->isForAnotherBot($command)) {
+            if (commandBus()->isForAnotherBot($command)) {
                 return;
             }
 
