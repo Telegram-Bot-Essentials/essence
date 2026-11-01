@@ -5,16 +5,20 @@ declare(strict_types=1);
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Client\Factory as HttpFactory;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
 use Telegram\Bot\Keyboard\Keyboard;
 use TelegramBotEssentials\Essence\Enums\AllowableFields;
 use TelegramBotEssentials\Essence\Enums\ChatScope;
+use TelegramBotEssentials\Essence\Events\BotDeepLinkReceived;
 use TelegramBotEssentials\Essence\Models\BotUser;
 use TelegramBotEssentials\Essence\Models\MessageOwner;
+use TelegramBotEssentials\Essence\Support\BotCommandMenu;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQuery;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\Member\GroupKeyQuery;
 use TelegramBotEssentials\Essence\Telegram\Commands\Command;
 use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswer;
+use TelegramBotEssentials\Essence\Telegram\TelegramResponse;
 
 /*
  * With tbe-essence.groups.enabled on, group updates reach the handlers that
@@ -110,6 +114,30 @@ class GroupPingQuery extends CallbackQuery
     public function ping(): void
     {
         self::$pings++;
+    }
+}
+
+class GroupStartCommand extends Command
+{
+    protected string $name = 'start';
+
+    public function handle(): ?bool
+    {
+        return true;
+    }
+}
+
+class GroupHandoffCommand extends Command
+{
+    protected string $name = 'handoff';
+
+    protected ChatScope $chatScope = ChatScope::Any;
+
+    public function handle(): ?bool
+    {
+        TelegramResponse::continueInPrivate('open_things')->send();
+
+        return true;
     }
 }
 
@@ -326,4 +354,70 @@ it('does not count a group message as proof the user can be reached privately', 
     $this->postWebhookUpdate($this->bot, $this->inGroupChat($this->makeMessageUpdate('/grouponly', 5001), GROUP_ID))->assertOk();
 
     expect($this->owner->fresh()->status)->toBe(BotUser::STATUS_BLOCKED);
+});
+
+it('publishes commands to the menu of each kind of chat they run in', function () {
+    Http::fake(['*' => Http::response(['ok' => true, 'result' => true])]);
+
+    app(BotCommandMenu::class)->register($this->bot);
+
+    $published = function (string $scope): array {
+        $sent = Http::recorded(fn ($request) => str_ends_with($request->url(), '/setMyCommands')
+            && json_decode((string) $request['scope'], true)['type'] === $scope);
+
+        return array_column(json_decode((string) $sent->first()[0]['commands'], true), 'command');
+    };
+
+    expect($published('all_group_chats'))->toContain('grouponly')->not->toContain('privateonly')
+        ->and($published('all_private_chats'))->toContain('privateonly')->not->toContain('grouponly');
+});
+
+it('leaves the group menu alone while groups are off', function () {
+    config(['tbe-essence.groups.enabled' => false]);
+    Http::fake(['*' => Http::response(['ok' => true, 'result' => true])]);
+
+    app(BotCommandMenu::class)->register($this->bot);
+
+    Http::assertNotSent(fn ($request) => str_ends_with($request->url(), '/setMyCommands')
+        && json_decode((string) $request['scope'], true)['type'] === 'all_group_chats');
+});
+
+it('points a group member at the private chat with a deep link', function () {
+    commandBus()->addCommand(GroupHandoffCommand::class);
+
+    $this->postWebhookUpdate($this->bot, $this->inGroupChat($this->makeMessageUpdate('/handoff', 5001), GROUP_ID))->assertOk();
+
+    $this->assertTelegramSent(function ($request) {
+        if (! sentTo(GROUP_ID)($request)) {
+            return false;
+        }
+        $button = json_decode((string) $request['reply_markup'], true)['inline_keyboard'][0][0];
+
+        return $button['url'] === 'https://t.me/tbe_test_bot?start=open_things';
+    });
+});
+
+it('still sends the handoff text when the bot username is unknown', function () {
+    Cache::forget('tbe:bot-username:'.$this->bot->getKey().':'.md5((string) $this->bot->bot_token));
+    commandBus()->addCommand(GroupHandoffCommand::class);
+    Http::swap(new HttpFactory);
+    Http::fake([
+        '*/getMe' => Http::response(['ok' => false, 'error_code' => 500, 'description' => 'down'], 500),
+        '*' => Http::response(['ok' => true, 'result' => ['message_id' => 1, 'date' => 1, 'chat' => ['id' => GROUP_ID, 'type' => 'supergroup']]]),
+    ]);
+
+    $this->postWebhookUpdate($this->bot, $this->inGroupChat($this->makeMessageUpdate('/handoff', 5001), GROUP_ID))->assertOk();
+
+    Http::assertSent(fn ($request) => sentTo(GROUP_ID)($request) && ! isset(json_decode((string) ($request['reply_markup'] ?? '{}'), true)['inline_keyboard']));
+});
+
+it('takes deep links from the private chat only', function () {
+    commandBus()->addCommand(GroupStartCommand::class);
+    Event::fake([BotDeepLinkReceived::class]);
+
+    $this->postWebhookUpdate($this->bot, $this->inGroupChat($this->makeMessageUpdate('/start pay_1', 5001), GROUP_ID))->assertOk();
+    Event::assertNotDispatched(BotDeepLinkReceived::class);
+
+    $this->postWebhookUpdate($this->bot, $this->makeMessageUpdate('/start pay_1', 5001))->assertOk();
+    Event::assertDispatched(BotDeepLinkReceived::class, fn ($event) => $event->payload === 'pay_1');
 });
