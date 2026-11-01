@@ -16,13 +16,6 @@ return [
         'menus' => [],
     ],
 
-    'groups' => [
-        // Off: messages and button presses from groups are acknowledged and
-        // dropped, as before. On: they reach the handlers that opt into groups
-        // (ChatScope::Groups or ::Any); everything else stays private-only.
-        'enabled' => env('TBE_GROUPS_ENABLED', false),
-    ],
-
     'bot_access' => [
         'token' => env('BOT_MANAGEMENT_ACCESS_TOKEN'),
     ],
