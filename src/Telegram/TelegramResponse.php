@@ -30,6 +30,26 @@ class TelegramResponse
         public string|InputFile|null $photo = null,
     ) {}
 
+    /**
+     * Sends a group member to their private chat with the bot, for anything
+     * the rest of the group should not see. It is a link rather than a direct
+     * message because the bot cannot message someone who never started it.
+     */
+    public static function continueInPrivate(?string $payload = null, ?string $text = null): self
+    {
+        $link = privateChatLink($payload);
+
+        return new self(
+            text: $text ?? __('tbe::general.continue_in_private.text'),
+            replyMarkup: $link === null ? null : Keyboard::make()->inline()->row([
+                Keyboard::inlineButton([
+                    'text' => __('tbe::general.continue_in_private.key'),
+                    'url' => $link,
+                ]),
+            ]),
+        );
+    }
+
     public static function fromArray(array $data): static
     {
         return new static(
