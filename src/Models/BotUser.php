@@ -11,6 +11,9 @@ use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 use TelegramBotEssentials\Essence\Database\factories\BotUserFactory;
 use TelegramBotEssentials\Essence\Services\BotUserStatus;
 
+/**
+ * @property bool|null $has_private_chat whether the bot can message them; null until read back
+ */
 class BotUser extends Model
 {
     use BelongsToTenant;
@@ -53,6 +56,7 @@ class BotUser extends Model
     protected $casts = [
         'suspended_at' => 'datetime',
         'last_interaction' => 'datetime',
+        'has_private_chat' => 'boolean',
     ];
 
     public static function newFactory(): BotUserFactory
@@ -89,6 +93,7 @@ class BotUser extends Model
     public function scopeReachable(Builder $query): Builder
     {
         return $query
+            ->where('has_private_chat', true)
             ->where('status', self::STATUS_ACTIVE)
             ->whereHas('telegramUser', fn (Builder $telegramUser) => $telegramUser->whereNull('deactivated_at'));
     }
@@ -114,7 +119,9 @@ class BotUser extends Model
 
     public function isReachable(): bool
     {
-        return $this->reachability() === self::STATUS_ACTIVE;
+        // Not false rather than true: a model just created has not read the
+        // column's default back.
+        return $this->has_private_chat !== false && $this->reachability() === self::STATUS_ACTIVE;
     }
 
     /**
