@@ -10,6 +10,19 @@ the first public release.
 
 ## [Unreleased]
 
+### Added
+
+- `abilities()`: the catalog of every Gate ability the bot's handlers ask
+  for, read from the buses and the form registry on each call, so a
+  package that hands abilities out can list them without a second list to
+  keep in step. `all()`, `has()`, `grouped()` (by first segment) and
+  `label()`. `declare()` adds an ability only code checks with
+  `hasAccess()`, optionally with its own label.
+- Ability labels come from an `abilities` translation file keyed by the
+  full ability name (`'billing.offers.manage' => 'Offers'`): the app's
+  `lang/<locale>/abilities.php` first, then each package's translation
+  namespace. An unlabelled ability shows its name.
+
 ## [0.19.0-beta.3] - 2026-10-31
 
 Essence knows the bot's owner, the developer and abilities, and nothing
