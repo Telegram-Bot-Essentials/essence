@@ -160,7 +160,9 @@ class TelegramWebhookController extends Controller
             $this->cancelOldProcess();
             $commandProcessed = commandBus()->processCommands();
 
-            if ($payload !== null && strtolower($command) === '/start') {
+            // Listeners answer with private things (invoices, wallets), and
+            // anyone can type /start@bot <payload> in a group.
+            if ($payload !== null && strtolower($command) === '/start' && ! wHook()->inGroup()) {
                 botEventBus()->fire(new BotDeepLinkReceived($context, $payload));
             }
         } else {
