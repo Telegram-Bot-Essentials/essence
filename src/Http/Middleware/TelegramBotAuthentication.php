@@ -73,15 +73,10 @@ class TelegramBotAuthentication
             return tbeApiResponse()->error('Failed to initialize API service', 503);
         }
 
-        // Group chats are opt-in (tbe-essence.groups.enabled). Without it, or
-        // for group traffic no handler can act on (channel posts, messages sent
-        // as a chat, service messages, people just talking), acknowledge and
-        // drop the update before anything is stored about a group lurker.
+        // Group traffic no handler can act on (channel posts, messages sent as a
+        // chat, service messages, people just talking): acknowledge and drop the
+        // update before anything is stored about a group lurker.
         if (self::isFromNonPrivateChat()) {
-            if (! config()->boolean('tbe-essence.groups.enabled', false)) {
-                return tbeApiResponse()->success();
-            }
-
             self::recordGroupMigration();
 
             if (self::isIgnoredGroupUpdate() || self::isGroupChatter()) {
@@ -294,7 +289,7 @@ class TelegramBotAuthentication
     }
 
     /**
-     * Group traffic that never reaches a handler: anything from a channel,
+     * Group traffic that never reaches a handler: messages in a channel,
      * messages posted as a chat (anonymous chat administrators, linked channels) which
      * have no real sender, and service messages (joins, leaves, pins, title
      * and photo changes, group migration).
@@ -304,8 +299,10 @@ class TelegramBotAuthentication
         $update = wHook()->update();
         $message = $update->message ?? $update->callbackQuery?->message;
 
+        // A button on a channel message still reaches the handlers: a chat for
+        // reviewing payments can be a channel. Handlers opt in with ChatScope.
         if ($message?->chat?->type === 'channel') {
-            return true;
+            return $update->callbackQuery === null;
         }
 
         if ($update->message === null) {
