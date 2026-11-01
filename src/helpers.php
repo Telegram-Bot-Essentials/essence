@@ -28,6 +28,7 @@ use TelegramBotEssentials\Essence\Services\ExceptionHandler;
 use TelegramBotEssentials\Essence\Services\NavState;
 use TelegramBotEssentials\Essence\Services\OwnerAlerts;
 use TelegramBotEssentials\Essence\Services\StateDataService;
+use TelegramBotEssentials\Essence\Support\AbilityCatalog;
 use TelegramBotEssentials\Essence\Support\TbeLogger;
 use TelegramBotEssentials\Essence\Support\Webhook;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQuery;
@@ -539,6 +540,14 @@ if (! function_exists('hasAccess')) {
     function hasAccess(?string $ability): bool
     {
         return $ability === null || Gate::forUser(wHook()->user())->allows($ability);
+    }
+}
+
+if (! function_exists('abilities')) {
+    /** Every Gate ability the bot's handlers ask for, with labels. */
+    function abilities(): AbilityCatalog
+    {
+        return app(AbilityCatalog::class);
     }
 }
 

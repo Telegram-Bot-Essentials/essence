@@ -33,6 +33,7 @@ use TelegramBotEssentials\Essence\Listeners\SetBotLocale;
 use TelegramBotEssentials\Essence\Services\BotUserStatus;
 use TelegramBotEssentials\Essence\Services\NavState;
 use TelegramBotEssentials\Essence\Services\TranslationScanner;
+use TelegramBotEssentials\Essence\Support\AbilityCatalog;
 use TelegramBotEssentials\Essence\Support\DefaultBotLocaleResolver;
 use TelegramBotEssentials\Essence\Support\DefaultKeyboardResolver;
 use TelegramBotEssentials\Essence\Support\Webhook;
@@ -116,6 +117,9 @@ class TelegramBotServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(FormRegistry::class, fn () => new FormRegistry);
+
+        // Reads the buses on every call, so it holds only what declare() adds.
+        $this->app->singleton(AbilityCatalog::class, fn () => new AbilityCatalog);
 
         $this->app->singleton(FormEngine::class, fn () => new FormEngine);
 
