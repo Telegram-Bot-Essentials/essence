@@ -203,8 +203,7 @@ abstract class TestCase extends Orchestra
 
     /**
      * Move a message or callback_query update into a group chat, and into a
-     * forum topic when $topicId is given. Groups are opt-in, so pair it with
-     * config(['tbe-essence.groups.enabled' => true]) to get past the guard.
+     * forum topic when $topicId is given.
      *
      * @param  array<string, mixed>  $update
      * @return array<string, mixed>
