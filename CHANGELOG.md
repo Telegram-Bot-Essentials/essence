@@ -10,6 +10,11 @@ the first public release.
 
 ## [Unreleased]
 
+### Added
+
+- `RecipientGroups`: named groups of users a package can address without knowing
+  what they are. Essence has none by default; a package binds its own.
+
 ## [0.19.0-beta.7] - 2026-11-03
 
 ### Added
