@@ -17,7 +17,8 @@ the first public release.
   generic job, restoring the bot, user, chat and locale, and only once any open
   transaction commits. `notifyUser()` tells a user something without being able
   to fail the flow, and keeps track of who blocked the bot.
-- `sweepTelegramFailures()` in the test case runs a flow with each Telegram call
+- `sweepTelegramFailures()`, in the test case and as the `SweepsTelegramFailures`
+  trait for a bot's own tests, runs a flow with each Telegram call
   failing in turn, to check what it promises holds whatever Telegram does.
 
 - `HandlerGate`, registered with `handlerGates()->add()`, is a condition on what
