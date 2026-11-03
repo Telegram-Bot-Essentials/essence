@@ -10,6 +10,8 @@ the first public release.
 
 ## [Unreleased]
 
+## [0.19.0-beta.7] - 2026-11-03
+
 ### Added
 
 - `isolated()` runs work as its own action: a failure is logged, reported and
