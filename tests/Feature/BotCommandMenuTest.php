@@ -20,6 +20,19 @@ it('publishes the configured commands to the bot menu', function () {
     );
 });
 
+it('sends the scope as JSON and clears the default list', function () {
+    $bot = $this->makeBot();
+
+    app(BotCommandMenu::class)->register($bot);
+
+    $this->assertTelegramSent(
+        fn ($request) => str_ends_with($request->url(), '/setMyCommands')
+            && is_string($request['scope'])
+            && json_decode($request['scope'], true) === ['type' => 'all_private_chats']
+    );
+    $this->assertTelegramSent(fn ($request) => str_ends_with($request->url(), '/deleteMyCommands'));
+});
+
 it('carries on with the other bots when one fails during set-webhook --all', function () {
     $good = $this->makeBot(['bot_token' => '111:good']);
     $bad = $this->makeBot(['bot_token' => '222:bad']);

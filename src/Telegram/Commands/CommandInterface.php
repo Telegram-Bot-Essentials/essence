@@ -12,8 +12,6 @@ interface CommandInterface
 
     public function getDescription(): string;
 
-    public function getPermission(): ?string;
-
     public function getPriority(): int;
 
     public function isEnabled(): bool;

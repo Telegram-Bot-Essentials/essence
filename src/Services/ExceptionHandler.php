@@ -55,7 +55,7 @@ class ExceptionHandler
                         $this->answerInlineQueryWithError();
                     } else {
                         wHook()->api()->sendMessage([
-                            'chat_id' => wHook()->user()->telegramUser->peer_id,
+                            ...wHook()->replyTo(),
                             'text' => '😭 Something went wrong, please contact the bot support',
                             'reply_markup' => replyKeyboard(),
                         ]);
@@ -101,7 +101,7 @@ class ExceptionHandler
             $this->answerInlineQueryWithError();
         } else {
             wHook()->api()->sendMessage([
-                'chat_id' => wHook()->user()->telegramUser->peer_id,
+                ...wHook()->replyTo(),
                 'text' => $e->getMessage() == '' ? __('tbe::general.alerts.invalidPageNumber') : $e->getMessage(),
             ]);
         }
@@ -121,7 +121,7 @@ class ExceptionHandler
             return;
         }
         wHook()->api()->sendMessage([
-            'chat_id' => wHook()->user()->telegramUser->peer_id,
+            ...wHook()->replyTo(),
             'text' => $e->getMessage(),
             'reply_markup' => replyKeyboard(),
         ]);
@@ -139,7 +139,7 @@ class ExceptionHandler
             return;
         }
         wHook()->api()->sendMessage([
-            'chat_id' => wHook()->user()->telegramUser->peer_id,
+            ...wHook()->replyTo(),
             'text' => $e->getMessage(),
         ]);
     }
@@ -164,7 +164,7 @@ class ExceptionHandler
             $this->answerInlineQueryWithError();
         } else {
             wHook()->api()->sendMessage([
-                'chat_id' => wHook()->user()->telegramUser->peer_id,
+                ...wHook()->replyTo(),
                 'text' => __('tbe::general.alerts.notFound', ['resource' => $resourceName]),
                 'reply_markup' => replyKeyboard(),
             ]);
@@ -198,7 +198,7 @@ class ExceptionHandler
             $this->answerInlineQueryWithError();
         } else {
             wHook()->api()->sendMessage([
-                'chat_id' => wHook()->peerId(),
+                ...wHook()->replyTo(),
                 'text' => __('tbe::general.alerts.contextExpired'),
                 'reply_markup' => replyKeyboard(),
             ]);
@@ -211,10 +211,15 @@ class ExceptionHandler
     private function featureIsDisabledUserAlert(FeatureIsDisabled|Exception $e): void
     {
         if ($e instanceof FeatureIsDisabled && ($response = $e->getResponse())) {
-            if (wHook()->update()->callbackQuery) {
-                $response->update();
-            } else {
+            if (wHook()->update()->inlineQuery) {
+                $this->answerInlineQueryWithError($response->getInlineQueryButton());
+            } elseif (wHook()->update()->callbackQuery === null) {
                 $response->send();
+            } elseif ($response->sendsAsNewMessage()) {
+                $response->send();
+                wHook()->api()->answerCallbackQuery(['callback_query_id' => wHook()->update()->callbackQuery->id]);
+            } else {
+                $response->update();
             }
 
             return;
@@ -231,7 +236,7 @@ class ExceptionHandler
             $this->answerInlineQueryWithError();
         } else {
             wHook()->api()->sendMessage([
-                'chat_id' => wHook()->user()->telegramUser->peer_id,
+                ...wHook()->replyTo(),
                 'text' => $e->getMessage() == '' ? __('tbe::general.alerts.disabledFeature', ['feature' => wHook()->update()?->message?->text ?? 'N/A']) : $e->getMessage(),
             ]);
         }
@@ -256,21 +261,25 @@ class ExceptionHandler
             $this->answerInlineQueryWithError();
         } else {
             wHook()->api()->sendMessage([
-                'chat_id' => wHook()->user()->telegramUser->peer_id,
+                ...wHook()->replyTo(),
                 'text' => $e->getMessage(),
                 'reply_markup' => replyKeyboard(),
             ]);
         }
     }
 
-    private function answerInlineQueryWithError(): void
+    /**
+     * @param  array{text: string, start_parameter: string}|null  $button
+     */
+    private function answerInlineQueryWithError(?array $button = null): void
     {
         try {
-            wHook()->api()->answerInlineQuery([
+            wHook()->api()->answerInlineQuery(array_filter([
                 'inline_query_id' => wHook()->update()->inlineQuery->id,
                 'results' => '[]',
                 'cache_time' => 0,
-            ]);
+                'button' => $button === null ? null : json_encode($button),
+            ], fn ($value) => $value !== null));
         } catch (Throwable) {
         }
     }
@@ -289,7 +298,7 @@ class ExceptionHandler
             $this->answerInlineQueryWithError();
         } else {
             wHook()->api()->sendMessage([
-                'chat_id' => wHook()->user()->telegramUser->peer_id,
+                ...wHook()->replyTo(),
                 'text' => 'Requested item not found.',
                 'reply_markup' => replyKeyboard(),
             ]);

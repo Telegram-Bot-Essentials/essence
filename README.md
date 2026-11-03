@@ -38,7 +38,7 @@ php artisan tbe:singlebot:init
 php artisan tbe:set-webhook
 ```
 
-Configure `config/tbe-essence.php` and `.env` values (`MAIN_TELEGRAM_BOT_TOKEN`, `MAIN_UNIQUE_ID`, `MAIN_ADMIN_CHAT_ID`, etc.) before running init.
+Configure `config/tbe-essence.php` and `.env` values (`MAIN_TELEGRAM_BOT_TOKEN`, `MAIN_UNIQUE_ID`, `MAIN_OWNER_PEER_ID`, etc.) before running init.
 
 ## Webhook URL
 
@@ -67,19 +67,17 @@ Authentication uses the Telegram `secret_token` header, verified against the has
 ```
 app/Telegram/
 ├── CallbackQueries/
-│   ├── Admin/
-│   └── Member/
 ├── StateAnswers/
-│   ├── Admin/
-│   └── Member/
 ├── ReplyKeys/
-│   ├── Admin/
-│   └── Member/
+├── TextMatchers/
 ├── Features/
-│   ├── Admin/
-│   └── Member/
+├── Forms/
+├── InlineQueries/
 └── Commands/
 ```
+
+Sub-folders are yours to name (`Shop/`, `Panel/`, …): every handler under a
+type's folder is found, however deep.
 
 Handlers are discovered from `app/Telegram/**` once per process/worker at boot, after every companion package has registered its own - so your app's handlers always win a naming collision. Package defaults are loaded from `vendor/telegram-bot-essentials/essence/src/Telegram/`.
 
@@ -98,11 +96,11 @@ being published. It covers:
 ## Artisan Generators
 
 ```bash
-php artisan make:callback-query Admin/MyFeatureQuery
-php artisan make:state-answer Member/MyFeatureAnswer
-php artisan make:reply-key Member/MyFeatureKey
-php artisan make:feature Admin/MyFeatureFeature
-php artisan make:command MyStartCommand
+php artisan tbe:make:callback-query Shop/MyFeatureQuery --ability=shop.manage
+php artisan tbe:make:state-answer Shop/MyFeatureAnswer
+php artisan tbe:make:reply-key MyFeatureKey
+php artisan tbe:make:feature Shop/MyFeature --all --ability=shop.manage
+php artisan tbe:make:command MyStartCommand
 ```
 
 ## Testing

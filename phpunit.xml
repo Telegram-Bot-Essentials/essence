@@ -13,6 +13,10 @@
         <testsuite name="Feature">
             <directory>tests/Feature</directory>
         </testsuite>
+        <testsuite name="PHPStan">
+            <directory>tests/PHPStan</directory>
+            <exclude>tests/PHPStan/data</exclude>
+        </testsuite>
     </testsuites>
     <source>
         <include>

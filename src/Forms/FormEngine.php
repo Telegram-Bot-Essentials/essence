@@ -661,7 +661,7 @@ class FormEngine
         $this->giveBackOriginal($state, $form);
 
         wHook()->api()->sendMessage([
-            'chat_id' => wHook()->peerId(),
+            ...wHook()->replyTo(),
             'text' => $form->hasText('finished') ? $form->text('finished') : __('tbe::forms.finished'),
             'parse_mode' => 'HTML',
             'reply_markup' => replyKeyboard(),
@@ -809,7 +809,7 @@ class FormEngine
 
         try {
             wHook()->api()->editMessageText([
-                'chat_id' => wHook()->peerId(),
+                'chat_id' => wHook()->chatId(),
                 'message_id' => $messageId,
                 'text' => __('tbe::forms.prompt.picked'),
             ]);
@@ -849,7 +849,7 @@ class FormEngine
         wHook()->conversation()->changeState();
 
         wHook()->api()->sendMessage([
-            'chat_id' => wHook()->peerId(),
+            ...wHook()->replyTo(),
             'text' => __('tbe::forms.expired'),
             'reply_markup' => replyKeyboard(),
         ]);
@@ -950,7 +950,7 @@ class FormEngine
     private function send(string $text, mixed $replyMarkup): int
     {
         $message = wHook()->api()->sendMessage(array_filter([
-            'chat_id' => wHook()->peerId(),
+            ...wHook()->replyTo(),
             'text' => $text,
             'parse_mode' => 'HTML',
             'reply_markup' => $replyMarkup,

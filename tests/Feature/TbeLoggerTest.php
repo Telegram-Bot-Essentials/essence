@@ -119,7 +119,7 @@ it('defines the channels it routes to as daily files', function () {
         'path' => storage_path('logs/billing.log'),
         'days' => 90,
     ])
-        ->and(config('logging.channels.admin-audit.days'))->toBe(90)
+        ->and(config('logging.channels.audit.days'))->toBe(90)
         ->and(config('logging.channels.activity.days'))->toBe(14)
         ->and(config('logging.channels.essence.path'))->toBe(storage_path('logs/essence.log'));
 });
@@ -148,7 +148,7 @@ it('merges an app logging block over the defaults instead of replacing them', fu
         'billing' => 'billing',
         'user-management' => 'activity',
     ])
-        ->and(config('tbe-essence.logging.retention_days'))->toBe(['billing' => 90, 'admin-audit' => 90, 'activity' => 30])
+        ->and(config('tbe-essence.logging.retention_days'))->toBe(['billing' => 90, 'audit' => 90, 'activity' => 30])
         ->and(config('tbe-essence.logging.channel'))->toBe('essence')
-        ->and(config('tbe-essence.logging.audit_channel'))->toBe('admin-audit');
+        ->and(config('tbe-essence.logging.audit_channel'))->toBe('audit');
 });

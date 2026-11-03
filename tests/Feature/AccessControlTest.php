@@ -3,19 +3,16 @@
 declare(strict_types=1);
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use TelegramBotEssentials\Essence\Contracts\AuthorizesAccess;
-use TelegramBotEssentials\Essence\Exceptions\TbeException;
+use Illuminate\Support\Facades\Gate;
 use TelegramBotEssentials\Essence\Models\BotUser;
 use TelegramBotEssentials\Essence\Support\BotCommandMenu;
-use TelegramBotEssentials\Essence\Support\DefaultAuthorizer;
 use TelegramBotEssentials\Essence\Telegram\Commands\Command;
-use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Admin\AdminPanelKey;
 
 /*
- * Access goes through the AuthorizesAccess contract. Essence's default
- * leaves handlers without a permission open and lets only the bot owner and
- * developer use the rest; a role package swaps the whole model by
- * rebinding the contract.
+ * Essence holds no access model. A handler names a Gate ability (or none,
+ * for everyone) and the buses ask Laravel's Gate with the BotUser; who
+ * holds what is the app's business. With nothing defined, the Gate denies
+ * every ability to everyone, the bot owner included.
  */
 
 uses(RefreshDatabase::class);
@@ -26,7 +23,7 @@ class AccessNamedCommand extends Command
 
     protected string $name = 'access_named';
 
-    protected ?string $permission = 'reports.view';
+    protected ?string $ability = 'reports.view';
 
     public function handle(): ?bool
     {
@@ -58,23 +55,33 @@ beforeEach(function () {
     ]);
 });
 
-it('opens a handler without a permission to everyone', function () {
+it('opens a handler without an ability to everyone', function () {
     $handler = new AccessPublicCommand;
 
-    expect(handlerPermission($handler))->toBeNull()
+    expect(handlerAbility($handler))->toBeNull()
         ->and(isPublicHandler($handler))->toBeTrue()
         ->and(canUseHandler($handler, $this->member))->toBeTrue();
 });
 
-it('keeps a named permission to the owner and developer by default', function () {
-    $developer = $this->makeBotUser($this->bot, 504);
-    // env() hands the developer id over as a string.
-    config(['tbe-essence.developer.peer_id' => '504']);
+it('denies an undefined ability to everyone, the owner included', function () {
+    $handler = new AccessNamedCommand;
 
-    expect(authorizer()->allows($this->member, 'reports.view'))->toBeFalse()
-        ->and(authorizer()->allows($this->owner, 'reports.view'))->toBeTrue()
-        ->and(authorizer()->allows($developer, 'reports.view'))->toBeTrue()
-        ->and(authorizer()->usersWith($this->bot, 'reports.view')->count())->toBe(0);
+    expect(handlerAbility($handler))->toBe('reports.view')
+        ->and(canUseHandler($handler, $this->member))->toBeFalse()
+        ->and(canUseHandler($handler, $this->owner))->toBeFalse();
+
+    $this->postWebhookUpdate($this->bot, $this->makeMessageUpdate('/access_named', peerId: (int) $this->bot->bot_owner_peer_id))->assertOk();
+    expect(AccessNamedCommand::$runs)->toBe(0);
+});
+
+it('asks the app\'s Gate with the bot user', function () {
+    Gate::define('reports.view', fn (BotUser $user) => $user->is($this->owner));
+
+    $this->postWebhookUpdate($this->bot, $this->makeMessageUpdate('/access_named', peerId: 501))->assertOk();
+    expect(AccessNamedCommand::$runs)->toBe(0);
+
+    $this->postWebhookUpdate($this->bot, $this->makeMessageUpdate('/access_named', peerId: (int) $this->bot->bot_owner_peer_id))->assertOk();
+    expect(AccessNamedCommand::$runs)->toBe(1);
 });
 
 it('checks hasAccess() against the webhook user', function () {
@@ -84,39 +91,17 @@ it('checks hasAccess() against the webhook user', function () {
         ->and(hasAccess('reports.view'))->toBeFalse();
 });
 
-it('denies a member a command that names a permission and runs it for the owner', function () {
-    $this->postWebhookUpdate($this->bot, $this->makeMessageUpdate('/access_named', peerId: 501))->assertOk();
-    expect(AccessNamedCommand::$runs)->toBe(0);
-
-    $this->postWebhookUpdate($this->bot, $this->makeMessageUpdate('/access_named', peerId: (int) $this->bot->bot_owner_peer_id))->assertOk();
-    expect(AccessNamedCommand::$runs)->toBe(1);
-});
-
-it('lets a test grant a permission to a plain user', function () {
+it('lets a test grant an ability to a plain user', function () {
     $this->grant($this->member, 'reports.view');
 
     $this->postWebhookUpdate($this->bot, $this->makeMessageUpdate('/access_named', peerId: 501))->assertOk();
 
     expect(AccessNamedCommand::$runs)->toBe(1)
-        ->and(authorizer()->allows($this->member, 'reports.export'))->toBeFalse()
-        ->and(authorizer()->usersWith($this->bot, 'reports.view')->pluck('id')->all())->toBe([$this->member->id]);
+        ->and(Gate::forUser($this->member)->allows('reports.export'))->toBeFalse()
+        ->and(Gate::forUser($this->owner)->allows('reports.view'))->toBeFalse();
 });
 
-it('routes the buses through a rebound authorizer', function () {
-    app()->bind(AuthorizesAccess::class, fn () => new class extends DefaultAuthorizer
-    {
-        public function allows(BotUser $user, ?string $permission): bool
-        {
-            return $permission === 'reports.view';
-        }
-    });
-
-    $this->postWebhookUpdate($this->bot, $this->makeMessageUpdate('/access_named', peerId: 501))->assertOk();
-
-    expect(AccessNamedCommand::$runs)->toBe(1);
-});
-
-it('leaves commands that need a permission out of the published menu', function () {
+it('leaves commands that need an ability out of the published menu', function () {
     app(BotCommandMenu::class)->register($this->bot);
 
     $this->assertTelegramSent(function ($request) {
@@ -130,26 +115,4 @@ it('leaves commands that need a permission out of the published menu', function 
             && in_array('access_public', $names, true)
             && ! in_array('access_named', $names, true);
     });
-});
-
-it('registers permissions once, grouped by package', function () {
-    permissionRegistry()->register('reports.view', fn () => 'View reports', 'reports');
-    permissionRegistry()->register('reports.export', 'Export reports', 'reports');
-    permissionRegistry()->register('panels.manage', 'Manage panels');
-
-    expect(permissionRegistry()->has('reports.view'))->toBeTrue()
-        ->and(permissionRegistry()->get('reports.view')?->label())->toBe('View reports')
-        ->and(array_keys(permissionRegistry()->grouped()))->toBe(['essence', 'reports', 'general'])
-        ->and(array_keys(permissionRegistry()->grouped()['reports']))->toBe(['reports.view', 'reports.export']);
-
-    permissionRegistry()->register('reports.view', 'again');
-})->throws(TbeException::class, 'Permission "reports.view" is already registered');
-
-it('gates the admin panel key by name', function () {
-    $key = new AdminPanelKey;
-
-    expect(handlerPermission($key))->toBe('essence.admin_panel')
-        ->and(permissionRegistry()->has('essence.admin_panel'))->toBeTrue()
-        ->and(canUseHandler($key, $this->member))->toBeFalse()
-        ->and(canUseHandler($key, $this->owner))->toBeTrue();
 });

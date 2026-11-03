@@ -1,0 +1,5 @@
+# Rules for bots and packages built on essence. Include from phpstan.neon:
+#   includes:
+#       - vendor/telegram-bot-essentials/essence/extension.neon
+rules:
+    - TelegramBotEssentials\Essence\PHPStan\NoTelegramInTransactionRule

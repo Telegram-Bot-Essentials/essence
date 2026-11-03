@@ -3,6 +3,7 @@
 namespace TelegramBotEssentials\Essence;
 
 use Illuminate\Contracts\Foundation\CachesConfiguration;
+use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
@@ -23,22 +24,23 @@ use TelegramBotEssentials\Essence\Console\Commands\MakeTextMatcher;
 use TelegramBotEssentials\Essence\Console\Commands\PublishCommand;
 use TelegramBotEssentials\Essence\Console\Commands\SetWebhook;
 use TelegramBotEssentials\Essence\Console\Commands\TranslationStats;
-use TelegramBotEssentials\Essence\Contracts\AuthorizesAccess;
+use TelegramBotEssentials\Essence\Contracts\RecipientGroups;
 use TelegramBotEssentials\Essence\Contracts\ResolvesBotLocale;
 use TelegramBotEssentials\Essence\Contracts\ResolvesKeyboard;
 use TelegramBotEssentials\Essence\Events\BotEventBus;
 use TelegramBotEssentials\Essence\Events\BotWebhookInitialized;
 use TelegramBotEssentials\Essence\Forms\FormEngine;
 use TelegramBotEssentials\Essence\Forms\FormRegistry;
+use TelegramBotEssentials\Essence\Jobs\RunIsolatedTask;
 use TelegramBotEssentials\Essence\Listeners\SetBotLocale;
-use TelegramBotEssentials\Essence\Services\AdminAlerts;
 use TelegramBotEssentials\Essence\Services\BotUserStatus;
 use TelegramBotEssentials\Essence\Services\NavState;
 use TelegramBotEssentials\Essence\Services\TranslationScanner;
-use TelegramBotEssentials\Essence\Support\DefaultAuthorizer;
+use TelegramBotEssentials\Essence\Support\AbilityCatalog;
 use TelegramBotEssentials\Essence\Support\DefaultBotLocaleResolver;
 use TelegramBotEssentials\Essence\Support\DefaultKeyboardResolver;
-use TelegramBotEssentials\Essence\Support\PermissionRegistry;
+use TelegramBotEssentials\Essence\Support\HandlerGates;
+use TelegramBotEssentials\Essence\Support\NoRecipientGroups;
 use TelegramBotEssentials\Essence\Support\Webhook;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQueryBus;
 use TelegramBotEssentials\Essence\Telegram\Commands\CommandBus;
@@ -72,18 +74,25 @@ class TelegramBotServiceProvider extends ServiceProvider
         $this->app->bind(ResolvesBotLocale::class, DefaultBotLocaleResolver::class);
 
         // Same swap-a-strategy pattern: an app or companion that owns its own
-        // menu model or role system rebinds these; essence never names it.
-        // bindIf, not bind: package discovery registers providers in name
-        // order, so "access" registers before "essence" and a plain bind()
-        // here would silently overwrite its binding.
+        // menu model rebinds this; essence never names it. bindIf, not bind:
+        // package discovery registers providers in name order, so a companion
+        // sorting before "essence" would otherwise lose its binding.
         $this->app->bindIf(ResolvesKeyboard::class, DefaultKeyboardResolver::class);
-        $this->app->bindIf(AuthorizesAccess::class, DefaultAuthorizer::class);
+
+        $this->app->bindIf(RecipientGroups::class, NoRecipientGroups::class);
 
         // Event::listen resolves a string-class listener fresh from the
         // container on every dispatch, so this always picks up whichever
         // ResolvesBotLocale is currently bound - no ordering dependency
         // between this registration and a companion's rebind above.
         botEventBus()->listen(BotWebhookInitialized::class, SetBotLocale::class);
+
+        // A failed job goes to the failed_jobs table, where nobody looks.
+        botEventBus()->listen(JobFailed::class, function (JobFailed $event) {
+            if ($event->job->resolveName() !== RunIsolatedTask::class) {
+                exceptionReport($event->exception);
+            }
+        });
     }
 
     private function initializeSingletons(): void
@@ -123,9 +132,14 @@ class TelegramBotServiceProvider extends ServiceProvider
 
         $this->app->singleton(FormRegistry::class, fn () => new FormRegistry);
 
+        // Reads the buses on every call, so it holds only what declare() adds.
+        $this->app->singleton(AbilityCatalog::class, fn () => new AbilityCatalog);
+
         $this->app->singleton(FormEngine::class, fn () => new FormEngine);
 
         $this->app->singleton(BotEventBus::class, fn () => new BotEventBus);
+
+        $this->app->singleton(HandlerGates::class, fn () => new HandlerGates);
 
         $this->app->singleton(TranslationScanner::class, fn () => new TranslationScanner);
 
@@ -144,10 +158,6 @@ class TelegramBotServiceProvider extends ServiceProvider
         $this->app->singleton(NavState::class, fn () => new NavState);
 
         $this->app->singleton(BotUserStatus::class, fn () => new BotUserStatus);
-
-        // Singleton: packages register their permission names into it from
-        // their own boot(), and every later read must see them.
-        $this->app->singleton(PermissionRegistry::class, fn () => new PermissionRegistry);
     }
 
     private function registerBotsManager(): void
@@ -212,31 +222,11 @@ class TelegramBotServiceProvider extends ServiceProvider
         $this->loadTranslationsFrom(__DIR__.'/../lang', 'tbe-essence');
 
         $this->registerPackageHandlers();
-        $this->registerPermissions();
 
         // The consuming app's handlers are scanned after every provider has
         // booted, so app/Telegram/** is registered last and therefore wins
         // any collision with a companion package or with essence itself.
         $this->app->booted(fn () => $this->registerAppHandlers());
-    }
-
-    /**
-     * The permission names essence asks for. Under the default authorizer
-     * only the owner and developer hold them; a role package lets the owner
-     * grant them to others.
-     */
-    protected function registerPermissions(): void
-    {
-        permissionRegistry()->register(
-            'essence.admin_panel',
-            fn () => __('tbe::admin_panel.permission'),
-            'essence',
-        );
-        permissionRegistry()->register(
-            AdminAlerts::PERMISSION,
-            fn () => __('tbe::admin_panel.alerts_permission'),
-            'essence',
-        );
     }
 
     /**
@@ -250,14 +240,10 @@ class TelegramBotServiceProvider extends ServiceProvider
     {
         $telegram = __DIR__.'/Telegram';
 
-        loadCallbackQueries($telegram.'/CallbackQueries/Member');
-        loadCallbackQueries($telegram.'/CallbackQueries/Admin');
-        loadStateAnswers($telegram.'/StateAnswers/Member');
-        loadStateAnswers($telegram.'/StateAnswers/Admin');
-        loadReplyKeys($telegram.'/ReplyKeys/Member');
-        loadReplyKeys($telegram.'/ReplyKeys/Admin');
-        loadCommands($telegram.'/Commands/Member');
-        loadCommands($telegram.'/Commands/Admin');
+        loadCallbackQueries($telegram.'/CallbackQueries');
+        loadStateAnswers($telegram.'/StateAnswers');
+        loadReplyKeys($telegram.'/ReplyKeys');
+        loadCommands($telegram.'/Commands');
     }
 
     /**
@@ -273,13 +259,12 @@ class TelegramBotServiceProvider extends ServiceProvider
     {
         $appTelegram = base_path('app/Telegram');
 
-        foreach (['Admin', 'Member'] as $scope) {
-            loadCallbackQueries($appTelegram.'/CallbackQueries/'.$scope);
-            loadStateAnswers($appTelegram.'/StateAnswers/'.$scope);
-            loadCommands($appTelegram.'/Commands/'.$scope);
-            loadReplyKeys($appTelegram.'/ReplyKeys/'.$scope);
-            loadTextMatchers($appTelegram.'/TextMatchers/'.$scope);
-        }
+        // Every folder under each type, however the app names them.
+        loadCallbackQueries($appTelegram.'/CallbackQueries');
+        loadStateAnswers($appTelegram.'/StateAnswers');
+        loadCommands($appTelegram.'/Commands');
+        loadReplyKeys($appTelegram.'/ReplyKeys');
+        loadTextMatchers($appTelegram.'/TextMatchers');
 
         loadForms($appTelegram.'/Forms');
         loadInlineQueries($appTelegram.'/InlineQueries');

@@ -11,20 +11,17 @@ use TelegramBotEssentials\Essence\Models\Bot;
 use Throwable;
 
 /**
- * Tells a bot's owner and admins about something only they can fix: a
- * misconfigured setting, a permission the bot lost, an order that could not
+ * Tells a bot's owner about something only they can fix: a
+ * misconfigured setting, a right the bot lost in a channel, an order that could not
  * be delivered. Not for bugs - those go to the developer via exceptionReport().
  *
  * Alerts are throttled per bot and key, so a condition detected on every
- * update reaches each admin once per window rather than once per update.
+ * update reaches the owner once per window rather than once per update.
  */
-class AdminAlerts
+class OwnerAlerts
 {
-    /** Who besides the owner gets alerts, for an access model that grants it. */
-    public const PERMISSION = 'essence.admin_alerts';
-
     /**
-     * @param  string  $key  what the alert is about, e.g. "settings.channel_lock.bot_not_admin"
+     * @param  string  $key  what the alert is about, e.g. "settings.channel_lock.no_channel"
      * @param  Closure(): string|string  $text  a Closure is rendered in the bot's locale
      * @param  Bot|null  $bot  the current webhook's bot when null
      * @param  int|null  $throttle  seconds before the same key alerts again
@@ -36,7 +33,7 @@ class AdminAlerts
             return $this->deliver($key, $text, $bot, $throttle);
         } catch (Throwable $e) {
             // Alerting is a side channel: it must not break the flow that raised it.
-            tbeLog('essence')->error('Admin alert "{alert}" failed: '.$e->getMessage(), ['alert' => $key, 'exception' => $e]);
+            tbeLog('essence')->error('Owner alert "{alert}" failed: '.$e->getMessage(), ['alert' => $key, 'exception' => $e]);
 
             return false;
         }
@@ -46,12 +43,12 @@ class AdminAlerts
     {
         $bot ??= wHook()->check() ? wHook()->bot() : null;
         if ($bot === null) {
-            tbeLog('essence')->warning('Admin alert "{alert}" dropped: no bot to alert', ['alert' => $key]);
+            tbeLog('essence')->warning('Owner alert "{alert}" dropped: no bot to alert', ['alert' => $key]);
 
             return false;
         }
 
-        if (! Cache::add('tbe:admin-alert:'.$bot->id.':'.$key, true, $throttle ?? $this->defaultThrottle())) {
+        if (! Cache::add('tbe:owner-alert:'.$bot->id.':'.$key, true, $throttle ?? $this->defaultThrottle())) {
             return false;
         }
 
@@ -65,7 +62,7 @@ class AdminAlerts
                 $api->sendMessage(['chat_id' => $peerId, 'text' => $text]);
                 $delivered++;
             } catch (Throwable $e) {
-                tbeLog('essence')->warning('Admin alert "{alert}" not delivered to {recipient}: '.$e->getMessage(), [
+                tbeLog('essence')->warning('Owner alert "{alert}" not delivered to {recipient}: '.$e->getMessage(), [
                     'bot_id' => $bot->id,
                     'alert' => $key,
                     'recipient' => $peerId,
@@ -73,7 +70,7 @@ class AdminAlerts
             }
         }
 
-        tbeLog('essence')->warning('Admin alert "{alert}" sent to {delivered}/{recipients} admin(s)', [
+        tbeLog('essence')->warning('Owner alert "{alert}" sent to {delivered}/{recipients} recipient(s)', [
             'bot_id' => $bot->id,
             'alert' => $key,
             'delivered' => $delivered,
@@ -86,30 +83,22 @@ class AdminAlerts
 
     private function defaultThrottle(): int
     {
-        $throttle = config('tbe-essence.admin_alerts.throttle');
+        $throttle = config('tbe-essence.owner_alerts.throttle');
 
         return is_numeric($throttle) ? (int) $throttle : 21600;
     }
 
     /**
-     * The owner plus every user granted the alerts permission, still
-     * reachable and not suspended.
+     * The peer ids an alert goes to: the bot's owner. An app that wants more
+     * people told extends this class, overrides this and rebinds it.
      *
      * @return list<int>
      */
-    private function recipients(Bot $bot): array
+    protected function recipients(Bot $bot): array
     {
-        /** @var list<int|string> $admins */
-        $admins = authorizer()->usersWith($bot, self::PERMISSION)
-            ->reachable()
-            ->notSuspended()
-            ->pluck('telegram_user_peer_id')
-            ->all();
-
         $owner = $bot->getAttribute('bot_owner_peer_id');
-        $peerIds = array_map(intval(...), [is_numeric($owner) ? $owner : 0, ...$admins]);
 
-        return array_values(array_unique(array_filter($peerIds)));
+        return is_numeric($owner) && (int) $owner !== 0 ? [(int) $owner] : [];
     }
 
     private function render(Bot $bot, Closure|string $text): string

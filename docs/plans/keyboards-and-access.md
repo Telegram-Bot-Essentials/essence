@@ -1,10 +1,8 @@
 # Plan: replaceable keyboards and access control
 
-Status: **in progress**, all uncommitted:
-- essence on `feat/keyboards-and-access` (0.17, breaking: `power`, `Roles` and `$perm` removed);
-- `tbe-access` package at `~/MyProjects/tbe-access`;
-- user-management and every other companion converted to permission names;
-- vshop: handlers converted, and an app migration moves power admins to a "Full admin" role.
+Status: **superseded**. The keyboards and permission names shipped in 0.17. In 0.19 essence
+dropped its access model: handlers declare `$ability` and Laravel's Gate decides, with roles
+in `tbe-access`. Kept for the reasoning; the access sections below no longer describe the code.
 
 ## Problem
 

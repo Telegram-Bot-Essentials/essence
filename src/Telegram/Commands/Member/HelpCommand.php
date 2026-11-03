@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace TelegramBotEssentials\Essence\Telegram\Commands\Member;
 
+use TelegramBotEssentials\Essence\Enums\ChatScope;
 use TelegramBotEssentials\Essence\Telegram\Commands\Command;
 
 class HelpCommand extends Command
 {
     protected string $name = 'help';
+
+    protected ChatScope $chatScope = ChatScope::Any;
 
     protected array $aliases = ['listcommands'];
 
@@ -33,7 +36,7 @@ class HelpCommand extends Command
         }
 
         wHook()->api()->sendMessage([
-            'chat_id' => wHook()->user()->telegramUser->peer_id,
+            ...wHook()->replyTo(),
             'text' => implode(PHP_EOL, $lines),
         ]);
 

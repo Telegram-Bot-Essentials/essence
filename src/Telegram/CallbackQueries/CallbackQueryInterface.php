@@ -6,8 +6,6 @@ interface CallbackQueryInterface
 {
     public function getType(): string;
 
-    public function getPermission(): ?string;
-
     public function setParams(?array $params): void;
 
     public function handle(): ?bool;

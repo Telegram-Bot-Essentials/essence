@@ -1,7 +1,12 @@
 # Plan: multi-chat context (groups, supergroups, forum topics)
 
-Status: **in progress** — Phase 0 shipped in 0.17.1; Phase 1 (conversations) in 0.18.0;
-decisions settled 2026-10-12 (see bottom).
+Status: **Phases 0 to 3 done** (2026-11-01), apart from `bot_chats` and group `my_chat_member`,
+left out until something needs to know which groups a bot is in. Phase 0 shipped in 0.17.1,
+Phase 1 (conversations) in 0.18.0, the rest on `feat/groups`: chat scope, replies
+to the chat, group keyboards, button ownership, `migrate_to_chat_id` and `has_private_chat`.
+Phase 3 needed no `toUser()`: `send()` already defaults to the current chat and `send($chatId)`
+targets someone. Companions keep direct sends to the private chat until they opt into groups.
+Decisions settled 2026-10-12, 2026-10-13 and 2026-11-01 (see bottom).
 
 ## Problem
 
@@ -95,8 +100,24 @@ Fixes all four bugs above in production. Superseded later by default-`Private` s
 - Callback ownership: in a group anyone can press any button. Bind the owner on `MessageMeta`
   (not in callback data — 64-byte limit, `CallbackDataTooLong`) and reject foreign clicks with
   an `answerCallbackQuery` alert.
-- No reply keyboards in groups (`replyKeyboard()` returns none there: it already reads the
-  webhook context, so no call site changes).
+- Keyboards in groups (decided from the prototype, see **Group keyboard findings**). No
+  reply keyboard is ever sent to a group, and no call site changes: `replyKeyboard()`
+  decides from the conversation.
+  - No state: a markup with no buttons, which leaves keyboards on screen alone. Never
+    `remove_keyboard`: in a group it hides other users' keyboards.
+  - Mid-flow with a state answer keyboard: the same buttons as an **inline** keyboard on
+    the prompt. A press carries the button index and a short hash of the state; it is
+    replayed as if the presser typed the button text, against the **presser's**
+    conversation. A presser who is not at that step (not the flow's owner, or a stale
+    step) gets an `answerCallbackQuery` alert. Used buttons are taken off the message.
+  - Mid-flow without one (a free-text step): an inline Cancel button. `/cancel@bot` works
+    too. No `force_reply`: one message carries one markup, and inline Cancel was chosen.
+  - A typed answer is routed by sender (per-user conversation), not by which bot message
+    it replies to. Any message from the user in that chat and topic counts while their
+    flow is open, reply or not. Under privacy mode only replies to the bot arrive, so the
+    user replies to the prompt by hand; with privacy off every message arrives.
+  - No reply keyboards in groups at all, so flows never collide; choices are inline buttons
+    and commands.
 - Forum topics: echo `message_thread_id` on every send in context.
 - `migrate_to_chat_id` (group → supergroup) rewrites `bot_chats` + `conversations`.
 - Anonymous admins (`GroupAnonymousBot`) and `sender_chat` messages have no real `from`:
@@ -118,6 +139,43 @@ Fixes all four bugs above in production. Superseded later by default-`Private` s
 
 After all companions have migrated off `BotUser::state` / `changeState()`.
 
+## Decisions (2026-10-13)
+
+1. Free-text steps in groups: inline Cancel button plus `/cancel@bot`; no `force_reply`.
+2. Steps with buttons in groups: inline buttons and commands; no reply keyboards.
+3. While a user's flow is open in a group, any message of theirs in that chat and topic is
+   the answer, reply or not.
+4. Superseded 2026-11-01, see decision 4 under **Decisions (2026-10-12)**: the first group
+   feature is vshop's buy service, not tg-essential-downloader-bot.
+
+## Decisions (2026-11-01)
+
+1. No approval of groups and no switch: a bot works in any group it is added to, always. Payments and anything
+   personal stay in the private chat, so a group only sees what anyone can see by opening
+   the bot. Tried and removed the same day.
+2. `has_private_chat` lives in `reachable()` and `isReachable()`, so companions that use those
+   need no change.
+3. Nothing is stored about people just talking in a group. Someone gets a row by using a
+   command or button there, marked by `has_private_chat`, unless the bot has a text matcher
+   that runs in groups and so needs to hear everyone.
+
+## Group keyboard findings (2026-10-13)
+
+Live test in a supergroup, privacy mode on, bot a plain member, two accounts. Prototype
+kept on `proto/group-keyboards` in tg-essential-downloader-bot.
+
+| Behaviour | Result |
+|---|---|
+| Reply keyboard press | Arrives as a reply to the keyboard message, so privacy mode lets it through. Anyone can press a non-selective one. |
+| `selective` + reply | Only the target sees it; the press arrives. |
+| Two users, each a selective keyboard | Not possible: a client shows only the newest reply markup message in the group. A keyboard, a `force_reply` or a selective remove for one user hides everyone else's. |
+| Selective `remove_keyboard` | Clears the target, and as the newest markup also hides other users' keyboards. |
+| Markup with no buttons | Accepted; keyboards on screen stay. |
+| Inline buttons | Presses arrive whatever the privacy mode; anyone can press. |
+| `force_reply` | The answer arrives as a reply to the bot. With two users at once, the older prompt's user replied to an older bot message, not their own prompt. |
+| Plain group message, not a reply | Not delivered (privacy mode). |
+| `message_thread_id` | Present on plain replies in a non-forum group (the reply chain); only `is_topic_message` means a forum topic. |
+
 ## Decisions (2026-10-12)
 
 1. **Breaking, no shims.** Like the 0.17 permissions wave: `bot_users.state`,
@@ -128,7 +186,9 @@ After all companions have migrated off `BotUser::state` / `changeState()`.
    chat-shared state for now.
 3. **Errors in a group reply in the group** (and topic) where they happened, since a DM fails
    for users who never started the bot.
-4. **First real group feature** — still open; it becomes the Phase 2 acceptance test.
+4. **First real group feature** — vshop's buy service (decided 2026-11-01): commands stand in
+   for reply keys, choosing runs in the group, and paying and anything personal hand off to
+   the private chat by deep link. It is the Phase 2 acceptance test.
 
 ## Related
 

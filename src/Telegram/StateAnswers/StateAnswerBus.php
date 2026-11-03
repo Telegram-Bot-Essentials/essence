@@ -147,6 +147,7 @@ class StateAnswerBus
         if (! canUseHandler($resolvedStateAnswer)) {
             return;
         }
+        handlerGates()->check($resolvedStateAnswer);
         $resolvedStateAnswer->setParams($params);
         $resolvedStateAnswer->setMethod($method);
         $resolvedStateAnswer->handle();
