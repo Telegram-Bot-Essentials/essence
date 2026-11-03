@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use ReflectionMethod;
 use TelegramBotEssentials\Essence\Enums\ChatScope;
 use TelegramBotEssentials\Essence\Events\BotCommandHandled;
+use TelegramBotEssentials\Essence\Exceptions\FeatureIsDisabled;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
 use TelegramBotEssentials\Essence\Exceptions\TbeLogicException;
 use TelegramBotEssentials\Essence\Support\WebhookContext;
@@ -135,6 +136,7 @@ class CommandBus
         if (! canUseHandler($command)) {
             return false;
         }
+        handlerGates()->check($command);
 
         $command->setParams($params);
         $result = $this->invoke($command, $params);
@@ -209,6 +211,23 @@ class CommandBus
         [$name, $params] = $this->parseCommandText($text);
 
         return $this->route($name, $params);
+    }
+
+    /**
+     * Stop here if this command text names a command the user may not run past
+     * a gate. For callers that do something before routing the command, and
+     * should not when it will be refused.
+     *
+     * @throws FeatureIsDisabled
+     */
+    public function checkGates(string $text): void
+    {
+        [$name] = $this->parseCommandText($text);
+        $key = $this->commands[$name] ?? $this->aliases[$name] ?? null;
+
+        if ($key !== null && $key->isEnabled() && canUseHandler($key)) {
+            handlerGates()->check($key);
+        }
     }
 
     /** `/command@otherbot` belongs to another bot. An unknown username counts as this bot. */
