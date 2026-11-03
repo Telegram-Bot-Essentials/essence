@@ -177,6 +177,30 @@ describe('background()', function () {
     });
 });
 
+describe('giving up', function () {
+    it('reports a task with retries that used them all', function () {
+        config(['tbe-essence.bug_report.telegram_chat_id' => 555, 'tbe-essence.logging.telegram_notify' => true]);
+        $job = captureTask(function () {
+            background('must arrive', static fn () => null, tries: 3);
+        });
+
+        $job->failed(new Telegram\Bot\Exceptions\TelegramSDKException('still down'));
+
+        Http::assertSent(fn ($request) => (int) ($request['chat_id'] ?? 0) === 555 && str_contains((string) ($request['text'] ?? ''), 'still down'));
+    });
+
+    it('only logs a one-shot task telegram refused', function () {
+        config(['tbe-essence.bug_report.telegram_chat_id' => 555, 'tbe-essence.logging.telegram_notify' => true]);
+        $job = captureTask(function () {
+            background('best effort', static fn () => null);
+        });
+
+        $job->failed(new Telegram\Bot\Exceptions\TelegramSDKException('blocked'));
+
+        Http::assertNotSent(fn ($request) => (int) ($request['chat_id'] ?? 0) === 555);
+    });
+});
+
 describe('notifyUser()', function () {
     it('sends to the private chat of the user', function () {
         expect(notifyUser($this->other, 'hello'))->toBeTrue();
