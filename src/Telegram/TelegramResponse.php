@@ -30,6 +30,11 @@ class TelegramResponse
         public string|InputFile|null $photo = null,
     ) {}
 
+    private bool $asNewMessage = false;
+
+    /** @var array{text: string, start_parameter: string}|null */
+    private ?array $inlineQueryButton = null;
+
     /**
      * Sends a group member to their private chat with the bot, for anything
      * the rest of the group should not see. It is a link rather than a direct
@@ -86,6 +91,40 @@ class TelegramResponse
         return array_filter([
             'text' => $this->answer,
         ]);
+    }
+
+    /**
+     * Never edit the message that led here: when this is what a button press
+     * gets instead of its result, that message may be what the user still needs.
+     */
+    public function asNewMessage(): self
+    {
+        $this->asNewMessage = true;
+
+        return $this;
+    }
+
+    public function sendsAsNewMessage(): bool
+    {
+        return $this->asNewMessage;
+    }
+
+    /**
+     * What an inline query gets instead of a message, which would arrive on
+     * every keystroke: a button above the empty results that opens the bot's
+     * private chat, sending /start with $startParameter.
+     */
+    public function inlineQueryButton(string $text, string $startParameter): self
+    {
+        $this->inlineQueryButton = ['text' => $text, 'start_parameter' => $startParameter];
+
+        return $this;
+    }
+
+    /** @return array{text: string, start_parameter: string}|null */
+    public function getInlineQueryButton(): ?array
+    {
+        return $this->inlineQueryButton;
     }
 
     public function answer(string $answer): self
