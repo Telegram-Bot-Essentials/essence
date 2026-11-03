@@ -28,6 +28,11 @@ the first public release.
   message it sits on, and `inlineQueryButton()` is what an inline query gets
   instead of a message on every keystroke.
 
+- `extension.neon` carries a PHPStan rule against calling Telegram directly inside
+  `DB::transaction()`. Include it from a bot's or package's `phpstan.neon`.
+- Failed queue jobs reach the bug report, and so does a `background()` task that
+  used all its retries. They used to sit in `failed_jobs` unseen.
+
 ### Changed
 
 - **Breaking:** listeners of `BotEvent`s can no longer stop an update, and one
