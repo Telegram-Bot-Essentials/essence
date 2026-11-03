@@ -20,8 +20,21 @@ the first public release.
 - `sweepTelegramFailures()` in the test case runs a flow with each Telegram call
   failing in turn, to check what it promises holds whatever Telegram does.
 
+- `HandlerGate`, registered with `handlerGates()->add()`, is a condition on what
+  a user asks of the bot. It runs once a handler claims the update, so it leaves
+  listeners, the bot's own messages and group chatter alone.
+- `TelegramResponse::asNewMessage()` answers a button press without editing the
+  message it sits on, and `inlineQueryButton()` is what an inline query gets
+  instead of a message on every keystroke.
+
 ### Changed
 
+- **Breaking:** listeners of `BotEvent`s can no longer stop an update, and one
+  failing no longer stops the others. A failure is still answered as usual, so
+  `dependsOn()` in a listener reaches the user. Use a `HandlerGate` to refuse.
+- A deep link reaches its listeners even when the `/start` handler fails, since
+  what it brings, such as a referral, can only be claimed on that first update.
+- A command refused by a gate no longer cancels the flow the user is in.
 - **Breaking:** `Webhook::runForUser()` only switches who the webhook acts for,
   and always switches back. A failure now goes to the caller. It used to reach
   the user-facing exception handler, which swallowed expected stops and aborted
