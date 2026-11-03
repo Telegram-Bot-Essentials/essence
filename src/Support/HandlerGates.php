@@ -27,7 +27,11 @@ class HandlerGates
     public function check(object $handler): void
     {
         foreach ($this->gates as $gate) {
-            app()->make($gate)->check($handler);
+            $instance = app()->make($gate);
+
+            if ($instance instanceof HandlerGate) {
+                $instance->check($handler);
+            }
         }
     }
 }

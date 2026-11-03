@@ -223,7 +223,7 @@ class CommandBus
     public function checkGates(string $text): void
     {
         [$name] = $this->parseCommandText($text);
-        $key = $this->commands[$name] ?? $this->aliases[$name] ?? null;
+        $key = is_string($name) ? ($this->commands[$name] ?? $this->aliases[$name] ?? null) : null;
 
         if ($key !== null && $key->isEnabled() && canUseHandler($key)) {
             handlerGates()->check($key);
