@@ -11,6 +11,7 @@ use TelegramBotEssentials\Essence\Events\BotDeepLinkReceived;
 use TelegramBotEssentials\Essence\Events\BotUpdateReceived;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQuery;
 use TelegramBotEssentials\Essence\Telegram\Commands\Command;
+use TelegramBotEssentials\Essence\Telegram\InlineQueries\InlineQuery;
 use TelegramBotEssentials\Essence\Telegram\TelegramResponse;
 use TelegramBotEssentials\Essence\Tests\Fixtures\RunsForUserStateAnswer;
 use TelegramBotEssentials\Essence\Tests\Fixtures\SupportReplyKey;
@@ -190,7 +191,7 @@ it('lets a listener failure still reach the user when it means to', function () 
 });
 
 it('answers an inline query with a button instead of a message', function () {
-    inlineQueryBus()->setHandler(new class extends TelegramBotEssentials\Essence\Telegram\InlineQueries\InlineQuery
+    inlineQueryBus()->setHandler(new class extends InlineQuery
     {
         public function handle(): void {}
     });
@@ -208,4 +209,3 @@ it('answers an inline query with a button instead of a message', function () {
     Http::assertSent(fn ($request) => str_contains($request->url(), '/answerInlineQuery')
         && json_decode((string) $request['button'], true) === ['text' => 'Join', 'start_parameter' => 'join']);
 });
-

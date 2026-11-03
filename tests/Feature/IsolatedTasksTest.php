@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Queue;
+use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\Objects\Update;
 use TelegramBotEssentials\Essence\Contracts\ResolvesBotLocale;
 use TelegramBotEssentials\Essence\Jobs\RunIsolatedTask;
@@ -184,7 +185,7 @@ describe('giving up', function () {
             background('must arrive', static fn () => null, tries: 3);
         });
 
-        $job->failed(new Telegram\Bot\Exceptions\TelegramSDKException('still down'));
+        $job->failed(new TelegramSDKException('still down'));
 
         Http::assertSent(fn ($request) => (int) ($request['chat_id'] ?? 0) === 555 && str_contains((string) ($request['text'] ?? ''), 'still down'));
     });
@@ -195,7 +196,7 @@ describe('giving up', function () {
             background('best effort', static fn () => null);
         });
 
-        $job->failed(new Telegram\Bot\Exceptions\TelegramSDKException('blocked'));
+        $job->failed(new TelegramSDKException('blocked'));
 
         Http::assertNotSent(fn ($request) => (int) ($request['chat_id'] ?? 0) === 555);
     });
