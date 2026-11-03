@@ -10,6 +10,26 @@ the first public release.
 
 ## [Unreleased]
 
+### Added
+
+- `isolated()` runs work as its own action: a failure is logged, reported and
+  goes no further. `background()` does the same in a queue worker through one
+  generic job, restoring the bot, user, chat and locale, and only once any open
+  transaction commits. `notifyUser()` tells a user something without being able
+  to fail the flow, and keeps track of who blocked the bot.
+- `sweepTelegramFailures()` in the test case runs a flow with each Telegram call
+  failing in turn, to check what it promises holds whatever Telegram does.
+
+### Changed
+
+- **Breaking:** `Webhook::runForUser()` only switches who the webhook acts for,
+  and always switches back. A failure now goes to the caller. It used to reach
+  the user-facing exception handler, which swallowed expected stops and aborted
+  the whole request on anything else.
+- Telegram requests are sent again when the connection never opened or after a
+  rate limit of up to 3 seconds, and never after a read timeout, since the
+  message may have arrived. Ordinary calls time out after 15 seconds, not 60.
+
 ## [0.19.0-beta.6] - 2026-11-01
 
 ### Changed
