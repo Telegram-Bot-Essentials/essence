@@ -10,6 +10,8 @@ the first public release.
 
 ## [Unreleased]
 
+## [0.19.0-beta.8] - 2026-11-03
+
 ### Added
 
 - `RecipientGroups`: named groups of users a package can address without knowing
