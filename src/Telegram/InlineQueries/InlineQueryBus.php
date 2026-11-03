@@ -51,6 +51,7 @@ class InlineQueryBus
         if (! canUseHandler($handler)) {
             return false;
         }
+        handlerGates()->check($handler);
 
         $handler->handle();
 
