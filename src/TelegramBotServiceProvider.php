@@ -24,6 +24,7 @@ use TelegramBotEssentials\Essence\Console\Commands\MakeTextMatcher;
 use TelegramBotEssentials\Essence\Console\Commands\PublishCommand;
 use TelegramBotEssentials\Essence\Console\Commands\SetWebhook;
 use TelegramBotEssentials\Essence\Console\Commands\TranslationStats;
+use TelegramBotEssentials\Essence\Contracts\RecipientGroups;
 use TelegramBotEssentials\Essence\Contracts\ResolvesBotLocale;
 use TelegramBotEssentials\Essence\Contracts\ResolvesKeyboard;
 use TelegramBotEssentials\Essence\Events\BotEventBus;
@@ -39,6 +40,7 @@ use TelegramBotEssentials\Essence\Support\AbilityCatalog;
 use TelegramBotEssentials\Essence\Support\DefaultBotLocaleResolver;
 use TelegramBotEssentials\Essence\Support\DefaultKeyboardResolver;
 use TelegramBotEssentials\Essence\Support\HandlerGates;
+use TelegramBotEssentials\Essence\Support\NoRecipientGroups;
 use TelegramBotEssentials\Essence\Support\Webhook;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQueryBus;
 use TelegramBotEssentials\Essence\Telegram\Commands\CommandBus;
@@ -76,6 +78,8 @@ class TelegramBotServiceProvider extends ServiceProvider
         // package discovery registers providers in name order, so a companion
         // sorting before "essence" would otherwise lose its binding.
         $this->app->bindIf(ResolvesKeyboard::class, DefaultKeyboardResolver::class);
+
+        $this->app->bindIf(RecipientGroups::class, NoRecipientGroups::class);
 
         // Event::listen resolves a string-class listener fresh from the
         // container on every dispatch, so this always picks up whichever
