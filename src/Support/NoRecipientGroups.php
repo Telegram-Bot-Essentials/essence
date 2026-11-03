@@ -16,6 +16,6 @@ class NoRecipientGroups implements RecipientGroups
 
     public function members(Bot $bot, array $ids): Collection
     {
-        return collect();
+        return new Collection;
     }
 }
