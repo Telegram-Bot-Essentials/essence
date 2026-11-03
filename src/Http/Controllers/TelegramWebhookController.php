@@ -143,14 +143,24 @@ class TelegramWebhookController extends Controller
                 return;
             }
 
+            // A refused command must not cost the user the flow they are in.
+            commandBus()->checkGates((string) $message->text);
+
             stateAnswerBus()->cancelHandler(wHook()->requestState());
             $this->cancelOldProcess();
-            $commandProcessed = commandBus()->processCommands();
 
             // Listeners answer with private things (invoices, wallets), and
             // anyone can type /start@bot <payload> in a group.
-            if ($payload !== null && strtolower($command) === '/start' && ! wHook()->inGroup()) {
-                botEventBus()->fire(new BotDeepLinkReceived($context, $payload));
+            $deepLink = $payload !== null && strtolower($command) === '/start' && ! wHook()->inGroup();
+
+            try {
+                $commandProcessed = commandBus()->processCommands();
+            } finally {
+                // Even when the welcome message fails: what the link brings,
+                // such as a referral, can only be claimed on this first update.
+                if ($deepLink) {
+                    botEventBus()->fire(new BotDeepLinkReceived($context, $payload));
+                }
             }
         } else {
             $keyProcessed = replyKeyBus()->processReplyKey();

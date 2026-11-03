@@ -211,10 +211,15 @@ class ExceptionHandler
     private function featureIsDisabledUserAlert(FeatureIsDisabled|Exception $e): void
     {
         if ($e instanceof FeatureIsDisabled && ($response = $e->getResponse())) {
-            if (wHook()->update()->callbackQuery) {
-                $response->update();
-            } else {
+            if (wHook()->update()->inlineQuery) {
+                $this->answerInlineQueryWithError($response->getInlineQueryButton());
+            } elseif (wHook()->update()->callbackQuery === null) {
                 $response->send();
+            } elseif ($response->sendsAsNewMessage()) {
+                $response->send();
+                wHook()->api()->answerCallbackQuery(['callback_query_id' => wHook()->update()->callbackQuery->id]);
+            } else {
+                $response->update();
             }
 
             return;
@@ -263,14 +268,18 @@ class ExceptionHandler
         }
     }
 
-    private function answerInlineQueryWithError(): void
+    /**
+     * @param  array{text: string, start_parameter: string}|null  $button
+     */
+    private function answerInlineQueryWithError(?array $button = null): void
     {
         try {
-            wHook()->api()->answerInlineQuery([
+            wHook()->api()->answerInlineQuery(array_filter([
                 'inline_query_id' => wHook()->update()->inlineQuery->id,
                 'results' => '[]',
                 'cache_time' => 0,
-            ]);
+                'button' => $button === null ? null : json_encode($button),
+            ], fn ($value) => $value !== null));
         } catch (Throwable) {
         }
     }
