@@ -120,6 +120,7 @@ class CallbackQueryBus
 
             return true;
         }
+        handlerGates()->check($resolvedCallbackQuery);
         $resolvedCallbackQuery->setParams($params);
         $resolvedCallbackQuery->setMethod($method);
 
