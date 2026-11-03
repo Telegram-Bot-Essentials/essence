@@ -46,6 +46,21 @@ it('tells the check which call failed', function () {
     expect($seen)->toBe([1, 2]);
 });
 
+it('sees what runs after a commit, however a flow gets there', function () {
+    config(['queue.default' => 'sync']);
+    $sent = [];
+
+    $calls = $this->sweepTelegramFailures(function () use (&$sent) {
+        DB::transaction(function () {
+            background('after commit', static fn () => telegramApi('123:abc')->sendMessage(['chat_id' => 1, 'text' => 'hi']));
+        });
+    }, function () use (&$sent) {
+        $sent[] = true;
+    });
+
+    expect($calls)->toBe(1)->and($sent)->toBe([true]);
+});
+
 it('undoes the database between runs', function () {
     $counts = [];
     $bot = $this->makeBot();

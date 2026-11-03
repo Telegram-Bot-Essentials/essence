@@ -3,6 +3,7 @@
 namespace TelegramBotEssentials\Essence\Testing;
 
 use Closure;
+use Illuminate\Database\DatabaseTransactionsManager;
 use Illuminate\Http\Client\Factory;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -299,11 +300,36 @@ abstract class TestCase extends Orchestra
     private function inUndoneRun(Closure $run): mixed
     {
         Cache::flush();
+
+        $connection = DB::connection();
+        $managers = app('db.transactions');
         DB::beginTransaction();
+
+        // This transaction is the sweep's own, to undo the run. To the run it
+        // does not exist: what waits for a commit, as background() does, has to
+        // happen, or the sweep would not see its Telegram calls.
+        $level = DB::transactionLevel();
+        $runManager = new class($level) extends DatabaseTransactionsManager
+        {
+            public function __construct(private readonly int $baseLevel)
+            {
+                parent::__construct();
+            }
+
+            public function afterCommitCallbacksShouldBeExecuted($level)
+            {
+                return $level <= $this->baseLevel;
+            }
+        };
+        // The queue asks the container, a connection its own: both must agree.
+        $connection->setTransactionManager($runManager);
+        app()->instance('db.transactions', $runManager);
 
         try {
             return $run();
         } finally {
+            $connection->setTransactionManager($managers);
+            app()->instance('db.transactions', $managers);
             DB::rollBack();
             wHook()->clear();
             Cache::flush();

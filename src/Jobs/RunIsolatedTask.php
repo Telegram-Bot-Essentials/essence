@@ -48,8 +48,6 @@ class RunIsolatedTask implements ShouldQueue
         $this->work = new SerializableClosure($work);
         $this->tries = $tries;
         $this->backoff = $backoff;
-        // A rollback takes the task with it: what it reacts to never happened.
-        $this->afterCommit();
     }
 
     /**

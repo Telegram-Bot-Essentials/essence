@@ -4,6 +4,7 @@ namespace TelegramBotEssentials\Essence\Services;
 
 use Closure;
 use Illuminate\Contracts\Bus\Dispatcher;
+use Illuminate\Support\Facades\DB;
 use LogicException;
 use ReflectionFunction;
 use Telegram\Bot\Exceptions\TelegramSDKException;
@@ -59,13 +60,18 @@ class IsolatedTasks
             ));
         }
 
-        try {
-            app(Dispatcher::class)->dispatch(RunIsolatedTask::capture($name, $work, $for, $tries, $backoff));
-        } catch (Throwable $e) {
-            // The sync driver runs the task here, and any driver can fail to
-            // store it. Neither is the caller's problem.
-            $this->report($name, $e);
-        }
+        $task = RunIsolatedTask::capture($name, $work, $for, $tries, $backoff);
+
+        // A rollback takes the task with it: what it reacts to never happened.
+        DB::afterCommit(function () use ($name, $task) {
+            try {
+                app(Dispatcher::class)->dispatch($task);
+            } catch (Throwable $e) {
+                // The sync driver runs the task here, and any driver can fail
+                // to store it. Neither is the caller's problem.
+                $this->report($name, $e);
+            }
+        });
     }
 
     public function report(string $name, Throwable $e): void
