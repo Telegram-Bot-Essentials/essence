@@ -35,6 +35,7 @@ use TelegramBotEssentials\Essence\Services\NavState;
 use TelegramBotEssentials\Essence\Services\TranslationScanner;
 use TelegramBotEssentials\Essence\Support\AbilityCatalog;
 use TelegramBotEssentials\Essence\Support\DefaultBotLocaleResolver;
+use TelegramBotEssentials\Essence\Support\HandlerGates;
 use TelegramBotEssentials\Essence\Support\DefaultKeyboardResolver;
 use TelegramBotEssentials\Essence\Support\Webhook;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQueryBus;
@@ -124,6 +125,8 @@ class TelegramBotServiceProvider extends ServiceProvider
         $this->app->singleton(FormEngine::class, fn () => new FormEngine);
 
         $this->app->singleton(BotEventBus::class, fn () => new BotEventBus);
+
+        $this->app->singleton(HandlerGates::class, fn () => new HandlerGates);
 
         $this->app->singleton(TranslationScanner::class, fn () => new TranslationScanner);
 

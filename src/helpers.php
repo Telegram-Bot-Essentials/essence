@@ -27,6 +27,7 @@ use TelegramBotEssentials\Essence\Services\BotUserStatus;
 use TelegramBotEssentials\Essence\Services\ExceptionHandler;
 use TelegramBotEssentials\Essence\Services\NavState;
 use TelegramBotEssentials\Essence\Services\IsolatedTasks;
+use TelegramBotEssentials\Essence\Support\HandlerGates;
 use TelegramBotEssentials\Essence\Services\OwnerAlerts;
 use TelegramBotEssentials\Essence\Services\StateDataService;
 use TelegramBotEssentials\Essence\Support\AbilityCatalog;
@@ -163,6 +164,13 @@ if (! function_exists('textMatcherBus')) {
     function textMatcherBus(): TextMatcherBus
     {
         return app(TextMatcherBus::class);
+    }
+}
+
+if (! function_exists('handlerGates')) {
+    function handlerGates(): HandlerGates
+    {
+        return app(HandlerGates::class);
     }
 }
 
