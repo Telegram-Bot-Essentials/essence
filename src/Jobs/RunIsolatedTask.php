@@ -112,5 +112,10 @@ class RunIsolatedTask implements ShouldQueue
     public function failed(Throwable $e): void
     {
         app(IsolatedTasks::class)->report($this->name, $e);
+
+        // Retries mean it had to arrive, and it has given up: someone should know.
+        if ($this->tries > 1) {
+            exceptionReport($e);
+        }
     }
 }
