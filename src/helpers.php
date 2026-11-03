@@ -26,6 +26,7 @@ use TelegramBotEssentials\Essence\Services\ApiResponse;
 use TelegramBotEssentials\Essence\Services\BotUserStatus;
 use TelegramBotEssentials\Essence\Services\ExceptionHandler;
 use TelegramBotEssentials\Essence\Services\NavState;
+use TelegramBotEssentials\Essence\Services\IsolatedTasks;
 use TelegramBotEssentials\Essence\Services\OwnerAlerts;
 use TelegramBotEssentials\Essence\Services\StateDataService;
 use TelegramBotEssentials\Essence\Support\AbilityCatalog;
@@ -70,6 +71,66 @@ if (! function_exists('ownerAlert')) {
     function ownerAlert(string $key, Closure|string $text, ?Bot $bot = null, ?int $throttle = null): bool
     {
         return app(OwnerAlerts::class)->send($key, $text, $bot, $throttle);
+    }
+}
+
+if (! function_exists('isolated')) {
+    /**
+     * Run $work now, as its own action: a failure is logged and reported, goes
+     * no further, and tells nobody. Whether it worked is returned, and $onFail
+     * is where to act on it. Do not ignore the result of a step that matters.
+     *
+     * @param  Closure(Throwable): mixed|null  $onFail
+     */
+    function isolated(string $name, Closure $work, ?BotUser $for = null, ?Closure $onFail = null): bool
+    {
+        return app(IsolatedTasks::class)->run($name, $work, $for, $onFail);
+    }
+}
+
+if (! function_exists('background')) {
+    /**
+     * Run $work later in a queue worker, as its own action, once any open
+     * transaction has committed. It needs a static closure: captured models are
+     * reloaded, unsaved changes are not carried over, and there is no live
+     * update to answer. Keep it apart from other closures: it is stored as
+     * source, and two closures opening on one line cannot be told apart. It
+     * runs once unless given $tries: only retry what is safe to repeat.
+     *
+     * @param  list<int>  $backoff  seconds between attempts
+     */
+    function background(string $name, Closure $work, ?BotUser $for = null, int $tries = 1, array $backoff = []): void
+    {
+        app(IsolatedTasks::class)->dispatch($name, $work, $for, $tries, $backoff);
+    }
+}
+
+if (! function_exists('notifyUser')) {
+    /**
+     * Tell $user something in their private chat, when that is not what the
+     * flow depends on: this never throws, and keeps track of who blocked the
+     * bot. Whether it arrived is returned.
+     *
+     * @param  array<string, mixed>  $params  extra sendMessage parameters
+     */
+    function notifyUser(BotUser $user, string $text, array $params = []): bool
+    {
+        return isolated('notify user', function () use ($user, $text, $params) {
+            try {
+                wHook()->api()->sendMessage([
+                    'chat_id' => $user->getAttribute('telegram_user_peer_id'),
+                    'text' => $text,
+                    'reply_markup' => replyKeyboard(),
+                    ...$params,
+                ]);
+            } catch (Throwable $e) {
+                botUserStatus()->reportFailure($user, $e);
+
+                throw $e;
+            }
+
+            botUserStatus()->reportSuccess($user);
+        }, for: $user);
     }
 }
 
