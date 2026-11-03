@@ -12,6 +12,7 @@ use Telegram\Bot\BotsManager;
 use TelegramBotEssentials\Essence\Console\Commands\BotManagementTokenCommand;
 use TelegramBotEssentials\Essence\Console\Commands\CheckMissingTranslations;
 use TelegramBotEssentials\Essence\Console\Commands\InitMainBotCommand;
+use Illuminate\Queue\Events\JobFailed;
 use TelegramBotEssentials\Essence\Console\Commands\InstallCommand;
 use TelegramBotEssentials\Essence\Console\Commands\MakeCallbackQuery;
 use TelegramBotEssentials\Essence\Console\Commands\MakeCommand;
@@ -25,6 +26,7 @@ use TelegramBotEssentials\Essence\Console\Commands\SetWebhook;
 use TelegramBotEssentials\Essence\Console\Commands\TranslationStats;
 use TelegramBotEssentials\Essence\Contracts\ResolvesBotLocale;
 use TelegramBotEssentials\Essence\Contracts\ResolvesKeyboard;
+use TelegramBotEssentials\Essence\Jobs\RunIsolatedTask;
 use TelegramBotEssentials\Essence\Events\BotEventBus;
 use TelegramBotEssentials\Essence\Events\BotWebhookInitialized;
 use TelegramBotEssentials\Essence\Forms\FormEngine;
@@ -80,6 +82,13 @@ class TelegramBotServiceProvider extends ServiceProvider
         // ResolvesBotLocale is currently bound - no ordering dependency
         // between this registration and a companion's rebind above.
         botEventBus()->listen(BotWebhookInitialized::class, SetBotLocale::class);
+
+        // A failed job goes to the failed_jobs table, where nobody looks.
+        botEventBus()->listen(JobFailed::class, function (JobFailed $event) {
+            if ($event->job->resolveName() !== RunIsolatedTask::class) {
+                exceptionReport($event->exception);
+            }
+        });
     }
 
     private function initializeSingletons(): void
