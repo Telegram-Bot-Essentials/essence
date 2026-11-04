@@ -48,6 +48,7 @@ use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswerBus;
 use TelegramBotEssentials\Essence\Telegram\TelegramResponse;
 use TelegramBotEssentials\Essence\Telegram\TextMatchers\TextMatcher;
 use TelegramBotEssentials\Essence\Telegram\TextMatchers\TextMatcherBus;
+use TelegramBotEssentials\Essence\Web\WebPanels;
 
 if (! function_exists('wHook')) {
     function wHook(): Webhook
@@ -651,6 +652,19 @@ if (! function_exists('handlerChatScope')) {
     function handlerChatScope(object $handler): ChatScope
     {
         return $handler instanceof DeclaresChatScope ? $handler->getChatScope() : ChatScope::Private;
+    }
+}
+
+if (! function_exists('webPanels')) {
+    /**
+     * Where a package registers its panel plugins, by class name. Call it from
+     * register(); a provider there may run before essence's own register().
+     */
+    function webPanels(): WebPanels
+    {
+        app()->singletonIf(WebPanels::class);
+
+        return app(WebPanels::class);
     }
 }
 

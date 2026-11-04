@@ -2,6 +2,7 @@
 
 namespace TelegramBotEssentials\Essence;
 
+use Filament\Panel;
 use Illuminate\Contracts\Foundation\CachesConfiguration;
 use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Support\Facades\Route;
@@ -49,6 +50,12 @@ use TelegramBotEssentials\Essence\Telegram\InlineQueries\InlineQueryBus;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKeyBus;
 use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswerBus;
 use TelegramBotEssentials\Essence\Telegram\TextMatchers\TextMatcherBus;
+use TelegramBotEssentials\Essence\Web\Filament\CustomerPanelProvider;
+use TelegramBotEssentials\Essence\Web\Filament\ManagePanelProvider;
+use TelegramBotEssentials\Essence\Web\Filament\PanelUser;
+use TelegramBotEssentials\Essence\Web\Telegram\PanelCommand;
+use TelegramBotEssentials\Essence\Web\WebPanels;
+use TelegramBotEssentials\Essence\Web\WebUser;
 
 class TelegramBotServiceProvider extends ServiceProvider
 {
@@ -65,6 +72,7 @@ class TelegramBotServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/../config/telegram.php', 'telegram');
 
         $this->registerBotsManager();
+        $this->registerWeb();
         $this->initializeSingletons();
 
         // A companion package (tbe-settings) that owns real per-bot locale
@@ -160,6 +168,39 @@ class TelegramBotServiceProvider extends ServiceProvider
         $this->app->singleton(BotUserStatus::class, fn () => new BotUserStatus);
     }
 
+    private function registerWeb(): void
+    {
+        $this->app->singletonIf(WebPanels::class);
+
+        if (! config('tbe-essence.web.enabled')) {
+            return;
+        }
+
+        $hasFilament = class_exists(Panel::class);
+
+        config()->set('auth.guards.tbe-web', ['driver' => 'session', 'provider' => 'tbe-web-users']);
+        config()->set('auth.providers.tbe-web-users', [
+            'driver' => 'eloquent',
+            'model' => $hasFilament ? PanelUser::class : WebUser::class,
+        ]);
+
+        if ($hasFilament) {
+            $this->app->register(ManagePanelProvider::class);
+            $this->app->register(CustomerPanelProvider::class);
+        }
+    }
+
+    private function bootWeb(): void
+    {
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'tbe-essence');
+
+        if (config('tbe-essence.web.enabled')) {
+            $this->loadRoutesFrom(__DIR__.'/../routes/web-ui.php');
+            commandBus()->addCommands([PanelCommand::class]);
+            abilities()->declare('web.manage', fn () => (string) __('tbe-essence::web.manage_ability'));
+        }
+    }
+
     private function registerBotsManager(): void
     {
         $this->app->singleton(BotsManager::class, function ($app) {
@@ -202,6 +243,7 @@ class TelegramBotServiceProvider extends ServiceProvider
         ));
 
         $this->loadConsoleRoutes();
+        $this->bootWeb();
 
         $this->registerLogChannels();
         $this->registerCommands();
