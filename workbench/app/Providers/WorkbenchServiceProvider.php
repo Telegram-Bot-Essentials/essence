@@ -3,8 +3,11 @@
 namespace Workbench\App\Providers;
 
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use TelegramBotEssentials\Essence\Models\BotUser;
+use Workbench\App\Web\DemoAdminPlugin;
+use Workbench\App\Web\DemoCustomerPlugin;
 
 class WorkbenchServiceProvider extends ServiceProvider
 {
@@ -13,7 +16,7 @@ class WorkbenchServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        webPanels()->customer(DemoCustomerPlugin::class)->manage(DemoAdminPlugin::class);
     }
 
     /**
@@ -21,6 +24,13 @@ class WorkbenchServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->loadViewsFrom(__DIR__.'/../../resources/views', 'workbench');
+
+        // Behind the HTTPS tunnel, or every asset URL is blocked as mixed content.
+        if (request()->header('x-forwarded-proto') === 'https') {
+            URL::forceScheme('https');
+        }
+
         // Essence defines no abilities, so the Gate denies every handler that
         // names one. Let the bot's owner through, as an app would.
         Gate::before(fn (mixed $user) => $user instanceof BotUser
