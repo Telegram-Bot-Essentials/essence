@@ -16,18 +16,10 @@ return [
         'menus' => [],
     ],
 
-    // Web panels. Off until an app opts in, and they need filament/filament.
+    // The web panel. Off until an app opts in, and it needs filament/filament.
     'web' => [
         'enabled' => (bool) env('TBE_WEB_ENABLED', false),
-        'init_data_max_age' => 86400,
-        // Who may show these pages in an iframe. Telegram Web does. It also needs
-        // SESSION_SAME_SITE=none, SESSION_SECURE_COOKIE=true and
-        // SESSION_PARTITIONED_COOKIE=true, which apply to the whole app.
-        'frame_ancestors' => ["'self'", 'https://web.telegram.org'],
-        'panels' => [
-            'manage' => ['path' => 'manage'],
-            'customer' => ['path' => 'app'],
-        ],
+        'path' => 'manage',
     ],
 
     'bot_access' => [
