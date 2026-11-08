@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use TelegramBotEssentials\Essence\Models\BotUser;
 use Workbench\App\Web\DemoAdminPlugin;
-use Workbench\App\Web\DemoCustomerPlugin;
 
 class WorkbenchServiceProvider extends ServiceProvider
 {
@@ -16,7 +15,7 @@ class WorkbenchServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        webPanels()->customer(DemoCustomerPlugin::class)->manage(DemoAdminPlugin::class);
+        webPanels()->manage(DemoAdminPlugin::class);
     }
 
     /**
