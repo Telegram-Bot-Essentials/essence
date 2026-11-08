@@ -25,7 +25,7 @@ class PanelUser extends WebUser implements FilamentUser, HasName, HasTenants
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return $panel->getId() !== 'manage' || Gate::forUser($this)->allows('web.manage');
+        return Gate::forUser($this)->allows('web.manage');
     }
 
     /** A bot user belongs to exactly one bot, so a session never crosses bots. */

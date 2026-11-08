@@ -9,6 +9,6 @@ class ManagePanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        return WebPanelFactory::make($panel, 'manage')->default();
+        return WebPanelFactory::make($panel)->default();
     }
 }

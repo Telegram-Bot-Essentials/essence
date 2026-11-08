@@ -2,7 +2,6 @@
 
 namespace TelegramBotEssentials\Essence\Web\Filament;
 
-use Filament\Facades\Filament;
 use Filament\Http\Middleware\Authenticate;
 use TelegramBotEssentials\Essence\Models\Bot;
 
@@ -14,9 +13,6 @@ class PanelAuthenticate extends Authenticate
         $bot = $request->route()?->parameter('tenant');
         $bot = $bot instanceof Bot ? $bot->unique_id : $bot;
 
-        return is_string($bot) ? route('tbe.web.open', [
-            'bot' => $bot,
-            'panel' => Filament::getCurrentOrDefaultPanel()?->getId(),
-        ]) : null;
+        return is_string($bot) ? route('tbe.web.open', ['bot' => $bot]) : null;
     }
 }

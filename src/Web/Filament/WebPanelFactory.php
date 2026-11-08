@@ -18,14 +18,14 @@ use TelegramBotEssentials\Essence\Web\Http\BindWebContext;
 use TelegramBotEssentials\Essence\Web\Http\LimitFraming;
 use TelegramBotEssentials\Essence\Web\WebPanels;
 
-/** Builds the two panels every app shares; packages only add plugins. */
+/** Builds the panel every app shares; packages only add plugins. */
 final class WebPanelFactory
 {
-    public static function make(Panel $panel, string $id): Panel
+    public static function make(Panel $panel): Panel
     {
         $panel = $panel
-            ->id($id)
-            ->path(config()->string("tbe-essence.web.panels.$id.path", $id))
+            ->id('manage')
+            ->path(config()->string('tbe-essence.web.path', 'manage'))
             ->authGuard('tbe-web')
             ->tenant(PanelBot::class, slugAttribute: 'unique_id')
             ->spa()
@@ -50,9 +50,8 @@ final class WebPanelFactory
 
         $panels = app(WebPanels::class);
         $panels->markBuilt();
-        $plugins = $id === 'manage' ? $panels->managePlugins() : $panels->customerPlugins();
 
-        foreach ($plugins as $plugin) {
+        foreach ($panels->managePlugins() as $plugin) {
             /** @var Plugin $instance */
             $instance = app()->make($plugin);
             $panel = $panel->plugin($instance);
