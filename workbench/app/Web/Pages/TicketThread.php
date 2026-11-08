@@ -6,7 +6,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Schema;
 
-/** The ticket thread: the same on both panels, so it cannot drift apart. */
+/** The demo ticket thread. */
 trait TicketThread
 {
     public ?array $data = [];
