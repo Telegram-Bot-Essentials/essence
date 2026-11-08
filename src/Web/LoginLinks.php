@@ -10,17 +10,17 @@ use TelegramBotEssentials\Essence\Models\BotUser;
 /**
  * One-time browser sign-in links, sent to a user by their bot.
  *
- * @phpstan-type Link array{user: int|string, bot: int|string, panel: string}
+ * @phpstan-type Link array{user: int|string, bot: int|string}
  */
 final class LoginLinks
 {
-    public function create(BotUser $user, string $panel, int $ttlSeconds = 120): string
+    public function create(BotUser $user, int $ttlSeconds = 120): string
     {
         $bot = $user->bot;
         abort_unless($bot instanceof Bot, 404);
 
         $token = Str::random(48);
-        Cache::put($this->key($token), ['user' => $user->getKey(), 'bot' => $bot->getKey(), 'panel' => $panel], $ttlSeconds);
+        Cache::put($this->key($token), ['user' => $user->getKey(), 'bot' => $bot->getKey()], $ttlSeconds);
 
         return route('tbe.web.login.show', ['bot' => $bot->unique_id, 'token' => $token]);
     }
