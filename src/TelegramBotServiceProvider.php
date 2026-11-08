@@ -50,7 +50,6 @@ use TelegramBotEssentials\Essence\Telegram\InlineQueries\InlineQueryBus;
 use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKeyBus;
 use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswerBus;
 use TelegramBotEssentials\Essence\Telegram\TextMatchers\TextMatcherBus;
-use TelegramBotEssentials\Essence\Web\Filament\CustomerPanelProvider;
 use TelegramBotEssentials\Essence\Web\Filament\ManagePanelProvider;
 use TelegramBotEssentials\Essence\Web\Filament\PanelUser;
 use TelegramBotEssentials\Essence\Web\Telegram\PanelCommand;
@@ -186,7 +185,6 @@ class TelegramBotServiceProvider extends ServiceProvider
 
         if ($hasFilament) {
             $this->app->register(ManagePanelProvider::class);
-            $this->app->register(CustomerPanelProvider::class);
         }
     }
 
