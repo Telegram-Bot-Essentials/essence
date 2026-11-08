@@ -2,7 +2,6 @@
 
 namespace TelegramBotEssentials\Essence\Web\Filament;
 
-use Filament\Facades\Filament;
 use Filament\Resources\Resource;
 use Illuminate\Support\Facades\Gate;
 use TelegramBotEssentials\Essence\Models\BotUser;
@@ -23,7 +22,7 @@ abstract class PanelResource extends Resource
     public static function canAccess(): bool
     {
         $ability = static::requiredAbility();
-        $user = Filament::auth()->user();
+        $user = PanelActor::current();
 
         return $ability === null || ($user instanceof BotUser && Gate::forUser($user)->allows($ability));
     }

@@ -7,6 +7,8 @@ use Filament\Facades\Filament;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Panel;
+use Filament\View\PanelsRenderHook;
+use Illuminate\Contracts\View\View;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
@@ -16,17 +18,20 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use TelegramBotEssentials\Essence\Models\Bot;
 use TelegramBotEssentials\Essence\Web\Http\BindWebContext;
 use TelegramBotEssentials\Essence\Web\Http\LimitFraming;
+use TelegramBotEssentials\Essence\Web\WebAccounts;
 use TelegramBotEssentials\Essence\Web\WebPanels;
 
 /** Builds the panel every app shares; packages only add plugins. */
 final class WebPanelFactory
 {
+    public const ID = 'manage';
+
     public static function make(Panel $panel): Panel
     {
         $panel = $panel
-            ->id('manage')
+            ->id(self::ID)
             ->path(config()->string('tbe-essence.web.path', 'manage'))
-            ->authGuard('tbe-web')
+            ->authGuard(WebAccounts::guard())
             ->tenant(PanelBot::class, slugAttribute: 'unique_id')
             ->spa()
             ->middleware([
@@ -46,6 +51,8 @@ final class WebPanelFactory
             ->tenantMiddleware([BindWebContext::class], isPersistent: true)
             ->tenantMenu(false)
             ->defaultAvatarProvider(LocalAvatarProvider::class)
+            // One account may act as different Telegram accounts per bot: say which.
+            ->renderHook(PanelsRenderHook::USER_MENU_BEFORE, fn (): View => view('tbe-essence::web.acting-as'))
             ->brandName(fn (): string => Filament::getTenant() instanceof Bot ? Filament::getTenant()->unique_id : config()->string('app.name'));
 
         $panels = app(WebPanels::class);
