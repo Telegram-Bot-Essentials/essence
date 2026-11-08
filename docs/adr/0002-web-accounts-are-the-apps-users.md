@@ -13,8 +13,9 @@ gives the app:
 - the `account_telegram_users` table, linking one account to many Telegram
   accounts (`telegram_user_peer_id` is unique, so a Telegram account belongs
   to at most one web account);
-- `tbe-essence.web.account_model`, read when the panel is on. Turning the panel
-  on without a model that implements the contract fails at boot.
+- `tbe-essence.web.account_model`, read when the panel is on. A model that
+  does not implement the contract fails on first use, with a message naming
+  the setting; the bot itself keeps working.
 
 ```
 users (app) 1 ── * account_telegram_users * ── 1 telegram_users
@@ -30,7 +31,9 @@ first, then in link order. The list, the access check and the acting user all
 come from that one lookup, so they cannot disagree.
 
 The Gate is always asked with that `BotUser`, never with the account: ability
-rules (tbe-access's `RoleGate` among them) only answer for `BotUser`s.
+rules (tbe-access's `RoleGate` among them) only answer for `BotUser`s. For a
+bot other than the request's, it is asked inside that bot's tenancy, since
+rules may read tenant-scoped data.
 
 The panel shows which account it acts as. `BindWebContext` hands that `BotUser`
 to `wHook()`, so the Gate, handler gates and companion screens see a `BotUser`
