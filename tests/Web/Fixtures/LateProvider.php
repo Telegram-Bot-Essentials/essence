@@ -9,6 +9,6 @@ class LateProvider extends ServiceProvider
 {
     public function register(): void
     {
-        webPanels()->customer(LatePlugin::class);
+        webPanels()->manage(LatePlugin::class);
     }
 }

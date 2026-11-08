@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -14,19 +13,8 @@ use TelegramBotEssentials\Essence\Tests\Web\Fixtures\LockedPage;
 use TelegramBotEssentials\Essence\Tests\Web\Fixtures\RefusingGate;
 use TelegramBotEssentials\Essence\Web\Filament\PanelUser;
 use TelegramBotEssentials\Essence\Web\LoginLinks;
-use TelegramBotEssentials\Essence\Web\TelegramInitData;
 
 uses(RefreshDatabase::class);
-
-function signedInitData(string $token, int $peerId, ?int $authDate = null): string
-{
-    $fields = ['auth_date' => (string) ($authDate ?? time()), 'query_id' => 'AAA', 'user' => json_encode(['id' => $peerId, 'first_name' => 'Sara'])];
-    ksort($fields);
-    $check = collect($fields)->map(fn ($v, $k) => "$k=$v")->implode("\n");
-    $fields['hash'] = hash_hmac('sha256', $check, hash_hmac('sha256', $token, 'WebAppData', true));
-
-    return http_build_query($fields);
-}
 
 function webBot(string $uniqueId = 'alpha', int $peer = 111): array
 {
@@ -38,42 +26,26 @@ function webBot(string $uniqueId = 'alpha', int $peer = 111): array
     return [$bot, $user];
 }
 
-it('accepts valid initData and rejects tampered or old data', function () {
-    $good = signedInitData('1:t', 5);
-
-    expect(TelegramInitData::verify($good, '1:t', 60)['user']['id'])->toBe(5)
-        ->and(TelegramInitData::verify($good, '1:other', 60))->toBeNull()
-        ->and(TelegramInitData::verify(str_replace('Sara', 'Eve', $good), '1:t', 60))->toBeNull()
-        ->and(TelegramInitData::verify(signedInitData('1:t', 5, time() - 120), '1:t', 60))->toBeNull()
-        ->and(TelegramInitData::verify('', '1:t', 60))->toBeNull();
-});
-
-it('signs a user in from initData, and refuses another bot\'s signature', function () {
-    [$bot, $user] = webBot();
-
-    $this->withoutMiddleware(ValidateCsrfToken::class)
-        ->postJson('/alpha/web/auth/telegram', ['init_data' => signedInitData('1:wrong', 111)])->assertForbidden();
-    expect(Auth::guard('tbe-web')->check())->toBeFalse();
-
-    $this->postJson('/alpha/web/auth/telegram', ['init_data' => signedInitData('1:alpha', 111), 'panel' => 'customer'])
-        ->assertOk()->assertJsonPath('redirect', url('app/alpha'));
-    expect(Auth::guard('tbe-web')->id())->toBe($user->id);
-});
+function grantManage(): void
+{
+    Gate::before(fn ($u, $ability) => $ability === 'web.manage' ? true : null);
+}
 
 it('sends signed-out visitors to the bot sign-in page', function () {
     webBot();
 
-    $this->get('/app/alpha/buy')->assertRedirect('/alpha/web/open?panel=customer');
+    $this->get('/manage/alpha/buy')->assertRedirect('/alpha/web/open');
 });
 
 it('keeps a session on its own bot', function () {
+    grantManage();
     [, $user] = webBot();
     webBot('beta', 222);
 
     $this->actingAs(PanelUser::find($user->id), 'tbe-web');
 
-    $this->get('/app/alpha/buy')->assertOk()->assertSee('Buy service');
-    $this->get('/app/beta/buy')->assertNotFound();
+    $this->get('/manage/alpha/buy')->assertOk()->assertSee('Buy service');
+    $this->get('/manage/beta/buy')->assertNotFound();
 });
 
 it('keeps the manage panel behind an ability', function () {
@@ -88,14 +60,14 @@ it('keeps the manage panel behind an ability', function () {
 
 it('spends a login link on POST only, once', function () {
     [, $user] = webBot();
-    $url = app(LoginLinks::class)->create($user, 'customer');
+    $url = app(LoginLinks::class)->create($user);
     $path = parse_url($url, PHP_URL_PATH);
 
     $this->get($path)->assertOk();
     $this->get($path)->assertOk();
 
     $this->withoutMiddleware(ValidateCsrfToken::class);
-    $this->post($path)->assertRedirect(url('app/alpha'));
+    $this->post($path)->assertRedirect(url('manage/alpha'));
     expect(Auth::guard('tbe-web')->id())->toBe($user->id);
 
     Auth::guard('tbe-web')->logout();
@@ -113,11 +85,12 @@ it('lists only the current bot\'s users in a stock Filament table', function () 
 });
 
 it('has tenant, bot, api and user on a real Livewire update request', function () {
+    grantManage();
     [, $user] = webBot();
     webBot('beta', 222);
     $this->actingAs(PanelUser::find($user->id), 'tbe-web');
 
-    $html = $this->get('/app/alpha/buy')->assertOk()->getContent();
+    $html = $this->get('/manage/alpha/buy')->assertOk()->getContent();
     preg_match_all('/wire:snapshot="([^"]+)"/', $html, $m);
     $snapshot = collect($m[1])->map(fn ($s) => html_entity_decode($s))->first(fn ($s) => str_contains($s, 'paidContext'));
 
@@ -167,10 +140,11 @@ it('keeps a resource screen working on Livewire requests for the session\'s user
 });
 
 it('refuses Livewire actions once the session has ended', function () {
+    grantManage();
     [, $user] = webBot();
     sessionSignIn($user);
 
-    $html = $this->get('/app/alpha/buy')->assertOk()->getContent();
+    $html = $this->get('/manage/alpha/buy')->assertOk()->getContent();
     preg_match_all('/wire:snapshot="([^"]+)"/', $html, $m);
     $snapshot = collect($m[1])->map(fn ($s) => html_entity_decode($s))->first(fn ($s) => str_contains($s, 'paidContext'));
 
@@ -190,30 +164,33 @@ it('refuses Livewire actions once the session has ended', function () {
 });
 
 it('sends nothing about the user to an outside avatar service', function () {
+    grantManage();
     [, $user] = webBot();
     sessionSignIn($user);
 
-    $this->get('/app/alpha/buy')->assertOk()->assertDontSee('ui-avatars.com')->assertSee('data:image/svg+xml', false);
+    $this->get('/manage/alpha/buy')->assertOk()->assertDontSee('ui-avatars.com')->assertSee('data:image/svg+xml', false);
 });
 
 it('takes plugins a package registers from register, even before essence', function () {
+    grantManage();
     [, $user] = webBot();
     $this->actingAs(PanelUser::find($user->id), 'tbe-web');
 
-    $this->get('/app/alpha/late')->assertOk()->assertSee('Late plugin');
+    $this->get('/manage/alpha/late')->assertOk()->assertSee('Late plugin');
 });
 
 it('refuses a plugin registered after the panels were built, instead of a silent 404', function () {
-    webPanels()->customer(LatePlugin::class);
+    webPanels()->manage(LatePlugin::class);
 })->throws(LogicException::class, 'register()');
 
 it('stops a page when a handler gate refuses, on every request', function () {
+    grantManage();
     [, $user] = webBot();
     $this->actingAs(PanelUser::find($user->id), 'tbe-web');
 
     handlerGates()->add(RefusingGate::class);
 
-    $this->get('/app/alpha/buy')->assertForbidden();
+    $this->get('/manage/alpha/buy')->assertForbidden();
 });
 
 it('asks for the page ability, not only the panel\'s', function () {
@@ -226,12 +203,13 @@ it('asks for the page ability, not only the panel\'s', function () {
     expect(LockedPage::canAccess())->toBeFalse();
 });
 
-it('lets only Telegram Web frame the pages', function () {
+it('lets no other site frame the pages', function () {
+    grantManage();
     [, $user] = webBot();
     $this->actingAs(PanelUser::find($user->id), 'tbe-web');
 
-    $this->get('/app/alpha/buy')->assertHeader('Content-Security-Policy', "frame-ancestors 'self' https://web.telegram.org");
-    $this->get('/alpha/web/open')->assertHeader('Content-Security-Policy', "frame-ancestors 'self' https://web.telegram.org");
+    $this->get('/manage/alpha/buy')->assertHeader('Content-Security-Policy', "frame-ancestors 'self'");
+    $this->get('/alpha/web/open')->assertHeader('Content-Security-Policy', "frame-ancestors 'self'");
 });
 
 it('sends a one-time sign-in link for /panel, only to those who may manage', function () {
@@ -243,4 +221,21 @@ it('sends a one-time sign-in link for /panel, only to those who may manage', fun
     Gate::before(fn ($u, $ability) => $ability === 'web.manage' ? true : null);
     $this->postWebhookUpdate($bot, $this->makeMessageUpdate('/panel', 111))->assertOk();
     Http::assertSent(fn ($request) => str_contains(stripslashes(urldecode($request->body())), '/web/login/'));
+});
+
+it('sends only a browser link for /panel, never a Mini App button', function () {
+    [$bot] = webBot();
+    grantManage();
+
+    $this->postWebhookUpdate($bot, $this->makeMessageUpdate('/panel', 111))->assertOk();
+
+    Http::assertSent(fn ($request) => str_contains(stripslashes(urldecode($request->body())), '/web/login/'));
+    Http::assertNotSent(fn ($request) => str_contains(stripslashes(urldecode($request->body())), 'web_app'));
+});
+
+it('no longer signs in from Telegram initData', function () {
+    webBot();
+
+    $this->post('/alpha/web/auth/telegram')->assertNotFound();
+    $this->get('/alpha/web/open')->assertOk()->assertDontSee('telegram-web-app.js');
 });
