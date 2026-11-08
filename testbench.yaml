@@ -5,9 +5,6 @@ env:
   - APP_KEY=base64:a2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2s=
   - DB_CONNECTION=sqlite
   - SESSION_DRIVER=file
-  - SESSION_SAME_SITE=none
-  - SESSION_SECURE_COOKIE=true
-  - SESSION_PARTITIONED_COOKIE=true
   - CACHE_STORE=file
 
 
