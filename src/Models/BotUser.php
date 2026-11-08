@@ -159,15 +159,21 @@ class BotUser extends Model
         return $conversation;
     }
 
+    /** The Telegram account this bot user is, 0 if unknown. */
+    public function peerId(): int
+    {
+        $peerId = $this->getAttribute('telegram_user_peer_id');
+
+        return is_numeric($peerId) ? (int) $peerId : 0;
+    }
+
     /**
      * This user's private chat with the bot - the conversation to write to
      * when acting on a user other than the one the update came from.
      */
     public function privateConversation(): Conversation
     {
-        $peerId = $this->getAttribute('telegram_user_peer_id');
-
-        return $this->conversationIn(is_numeric($peerId) ? (int) $peerId : 0);
+        return $this->conversationIn($this->peerId());
     }
 
     /** This update is the first this user sent from their private chat with the bot. */
