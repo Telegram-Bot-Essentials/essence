@@ -12,5 +12,14 @@
     </style>
     @stack('head')
 </head>
-<body>@yield('body')</body>
+<body>
+    <main>@yield('body')</main>
+    <nav style="position: fixed; bottom: 16px; inset-inline: 0; font-size: .875rem;">
+        @foreach (\TelegramBotEssentials\Essence\Web\PanelLocales::available() as $locale => $name)
+            @if ($locale !== app()->getLocale())
+                <a href="{{ route('tbe.web.locale', ['locale' => $locale]) }}" lang="{{ $locale }}" style="margin: 0 8px;">{{ $name }}</a>
+            @endif
+        @endforeach
+    </nav>
+</body>
 </html>
