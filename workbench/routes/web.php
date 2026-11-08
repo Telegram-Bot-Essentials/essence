@@ -2,7 +2,9 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use TelegramBotEssentials\Essence\Web\Filament\PanelUser;
+use TelegramBotEssentials\Essence\Models\TelegramUser;
+use TelegramBotEssentials\Essence\Web\TelegramLink;
+use Workbench\App\Models\User;
 
 Route::get('/', fn () => view('welcome'));
 
@@ -15,7 +17,12 @@ if (($_SERVER['SERVER_PORT'] ?? null) !== '8791') {
 
 Route::middleware('web')->group(function () {
     Route::get('/dev/login/{to}', function (string $to) {
-        Auth::guard('tbe-web')->login(PanelUser::query()->where('telegram_user_peer_id', 111)->firstOrFail());
+        $account = TelegramLink::accountFor(111);
+        if ($account === null) {
+            $account = User::createForTelegram(TelegramUser::query()->where('peer_id', 111)->firstOrFail());
+            $account->linkTelegram(111);
+        }
+        Auth::guard('tbe-web')->login($account);
 
         return redirect('/'.$to);
     })->where('to', '.*');
