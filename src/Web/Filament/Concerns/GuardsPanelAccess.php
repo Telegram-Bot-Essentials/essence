@@ -2,10 +2,10 @@
 
 namespace TelegramBotEssentials\Essence\Web\Filament\Concerns;
 
-use Filament\Facades\Filament;
 use Illuminate\Support\Facades\Gate;
 use TelegramBotEssentials\Essence\Exceptions\FeatureIsDisabled;
 use TelegramBotEssentials\Essence\Models\BotUser;
+use TelegramBotEssentials\Essence\Web\Filament\PanelActor;
 
 /**
  * What a handler's $ability and the handler gates do for the bot, for a screen.
@@ -20,7 +20,7 @@ trait GuardsPanelAccess
     public static function canAccess(array $parameters = []): bool
     {
         $ability = static::requiredAbility();
-        $user = Filament::auth()->user();
+        $user = PanelActor::current();
 
         return $ability === null || ($user instanceof BotUser && Gate::forUser($user)->allows($ability));
     }
