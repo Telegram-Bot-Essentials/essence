@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
 use Telegram\Bot\Api;
@@ -8,6 +9,7 @@ use Telegram\Bot\Keyboard\Button;
 use Telegram\Bot\Keyboard\Keyboard;
 use TelegramBotEssentials\Essence\Contracts\DeclaresAbility;
 use TelegramBotEssentials\Essence\Contracts\DeclaresChatScope;
+use TelegramBotEssentials\Essence\Contracts\ResolvesBotLocale;
 use TelegramBotEssentials\Essence\Contracts\ResolvesKeyboard;
 use TelegramBotEssentials\Essence\Enums\ChatScope;
 use TelegramBotEssentials\Essence\Events\BotEventBus;
@@ -73,6 +75,30 @@ if (! function_exists('ownerAlert')) {
     function ownerAlert(string $key, Closure|string $text, ?Bot $bot = null, ?int $throttle = null): bool
     {
         return app(OwnerAlerts::class)->send($key, $text, $bot, $throttle);
+    }
+}
+
+if (! function_exists('inBotLocale')) {
+    /**
+     * Run $work in the bot's language, for what it sends to Telegram from
+     * somewhere that speaks another: the web panel uses the viewer's choice.
+     *
+     * @template T
+     *
+     * @param  Closure(): T  $work
+     * @return T
+     */
+    function inBotLocale(Closure $work, ?Bot $bot = null): mixed
+    {
+        $bot ??= wHook()->bot();
+        $previous = App::getLocale();
+        App::setLocale(app(ResolvesBotLocale::class)->resolve($bot));
+
+        try {
+            return $work();
+        } finally {
+            App::setLocale($previous);
+        }
     }
 }
 
