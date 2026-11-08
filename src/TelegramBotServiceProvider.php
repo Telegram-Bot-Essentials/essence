@@ -51,10 +51,9 @@ use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKeyBus;
 use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswerBus;
 use TelegramBotEssentials\Essence\Telegram\TextMatchers\TextMatcherBus;
 use TelegramBotEssentials\Essence\Web\Filament\ManagePanelProvider;
-use TelegramBotEssentials\Essence\Web\Filament\PanelUser;
 use TelegramBotEssentials\Essence\Web\Telegram\PanelCommand;
+use TelegramBotEssentials\Essence\Web\WebAccounts;
 use TelegramBotEssentials\Essence\Web\WebPanels;
-use TelegramBotEssentials\Essence\Web\WebUser;
 
 class TelegramBotServiceProvider extends ServiceProvider
 {
@@ -175,15 +174,18 @@ class TelegramBotServiceProvider extends ServiceProvider
             return;
         }
 
-        $hasFilament = class_exists(Panel::class);
+        // An app may sign in on a guard of its own (its "web", say) so one login
+        // covers its panels and this one. Otherwise essence adds its guard, on
+        // the app's account model; WebAccounts::model() checks it when used.
+        if (WebAccounts::guard() === WebAccounts::OWN_GUARD) {
+            config()->set('auth.guards.'.WebAccounts::OWN_GUARD, ['driver' => 'session', 'provider' => 'tbe-web-accounts']);
+            config()->set('auth.providers.tbe-web-accounts', [
+                'driver' => 'eloquent',
+                'model' => config('tbe-essence.web.account_model'),
+            ]);
+        }
 
-        config()->set('auth.guards.tbe-web', ['driver' => 'session', 'provider' => 'tbe-web-users']);
-        config()->set('auth.providers.tbe-web-users', [
-            'driver' => 'eloquent',
-            'model' => $hasFilament ? PanelUser::class : WebUser::class,
-        ]);
-
-        if ($hasFilament) {
+        if (class_exists(Panel::class)) {
             $this->app->register(ManagePanelProvider::class);
         }
     }
