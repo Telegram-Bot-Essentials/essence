@@ -20,6 +20,13 @@ return [
     'web' => [
         'enabled' => (bool) env('TBE_WEB_ENABLED', false),
         'path' => 'manage',
+        // Who signs in: the app's own user model, implementing
+        // TelegramBotEssentials\Essence\Web\TelegramAccount (use the
+        // HasTelegramAccount trait). See docs/adr/0002.
+        'account_model' => env('TBE_WEB_ACCOUNT_MODEL', 'App\\Models\\User'),
+        // 'tbe-web' is essence's own session guard on account_model. Name an
+        // app guard instead (e.g. 'web') to share one login with its panels.
+        'guard' => 'tbe-web',
     ],
 
     'bot_access' => [
