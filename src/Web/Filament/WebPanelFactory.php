@@ -2,12 +2,19 @@
 
 namespace TelegramBotEssentials\Essence\Web\Filament;
 
+use Filament\Actions\Action;
 use Filament\Contracts\Plugin;
+use Filament\Enums\GlobalSearchPosition;
+use Filament\Enums\UserMenuPosition;
 use Filament\Facades\Filament;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Pages\Dashboard;
 use Filament\Panel;
+use Filament\Support\Enums\Width;
+use Filament\Support\Icons\Heroicon;
 use Filament\View\PanelsRenderHook;
+use Filament\Widgets\AccountWidget;
 use Illuminate\Contracts\View\View;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -18,6 +25,8 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use TelegramBotEssentials\Essence\Models\Bot;
 use TelegramBotEssentials\Essence\Web\Http\BindWebContext;
 use TelegramBotEssentials\Essence\Web\Http\LimitFraming;
+use TelegramBotEssentials\Essence\Web\Http\SetPanelLocale;
+use TelegramBotEssentials\Essence\Web\PanelLocales;
 use TelegramBotEssentials\Essence\Web\WebAccounts;
 use TelegramBotEssentials\Essence\Web\WebPanels;
 
@@ -50,10 +59,22 @@ final class WebPanelFactory
             ->authMiddleware([PanelAuthenticate::class], isPersistent: true)
             ->tenantMiddleware([BindWebContext::class], isPersistent: true)
             ->tenantMenu(false)
+            ->middleware([SetPanelLocale::class], isPersistent: true)
+            // Laid out like Filament's demo: no top bar, search and the user menu
+            // in a collapsible sidebar, pages as wide as the screen.
+            ->topbar(false)
+            ->globalSearch(position: GlobalSearchPosition::Sidebar)
+            ->userMenu(position: UserMenuPosition::Sidebar)
+            ->sidebarCollapsibleOnDesktop()
+            ->maxContentWidth(Width::Full)
+            ->font(fn (): string => app()->getLocale() === 'fa' ? 'Vazirmatn' : 'Inter')
+            ->pages([Dashboard::class])
+            ->widgets([AccountWidget::class])
+            ->userMenuItems(self::languageItems())
             ->defaultAvatarProvider(LocalAvatarProvider::class)
             // One account may act as different Telegram accounts per bot: say which.
             ->renderHook(PanelsRenderHook::USER_MENU_BEFORE, fn (): View => view('tbe-essence::web.acting-as'))
-            ->brandName(fn (): string => Filament::getTenant() instanceof Bot ? Filament::getTenant()->unique_id : config()->string('app.name'));
+            ->brandName(fn (): string => self::brand());
 
         $panels = app(WebPanels::class);
         $panels->markBuilt();
@@ -65,5 +86,33 @@ final class WebPanelFactory
         }
 
         return $panel;
+    }
+
+    /** The bot's @username, its unique id while Telegram cannot be asked. */
+    private static function brand(): string
+    {
+        $bot = Filament::getTenant();
+        if (! $bot instanceof Bot) {
+            return config()->string('app.name');
+        }
+
+        $username = $bot->username();
+
+        return $username !== null ? '@'.$username : $bot->unique_id;
+    }
+
+    /** @return list<Action> one per language besides the current one */
+    private static function languageItems(): array
+    {
+        $items = [];
+        foreach (PanelLocales::available() as $locale => $name) {
+            $items[] = Action::make('tbe-locale-'.$locale)
+                ->label($name)
+                ->icon(Heroicon::OutlinedLanguage)
+                ->url(fn (): string => route('tbe.web.locale', ['locale' => $locale]))
+                ->visible(fn (): bool => PanelLocales::current() !== $locale);
+        }
+
+        return $items;
     }
 }
