@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Testing\TestResponse;
+use TelegramBotEssentials\Essence\Contracts\ResolvesBotLocale;
 use TelegramBotEssentials\Essence\Models\Bot;
 use TelegramBotEssentials\Essence\Models\BotUser;
 use TelegramBotEssentials\Essence\Models\TelegramUser;
@@ -356,4 +357,41 @@ it('frees a link whose account was removed without Eloquent', function () {
     TestAccount::query()->whereKey($this->panelAccount($user)->getKey())->toBase()->delete();
 
     expect($this->panelAccount($user)->linkedPeerIds())->toBe([111]);
+});
+
+it('shows the panel in English by default, whatever the bot speaks', function () {
+    grantManage();
+    [, $user] = webBot();
+    app()->setLocale('fa');
+    config()->set('app.locale', 'fa');
+    $this->actingAs($this->panelAccount($user), 'tbe-web');
+
+    $this->get('/manage/alpha/buy')->assertOk()->assertSee('lang="en"', false)->assertSee('فارسی');
+    $this->get('/alpha/web/open')->assertOk()->assertSee(__('tbe-essence::web.open_from_bot', [], 'en'));
+});
+
+it('switches the panel to a language the viewer picks, and only to listed ones', function () {
+    grantManage();
+    [, $user] = webBot();
+    $this->actingAs($this->panelAccount($user), 'tbe-web');
+
+    $this->get('/tbe-web/locale/fa')->assertRedirect();
+    $this->get('/manage/alpha/buy')->assertOk()->assertSee('lang="fa"', false)->assertSee('dir="rtl"', false)->assertSee('English');
+
+    $this->get('/tbe-web/locale/xx')->assertNotFound();
+});
+
+it('runs work in the bot\'s language from the panel\'s', function () {
+    [$bot] = webBot();
+    app()->setLocale('en');
+    $this->app->bind(ResolvesBotLocale::class, fn () => new class implements ResolvesBotLocale
+    {
+        public function resolve(Bot $bot): string
+        {
+            return 'fa';
+        }
+    });
+
+    expect(inBotLocale(fn () => app()->getLocale(), $bot))->toBe('fa')
+        ->and(app()->getLocale())->toBe('en');
 });
