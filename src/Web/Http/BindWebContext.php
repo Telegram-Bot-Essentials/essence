@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Telegram\Bot\Objects\Update;
 use TelegramBotEssentials\Essence\Models\Bot;
 use TelegramBotEssentials\Essence\Models\BotUser;
+use TelegramBotEssentials\Essence\Web\Filament\PanelActor;
 
 /**
  * Gives a panel request what bot code expects: the tenant, plus wHook()'s bot,
@@ -31,10 +32,10 @@ class BindWebContext
         $hook->setApi(telegramApi(is_string($token) ? $token : ''));
         $hook->setUpdate(new Update([]));
 
-        $user = Filament::auth()->user();
-        if ($user instanceof BotUser) {
-            $hook->setUser($user);
-        }
+        // Signed in but not allowed here (any more): refuse rather than act as nobody.
+        $user = PanelActor::current();
+        abort_unless($user instanceof BotUser, 403);
+        $hook->setUser($user);
 
         return $next($request);
     }

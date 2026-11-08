@@ -2,15 +2,19 @@
 
 namespace TelegramBotEssentials\Essence\Web\Http;
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\View\View;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use TelegramBotEssentials\Essence\Models\Bot;
+use TelegramBotEssentials\Essence\Models\BotUser;
+use TelegramBotEssentials\Essence\Models\TelegramUser;
 use TelegramBotEssentials\Essence\Web\LoginLinks;
+use TelegramBotEssentials\Essence\Web\TelegramAccount;
+use TelegramBotEssentials\Essence\Web\TelegramLink;
+use TelegramBotEssentials\Essence\Web\WebAccounts;
 
 /** Sign-in by the one-time link /panel sends; any frontend an app picks starts here. */
 class WebAuthController extends Controller
@@ -22,9 +26,14 @@ class WebAuthController extends Controller
 
     public function showLogin(string $bot, string $token, LoginLinks $links): View
     {
-        abort_if($links->peek($token) === null, 410);
+        $link = $links->peek($token);
+        abort_if($link === null, 410);
 
-        return view('tbe-essence::web.login', ['token' => $token, 'bot' => $bot]);
+        return view('tbe-essence::web.login', [
+            'token' => $token,
+            'bot' => $bot,
+            'linked' => TelegramLink::accountFor($this->peerOf($link['user'])) !== null,
+        ]);
     }
 
     /** POST on purpose: a link preview fetching the GET must not spend the token. */
@@ -33,21 +42,31 @@ class WebAuthController extends Controller
         $link = $links->consume($token);
         abort_if($link === null || $link['bot'] != $this->bot()->getKey(), 410);
 
-        $this->signIn($request, $link['user']);
+        $account = $this->accountFor($this->peerOf($link['user']));
+        Auth::guard(WebAccounts::guard())->login($account);
+        $request->session()->regenerate();
 
         return redirect()->to($this->home($this->bot()));
     }
 
-    private function signIn(Request $request, mixed $userId): void
+    /** The account linked to $peerId, or a new one the app creates for it. */
+    private function accountFor(int $peerId): TelegramAccount
     {
-        /** @var class-string<Model&Authenticatable> $model */
-        $model = config()->string('auth.providers.tbe-web-users.model');
+        return TelegramLink::accountFor($peerId) ?? DB::transaction(function () use ($peerId): TelegramAccount {
+            $telegramUser = TelegramUser::query()->where('peer_id', $peerId)->firstOrFail();
+            $account = WebAccounts::model()::createForTelegram($telegramUser);
+            $account->linkTelegram($peerId);
 
-        $user = $model::query()->findOrFail($userId);
-        abort_unless($user instanceof Authenticatable, 404);
+            return $account;
+        });
+    }
 
-        Auth::guard('tbe-web')->login($user);
-        $request->session()->regenerate();
+    private function peerOf(int|string $botUserId): int
+    {
+        $user = BotUser::query()->find($botUserId);
+        abort_unless($user instanceof BotUser, 410);
+
+        return $user->peerId();
     }
 
     private function home(Bot $bot): string
