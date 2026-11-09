@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Testing\TestResponse;
+use Livewire\Livewire;
 use TelegramBotEssentials\Essence\Contracts\ResolvesBotLocale;
 use TelegramBotEssentials\Essence\Models\Bot;
 use TelegramBotEssentials\Essence\Models\BotUser;
@@ -14,6 +15,7 @@ use TelegramBotEssentials\Essence\Testing\TestAccount;
 use TelegramBotEssentials\Essence\Tests\Web\Fixtures\LatePlugin;
 use TelegramBotEssentials\Essence\Tests\Web\Fixtures\LockedPage;
 use TelegramBotEssentials\Essence\Tests\Web\Fixtures\RefusingGate;
+use TelegramBotEssentials\Essence\Web\Filament\Widgets\NewMembersChart;
 use TelegramBotEssentials\Essence\Web\LoginLinks;
 use TelegramBotEssentials\Essence\Web\TelegramAccountTaken;
 use TelegramBotEssentials\Essence\Web\WebAccounts;
@@ -394,4 +396,20 @@ it('runs work in the bot\'s language from the panel\'s', function () {
 
     expect(inBotLocale(fn () => app()->getLocale(), $bot))->toBe('fa')
         ->and(app()->getLocale())->toBe('en');
+});
+
+it('charts new members on the dashboard, from this bot only', function () {
+    grantManage();
+    [$bot, $member] = webBot();
+    webBot('beta', 222);
+
+    $account = $this->panelAccount($member);
+    $this->actingAs($account, 'tbe-web')->get('/manage/alpha')->assertOk();
+
+    $this->enterPanel('manage', $bot, $account);
+    $chart = Livewire::test(NewMembersChart::class)
+        ->assertSee(__('tbe-essence::web.charts.new_members'));
+
+    $data = (fn () => $this->getCachedData())->call($chart->instance());
+    expect(array_sum($data['datasets'][0]['data']))->toBe(1.0);
 });
