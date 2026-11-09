@@ -28,4 +28,8 @@ return [
     'link_expired' => 'This link has expired or was already used. Ask for a new one in the web panel.',
     'link_already' => 'This Telegram account is already linked to that web account.',
     'link_taken' => 'This Telegram account is linked to another web account. Unlink it there first.',
+    'charts' => [
+        'new_members' => 'New members',
+        'days' => 'Last :days days',
+    ],
 ];
