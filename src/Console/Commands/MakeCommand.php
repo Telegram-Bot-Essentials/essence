@@ -16,6 +16,9 @@ class MakeCommand extends PackageGeneratorCommand
 
     protected $description = 'Create a new Telegram Bot Command class';
 
+    /** @var array<string, string> none: a command generates nothing else */
+    protected array $map = [];
+
     protected function getStub(): string
     {
         return __DIR__.'/stubs/command.stub';
