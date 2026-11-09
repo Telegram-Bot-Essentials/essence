@@ -62,8 +62,14 @@ final class WebPanelFactory
         // After the session middleware: the language is kept in the session.
         $panel = self::styled($panel)
             ->tenantMenu(false)
-            ->pages([Dashboard::class])
+            ->pages([Dashboard::class, TelegramAccountsPage::class])
             ->widgets([AccountWidget::class])
+            ->userMenuItems([
+                Action::make('tbe-telegram-accounts')
+                    ->label(fn (): string => (string) __('tbe-essence::web.telegram_accounts'))
+                    ->icon(Heroicon::OutlinedUserGroup)
+                    ->url(fn (): string => TelegramAccountsPage::getUrl()),
+            ])
             // One account may act as different Telegram accounts per bot: say which.
             ->renderHook(PanelsRenderHook::USER_MENU_BEFORE, fn (): View => view('tbe-essence::web.acting-as'))
             ->brandName(fn (): string => self::brand());
