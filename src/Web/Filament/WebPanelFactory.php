@@ -57,21 +57,13 @@ final class WebPanelFactory
             // Persistent, in this order: Livewire's update requests must sign the user
             // in and bind the bot again, or actions outlive the session.
             ->authMiddleware([PanelAuthenticate::class], isPersistent: true)
-            ->tenantMiddleware([BindWebContext::class], isPersistent: true)
+            ->tenantMiddleware([BindWebContext::class], isPersistent: true);
+
+        // After the session middleware: the language is kept in the session.
+        $panel = self::styled($panel)
             ->tenantMenu(false)
-            ->middleware([SetPanelLocale::class], isPersistent: true)
-            // Laid out like Filament's demo: no top bar, search and the user menu
-            // in a collapsible sidebar, pages as wide as the screen.
-            ->topbar(false)
-            ->globalSearch(position: GlobalSearchPosition::Sidebar)
-            ->userMenu(position: UserMenuPosition::Sidebar)
-            ->sidebarCollapsibleOnDesktop()
-            ->maxContentWidth(Width::Full)
-            ->font(fn (): string => app()->getLocale() === 'fa' ? 'Vazirmatn' : 'Inter')
             ->pages([Dashboard::class])
             ->widgets([AccountWidget::class])
-            ->userMenuItems(self::languageItems())
-            ->defaultAvatarProvider(LocalAvatarProvider::class)
             // One account may act as different Telegram accounts per bot: say which.
             ->renderHook(PanelsRenderHook::USER_MENU_BEFORE, fn (): View => view('tbe-essence::web.acting-as'))
             ->brandName(fn (): string => self::brand());
@@ -86,6 +78,26 @@ final class WebPanelFactory
         }
 
         return $panel;
+    }
+
+    /**
+     * The look and language menu essence's panel has, for an app's own panels
+     * to match: laid out like Filament's demo (no top bar, search and the user
+     * menu in a collapsible sidebar, pages as wide as the screen) and in the
+     * viewer's chosen language. Call it after the panel's session middleware.
+     */
+    public static function styled(Panel $panel): Panel
+    {
+        return $panel
+            ->middleware([SetPanelLocale::class], isPersistent: true)
+            ->topbar(false)
+            ->globalSearch(position: GlobalSearchPosition::Sidebar)
+            ->userMenu(position: UserMenuPosition::Sidebar)
+            ->sidebarCollapsibleOnDesktop()
+            ->maxContentWidth(Width::Full)
+            ->font(fn (): string => app()->getLocale() === 'fa' ? 'Vazirmatn' : 'Inter')
+            ->userMenuItems(self::languageItems())
+            ->defaultAvatarProvider(LocalAvatarProvider::class);
     }
 
     /** The bot's @username, its unique id while Telegram cannot be asked. */
