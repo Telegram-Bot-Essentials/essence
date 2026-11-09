@@ -103,42 +103,6 @@ parameters:
 			path: src/Console/Commands/MakeCallbackQuery.php
 
 		-
-			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Console\\Commands\\MakeCommand\:\:\$map\.$#'
-			identifier: property.notFound
-			count: 2
-			path: src/Console/Commands/MakeCommand.php
-
-		-
-			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 1
-			path: src/Console/Commands/MakeCommand.php
-
-		-
-			message: '#^Cannot access offset mixed on mixed\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: src/Console/Commands/MakeCommand.php
-
-		-
-			message: '#^Parameter \#1 \$array of function array_keys expects array, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Console/Commands/MakeCommand.php
-
-		-
-			message: '#^Parameter \#1 \$command of method Illuminate\\Console\\Command\:\:call\(\) expects string\|Symfony\\Component\\Console\\Command\\Command, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Console/Commands/MakeCommand.php
-
-		-
-			message: '#^Parameter \#1 \$key of method Illuminate\\Console\\Command\:\:option\(\) expects string\|null, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Console/Commands/MakeCommand.php
-
-		-
 			message: '#^Parameter \#1 \$string of function strtolower expects string, string\|null given\.$#'
 			identifier: argument.type
 			count: 1
