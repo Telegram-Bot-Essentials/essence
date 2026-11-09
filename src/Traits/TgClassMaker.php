@@ -22,8 +22,7 @@ trait TgClassMaker
 
     public function initializeName(): string
     {
-        $argument = $this->argument('name');
-        $name = trim(is_string($argument) ? $argument : '');
+        $name = trim($this->argument('name'));
 
         if (Str::endsWith($name, '.php')) {
             $name = Str::substr($name, 0, -4);
@@ -50,12 +49,14 @@ trait TgClassMaker
 
     private function handleOptions(): void
     {
+        // Raw options: only the feature command defines --all and the type flags.
+        $options = $this->input->getOptions();
         $types = [];
-        if ($this->option('all')) {
+        if (($options['all'] ?? false) === true) {
             $types = array_keys($this->map);
         } else {
             foreach ($this->map as $option => $command) {
-                if ($this->option($option)) {
+                if (($options[$option] ?? false) === true) {
                     $types[] = $option;
                 }
             }
