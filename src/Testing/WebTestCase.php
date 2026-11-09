@@ -14,9 +14,13 @@ use Filament\Schemas\SchemasServiceProvider;
 use Filament\Support\SupportServiceProvider;
 use Filament\Tables\TablesServiceProvider;
 use Filament\Widgets\WidgetsServiceProvider;
+use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
+use Illuminate\Testing\TestResponse;
 use Kirschbaum\PowerJoins\PowerJoinsServiceProvider;
+use Livewire\LivewireManager;
 use Livewire\LivewireServiceProvider;
 use RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider;
+use Symfony\Component\HttpFoundation\Response;
 use Telegram\Bot\Objects\Update;
 use TelegramBotEssentials\Essence\Models\Bot;
 use TelegramBotEssentials\Essence\Models\BotUser;
@@ -117,5 +121,47 @@ abstract class WebTestCase extends TestCase
         $hook->setUser($actor);
 
         return $actor;
+    }
+
+    /**
+     * Calls $method on the Livewire component of the page at $url through
+     * the real route and middleware, as a browser does; Livewire::test()
+     * skips them. $stateKey picks the component: a word in its snapshot,
+     * such as its class name. $between runs after the page loads, before
+     * the update: sign out there, or take an ability away.
+     *
+     * @param  list<mixed>  $params
+     * @return TestResponse<Response>
+     */
+    protected function livewireRequest(string $url, string $stateKey, string $method, array $params = [], ?\Closure $between = null): TestResponse
+    {
+        $html = (string) $this->get($url)->assertOk()->getContent();
+        preg_match_all('/wire:snapshot="([^"]+)"/', $html, $matches);
+        $snapshot = collect($matches[1])
+            ->map(fn (string $s): string => html_entity_decode($s))
+            ->first(fn (string $s): bool => str_contains($s, $stateKey));
+
+        if ($snapshot === null) {
+            throw new \LogicException("No Livewire component on $url mentions $stateKey.");
+        }
+
+        // A browser's next request starts fresh.
+        tenancy()->end();
+        app()->forgetScopedInstances();
+        if ($between !== null) {
+            $between();
+        }
+
+        $updateUri = app(LivewireManager::class)->getUpdateUri();
+        if (! is_string($updateUri)) {
+            throw new \LogicException('Livewire has no update route.');
+        }
+
+        return $this->withHeader('X-Livewire', '1')
+            ->withoutMiddleware(ValidateCsrfToken::class)
+            ->postJson($updateUri, [
+                '_token' => csrf_token(),
+                'components' => [['snapshot' => $snapshot, 'updates' => new \stdClass, 'calls' => [['path' => '', 'method' => $method, 'params' => $params, 'metadata' => []]]]],
+            ]);
     }
 }
