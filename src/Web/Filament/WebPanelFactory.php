@@ -23,6 +23,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use TelegramBotEssentials\Essence\Models\Bot;
+use TelegramBotEssentials\Essence\Web\Filament\Widgets\NewMembersChart;
 use TelegramBotEssentials\Essence\Web\Http\BindWebContext;
 use TelegramBotEssentials\Essence\Web\Http\LimitFraming;
 use TelegramBotEssentials\Essence\Web\Http\SetPanelLocale;
@@ -63,7 +64,7 @@ final class WebPanelFactory
         $panel = self::styled($panel)
             ->tenantMenu(false)
             ->pages([Dashboard::class, TelegramAccountsPage::class])
-            ->widgets([AccountWidget::class])
+            ->widgets([AccountWidget::class, NewMembersChart::class])
             ->userMenuItems([
                 Action::make('tbe-telegram-accounts')
                     ->label(fn (): string => (string) __('tbe-essence::web.telegram_accounts'))
