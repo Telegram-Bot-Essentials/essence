@@ -26,7 +26,7 @@ return [
         'account_model' => env('TBE_WEB_ACCOUNT_MODEL', 'App\\Models\\User'),
         // 'tbe-web' is essence's own session guard on account_model. Name an
         // app guard instead (e.g. 'web') to share one login with its panels.
-        'guard' => 'tbe-web',
+        'guard' => env('TBE_WEB_GUARD', 'tbe-web'),
         // The panel's languages, apart from the bot's, each named in itself.
         // Viewers pick one from the user menu; the default needs no choice.
         'locales' => ['en' => 'English', 'fa' => 'فارسی'],
