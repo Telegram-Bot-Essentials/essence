@@ -5,6 +5,7 @@ namespace TelegramBotEssentials\Essence;
 use Filament\Panel;
 use Illuminate\Contracts\Foundation\CachesConfiguration;
 use Illuminate\Queue\Events\JobFailed;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
@@ -28,6 +29,7 @@ use TelegramBotEssentials\Essence\Console\Commands\TranslationStats;
 use TelegramBotEssentials\Essence\Contracts\RecipientGroups;
 use TelegramBotEssentials\Essence\Contracts\ResolvesBotLocale;
 use TelegramBotEssentials\Essence\Contracts\ResolvesKeyboard;
+use TelegramBotEssentials\Essence\Events\BotDeepLinkReceived;
 use TelegramBotEssentials\Essence\Events\BotEventBus;
 use TelegramBotEssentials\Essence\Events\BotWebhookInitialized;
 use TelegramBotEssentials\Essence\Forms\FormEngine;
@@ -51,6 +53,8 @@ use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKeyBus;
 use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswerBus;
 use TelegramBotEssentials\Essence\Telegram\TextMatchers\TextMatcherBus;
 use TelegramBotEssentials\Essence\Web\Filament\ManagePanelProvider;
+use TelegramBotEssentials\Essence\Web\Telegram\AskToLinkAccount;
+use TelegramBotEssentials\Essence\Web\Telegram\LinkAccountQuery;
 use TelegramBotEssentials\Essence\Web\Telegram\PanelCommand;
 use TelegramBotEssentials\Essence\Web\WebAccounts;
 use TelegramBotEssentials\Essence\Web\WebPanels;
@@ -197,6 +201,8 @@ class TelegramBotServiceProvider extends ServiceProvider
         if (config('tbe-essence.web.enabled')) {
             $this->loadRoutesFrom(__DIR__.'/../routes/web-ui.php');
             commandBus()->addCommands([PanelCommand::class]);
+            callbackQueryBus()->addCallbackQueries([LinkAccountQuery::class]);
+            Event::listen(BotDeepLinkReceived::class, AskToLinkAccount::class);
             abilities()->declare('web.manage', fn () => (string) __('tbe-essence::web.manage_ability'));
         }
     }
