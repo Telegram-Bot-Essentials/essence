@@ -69,7 +69,7 @@ final class FormFields
      * The form's answers, checked and cast as the chat would. Refuses an actor
      * the form's ability does not allow, as the chat does.
      *
-     * @param  array<string, mixed>  $data
+     * @param  array<mixed>  $data  a panel form's state, by field
      * @return array<string, mixed>
      *
      * @throws ValidationException
@@ -87,7 +87,7 @@ final class FormFields
      * answers() inside a panel action: a wrong answer is shown as a
      * notification and the action stays open; null then.
      *
-     * @param  array<string, mixed>  $data
+     * @param  array<mixed>  $data  a panel form's state, by field
      * @return array<string, mixed>|null
      */
     public static function answersFor(Action $action, Form $form, array $data): ?array

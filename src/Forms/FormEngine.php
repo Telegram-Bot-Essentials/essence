@@ -287,7 +287,7 @@ class FormEngine
      * apply, ready for the form's onComplete() or whatever the caller does
      * with them.
      *
-     * @param  array<string, mixed>  $raw  by step key
+     * @param  array<mixed>  $raw  by step key
      * @return array<string, mixed>
      *
      * @throws ValidationException keyed by the step that is wrong
@@ -326,7 +326,7 @@ class FormEngine
      * Whether $step applies, and the answers before it, given all of a web
      * form's answers: for showing a field and building its options.
      *
-     * @param  array<string, mixed>  $raw  by step key
+     * @param  array<mixed>  $raw  by step key
      * @return array{0: bool, 1: array<string, ?string>}
      *
      * @throws LogicException
