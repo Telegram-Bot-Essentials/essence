@@ -112,13 +112,20 @@ class Bot extends BaseTenant
             return $cached;
         }
 
-        try {
-            $username = telegramApi($token)->getMe()->username;
-        } catch (Throwable) {
+        // A dead token fails every time: ask again in a while, not on every page.
+        if (Cache::has($key.':failed')) {
             return null;
         }
 
+        try {
+            $username = telegramApi($token)->getMe()->username;
+        } catch (Throwable) {
+            $username = null;
+        }
+
         if (! is_string($username) || $username === '') {
+            Cache::put($key.':failed', true, now()->addMinutes(5));
+
             return null;
         }
 
