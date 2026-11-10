@@ -281,6 +281,80 @@ class FormEngine
     }
 
     /**
+     * Checks and casts a form's answers given all at once, as a web form sends
+     * them, with the rules, conditions and casts a chat applies step by step.
+     * An empty answer is a skip. Returns the cast answers of the steps that
+     * apply, ready for the form's onComplete() or whatever the caller does
+     * with them.
+     *
+     * @param  array<string, mixed>  $raw  by step key
+     * @return array<string, mixed>
+     *
+     * @throws ValidationException keyed by the step that is wrong
+     * @throws LogicException
+     */
+    public function answerAll(Form $form, array $raw): array
+    {
+        $answers = [];
+        foreach ($this->steps($form) as $key => $step) {
+            $value = $raw[$key] ?? null;
+            $value = is_scalar($value) ? trim((string) $value) : null;
+            $answers[$key] = $value === '' ? null : $value;
+        }
+
+        [$applicable, $effective] = $this->walk($this->steps($form), $answers);
+
+        $cast = [];
+        foreach ($applicable as $step) {
+            $value = $effective[$step->key] ?? null;
+
+            if ($value === null) {
+                if (! $step->isSkippable()) {
+                    throw ValidationException::withMessages([$step->key => __('validation.required', ['attribute' => $this->label($form, $step, $step->key)])]);
+                }
+            } else {
+                $step->validate($value, $this->answersBefore($applicable, $effective, $step->key), $this->label($form, $step, $step->key));
+            }
+
+            $cast[$step->key] = $step->castAnswer($value, $effective);
+        }
+
+        return $cast;
+    }
+
+    /**
+     * Whether $step applies, and the answers before it, given all of a web
+     * form's answers: for showing a field and building its options.
+     *
+     * @param  array<string, mixed>  $raw  by step key
+     * @return array{0: bool, 1: array<string, ?string>}
+     *
+     * @throws LogicException
+     */
+    public function contextOf(Form $form, Step $step, array $raw): array
+    {
+        $answers = [];
+        foreach ($this->steps($form) as $key => $each) {
+            $value = $raw[$key] ?? null;
+            $value = is_scalar($value) ? trim((string) $value) : null;
+            $answers[$key] = $value === '' ? null : $value;
+        }
+
+        [$applicable, $effective] = $this->walk($this->steps($form), $answers);
+        $before = $this->answersBefore($applicable, $effective, $step->key);
+
+        $applies = array_filter($applicable, fn (Step $each): bool => $each->key === $step->key) !== [];
+
+        return [$applies, $before];
+    }
+
+    /** A step's label: the form's lang line, or its key in words. */
+    public function labelOf(Form $form, Step $step): string
+    {
+        return $this->label($form, $step, $step->key);
+    }
+
+    /**
      * The steps that apply given the answers, in order, and the answers that
      * count. A step's `when` sees only the counted answers before it, so an
      * answer hidden by an earlier one cannot influence a later step.
