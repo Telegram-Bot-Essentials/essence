@@ -2,6 +2,8 @@
 
 return [
     'open_from_bot' => 'Send /panel to the bot to get a sign-in link.',
+    'password_sign_in' => 'Have a password? Sign in with your email.',
+    'login_telegram_hint' => 'No password? Send /panel to your bot in Telegram to sign in.',
     'login_hint' => 'This link works once and expires soon.',
     'login_new_account' => 'This Telegram account is not linked to a web account yet, so signing in creates a new one.',
     'acting_as' => 'Acting as :name',
