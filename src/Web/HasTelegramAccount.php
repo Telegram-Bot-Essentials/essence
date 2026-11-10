@@ -5,7 +5,6 @@ namespace TelegramBotEssentials\Essence\Web;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\Gate;
-use Stancl\Tenancy\Database\TenantScope;
 use TelegramBotEssentials\Essence\Models\Bot;
 use TelegramBotEssentials\Essence\Models\BotUser;
 
@@ -80,9 +79,10 @@ trait HasTelegramAccount
         $peers = $this->linkedPeerIds();
         $order = array_flip($peers);
 
-        // Across bots: BotUser is tenant-scoped, and panel requests run in one bot's tenancy.
+        // Across bots: BotUser is tenant-scoped, and panel requests run in one
+        // bot's tenancy, which Filament adds a scope of its own for once a bot is open.
         $candidates = BotUser::query()
-            ->withoutGlobalScope(TenantScope::class)
+            ->withoutGlobalScopes()
             ->whereIn('telegram_user_peer_id', $peers)
             ->with('bot')
             ->get()
