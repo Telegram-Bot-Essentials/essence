@@ -15,12 +15,15 @@ use Filament\Support\Enums\Width;
 use Filament\Support\Icons\Heroicon;
 use Filament\View\PanelsRenderHook;
 use Filament\Widgets\AccountWidget;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Contracts\View\View;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\HtmlString;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use TelegramBotEssentials\Essence\Models\Bot;
 use TelegramBotEssentials\Essence\Web\Filament\Widgets\NewMembersChart;
@@ -42,6 +45,10 @@ final class WebPanelFactory
             ->id(self::ID)
             ->path(config()->string('tbe-essence.web.path', 'manage'))
             ->authGuard(WebAccounts::guard())
+            // The framework's own sign-in and profile, on the app's account model.
+            // No password reset: it needs mail, and /panel signs anyone back in.
+            ->login()
+            ->profile(AccountProfile::class)
             ->tenant(PanelBot::class, slugAttribute: 'unique_id')
             ->spa()
             ->middleware([
@@ -62,17 +69,24 @@ final class WebPanelFactory
 
         // After the session middleware: the language is kept in the session.
         $panel = self::styled($panel)
-            ->tenantMenu(false)
+            // A /panel link picks its bot; a password sign-in lands on the first one.
+            ->tenantMenu(fn (): bool => self::managesSeveralBots())
             ->pages([Dashboard::class, TelegramAccountsPage::class])
             ->widgets([AccountWidget::class, NewMembersChart::class])
             ->userMenuItems([
                 Action::make('tbe-telegram-accounts')
                     ->label(fn (): string => (string) __('tbe-essence::web.telegram_accounts'))
                     ->icon(Heroicon::OutlinedUserGroup)
-                    ->url(fn (): string => TelegramAccountsPage::getUrl()),
+                    ->url(fn (): string => TelegramAccountsPage::getUrl())
+                    // The profile page is outside any bot, and so is no link to one.
+                    ->visible(fn (): bool => Filament::getTenant() !== null),
             ])
             // One account may act as different Telegram accounts per bot: say which.
             ->renderHook(PanelsRenderHook::USER_MENU_BEFORE, fn (): View => view('tbe-essence::web.acting-as'))
+            // Most accounts come from Telegram and have no password.
+            ->renderHook(PanelsRenderHook::AUTH_LOGIN_FORM_AFTER, fn (): Htmlable => new HtmlString(
+                '<p style="text-align:center;font-size:.875rem;opacity:.75;">'.e((string) __('tbe-essence::web.login_telegram_hint')).'</p>'
+            ))
             ->brandName(fn (): string => self::brand());
 
         $panels = app(WebPanels::class);
@@ -105,6 +119,13 @@ final class WebPanelFactory
             ->font(fn (): string => app()->getLocale() === 'fa' ? 'Vazirmatn' : 'Inter')
             ->userMenuItems(self::languageItems())
             ->defaultAvatarProvider(LocalAvatarProvider::class);
+    }
+
+    private static function managesSeveralBots(): bool
+    {
+        $account = Filament::auth()->user();
+
+        return $account instanceof Model && count(Filament::getUserTenants($account)) > 1;
     }
 
     /** The bot's @username, its unique id while Telegram cannot be asked. */
