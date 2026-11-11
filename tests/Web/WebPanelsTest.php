@@ -85,12 +85,13 @@ it('spends a login link on POST only, once', function () {
 });
 
 it('lists only the current bot\'s users in a stock Filament table', function () {
-    [, $user] = webBot();
-    webBot('beta', 222);
+    // Ids long enough not to turn up by chance in random names or asset hashes.
+    [, $user] = webBot('alpha', 731_000_111);
+    webBot('beta', 731_000_222);
     Gate::before(fn ($u, $ability) => $ability === 'web.manage' ? true : null);
     $this->actingAs($this->panelAccount($user), 'tbe-web');
 
-    $this->get('/manage/alpha/bot-users')->assertOk()->assertSee('111')->assertDontSee('222');
+    $this->get('/manage/alpha/bot-users')->assertOk()->assertSee('731000111')->assertDontSee('731000222');
 });
 
 it('has tenant, bot, api and user on a real Livewire update request', function () {
