@@ -74,7 +74,7 @@ final class WebPanelFactory
             // A /panel link picks its bot; a password sign-in lands on the first one.
             ->tenantMenu(fn (): bool => self::managesSeveralBots())
             ->pages([Dashboard::class, TelegramAccountsPage::class])
-            ->navigationGroups(PanelGroup::class)
+            ->navigationGroups(PanelGroup::navigationGroups())
             ->widgets([AccountWidget::class, NewMembersChart::class])
             ->userMenuItems([
                 Action::make('tbe-telegram-accounts')
