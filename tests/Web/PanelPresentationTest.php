@@ -87,3 +87,10 @@ it('draws a stat card and facts, escaping what it is given', function () {
         ->toContain('href="https://example.test/roles"')
         ->toContain('Admin')->toContain('Seller');
 })->skip(fn () => ! class_exists(Panel::class), 'needs Filament');
+
+it('resolves its own panel strings, not their keys', function () {
+    app()->setLocale('en');
+
+    expect(__('tbe-essence::web.groups.members'))->toBe('Members')
+        ->and(__('tbe-essence::web.login_telegram_hint'))->not->toBe('tbe-essence::web.login_telegram_hint');
+});
