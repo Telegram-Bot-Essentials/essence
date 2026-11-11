@@ -11,6 +11,7 @@ use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
+use Filament\Support\Colors\Color;
 use Filament\Support\Enums\Width;
 use Filament\Support\Icons\Heroicon;
 use Filament\View\PanelsRenderHook;
@@ -30,6 +31,7 @@ use TelegramBotEssentials\Essence\Web\Filament\Widgets\NewMembersChart;
 use TelegramBotEssentials\Essence\Web\Http\BindWebContext;
 use TelegramBotEssentials\Essence\Web\Http\LimitFraming;
 use TelegramBotEssentials\Essence\Web\Http\SetPanelLocale;
+use TelegramBotEssentials\Essence\Web\PanelCalendar;
 use TelegramBotEssentials\Essence\Web\PanelLocales;
 use TelegramBotEssentials\Essence\Web\WebAccounts;
 use TelegramBotEssentials\Essence\Web\WebPanels;
@@ -72,6 +74,7 @@ final class WebPanelFactory
             // A /panel link picks its bot; a password sign-in lands on the first one.
             ->tenantMenu(fn (): bool => self::managesSeveralBots())
             ->pages([Dashboard::class, TelegramAccountsPage::class])
+            ->navigationGroups(PanelGroup::class)
             ->widgets([AccountWidget::class, NewMembersChart::class])
             ->userMenuItems([
                 Action::make('tbe-telegram-accounts')
@@ -117,8 +120,32 @@ final class WebPanelFactory
             ->sidebarCollapsibleOnDesktop()
             ->maxContentWidth(Width::Full)
             ->font(fn (): string => app()->getLocale() === 'fa' ? 'Vazirmatn' : 'Inter')
-            ->userMenuItems(self::languageItems())
+            ->colors(['primary' => Color::Indigo])
+            ->favicon(self::FAVICON)
+            ->userMenuItems([...self::languageItems(), ...self::calendarItems()])
             ->defaultAvatarProvider(LocalAvatarProvider::class);
+    }
+
+    /** A paper plane on indigo, inline so no asset needs publishing. */
+    private const FAVICON = 'data:image/svg+xml,'
+        .'%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E'
+        .'%3Crect width=%2232%22 height=%2232%22 rx=%228%22 fill=%22%234f46e5%22/%3E'
+        .'%3Cpath d=%22M7 15.5 24.5 8l-3 16.5-5.5-4.5-3 3v-5l8-7.5-10 6.2z%22 fill=%22white%22/%3E'
+        .'%3C/svg%3E';
+
+    /** @return list<Action> the calendar the viewer is not using, to switch to */
+    private static function calendarItems(): array
+    {
+        $items = [];
+        foreach (PanelCalendar::available() as $calendar) {
+            $items[] = Action::make('tbe-calendar-'.$calendar)
+                ->label(fn (): string => (string) __('tbe-essence::web.calendar.switch', ['calendar' => PanelCalendar::name($calendar)]))
+                ->icon(Heroicon::OutlinedCalendarDays)
+                ->url(fn (): string => route('tbe.web.calendar', ['calendar' => $calendar]))
+                ->visible(fn (): bool => PanelCalendar::current() !== $calendar);
+        }
+
+        return $items;
     }
 
     private static function managesSeveralBots(): bool
