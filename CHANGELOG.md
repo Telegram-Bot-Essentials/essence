@@ -10,6 +10,35 @@ the first public release.
 
 ## [Unreleased]
 
+## [0.19.0-beta.9] - 2026-11-11
+
+### Added
+
+- Web panel (opt-in, `TBE_WEB_ENABLED=true`, needs `filament/filament ^5.11`): one
+  Filament `manage` panel at a configurable path. Companions add screens with
+  `webPanels()->manage()` from their `register()`; screens are guarded like bot
+  handlers through the Gate.
+- `/panel` sends a one-time sign-in link. Web accounts are the app's own user model
+  (`tbe-essence.web.account_model`), linked to Telegram users through
+  `account_telegram_users`; accounts can link more Telegram users from the panel
+  (`/start tbe-link-<code>`, confirmed in the bot) and sign in with email and password.
+- Panel languages (English default, Persian), a calendar switch (Gregorian or Jalali;
+  Jalali needs the `intl` extension), and `inBotLocale()` for Telegram sends made from
+  the panel.
+- Shared panel pieces: sidebar groups (including a last "Bot" group), stat card, facts,
+  list row and moment components, labelled badges, member names, daily chart series,
+  `FormFields` (a bot `Form` shown as panel fields) and `FormEngine::answerAll()`.
+- `WebTestCase::panelAccount()`, `enterPanel()` and `livewireRequest()` for companion
+  screen tests through a real request.
+
+### Changed
+
+- A dead bot's username is looked up at most once every 5 minutes.
+
+### Fixed
+
+- The command generator writes an empty map and reads type flags as raw options.
+
 ## [0.19.0-beta.8] - 2026-11-03
 
 ### Added
