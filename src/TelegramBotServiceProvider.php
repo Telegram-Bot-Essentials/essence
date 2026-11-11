@@ -5,6 +5,7 @@ namespace TelegramBotEssentials\Essence;
 use Filament\Panel;
 use Illuminate\Contracts\Foundation\CachesConfiguration;
 use Illuminate\Queue\Events\JobFailed;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -197,6 +198,7 @@ class TelegramBotServiceProvider extends ServiceProvider
     private function bootWeb(): void
     {
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'tbe-essence');
+        Blade::anonymousComponentPath(__DIR__.'/../resources/views/components', 'tbe');
 
         if (config('tbe-essence.web.enabled')) {
             $this->loadRoutesFrom(__DIR__.'/../routes/web-ui.php');
