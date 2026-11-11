@@ -34,4 +34,16 @@ return [
         'new_members' => 'New members',
         'days' => 'Last :days days',
     ],
+    'member' => 'Member',
+    'calendar' => [
+        'gregorian' => 'Gregorian',
+        'jalali' => 'Jalali',
+        'switch' => 'Calendar: :calendar',
+    ],
+    'groups' => [
+        'members' => 'Members',
+        'sales' => 'Sales',
+        'marketing' => 'Marketing',
+        'support' => 'Support',
+    ],
 ];
