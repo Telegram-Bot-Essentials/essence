@@ -44,6 +44,7 @@ return [
         'members' => 'Members',
         'sales' => 'Sales',
         'marketing' => 'Marketing',
+        'bot' => 'Bot',
         'support' => 'Support',
     ],
 ];

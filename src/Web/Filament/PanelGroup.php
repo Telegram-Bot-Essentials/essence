@@ -15,6 +15,7 @@ enum PanelGroup: string implements HasLabel
     case Sales = 'sales';
     case Marketing = 'marketing';
     case Support = 'support';
+    case Bot = 'bot';
 
     public function getLabel(): string
     {
