@@ -34,7 +34,8 @@
     },
     "suggest": {
         "laravel/telescope": "Tags handled exceptions with BUG so they can be filtered in the Telescope UI.",
-        "filament/filament": "^5.11 for the web panel (set TBE_WEB_ENABLED=true)."
+        "filament/filament": "^5.11 for the web panel (set TBE_WEB_ENABLED=true).",
+        "ext-intl": "Writes web panel dates in the Jalali calendar; Gregorian is used without it."
     },
     "autoload": {
         "psr-4": {
