@@ -94,3 +94,11 @@ it('resolves its own panel strings, not their keys', function () {
     expect(__('tbe-essence::web.groups.members'))->toBe('Members')
         ->and(__('tbe-essence::web.login_telegram_hint'))->not->toBe('tbe-essence::web.login_telegram_hint');
 });
+
+it('draws list rows and moments in the viewer\'s calendar', function () {
+    app()->setLocale('en');
+    $html = Blade::render('<x-tbe::row><span>a</span><x-tbe::when :at="$at" /></x-tbe::row><x-tbe::when :at="null" /><x-tbe::when :at="$at" exact /><x-tbe::empty>none</x-tbe::empty>', ['at' => Carbon::parse('2026-11-11 13:20', 'UTC')]);
+
+    expect($html)->toContain('fi-tbe-row')->toContain('title="Nov 11, 2026 13:20"')
+        ->toContain('—')->toContain('>Nov 11, 2026 13:20<')->toContain('none');
+});
