@@ -38,7 +38,7 @@ return [
     'calendar' => [
         'gregorian' => 'Gregorian',
         'jalali' => 'Jalali',
-        'switch' => 'Calendar: :calendar',
+        'switch' => 'Switch to :calendar calendar',
     ],
     'groups' => [
         'members' => 'Members',

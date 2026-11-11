@@ -38,7 +38,7 @@ return [
     'calendar' => [
         'gregorian' => 'میلادی',
         'jalali' => 'شمسی',
-        'switch' => 'تقویم: :calendar',
+        'switch' => 'تغییر به تقویم :calendar',
     ],
     'groups' => [
         'members' => 'کاربران',
