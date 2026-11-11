@@ -250,6 +250,11 @@ class TelegramBotServiceProvider extends ServiceProvider
             $tenancyConfig
         ));
 
+        // Before anything below reads a string: a group read before its
+        // namespace is known is cached empty, and every key stays raw.
+        $this->loadTranslationsFrom(__DIR__.'/../lang', 'tbe');
+        $this->loadTranslationsFrom(__DIR__.'/../lang', 'tbe-essence');
+
         $this->loadConsoleRoutes();
         $this->bootWeb();
 
@@ -268,8 +273,6 @@ class TelegramBotServiceProvider extends ServiceProvider
         }
 
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-        $this->loadTranslationsFrom(__DIR__.'/../lang', 'tbe');
-        $this->loadTranslationsFrom(__DIR__.'/../lang', 'tbe-essence');
 
         $this->registerPackageHandlers();
 
