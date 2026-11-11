@@ -54,7 +54,8 @@ abstract class PanelResource extends Resource
         return $count !== null && $count > 0 ? (string) $count : null;
     }
 
-    public static function getNavigationBadgeColor(): string
+    /** @return string|array<int|string, string|int>|null */
+    public static function getNavigationBadgeColor(): string|array|null
     {
         return 'warning';
     }
