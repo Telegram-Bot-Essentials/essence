@@ -34,4 +34,16 @@ return [
         'new_members' => 'کاربران تازه',
         'days' => ':days روز گذشته',
     ],
+    'member' => 'کاربر',
+    'calendar' => [
+        'gregorian' => 'میلادی',
+        'jalali' => 'شمسی',
+        'switch' => 'تقویم: :calendar',
+    ],
+    'groups' => [
+        'members' => 'کاربران',
+        'sales' => 'فروش',
+        'marketing' => 'بازاریابی',
+        'support' => 'پشتیبانی',
+    ],
 ];
