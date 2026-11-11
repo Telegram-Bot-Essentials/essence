@@ -31,6 +31,9 @@ return [
         // Viewers pick one from the user menu; the default needs no choice.
         'locales' => ['en' => 'English', 'fa' => 'فارسی'],
         'default_locale' => 'en',
+        // Dates in the panel: 'gregorian', 'jalali', or 'auto' (Jalali while
+        // the panel speaks Persian). Viewers can switch it from the user menu.
+        'calendar' => env('TBE_WEB_CALENDAR', 'auto'),
     ],
 
     'bot_access' => [
