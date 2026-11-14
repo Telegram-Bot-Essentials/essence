@@ -95,17 +95,22 @@ class RunIsolatedTask implements ShouldQueue
             return;
         }
 
+        // A worker is long-lived and the queue tenancy bootstrapper is off, so the
+        // tenancy started here is put back, or every later job would inherit it.
+        $previous = tenancy()->initialized ? tenancy()->tenant : null;
         tenancy()->initialize($bot);
 
-        $user = $this->botUserId === null ? null : BotUser::query()->find($this->botUserId);
-
         $locale = App::getLocale();
-        App::setLocale(app(ResolvesBotLocale::class)->resolve($bot));
 
         try {
+            $user = $this->botUserId === null ? null : BotUser::query()->find($this->botUserId);
+
+            App::setLocale(app(ResolvesBotLocale::class)->resolve($bot));
+
             wHook()->runInContext($bot, $user, $this->chatId, $this->threadId, $work);
         } finally {
             App::setLocale($locale);
+            $previous instanceof Bot ? tenancy()->initialize($previous) : tenancy()->end();
         }
     }
 
