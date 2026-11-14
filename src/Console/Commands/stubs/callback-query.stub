@@ -7,7 +7,7 @@ use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQuery;
 class {{ class_name }} extends CallbackQuery
 {
     protected string $type = '{{ type }}';
-    protected ?string $permission = {{ permission }};
+    protected ?string $ability = {{ ability }};
 
     public function start(): void
     {

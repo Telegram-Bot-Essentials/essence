@@ -4,6 +4,7 @@ return [
     'main' => [
         'text' => [
             'response' => '❕ Cancelled.',
+            'nothingToCancel' => '❕ Nothing to cancel.',
             'cancelDueToNewProcess' => '❕ Your previous action was cancelled because you started a new one.',
         ],
     ],

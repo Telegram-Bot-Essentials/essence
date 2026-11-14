@@ -2,6 +2,7 @@
 
 namespace TelegramBotEssentials\Essence\Telegram\CallbackQueries\Member;
 
+use TelegramBotEssentials\Essence\Enums\ChatScope;
 use TelegramBotEssentials\Essence\Forms\FormState;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQuery;
 
@@ -13,6 +14,8 @@ use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQuery;
 class FormQuery extends CallbackQuery
 {
     protected string $type = FormState::TYPE;
+
+    protected ChatScope $chatScope = ChatScope::Any;
 
     public function pick(int $step, string $value): void
     {

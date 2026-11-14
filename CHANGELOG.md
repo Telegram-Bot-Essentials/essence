@@ -10,6 +10,307 @@ the first public release.
 
 ## [Unreleased]
 
+## [0.19.0-beta.10] - 2026-11-14
+
+### Fixed
+
+- A `background()` task puts back the tenancy it started when it finishes or
+  fails. A queue worker used to keep that bot's tenant for every job after it,
+  so a job spanning bots found other bots' tenant-scoped models missing.
+
+## [0.19.0-beta.9] - 2026-11-11
+
+### Added
+
+- Web panel (opt-in, `TBE_WEB_ENABLED=true`, needs `filament/filament ^5.11`): one
+  Filament `manage` panel at a configurable path. Companions add screens with
+  `webPanels()->manage()` from their `register()`; screens are guarded like bot
+  handlers through the Gate.
+- `/panel` sends a one-time sign-in link. Web accounts are the app's own user model
+  (`tbe-essence.web.account_model`), linked to Telegram users through
+  `account_telegram_users`; accounts can link more Telegram users from the panel
+  (`/start tbe-link-<code>`, confirmed in the bot) and sign in with email and password.
+- Panel languages (English default, Persian), a calendar switch (Gregorian or Jalali;
+  Jalali needs the `intl` extension), and `inBotLocale()` for Telegram sends made from
+  the panel.
+- Shared panel pieces: sidebar groups (including a last "Bot" group), stat card, facts,
+  list row and moment components, labelled badges, member names, daily chart series,
+  `FormFields` (a bot `Form` shown as panel fields) and `FormEngine::answerAll()`.
+- `WebTestCase::panelAccount()`, `enterPanel()` and `livewireRequest()` for companion
+  screen tests through a real request.
+
+### Changed
+
+- A dead bot's username is looked up at most once every 5 minutes.
+
+### Fixed
+
+- The command generator writes an empty map and reads type flags as raw options.
+
+## [0.19.0-beta.8] - 2026-11-03
+
+### Added
+
+- `RecipientGroups`: named groups of users a package can address without knowing
+  what they are. Essence has none by default; a package binds its own.
+
+## [0.19.0-beta.7] - 2026-11-03
+
+### Added
+
+- `isolated()` runs work as its own action: a failure is logged, reported and
+  goes no further. `background()` does the same in a queue worker through one
+  generic job, restoring the bot, user, chat and locale, and only once any open
+  transaction commits. `notifyUser()` tells a user something without being able
+  to fail the flow, and keeps track of who blocked the bot.
+- `sweepTelegramFailures()`, in the test case and as the `SweepsTelegramFailures`
+  trait for a bot's own tests, runs a flow with each Telegram call
+  failing in turn, to check what it promises holds whatever Telegram does.
+
+- `HandlerGate`, registered with `handlerGates()->add()`, is a condition on what
+  a user asks of the bot. It runs once a handler claims the update, so it leaves
+  listeners, the bot's own messages and group chatter alone.
+- `TelegramResponse::asNewMessage()` answers a button press without editing the
+  message it sits on, and `inlineQueryButton()` is what an inline query gets
+  instead of a message on every keystroke.
+
+- `extension.neon` carries a PHPStan rule against calling Telegram directly inside
+  `DB::transaction()`. Include it from a bot's or package's `phpstan.neon`.
+- Failed queue jobs reach the bug report, and so does a `background()` task that
+  used all its retries. They used to sit in `failed_jobs` unseen.
+
+### Changed
+
+- **Breaking:** listeners of `BotEvent`s can no longer stop an update, and one
+  failing no longer stops the others. A failure is still answered as usual, so
+  `dependsOn()` in a listener reaches the user. Use a `HandlerGate` to refuse.
+- A deep link reaches its listeners even when the `/start` handler fails, since
+  what it brings, such as a referral, can only be claimed on that first update.
+- A command refused by a gate no longer cancels the flow the user is in.
+- **Breaking:** `Webhook::runForUser()` only switches who the webhook acts for,
+  and always switches back. A failure now goes to the caller. It used to reach
+  the user-facing exception handler, which swallowed expected stops and aborted
+  the whole request on anything else.
+- Telegram requests are sent again when the connection never opened or after a
+  rate limit of up to 3 seconds, and never after a read timeout, since the
+  message may have arrived. Ordinary calls time out after 15 seconds, not 60.
+
+## [0.19.0-beta.6] - 2026-11-01
+
+### Changed
+
+- Group chats are always on: `tbe-essence.groups.enabled` and
+  `TBE_GROUPS_ENABLED` are gone. Handlers still run in private chats only
+  unless they opt in with `ChatScope`, so a bot that opts in nothing just
+  stays quiet there, apart from `/help`.
+- A button on a channel message now reaches the handlers, for chats such as a
+  channel used to review payments. Messages in a channel are still dropped.
+
+## [0.19.0-beta.5] - 2026-11-01
+
+### Added
+
+- `privateChatLink()` and `TelegramResponse::continueInPrivate()`: point a
+  group member at their private chat with the bot, with an optional deep
+  link payload, for anything the group should not see.
+- `BotCommandMenu` publishes a second list to group chats once
+  `tbe-essence.groups.enabled` is on, holding the commands that run there.
+- A group becoming a supergroup keeps its open flows and button owners under
+  the new chat id.
+- `bot_users.has_private_chat`: false for someone first met in a group or by
+  an inline query, until they use the private chat. `reachable()` and
+  `isReachable()` respect it, so broadcasts skip people the bot cannot message.
+- People just talking in a group leave no trace: their messages are dropped
+  before anything is stored. Someone gets a row by using a command or button
+  there, or when the bot has a text matcher that runs in groups.
+- `BotUser::isNewToPrivateChat()`: created by this update, or met elsewhere and
+  opening the private chat with it. For what `wasRecentlyCreated` meant before
+  a user could be met in a group first.
+
+### Fixed
+
+- The command menu's scope was form-encoded, which Telegram cannot read, so
+  the list went to the default scope and showed in every chat. It is JSON
+  now, and the stale default list is cleared. Run `tbe:set-webhook` to
+  republish.
+- `BotDeepLinkReceived` no longer fires for `/start@bot <payload>` typed in a
+  group: its listeners answer with private things.
+
+## [0.19.0-beta.4] - 2026-11-01
+
+### Added
+
+- `abilities()`: the catalog of every Gate ability the bot's handlers ask
+  for, read from the buses and the form registry on each call, so a
+  package that hands abilities out can list them without a second list to
+  keep in step. `all()`, `has()`, `grouped()` (by first segment) and
+  `label()`. `declare()` adds an ability only code checks with
+  `hasAccess()`, optionally with its own label.
+- Ability labels come from an `abilities` translation file keyed by the
+  full ability name (`'billing.offers.manage' => 'Offers'`): the app's
+  `lang/<locale>/abilities.php` first, then each package's translation
+  namespace. An unlabelled ability shows its name.
+
+## [0.19.0-beta.3] - 2026-10-31
+
+Essence knows the bot's owner, the developer and abilities, and nothing
+else about who may do what. The last admin names go, and a test keeps them
+out. Breaking for anything that called `adminAlert()`, used `--admin`, or
+set `MAIN_ADMIN_CHAT_ID` (see **Upgrading**).
+
+### Changed
+
+- `adminAlert()` is `ownerAlert()` and `AdminAlerts` is `OwnerAlerts`: it
+  only ever told the owner. Config `admin_alerts.throttle` is
+  `owner_alerts.throttle` (`TBE_OWNER_ALERT_THROTTLE`).
+- `tbe-essence.main.admin_chat_id` (`MAIN_ADMIN_CHAT_ID`) is
+  `main.owner_peer_id` (`MAIN_OWNER_PEER_ID`): it is the main bot's owner.
+- The audit log channel defaults to `audit` instead of `admin-audit`.
+- App handlers are found in every sub-folder of `app/Telegram/<Type>/`,
+  not only `Admin/` and `Member/`, and under their real class names
+  (sub-folders used to be scanned but resolved to the wrong class).
+  Abstract classes are skipped.
+- `tbe:make:*` put the class straight under its type's folder; give a
+  path (`Shop/BuyKey`) for a sub-folder.
+
+### Removed
+
+- The `--admin` option of `tbe:make:*`; use `--ability=`.
+- `TelegramBotAndUserSeeder` and `TestDataSeeder`, which read config that
+  no longer exists.
+
+### Upgrading
+
+- Rename `adminAlert(` to `ownerAlert(` and any `AdminAlerts` binding to
+  `OwnerAlerts`.
+- Rename `MAIN_ADMIN_CHAT_ID` to `MAIN_OWNER_PEER_ID` in `.env`, and
+  `TBE_ADMIN_ALERT_THROTTLE` to `TBE_OWNER_ALERT_THROTTLE` if set.
+- To keep writing to `storage/logs/admin-audit.log`, set
+  `tbe-essence.logging.audit_channel` to `admin-audit`.
+
+## [0.19.0-beta.2] - 2026-10-31
+
+Essence no longer has an access model. A handler names a Laravel Gate
+ability, and the app's Gate decides who holds it. This release is breaking
+for every handler that named a permission and for anything that called the
+authorizer or the permission registry (see **Upgrading**).
+
+### Changed
+
+- Handlers name the ability they need with `protected ?string $ability`
+  (`HasAbility`, `DeclaresAbility::getAbility()`) in place of
+  `$permission`. `null` (the default) is still open to everyone.
+- `canUseHandler()` and `hasAccess()` ask
+  `Gate::forUser($botUser)->allows($ability)`. A handler without an
+  ability never reaches the Gate.
+- With no Gate rule, an ability is denied to everyone, **the bot owner
+  included**. Essence's default used to let the owner and developer through.
+- `adminAlert()` goes to the bot's owner only. An app that wants more
+  recipients extends `AdminAlerts`, overrides `recipients()` and rebinds it.
+- `tbe:make:*` take `--ability=` in place of `--permission=`; `--admin`
+  alone still generates `app.<snake_name>`.
+- `Testing\TestCase::grant($user, ...$abilities)` grants through a
+  `Gate::before` that answers only for what it granted.
+
+### Removed
+
+- `AuthorizesAccess`, `DefaultAuthorizer` (with `isOwnerOrDeveloper()`),
+  `PermissionRegistry`, `Permission`, `DeclaresPermission`, `HasPermission`,
+  `Testing\GrantingAuthorizer`, and the `authorizer()`,
+  `permissionRegistry()` and `handlerPermission()` helpers
+  (`handlerAbility()` replaces the last).
+- `getPermission()` from every handler interface.
+- The `essence.admin_alerts` permission (`AdminAlerts::PERMISSION`) and its
+  `tbe::admin_alerts` label.
+
+### Upgrading
+
+1. Rename `protected ?string $permission` to `protected ?string $ability`
+   in every handler and form.
+2. Drop every `permissionRegistry()->register(...)` call; there is nothing
+   to register.
+3. Define who holds which ability on the Gate, which receives the
+   `BotUser`. To keep the old behaviour (owner and developer only):
+
+   ```php
+   Gate::before(fn (mixed $user) => $user instanceof BotUser
+       && in_array((string) $user->telegram_user_peer_id, [
+           (string) $user->bot?->bot_owner_peer_id,
+           (string) config('tbe-essence.developer.peer_id'),
+       ], true) ? true : null);
+   ```
+
+   Any `Gate::before` / `Gate::after` the app already has now also sees
+   `BotUser`s: one that type-hints the web `User` will throw.
+4. tbe-access rebinds `AuthorizesAccess`, which no longer exists. Uninstall
+   it until it moves onto the Gate.
+
+## [0.19.0-beta.1] - 2026-10-13
+
+Menus are the app's: essence no longer ships or registers one. This release
+is breaking for any app that showed essence's Admin Panel / Main Menu keys
+(see **Upgrading**).
+
+Group chats can be turned on (`tbe-essence.groups.enabled`, off by default).
+With it off nothing changes: group updates are dropped as before.
+
+### Added
+
+- Group chats, opt-in through `tbe-essence.groups.enabled`
+  (`TBE_GROUPS_ENABLED`). Handlers say where they run with
+  `protected ChatScope $chatScope` (`Private`, the default, `Groups` or
+  `Any`), checked by `canUseHandler()` alongside the permission, so every
+  existing handler stays private-only.
+- `wHook()->replyTo()` (the current chat, plus its forum topic), `inGroup()`
+  and `hasConversation()`. Essence's own replies, errors, forms and
+  `TelegramResponse::send()` now answer in the chat the update came from.
+- `/cancel`, which cancels the flow open in the current chat (in any chat).
+- Group keyboards. No reply keyboard is ever sent to a group: a client shows
+  only the newest one in a group, so one user's would hide everyone else's.
+  A flow's keys become inline buttons on the prompt, with an inline Cancel;
+  a press is replayed as if the presser typed the key, against their own
+  conversation (`GroupKeyQuery`). Outside a flow, a markup with no buttons
+  leaves keyboards on screen alone.
+- `message_owners` and `MessageOwner`: a group message with inline buttons
+  is recorded against the user it was sent for, and only they can press its
+  buttons. `protected bool $anyoneCanPress = true` on a callback query opts
+  out. Pruned after `pruning.message_owners_days` (7).
+- `Bot::username()`, from getMe and cached, so `/command@otherbot` in a group
+  is left alone instead of cancelling the sender's flow.
+
+### Changed
+
+- `tbe-essence.keyboard.menus` is empty by default. A bot without menus is
+  a supported setup: it shows no reply keyboard.
+- When there is no menu to show, or every key in it is hidden from the
+  user, the default resolver removes the keyboard on screen. It used to
+  send an empty keyboard, which Telegram ignores, leaving a stale one up
+  (for example after a user lost a permission).
+
+### Removed
+
+- `AdminPanelKey` and `MainMenuKey`, their `tbe::admin_panel` and
+  `tbe::main_menu` strings, and the `essence.admin_panel` permission.
+  The only reply key essence still registers is `CancelProcessKey`.
+- The admin alerts permission label moved to `tbe::admin_alerts.permission`.
+
+- With groups on, group traffic no handler can act on is dropped before a
+  user is created: channel posts, messages sent as a chat (anonymous admins,
+  linked channels) and service messages. Unhandled group text gets no
+  "request is invalid" reply, and only private updates mark a user active.
+
+### Upgrading
+
+1. If your menus listed `AdminPanelKey` or `MainMenuKey`, add your own
+   reply keys that call `wHook()->conversation()->changeMenu('admin')` /
+   `changeMenu('main')`, give the admin one a permission of your own, and
+   list them in `tbe-essence.keyboard.menus`.
+2. An app that relied on the package's default menus (no `keyboard` block
+   in its published `config/tbe-essence.php`) now shows no keyboard until it
+   configures `menus`.
+3. A role holding `essence.admin_panel` keeps the string but grants nothing;
+   grant the app's own permission instead.
+
 ## [0.18.1] - 2026-10-12
 
 ### Fixed

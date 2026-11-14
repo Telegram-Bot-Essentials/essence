@@ -2,11 +2,11 @@
 
 namespace TelegramBotEssentials\Essence\Testing;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Testing\TestResponse;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Symfony\Component\HttpFoundation\Response;
-use TelegramBotEssentials\Essence\Contracts\AuthorizesAccess;
 use TelegramBotEssentials\Essence\Models\Bot;
 use TelegramBotEssentials\Essence\Models\BotUser;
 use TelegramBotEssentials\Essence\Models\TelegramUser;
@@ -27,6 +27,11 @@ use TelegramBotEssentials\Essence\TelegramBotServiceProvider;
  */
 abstract class TestCase extends Orchestra
 {
+    use SweepsTelegramFailures;
+
+    /** @var array<int, list<string>> abilities granted by grant(), by bot user id */
+    private array $grants = [];
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -76,7 +81,7 @@ abstract class TestCase extends Orchestra
      * Pre-create a bot's user at a given Telegram peer id, so a subsequent
      * postWebhookUpdate() with the same $peerId finds this row instead of
      * auto-creating a fresh one - pair it with grant() to test a handler
-     * that needs a permission.
+     * that needs an ability.
      *
      * @param  array<string, mixed>  $attributes  bot_users columns, plus
      *                                            state and menu for the private chat
@@ -103,21 +108,34 @@ abstract class TestCase extends Orchestra
     }
 
     /**
-     * Let $user hold $permissions under essence's default access model,
-     * which on its own only lets the bot owner and developer through.
-     * Returns $user, so it wraps makeBotUser().
+     * Let $user hold $abilities on the Gate, which on its own denies every
+     * ability to everyone. Returns $user, so it wraps makeBotUser().
      */
-    protected function grant(BotUser $user, string ...$permissions): BotUser
+    protected function grant(BotUser $user, string ...$abilities): BotUser
     {
-        if (! app(AuthorizesAccess::class) instanceof GrantingAuthorizer) {
-            app()->instance(AuthorizesAccess::class, new GrantingAuthorizer);
+        if ($this->grants === []) {
+            // Answers only for the users and abilities granted here (null
+            // otherwise), so the app's own Gate rules still apply.
+            Gate::before(fn (mixed $user, string $ability) => $user instanceof BotUser
+                && in_array($ability, $this->grantsOf($user), true) ? true : null);
         }
 
-        $authorizer = app(AuthorizesAccess::class);
-        assert($authorizer instanceof GrantingAuthorizer);
-        $authorizer->grant($user, ...$permissions);
+        $this->grants[self::grantKey($user)] = array_values(array_unique([...$this->grantsOf($user), ...$abilities]));
 
         return $user;
+    }
+
+    /** @return list<string> */
+    private function grantsOf(BotUser $user): array
+    {
+        return $this->grants[self::grantKey($user)] ?? [];
+    }
+
+    private static function grantKey(BotUser $user): int
+    {
+        $key = $user->getKey();
+
+        return is_numeric($key) ? (int) $key : 0;
     }
 
     /**
@@ -185,9 +203,37 @@ abstract class TestCase extends Orchestra
         ];
     }
 
+    /**
+     * Move a message or callback_query update into a group chat, and into a
+     * forum topic when $topicId is given.
+     *
+     * @param  array<string, mixed>  $update
+     * @return array<string, mixed>
+     */
+    protected function inGroupChat(array $update, int $chatId = -100123456, string $type = 'supergroup', ?int $topicId = null): array
+    {
+        $chat = ['id' => $chatId, 'type' => $type, 'title' => 'A group'];
+        $path = isset($update['message']) ? 'message' : 'callback_query.message';
+
+        data_set($update, $path.'.chat', $chat);
+
+        if ($topicId !== null) {
+            data_set($update, $path.'.is_topic_message', true);
+            data_set($update, $path.'.message_thread_id', $topicId);
+        }
+
+        /** @var array<string, mixed> $update */
+        return $update;
+    }
+
     /** Assert a Telegram Bot API call was made matching $callback - e.g. fn ($request) => $request['text'] === 'hi'. */
     protected function assertTelegramSent(callable $callback): void
     {
         Http::assertSent($callback);
+    }
+
+    protected function assertTelegramNotSent(): void
+    {
+        Http::assertNothingSent();
     }
 }

@@ -11,6 +11,9 @@ use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 use TelegramBotEssentials\Essence\Database\factories\BotUserFactory;
 use TelegramBotEssentials\Essence\Services\BotUserStatus;
 
+/**
+ * @property bool|null $has_private_chat whether the bot can message them; null until read back
+ */
 class BotUser extends Model
 {
     use BelongsToTenant;
@@ -50,9 +53,12 @@ class BotUser extends Model
         'updated_at',
     ];
 
+    private bool $openedPrivateChatNow = false;
+
     protected $casts = [
         'suspended_at' => 'datetime',
         'last_interaction' => 'datetime',
+        'has_private_chat' => 'boolean',
     ];
 
     public static function newFactory(): BotUserFactory
@@ -89,6 +95,7 @@ class BotUser extends Model
     public function scopeReachable(Builder $query): Builder
     {
         return $query
+            ->where('has_private_chat', true)
             ->where('status', self::STATUS_ACTIVE)
             ->whereHas('telegramUser', fn (Builder $telegramUser) => $telegramUser->whereNull('deactivated_at'));
     }
@@ -114,7 +121,9 @@ class BotUser extends Model
 
     public function isReachable(): bool
     {
-        return $this->reachability() === self::STATUS_ACTIVE;
+        // Not false rather than true: a model just created has not read the
+        // column's default back.
+        return $this->has_private_chat !== false && $this->reachability() === self::STATUS_ACTIVE;
     }
 
     /**
@@ -150,15 +159,39 @@ class BotUser extends Model
         return $conversation;
     }
 
+    /** The Telegram account this bot user is, 0 if unknown. */
+    public function peerId(): int
+    {
+        $peerId = $this->getAttribute('telegram_user_peer_id');
+
+        return is_numeric($peerId) ? (int) $peerId : 0;
+    }
+
     /**
      * This user's private chat with the bot - the conversation to write to
      * when acting on a user other than the one the update came from.
      */
     public function privateConversation(): Conversation
     {
-        $peerId = $this->getAttribute('telegram_user_peer_id');
+        return $this->conversationIn($this->peerId());
+    }
 
-        return $this->conversationIn(is_numeric($peerId) ? (int) $peerId : 0);
+    /** This update is the first this user sent from their private chat with the bot. */
+    public function markPrivateChatOpened(): void
+    {
+        $this->forceFill(['has_private_chat' => true])->save();
+        $this->openedPrivateChatNow = true;
+    }
+
+    /**
+     * Whether this user arrived in their private chat with this very update.
+     * Referrals and campaigns count this as new: someone met in a group first
+     * already has a row, but has never really started the bot.
+     */
+    public function isNewToPrivateChat(): bool
+    {
+        return $this->has_private_chat !== false
+            && ($this->wasRecentlyCreated || $this->openedPrivateChatNow);
     }
 
     public function interact(): void

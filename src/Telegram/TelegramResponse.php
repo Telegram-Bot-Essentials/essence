@@ -30,6 +30,31 @@ class TelegramResponse
         public string|InputFile|null $photo = null,
     ) {}
 
+    private bool $asNewMessage = false;
+
+    /** @var array{text: string, start_parameter: string}|null */
+    private ?array $inlineQueryButton = null;
+
+    /**
+     * Sends a group member to their private chat with the bot, for anything
+     * the rest of the group should not see. It is a link rather than a direct
+     * message because the bot cannot message someone who never started it.
+     */
+    public static function continueInPrivate(?string $payload = null, ?string $text = null): self
+    {
+        $link = privateChatLink($payload);
+
+        return new self(
+            text: $text ?? __('tbe::general.continue_in_private.text'),
+            replyMarkup: $link === null ? null : Keyboard::make()->inline()->row([
+                Keyboard::inlineButton([
+                    'text' => __('tbe::general.continue_in_private.key'),
+                    'url' => $link,
+                ]),
+            ]),
+        );
+    }
+
     public static function fromArray(array $data): static
     {
         return new static(
@@ -66,6 +91,40 @@ class TelegramResponse
         return array_filter([
             'text' => $this->answer,
         ]);
+    }
+
+    /**
+     * Never edit the message that led here: when this is what a button press
+     * gets instead of its result, that message may be what the user still needs.
+     */
+    public function asNewMessage(): self
+    {
+        $this->asNewMessage = true;
+
+        return $this;
+    }
+
+    public function sendsAsNewMessage(): bool
+    {
+        return $this->asNewMessage;
+    }
+
+    /**
+     * What an inline query gets instead of a message, which would arrive on
+     * every keystroke: a button above the empty results that opens the bot's
+     * private chat, sending /start with $startParameter.
+     */
+    public function inlineQueryButton(string $text, string $startParameter): self
+    {
+        $this->inlineQueryButton = ['text' => $text, 'start_parameter' => $startParameter];
+
+        return $this;
+    }
+
+    /** @return array{text: string, start_parameter: string}|null */
+    public function getInlineQueryButton(): ?array
+    {
+        return $this->inlineQueryButton;
     }
 
     public function answer(string $answer): self
@@ -117,7 +176,7 @@ class TelegramResponse
     public function send(string|int|null $chatId = null): Message
     {
         $params = array_filter([
-            'chat_id' => $chatId ?? wHook()->user()->telegramUser->peer_id,
+            ...($chatId === null ? wHook()->replyTo() : ['chat_id' => $chatId]),
             'reply_markup' => $this->replyMarkup?->isEmpty() ? null : $this->replyMarkup,
             'parse_mode' => $this->parseMode,
         ]);
@@ -151,7 +210,7 @@ class TelegramResponse
 
     /**
      * The bot user whose reachability this send tells us about, or null when it
-     * tells us nothing: a send aimed at another chat (an admin group, a
+     * tells us nothing: a send aimed at another chat (a group, a
      * channel) says nothing about the user currently in context.
      */
     private function statusTarget(string|int|null $chatId): ?BotUser
@@ -161,6 +220,12 @@ class TelegramResponse
         }
 
         $user = wHook()->user();
+
+        // Only a send to the private chat says anything about the user: one
+        // to a group fails when the bot left the group, not when they blocked it.
+        if ($chatId === null && wHook()->inGroup()) {
+            return null;
+        }
 
         if ($chatId !== null && (int) $chatId !== (int) $user->telegramUser?->peer_id) {
             return null;

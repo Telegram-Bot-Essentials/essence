@@ -6,14 +6,24 @@ use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use ReflectionMethod;
 use Telegram\Bot\Exceptions\TelegramSDKException;
-use TelegramBotEssentials\Essence\Contracts\DeclaresPermission;
-use TelegramBotEssentials\Essence\Traits\HasPermission;
+use TelegramBotEssentials\Essence\Contracts\DeclaresAbility;
+use TelegramBotEssentials\Essence\Contracts\DeclaresChatScope;
+use TelegramBotEssentials\Essence\Traits\HasAbility;
+use TelegramBotEssentials\Essence\Traits\HasChatScope;
 
-abstract class CallbackQuery implements CallbackQueryInterface, DeclaresPermission
+abstract class CallbackQuery implements CallbackQueryInterface, DeclaresAbility, DeclaresChatScope
 {
-    use HasPermission;
+    use HasAbility;
+    use HasChatScope;
 
     protected string $type;
+
+    /**
+     * In a group, a button on a message sent for one user can only be
+     * pressed by that user (MessageOwner). Set true for buttons meant for
+     * everyone, such as a poll.
+     */
+    protected bool $anyoneCanPress = false;
 
     protected string $method;
 
@@ -22,6 +32,11 @@ abstract class CallbackQuery implements CallbackQueryInterface, DeclaresPermissi
     public function getType(): string
     {
         return $this->type;
+    }
+
+    public function anyoneCanPress(): bool
+    {
+        return $this->anyoneCanPress;
     }
 
     public function setMethod(string $method): void

@@ -40,7 +40,7 @@ class MakeInlineQuery extends PackageGeneratorCommand
             [
                 '{{ namespace }}',
                 '{{ class_name }}',
-                '{{ permission }}',
+                '{{ ability }}',
             ],
             [
                 $namespace,

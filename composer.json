@@ -24,6 +24,7 @@
         "stancl/tenancy": "^3.9"
     },
     "require-dev": {
+        "filament/filament": "^5.11",
         "larastan/larastan": "^3.0",
         "laravel/pint": "^1.18",
         "laravel/telescope": "^5.0",
@@ -32,7 +33,9 @@
         "pestphp/pest-plugin-laravel": "^3.1 || ^4.0"
     },
     "suggest": {
-        "laravel/telescope": "Tags handled exceptions with BUG so they can be filtered in the Telescope UI."
+        "laravel/telescope": "Tags handled exceptions with BUG so they can be filtered in the Telescope UI.",
+        "filament/filament": "^5.11 for the web panel (set TBE_WEB_ENABLED=true).",
+        "ext-intl": "Writes web panel dates in the Jalali calendar; Gregorian is used without it."
     },
     "autoload": {
         "psr-4": {

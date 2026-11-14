@@ -13,18 +13,25 @@ trait TgClassMaker
 {
     private string $nameValue;
 
-    private ?string $permissionValue = null;
+    /** Sub-folders given with the name ("Shop/" for Shop/BuyKey), kept as typed. */
+    private string $namePrefix = '';
+
+    private ?string $abilityValue = null;
 
     private string $typeValue;
 
     public function initializeName(): string
     {
-        $argument = $this->argument('name');
-        $name = trim(is_string($argument) ? $argument : '');
+        $name = trim($this->argument('name'));
 
         if (Str::endsWith($name, '.php')) {
             $name = Str::substr($name, 0, -4);
         }
+
+        $name = str_replace('\\', '/', $name);
+        $slash = strrpos($name, '/');
+        $this->namePrefix = $slash === false ? '' : Str::substr($name, 0, $slash + 1);
+        $name = $slash === false ? $name : Str::substr($name, $slash + 1);
 
         $stripped = preg_replace([
             '/answer/i',
@@ -37,17 +44,19 @@ trait TgClassMaker
 
         $this->nameValue = is_string($stripped) ? $stripped : $name;
 
-        return $this->nameValue;
+        return $this->namePrefix.$this->nameValue;
     }
 
     private function handleOptions(): void
     {
+        // Raw options: only the feature command defines --all and the type flags.
+        $options = $this->input->getOptions();
         $types = [];
-        if ($this->option('all')) {
+        if (($options['all'] ?? false) === true) {
             $types = array_keys($this->map);
         } else {
             foreach ($this->map as $option => $command) {
-                if ($this->option($option)) {
+                if (($options[$option] ?? false) === true) {
                     $types[] = $option;
                 }
             }
@@ -57,13 +66,10 @@ trait TgClassMaker
             $command = $this->map[$type];
 
             $arguments = [
-                'name' => $this->nameValue,
+                'name' => $this->namePrefix.$this->nameValue,
             ];
-            if (($this->input->getOptions()['admin'] ?? false) === true) {
-                $arguments['--admin'] = true;
-            }
-            if ($this->permissionValue !== null) {
-                $arguments['--permission'] = $this->permissionValue;
+            if ($this->abilityValue !== null) {
+                $arguments['--ability'] = $this->abilityValue;
             }
 
             $this->call($command, $arguments);
@@ -73,35 +79,23 @@ trait TgClassMaker
     private function initializeValues(): void
     {
         $this->typeValue = strtoupper($this->nameValue);
-        $this->permissionValue = $this->resolvePermission();
+        $this->abilityValue = $this->resolveAbility();
     }
 
-    /**
-     * --permission when given; with --admin alone, "app.<snake_name>", which
-     * the app still has to register with permissionRegistry().
-     */
-    private function resolvePermission(): ?string
+    /** --ability when given; none leaves the handler open to everyone. */
+    private function resolveAbility(): ?string
     {
         // Raw options rather than option(): not every command using this trait
-        // defines both.
-        $options = $this->input->getOptions();
-        $permission = $options['permission'] ?? null;
+        // defines it.
+        $ability = $this->input->getOptions()['ability'] ?? null;
 
-        if (is_string($permission) && $permission !== '') {
-            return $permission;
-        }
-
-        if (($options['admin'] ?? false) === true) {
-            return 'app.'.$this->generateTranslationKeyFromName($this->nameValue);
-        }
-
-        return null;
+        return is_string($ability) && $ability !== '' ? $ability : null;
     }
 
-    /** The generated `$permission` value as PHP source. */
-    private function permissionLiteral(): string
+    /** The generated `$ability` value as PHP source. */
+    private function abilityLiteral(): string
     {
-        return $this->permissionValue === null ? 'null' : var_export($this->permissionValue, true);
+        return $this->abilityValue === null ? 'null' : var_export($this->abilityValue, true);
     }
 
     protected function generateTextFromName(string $name): string

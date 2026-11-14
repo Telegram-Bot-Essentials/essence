@@ -1,13 +1,17 @@
 <?php
 
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Gate;
 use Telegram\Bot\Api;
 use Telegram\Bot\FileUpload\InputFile;
 use Telegram\Bot\Keyboard\Button;
 use Telegram\Bot\Keyboard\Keyboard;
-use TelegramBotEssentials\Essence\Contracts\AuthorizesAccess;
-use TelegramBotEssentials\Essence\Contracts\DeclaresPermission;
+use TelegramBotEssentials\Essence\Contracts\DeclaresAbility;
+use TelegramBotEssentials\Essence\Contracts\DeclaresChatScope;
+use TelegramBotEssentials\Essence\Contracts\ResolvesBotLocale;
 use TelegramBotEssentials\Essence\Contracts\ResolvesKeyboard;
+use TelegramBotEssentials\Essence\Enums\ChatScope;
 use TelegramBotEssentials\Essence\Events\BotEventBus;
 use TelegramBotEssentials\Essence\Exceptions\CallbackDataTooLong;
 use TelegramBotEssentials\Essence\Exceptions\FeatureIsDisabled;
@@ -20,13 +24,15 @@ use TelegramBotEssentials\Essence\Models\Bot;
 use TelegramBotEssentials\Essence\Models\BotUser;
 use TelegramBotEssentials\Essence\Models\Conversation;
 use TelegramBotEssentials\Essence\Models\InlineConfirmation;
-use TelegramBotEssentials\Essence\Services\AdminAlerts;
 use TelegramBotEssentials\Essence\Services\ApiResponse;
 use TelegramBotEssentials\Essence\Services\BotUserStatus;
 use TelegramBotEssentials\Essence\Services\ExceptionHandler;
+use TelegramBotEssentials\Essence\Services\IsolatedTasks;
 use TelegramBotEssentials\Essence\Services\NavState;
+use TelegramBotEssentials\Essence\Services\OwnerAlerts;
 use TelegramBotEssentials\Essence\Services\StateDataService;
-use TelegramBotEssentials\Essence\Support\PermissionRegistry;
+use TelegramBotEssentials\Essence\Support\AbilityCatalog;
+use TelegramBotEssentials\Essence\Support\HandlerGates;
 use TelegramBotEssentials\Essence\Support\TbeLogger;
 use TelegramBotEssentials\Essence\Support\Webhook;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQuery;
@@ -44,6 +50,7 @@ use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswerBus;
 use TelegramBotEssentials\Essence\Telegram\TelegramResponse;
 use TelegramBotEssentials\Essence\Telegram\TextMatchers\TextMatcher;
 use TelegramBotEssentials\Essence\Telegram\TextMatchers\TextMatcherBus;
+use TelegramBotEssentials\Essence\Web\WebPanels;
 
 if (! function_exists('wHook')) {
     function wHook(): Webhook
@@ -59,15 +66,99 @@ if (! function_exists('tbeLog')) {
     }
 }
 
-if (! function_exists('adminAlert')) {
+if (! function_exists('ownerAlert')) {
     /**
-     * Tell the bot's owner and admins about something only they can fix.
+     * Tell the bot's owner about something only they can fix.
      *
-     * @see AdminAlerts::send()
+     * @see OwnerAlerts::send()
      */
-    function adminAlert(string $key, Closure|string $text, ?Bot $bot = null, ?int $throttle = null): bool
+    function ownerAlert(string $key, Closure|string $text, ?Bot $bot = null, ?int $throttle = null): bool
     {
-        return app(AdminAlerts::class)->send($key, $text, $bot, $throttle);
+        return app(OwnerAlerts::class)->send($key, $text, $bot, $throttle);
+    }
+}
+
+if (! function_exists('inBotLocale')) {
+    /**
+     * Run $work in the bot's language, for what it sends to Telegram from
+     * somewhere that speaks another: the web panel uses the viewer's choice.
+     *
+     * @template T
+     *
+     * @param  Closure(): T  $work
+     * @return T
+     */
+    function inBotLocale(Closure $work, ?Bot $bot = null): mixed
+    {
+        $bot ??= wHook()->bot();
+        $previous = App::getLocale();
+        App::setLocale(app(ResolvesBotLocale::class)->resolve($bot));
+
+        try {
+            return $work();
+        } finally {
+            App::setLocale($previous);
+        }
+    }
+}
+
+if (! function_exists('isolated')) {
+    /**
+     * Run $work now, as its own action: a failure is logged and reported, goes
+     * no further, and tells nobody. Whether it worked is returned, and $onFail
+     * is where to act on it. Do not ignore the result of a step that matters.
+     *
+     * @param  Closure(Throwable): mixed|null  $onFail
+     */
+    function isolated(string $name, Closure $work, ?BotUser $for = null, ?Closure $onFail = null): bool
+    {
+        return app(IsolatedTasks::class)->run($name, $work, $for, $onFail);
+    }
+}
+
+if (! function_exists('background')) {
+    /**
+     * Run $work later in a queue worker, as its own action, once any open
+     * transaction has committed. It needs a static closure: captured models are
+     * reloaded, unsaved changes are not carried over, and there is no live
+     * update to answer. Keep it apart from other closures: it is stored as
+     * source, and two closures opening on one line cannot be told apart. It
+     * runs once unless given $tries: only retry what is safe to repeat.
+     *
+     * @param  list<int>  $backoff  seconds between attempts
+     */
+    function background(string $name, Closure $work, ?BotUser $for = null, int $tries = 1, array $backoff = []): void
+    {
+        app(IsolatedTasks::class)->dispatch($name, $work, $for, $tries, $backoff);
+    }
+}
+
+if (! function_exists('notifyUser')) {
+    /**
+     * Tell $user something in their private chat, when that is not what the
+     * flow depends on: this never throws, and keeps track of who blocked the
+     * bot. Whether it arrived is returned.
+     *
+     * @param  array<string, mixed>  $params  extra sendMessage parameters
+     */
+    function notifyUser(BotUser $user, string $text, array $params = []): bool
+    {
+        return isolated('notify user', function () use ($user, $text, $params) {
+            try {
+                wHook()->api()->sendMessage([
+                    'chat_id' => $user->getAttribute('telegram_user_peer_id'),
+                    'text' => $text,
+                    'reply_markup' => replyKeyboard(),
+                    ...$params,
+                ]);
+            } catch (Throwable $e) {
+                botUserStatus()->reportFailure($user, $e);
+
+                throw $e;
+            }
+
+            botUserStatus()->reportSuccess($user);
+        }, for: $user);
     }
 }
 
@@ -100,6 +191,13 @@ if (! function_exists('textMatcherBus')) {
     function textMatcherBus(): TextMatcherBus
     {
         return app(TextMatcherBus::class);
+    }
+}
+
+if (! function_exists('handlerGates')) {
+    function handlerGates(): HandlerGates
+    {
+        return app(HandlerGates::class);
     }
 }
 
@@ -531,40 +629,88 @@ if (! function_exists('replyKeyboard')) {
 }
 
 if (! function_exists('hasAccess')) {
-    /** Whether the webhook's user may use something needing $permission. */
-    function hasAccess(?string $permission): bool
+    /**
+     * Whether the webhook's user holds $ability on the app's Gate; a null
+     * ability is open to everyone.
+     */
+    function hasAccess(?string $ability): bool
     {
-        return authorizer()->allows(wHook()->user(), $permission);
+        return $ability === null || Gate::forUser(wHook()->user())->allows($ability);
     }
 }
 
-if (! function_exists('authorizer')) {
-    function authorizer(): AuthorizesAccess
+if (! function_exists('abilities')) {
+    /** Every Gate ability the bot's handlers ask for, with labels. */
+    function abilities(): AbilityCatalog
     {
-        return app(AuthorizesAccess::class);
+        return app(AbilityCatalog::class);
     }
 }
 
-if (! function_exists('permissionRegistry')) {
-    function permissionRegistry(): PermissionRegistry
+if (! function_exists('handlerAbility')) {
+    /** The Gate ability a handler asks for, or null when anyone may use it. */
+    function handlerAbility(object $handler): ?string
     {
-        return app(PermissionRegistry::class);
+        return $handler instanceof DeclaresAbility ? $handler->getAbility() : null;
     }
 }
 
-if (! function_exists('handlerPermission')) {
-    /** The permission a handler asks for, or null when anyone may use it. */
-    function handlerPermission(object $handler): ?string
+if (! function_exists('privateChatLink')) {
+    /**
+     * A link that opens the bot's private chat, sending /start with $payload
+     * when given (listen for BotDeepLinkReceived). Null when the bot's username
+     * cannot be found.
+     */
+    function privateChatLink(?string $payload = null): ?string
     {
-        return $handler instanceof DeclaresPermission ? $handler->getPermission() : null;
+        $username = wHook()->bot()->username();
+
+        if ($username === null) {
+            return null;
+        }
+
+        return 'https://t.me/'.$username.($payload === null ? '' : '?start='.$payload);
+    }
+}
+
+if (! function_exists('handlerChatScope')) {
+    /** The chats a handler runs in; private only unless it says otherwise. */
+    function handlerChatScope(object $handler): ChatScope
+    {
+        return $handler instanceof DeclaresChatScope ? $handler->getChatScope() : ChatScope::Private;
+    }
+}
+
+if (! function_exists('webPanels')) {
+    /**
+     * Where a package registers its panel plugins, by class name. Call it from
+     * register(); a provider there may run before essence's own register().
+     */
+    function webPanels(): WebPanels
+    {
+        app()->singletonIf(WebPanels::class);
+
+        return app(WebPanels::class);
     }
 }
 
 if (! function_exists('canUseHandler')) {
-    /** Whether $user (the webhook's user by default) may use $handler. */
+    /**
+     * Whether $user (the webhook's user by default) may use $handler. For the
+     * webhook's own user, the handler must also run in the chat the update
+     * came from (see ChatScope).
+     */
     function canUseHandler(object $handler, ?BotUser $user = null): bool
     {
-        return authorizer()->allows($user ?? wHook()->user(), handlerPermission($handler));
+        if ($user === null && wHook()->hasConversation() && ! handlerChatScope($handler)->allows(wHook()->conversation())) {
+            return false;
+        }
+
+        $ability = handlerAbility($handler);
+
+        // Public handlers never reach the Gate, so they cost nothing and
+        // leave no trace in Telescope's gate watcher.
+        return $ability === null || Gate::forUser($user ?? wHook()->user())->allows($ability);
     }
 }
 
@@ -572,7 +718,7 @@ if (! function_exists('isPublicHandler')) {
     /** Whether $handler is open to everyone, independent of any user. */
     function isPublicHandler(object $handler): bool
     {
-        return handlerPermission($handler) === null;
+        return handlerAbility($handler) === null;
     }
 }
 
@@ -721,17 +867,8 @@ if (! function_exists('formEngine')) {
 if (! function_exists('loadForms')) {
     function loadForms(string $path): void
     {
-        if (! $path || ! is_dir($path)) {
-            return;
-        }
-        $namespace = resolveNamespace($path);
-
-        foreach (File::allFiles($path) as $file) {
-            $fqcn = $namespace.'\\'.$file->getFilenameWithoutExtension();
-
-            if (class_exists($fqcn) && is_subclass_of($fqcn, Form::class)) {
-                formRegistry()->addForm($fqcn);
-            }
+        foreach (handlerClassesIn($path, Form::class) as $fqcn) {
+            formRegistry()->addForm($fqcn);
         }
     }
 }
@@ -739,17 +876,8 @@ if (! function_exists('loadForms')) {
 if (! function_exists('loadStateAnswers')) {
     function loadStateAnswers(string $path): void
     {
-        if (! $path || ! is_dir($path)) {
-            return;
-        }
-        $namespace = resolveNamespace($path);
-
-        foreach (File::allFiles($path) as $file) {
-            $fqcn = $namespace.'\\'.$file->getFilenameWithoutExtension();
-
-            if (class_exists($fqcn) && is_subclass_of($fqcn, StateAnswer::class)) {
-                stateAnswerBus()->addStateAnswer($fqcn);
-            }
+        foreach (handlerClassesIn($path, StateAnswer::class) as $fqcn) {
+            stateAnswerBus()->addStateAnswer($fqcn);
         }
     }
 }
@@ -757,17 +885,8 @@ if (! function_exists('loadStateAnswers')) {
 if (! function_exists('loadCallbackQueries')) {
     function loadCallbackQueries(string $path): void
     {
-        if (! $path || ! is_dir($path)) {
-            return;
-        }
-        $namespace = resolveNamespace($path);
-
-        foreach (File::allFiles($path) as $file) {
-            $fqcn = $namespace.'\\'.$file->getFilenameWithoutExtension();
-
-            if (class_exists($fqcn) && is_subclass_of($fqcn, CallbackQuery::class)) {
-                callbackQueryBus()->addCallbackQuery($fqcn);
-            }
+        foreach (handlerClassesIn($path, CallbackQuery::class) as $fqcn) {
+            callbackQueryBus()->addCallbackQuery($fqcn);
         }
     }
 }
@@ -775,17 +894,8 @@ if (! function_exists('loadCallbackQueries')) {
 if (! function_exists('loadCommands')) {
     function loadCommands(string $path): void
     {
-        if (! $path || ! is_dir($path)) {
-            return;
-        }
-        $namespace = resolveNamespace($path);
-
-        foreach (File::allFiles($path) as $file) {
-            $fqcn = $namespace.'\\'.$file->getFilenameWithoutExtension();
-
-            if (class_exists($fqcn) && is_subclass_of($fqcn, Command::class)) {
-                commandBus()->addCommand($fqcn);
-            }
+        foreach (handlerClassesIn($path, Command::class) as $fqcn) {
+            commandBus()->addCommand($fqcn);
         }
     }
 }
@@ -793,19 +903,10 @@ if (! function_exists('loadCommands')) {
 if (! function_exists('loadInlineQueries')) {
     function loadInlineQueries(string $path): void
     {
-        if (! $path || ! is_dir($path)) {
+        foreach (handlerClassesIn($path, InlineQuery::class) as $fqcn) {
+            inlineQueryBus()->setHandler($fqcn);
+
             return;
-        }
-        $namespace = resolveNamespace($path);
-
-        foreach (File::allFiles($path) as $file) {
-            $fqcn = $namespace.'\\'.$file->getFilenameWithoutExtension();
-
-            if (class_exists($fqcn) && is_subclass_of($fqcn, InlineQuery::class)) {
-                inlineQueryBus()->setHandler($fqcn);
-
-                return;
-            }
         }
     }
 }
@@ -827,17 +928,8 @@ if (! function_exists('addUserReplyKeys')) {
 if (! function_exists('loadReplyKeys')) {
     function loadReplyKeys(string $path): void
     {
-        if (! $path || ! is_dir($path)) {
-            return;
-        }
-        $namespace = resolveNamespace($path);
-
-        foreach (File::allFiles($path) as $file) {
-            $fqcn = $namespace.'\\'.$file->getFilenameWithoutExtension();
-
-            if (class_exists($fqcn) && is_subclass_of($fqcn, ReplyKey::class)) {
-                replyKeyBus()->addReplyKey($fqcn);
-            }
+        foreach (handlerClassesIn($path, ReplyKey::class) as $fqcn) {
+            replyKeyBus()->addReplyKey($fqcn);
         }
     }
 }
@@ -845,18 +937,40 @@ if (! function_exists('loadReplyKeys')) {
 if (! function_exists('loadTextMatchers')) {
     function loadTextMatchers(string $path): void
     {
+        foreach (handlerClassesIn($path, TextMatcher::class) as $fqcn) {
+            textMatcherBus()->addTextMatcher($fqcn);
+        }
+    }
+}
+
+if (! function_exists('handlerClassesIn')) {
+    /**
+     * The concrete subclasses of $base under $path, sub-folders included:
+     * a handler's folder is the app's own layout, never a rule.
+     *
+     * @template T of object
+     *
+     * @param  class-string<T>  $base
+     * @return list<class-string<T>>
+     */
+    function handlerClassesIn(string $path, string $base): array
+    {
         if (! $path || ! is_dir($path)) {
-            return;
+            return [];
         }
         $namespace = resolveNamespace($path);
 
+        $classes = [];
         foreach (File::allFiles($path) as $file) {
-            $fqcn = $namespace.'\\'.$file->getFilenameWithoutExtension();
+            $relative = str_replace(DIRECTORY_SEPARATOR, '\\', $file->getRelativePath());
+            $fqcn = $namespace.'\\'.($relative === '' ? '' : $relative.'\\').$file->getFilenameWithoutExtension();
 
-            if (class_exists($fqcn) && is_subclass_of($fqcn, TextMatcher::class)) {
-                textMatcherBus()->addTextMatcher($fqcn);
+            if (class_exists($fqcn) && is_subclass_of($fqcn, $base) && ! (new ReflectionClass($fqcn))->isAbstract()) {
+                $classes[] = $fqcn;
             }
         }
+
+        return $classes;
     }
 }
 

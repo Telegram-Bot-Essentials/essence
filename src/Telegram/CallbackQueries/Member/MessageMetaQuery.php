@@ -4,6 +4,7 @@ namespace TelegramBotEssentials\Essence\Telegram\CallbackQueries\Member;
 
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Telegram\Bot\Exceptions\TelegramSDKException;
+use TelegramBotEssentials\Essence\Enums\ChatScope;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
 use TelegramBotEssentials\Essence\Models\MessageMeta;
 use TelegramBotEssentials\Essence\Telegram\CallbackQueries\CallbackQuery;
@@ -14,6 +15,8 @@ class MessageMetaQuery extends CallbackQuery
     use CanCancelOldProcess;
 
     protected string $type = 'MESSAGE_META';
+
+    protected ChatScope $chatScope = ChatScope::Any;
 
     /**
      * @throws TelegramSDKException

@@ -15,3 +15,5 @@
 /.phpunit.cache
 /.phpunit.result.cache
 /build
+/workbench/storage
+/workbench/.test-bot.env

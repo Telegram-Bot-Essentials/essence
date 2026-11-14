@@ -14,15 +14,15 @@ uses(RefreshDatabase::class);
  * reference example for companion packages extending the same base.
  */
 
-it('replies with the main menu text when its reply key button is pressed', function () {
+it('replies when a reply key button is pressed', function () {
     $bot = $this->makeBot();
 
-    $this->postWebhookUpdate($bot, $this->makeMessageUpdate('Main Menu 🔰'))
+    $this->postWebhookUpdate($bot, $this->makeMessageUpdate('Cancel Process ❌'))
         ->assertOk();
 
     $this->assertTelegramSent(
         fn ($request) => $request->url() === 'https://api.telegram.org/bot'.$bot->bot_token.'/sendMessage'
-            && str_contains((string) $request['text'], 'Back at the main menu')
+            && str_contains((string) $request['text'], 'Cancelled.')
     );
 });
 

@@ -30,7 +30,7 @@ class InitMainBotCommand extends Command
         $required = [
             'unique_id',
             'telegram_bot_token',
-            'admin_chat_id',
+            'owner_peer_id',
         ];
 
         foreach ($required as $key) {
@@ -42,7 +42,7 @@ class InitMainBotCommand extends Command
         }
 
         $telegramUser = TelegramUser::firstOrCreate([
-            'peer_id' => config('tbe-essence.main.admin_chat_id'),
+            'peer_id' => config('tbe-essence.main.owner_peer_id'),
         ]);
 
         $bot = Bot::where('unique_id', config('tbe-essence.main.unique_id'))->first();
@@ -66,7 +66,7 @@ class InitMainBotCommand extends Command
             'telegram_user_peer_id' => $telegramUser->peer_id,
         ]);
 
-        $this->info('Admin user linked to bot');
+        $this->info('Owner linked to bot');
 
         return self::SUCCESS;
     }

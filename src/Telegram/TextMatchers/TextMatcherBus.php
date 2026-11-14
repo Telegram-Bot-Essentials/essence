@@ -104,6 +104,8 @@ class TextMatcherBus
                 continue;
             }
 
+            handlerGates()->check($matcher);
+
             // Fresh instance: the registered one is a shared template.
             $this->handler($this->resolveTextMatcher($matcher::class));
 

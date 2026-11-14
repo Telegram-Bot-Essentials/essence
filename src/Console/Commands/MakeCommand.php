@@ -10,12 +10,14 @@ class MakeCommand extends PackageGeneratorCommand
 
     protected $signature = 'tbe:make:command
         {name : The class name}
-        {--admin : Make command for admin}
-        {--permission= : The permission it asks for (default with --admin: app.<snake_name>)}
+        {--ability= : The Gate ability it asks for (none: open to everyone)}
         {--command-name= : The Telegram command name (default: snake_case of name)}
         {--d|description= : Command description}';
 
     protected $description = 'Create a new Telegram Bot Command class';
+
+    /** @var array<string, string> none: a command generates nothing else */
+    protected array $map = [];
 
     protected function getStub(): string
     {
@@ -24,9 +26,7 @@ class MakeCommand extends PackageGeneratorCommand
 
     protected function getDefaultNamespace($rootNamespace): string
     {
-        $scope = $this->option('admin') ? 'Admin' : 'Member';
-
-        return $rootNamespace.'\\Telegram\\Commands\\'.$scope;
+        return $rootNamespace.'\\Telegram\\Commands';
     }
 
     protected function buildClass($name): string
@@ -54,14 +54,14 @@ class MakeCommand extends PackageGeneratorCommand
                 '{{ class_name }}',
                 '{{ command_name }}',
                 '{{ description }}',
-                '{{ permission }}',
+                '{{ ability }}',
             ],
             [
                 $namespace,
                 $className,
                 $commandName,
                 $description,
-                $this->permissionLiteral(),
+                $this->abilityLiteral(),
             ],
             $stub
         );

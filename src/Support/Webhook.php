@@ -10,7 +10,6 @@ use TelegramBotEssentials\Essence\Exceptions\WebhookAuthException;
 use TelegramBotEssentials\Essence\Models\Bot;
 use TelegramBotEssentials\Essence\Models\BotUser;
 use TelegramBotEssentials\Essence\Models\Conversation;
-use Throwable;
 
 class Webhook
 {
@@ -125,6 +124,48 @@ class Webhook
         return (int) $this->conversation()->chat_id;
     }
 
+    /** Whether a conversation is bound: inside a webhook or a job that resumed one. */
+    public function hasBot(): bool
+    {
+        return $this->bot !== null;
+    }
+
+    public function hasConversation(): bool
+    {
+        return $this->conversation !== null;
+    }
+
+    /** Whether the update came from a group chat rather than the user's private chat. */
+    public function inGroup(): bool
+    {
+        return $this->conversation !== null && ! $this->conversation->isPrivate();
+    }
+
+    /**
+     * Where a reply to this update goes: the conversation's chat, and its
+     * forum topic when it is in one. Spread into a send:
+     * `sendMessage([...wHook()->replyTo(), 'text' => ...])`. In a private
+     * chat this is the user's peer id, as before.
+     *
+     * @return array{chat_id: int, message_thread_id?: int}
+     */
+    public function replyTo(): array
+    {
+        // No conversation bound yet (an error before the user was resolved):
+        // the private chat, as every reply used to go.
+        if ($this->conversation === null) {
+            $peerId = $this->user()->getAttribute('telegram_user_peer_id');
+
+            return ['chat_id' => is_numeric($peerId) ? (int) $peerId : 0];
+        }
+
+        $threadId = $this->threadId();
+
+        return $threadId === null
+            ? ['chat_id' => $this->chatId()]
+            : ['chat_id' => $this->chatId(), 'message_thread_id' => $threadId];
+    }
+
     /** The forum topic, or null outside one. */
     public function threadId(): ?int
     {
@@ -148,8 +189,44 @@ class Webhook
             && $this->update !== null;
     }
 
+    /**
+     * Act for $user while $callback runs, in their private chat. This switches
+     * who the webhook is acting for and nothing else: a failure goes back to
+     * the caller, who knows what it means. To contain one, use isolated().
+     */
     public function runForUser(BotUser $user, Closure $callback): mixed
     {
+        return $this->preservingContext(function () use ($user, $callback) {
+            self::setBot($user->bot);
+            self::setUser($user);
+
+            return $callback();
+        });
+    }
+
+    /**
+     * Run $callback as $bot, for $user, in the given chat (their private chat
+     * when null), outside of any update. For work that resumes later, such as
+     * a queued task: there is no update to answer, and none is pretended.
+     */
+    public function runInContext(Bot $bot, ?BotUser $user, ?int $chatId, ?int $threadId, Closure $callback): mixed
+    {
+        return $this->preservingContext(function () use ($bot, $user, $chatId, $threadId, $callback) {
+            self::setBot($bot);
+            $token = $bot->getAttribute('bot_token');
+            self::setApi(telegramApi(is_string($token) ? $token : ''));
+            self::setUpdate(new Update([]));
+            self::setUser($user, $user !== null && $chatId !== null ? $user->conversationIn($chatId, $threadId ?? 0) : null);
+
+            return $callback();
+        });
+    }
+
+    /** Whatever $callback changes about the context is undone, even when it throws. */
+    private function preservingContext(Closure $callback): mixed
+    {
+        $originalApi = $this->api;
+        $originalUpdate = $this->update;
         $originalBot = $this->bot;
         $originalUser = $this->user;
         $originalConversation = $this->conversation;
@@ -163,22 +240,16 @@ class Webhook
         // Snapshot the value itself so the restore is a real restore.
         $originalRequestState = $this->requestState;
 
-        // Acting on a user from outside their update: their private chat.
-        self::setBot($user->bot);
-        self::setUser($user);
-
         try {
-            $result = $callback();
-        } catch (Throwable $e) {
-            exceptionHandler()->handle($e);
+            return $callback();
+        } finally {
+            $this->api = $originalApi;
+            $this->update = $originalUpdate;
+            $this->bot = $originalBot;
+            $this->user = $originalUser;
+            $this->conversation = $originalConversation;
+            $this->requestState = $originalRequestState;
         }
-
-        $this->bot = $originalBot;
-        $this->user = $originalUser;
-        $this->conversation = $originalConversation;
-        $this->requestState = $originalRequestState;
-
-        return $result ?? null;
     }
 
     public function setBot(?Bot $bot): void

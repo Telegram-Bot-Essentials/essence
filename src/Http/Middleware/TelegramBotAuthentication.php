@@ -9,17 +9,32 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Symfony\Component\HttpFoundation\Response;
 use Telegram\Bot\Exceptions\TelegramSDKException;
+use Telegram\Bot\Objects\Message;
 use Telegram\Bot\Objects\User;
+use TelegramBotEssentials\Essence\Enums\ChatScope;
 use TelegramBotEssentials\Essence\Events\BotWebhookInitialized;
 use TelegramBotEssentials\Essence\Exceptions\WebhookAuthException;
 use TelegramBotEssentials\Essence\Models\Bot;
 use TelegramBotEssentials\Essence\Models\BotUser;
 use TelegramBotEssentials\Essence\Models\Conversation;
 use TelegramBotEssentials\Essence\Models\TelegramUser;
+use TelegramBotEssentials\Essence\Services\GroupChatMigration;
 use TelegramBotEssentials\Essence\Support\WebhookContext;
 
 class TelegramBotAuthentication
 {
+    /** Message fields that mark a group service message rather than something a user wrote. */
+    private const SERVICE_MESSAGE_FIELDS = [
+        'new_chat_members', 'left_chat_member', 'new_chat_title', 'new_chat_photo',
+        'delete_chat_photo', 'group_chat_created', 'supergroup_chat_created',
+        'migrate_to_chat_id', 'migrate_from_chat_id', 'pinned_message',
+        'message_auto_delete_timer_changed', 'video_chat_started', 'video_chat_ended',
+        'video_chat_scheduled', 'video_chat_participants_invited', 'forum_topic_created',
+        'forum_topic_edited', 'forum_topic_closed', 'forum_topic_reopened',
+        'general_forum_topic_hidden', 'general_forum_topic_unhidden',
+        'chat_shared', 'users_shared', 'boost_added', 'chat_background_set',
+    ];
+
     /**
      * Handle an incoming request.
      *
@@ -58,12 +73,15 @@ class TelegramBotAuthentication
             return tbeApiResponse()->error('Failed to initialize API service', 503);
         }
 
-        // Essence does not model group chats yet: a group update would run
-        // against the sender's private-chat state and reply in their DM.
-        // Acknowledge and drop it before a BotUser is minted for a group
-        // lurker.
+        // Group traffic no handler can act on (channel posts, messages sent as a
+        // chat, service messages, people just talking): acknowledge and drop the
+        // update before anything is stored about a group lurker.
         if (self::isFromNonPrivateChat()) {
-            return tbeApiResponse()->success();
+            self::recordGroupMigration();
+
+            if (self::isIgnoredGroupUpdate() || self::isGroupChatter()) {
+                return tbeApiResponse()->success();
+            }
         }
 
         // Telegram redelivers an update whenever it does not see a prompt
@@ -87,7 +105,9 @@ class TelegramBotAuthentication
             // membership change itself proves the user is reachable. This is what
             // recovers a user whose unblock event was lost to drop_pending_updates,
             // and what undoes a deactivation recorded by mistake.
-            if (! wHook()->update()->myChatMember) {
+            // Only the private chat proves it: a user can talk in a group while
+            // having blocked the bot (or never started it) in private.
+            if (! wHook()->update()->myChatMember && wHook()->conversation()->isPrivate()) {
                 botUserStatus()->markActive($botUser);
             }
 
@@ -133,7 +153,17 @@ class TelegramBotAuthentication
             ]
         );
 
-        $botUser = BotUser::firstOrCreate(['telegram_user_peer_id' => $telegramUser->peer_id]);
+        $inPrivateChat = self::isInPrivateChat();
+
+        $botUser = BotUser::firstOrCreate(
+            ['telegram_user_peer_id' => $telegramUser->peer_id],
+            ['has_private_chat' => $inPrivateChat],
+        );
+
+        if ($inPrivateChat && ! $botUser->has_private_chat) {
+            $botUser->markPrivateChatOpened();
+        }
+
         $botUser->interact();
 
         return $botUser;
@@ -154,9 +184,94 @@ class TelegramBotAuthentication
             return $botUser->privateConversation();
         }
 
+        return $botUser->conversationIn((int) $chatId, self::threadIdOf($message));
+    }
+
+    private static function threadIdOf(Message $message): int
+    {
         $threadId = $message->get('is_topic_message') === true ? $message->get('message_thread_id') : 0;
 
-        return $botUser->conversationIn((int) $chatId, is_numeric($threadId) ? (int) $threadId : 0);
+        return is_numeric($threadId) ? (int) $threadId : 0;
+    }
+
+    /**
+     * A group message no handler here will act on: people talking to each
+     * other, or a command this bot would not run there. A command still counts
+     * for someone mid-flow, since any command ends a flow. Button presses are
+     * never this: they are aimed at the bot.
+     */
+    private static function isGroupChatter(): bool
+    {
+        $message = wHook()->update()->message;
+
+        if ($message === null) {
+            return false;
+        }
+
+        $text = (string) $message->text;
+
+        if (str_starts_with($text, '/')) {
+            $command = explode(' ', $text, 2)[0];
+
+            return commandBus()->isForAnotherBot($command)
+                || (! commandBus()->runsInGroups($text) && ! self::hasOpenFlow($message));
+        }
+
+        foreach (textMatcherBus()->getTextMatchers() as $matcher) {
+            if (handlerChatScope($matcher) !== ChatScope::Private) {
+                return false;
+            }
+        }
+
+        return ! self::hasOpenFlow($message);
+    }
+
+    /** Whether the sender is partway through a flow in this chat and forum topic. */
+    private static function hasOpenFlow(Message $message): bool
+    {
+        $botUserId = BotUser::where('telegram_user_peer_id', $message->from?->id)->value('id');
+
+        return $botUserId !== null && Conversation::where('bot_user_id', $botUserId)
+            ->where('chat_id', $message->chat->id)
+            ->where('thread_id', self::threadIdOf($message))
+            ->whereNotNull('state')
+            ->exists();
+    }
+
+    /**
+     * Whether this update proves the user has a private chat with the bot, so
+     * it can message them. An inline query or a group message proves nothing:
+     * Telegram refuses a message to someone who never started the bot.
+     */
+    private static function isInPrivateChat(): bool
+    {
+        if (self::isPrivateChatMemberUpdate()) {
+            return true;
+        }
+
+        $update = wHook()->update();
+        $message = $update->message ?? $update->callbackQuery?->message;
+
+        return $message?->chat?->type === 'private';
+    }
+
+    private static function recordGroupMigration(): void
+    {
+        $message = wHook()->update()->message;
+        $chatId = $message?->chat?->id;
+
+        if ($message === null || ! is_numeric($chatId)) {
+            return;
+        }
+
+        $to = $message->get('migrate_to_chat_id');
+        $from = $message->get('migrate_from_chat_id');
+
+        if (is_numeric($to)) {
+            app(GroupChatMigration::class)->run((int) $chatId, (int) $to);
+        } elseif (is_numeric($from)) {
+            app(GroupChatMigration::class)->run((int) $from, (int) $chatId);
+        }
     }
 
     /**
@@ -174,11 +289,45 @@ class TelegramBotAuthentication
     }
 
     /**
+     * Group traffic that never reaches a handler: messages in a channel,
+     * messages posted as a chat (anonymous chat administrators, linked channels) which
+     * have no real sender, and service messages (joins, leaves, pins, title
+     * and photo changes, group migration).
+     */
+    public static function isIgnoredGroupUpdate(): bool
+    {
+        $update = wHook()->update();
+        $message = $update->message ?? $update->callbackQuery?->message;
+
+        // A button on a channel message still reaches the handlers: a chat for
+        // reviewing payments can be a channel. Handlers opt in with ChatScope.
+        if ($message?->chat?->type === 'channel') {
+            return $update->callbackQuery === null;
+        }
+
+        if ($update->message === null) {
+            return false;
+        }
+
+        if ($update->message->has('sender_chat')) {
+            return true;
+        }
+
+        foreach (self::SERVICE_MESSAGE_FIELDS as $field) {
+            if ($update->message->has($field)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * my_chat_member also fires when the bot is added to or removed from a
-     * group or channel, where "from" is the admin who did it rather than
+     * group or channel, where "from" is the chat administrator who did it rather than
      * someone in a conversation with the bot. Nothing here models group
      * membership, so those keep the old behaviour of being rejected outright
-     * instead of minting a BotUser or rewriting that admin's status.
+     * instead of minting a BotUser or rewriting that administrator's status.
      */
     public static function isPrivateChatMemberUpdate(): bool
     {

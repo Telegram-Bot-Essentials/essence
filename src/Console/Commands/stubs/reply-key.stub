@@ -6,7 +6,7 @@ use TelegramBotEssentials\Essence\Telegram\ReplyKeys\ReplyKey;
 
 class {{ class_name }} extends ReplyKey
 {
-    protected ?string $permission = {{ permission }};
+    protected ?string $ability = {{ ability }};
 
     // Multilingual: return __('') instead of a literal.
     protected function text(): string

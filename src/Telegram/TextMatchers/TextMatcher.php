@@ -3,8 +3,10 @@
 namespace TelegramBotEssentials\Essence\Telegram\TextMatchers;
 
 use Telegram\Bot\Objects\Message;
-use TelegramBotEssentials\Essence\Contracts\DeclaresPermission;
-use TelegramBotEssentials\Essence\Traits\HasPermission;
+use TelegramBotEssentials\Essence\Contracts\DeclaresAbility;
+use TelegramBotEssentials\Essence\Contracts\DeclaresChatScope;
+use TelegramBotEssentials\Essence\Traits\HasAbility;
+use TelegramBotEssentials\Essence\Traits\HasChatScope;
 
 /**
  * A handler for a free-form message that no reply key, command or state
@@ -13,9 +15,10 @@ use TelegramBotEssentials\Essence\Traits\HasPermission;
  * against the text (or the caption of a media message), or override
  * `matches()` for anything else (entities, attachments, a lookup...).
  */
-abstract class TextMatcher implements DeclaresPermission, TextMatcherInterface
+abstract class TextMatcher implements DeclaresAbility, DeclaresChatScope, TextMatcherInterface
 {
-    use HasPermission;
+    use HasAbility;
+    use HasChatScope;
 
     /** A regex tested against the message's text or caption by the default `matches()`. */
     protected ?string $pattern = null;

@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace TelegramBotEssentials\Essence\Telegram\Commands;
 
-use TelegramBotEssentials\Essence\Contracts\DeclaresPermission;
-use TelegramBotEssentials\Essence\Traits\HasPermission;
+use TelegramBotEssentials\Essence\Contracts\DeclaresAbility;
+use TelegramBotEssentials\Essence\Contracts\DeclaresChatScope;
+use TelegramBotEssentials\Essence\Traits\HasAbility;
+use TelegramBotEssentials\Essence\Traits\HasChatScope;
 
-abstract class Command implements CommandInterface, DeclaresPermission
+abstract class Command implements CommandInterface, DeclaresAbility, DeclaresChatScope
 {
-    use HasPermission;
+    use HasAbility;
+    use HasChatScope;
 
     protected string $name;
 

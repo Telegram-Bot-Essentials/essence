@@ -1,8 +1,5 @@
 <?php
 
-use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Admin\AdminPanelKey;
-use TelegramBotEssentials\Essence\Telegram\ReplyKeys\Member\MainMenuKey;
-
 return [
     'keyboard' => [
         // Off: no menus and no automatic Cancel key; any reply keyboard on
@@ -11,17 +8,32 @@ return [
         'resize' => true,
         'one_time' => true,
 
-        // Named menus, rows of ReplyKey classes. A user sees the menu named
-        // in bot_users.menu ("main" by default); keys they may not use are
-        // left out.
-        'menus' => [
-            'main' => [
-                [AdminPanelKey::class],
-            ],
-            'admin' => [
-                [MainMenuKey::class],
-            ],
-        ],
+        // Named menus, rows of ReplyKey classes, e.g.
+        //     'main' => [[ShopKey::class, WalletKey::class], [SupportKey::class]],
+        // A conversation sees the menu it is on ("main" by default); keys the
+        // user may not use are left out. None by default: a bot without menus
+        // shows no reply keyboard, and any keyboard on screen is removed.
+        'menus' => [],
+    ],
+
+    // The web panel. Off until an app opts in, and it needs filament/filament.
+    'web' => [
+        'enabled' => (bool) env('TBE_WEB_ENABLED', false),
+        'path' => 'manage',
+        // Who signs in: the app's own user model, implementing
+        // TelegramBotEssentials\Essence\Web\TelegramAccount (use the
+        // HasTelegramAccount trait). See docs/adr/0002.
+        'account_model' => env('TBE_WEB_ACCOUNT_MODEL', 'App\\Models\\User'),
+        // 'tbe-web' is essence's own session guard on account_model. Name an
+        // app guard instead (e.g. 'web') to share one login with its panels.
+        'guard' => env('TBE_WEB_GUARD', 'tbe-web'),
+        // The panel's languages, apart from the bot's, each named in itself.
+        // Viewers pick one from the user menu; the default needs no choice.
+        'locales' => ['en' => 'English', 'fa' => 'فارسی'],
+        'default_locale' => 'en',
+        // Dates in the panel: 'gregorian', 'jalali', or 'auto' (Jalali while
+        // the panel speaks Persian). Viewers can switch it from the user menu.
+        'calendar' => env('TBE_WEB_CALENDAR', 'auto'),
     ],
 
     'bot_access' => [
@@ -31,7 +43,7 @@ return [
     'main' => [
         'unique_id' => env('MAIN_UNIQUE_ID', 'main'),
         'telegram_bot_token' => env('MAIN_TELEGRAM_BOT_TOKEN'),
-        'admin_chat_id' => env('MAIN_ADMIN_CHAT_ID'),
+        'owner_peer_id' => env('MAIN_OWNER_PEER_ID'),
         'currency' => env('MAIN_CURRENCY', 'USD'),
     ],
 
@@ -56,22 +68,22 @@ return [
             'announcements' => 'announcements',
             'settings' => 'settings',
         ],
-        // Where tbeLog()->audit() entries go (admin actions); null uses the package's channel.
-        'audit_channel' => 'admin-audit',
+        // Where tbeLog()->audit() entries go (who changed what); null uses the package's channel.
+        'audit_channel' => 'audit',
         // Each channel named above that the app's config/logging.php does not
         // define is registered as a daily file, storage/logs/<name>.log, kept
         // this many days (14 unless listed).
         'retention_days' => [
             'billing' => 90,
-            'admin-audit' => 90,
+            'audit' => 90,
         ],
         // Also push debug/bug reports to the bug_report Telegram chat.
         'telegram_notify' => env('TBE_LOG_TELEGRAM_NOTIFY', true),
     ],
 
-    'admin_alerts' => [
-        // Seconds before the same alert reaches a bot's admins again.
-        'throttle' => env('TBE_ADMIN_ALERT_THROTTLE', 21600),
+    'owner_alerts' => [
+        // Seconds before the same alert reaches a bot's owner again.
+        'throttle' => env('TBE_OWNER_ALERT_THROTTLE', 21600),
     ],
 
     'developer' => [
@@ -93,6 +105,8 @@ return [
     'pruning' => [
         'state_data_days' => env('TBE_PRUNE_STATE_DATA_DAYS', 7),
         'message_metas_days' => env('TBE_PRUNE_MESSAGE_METAS_DAYS', 7),
+        // Who may press the buttons on a group message is forgotten after this.
+        'message_owners_days' => env('TBE_PRUNE_MESSAGE_OWNERS_DAYS', 7),
         'inline_confirmations_hours' => env('TBE_PRUNE_INLINE_CONFIRMATIONS_HOURS', 6),
     ],
 
