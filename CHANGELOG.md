@@ -10,6 +10,8 @@ the first public release.
 
 ## [Unreleased]
 
+## [0.19.0-beta.10] - 2026-11-14
+
 ### Fixed
 
 - A `background()` task puts back the tenancy it started when it finishes or
