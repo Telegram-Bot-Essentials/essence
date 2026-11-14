@@ -10,6 +10,12 @@ the first public release.
 
 ## [Unreleased]
 
+### Fixed
+
+- A `background()` task puts back the tenancy it started when it finishes or
+  fails. A queue worker used to keep that bot's tenant for every job after it,
+  so a job spanning bots found other bots' tenant-scoped models missing.
+
 ## [0.19.0-beta.9] - 2026-11-11
 
 ### Added
