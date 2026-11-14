@@ -129,6 +129,57 @@ describe('background()', function () {
             ->and(App::getLocale())->toBe('en');
     });
 
+    it('ends the tenancy it started, so the next job on the worker does not inherit the bot', function () {
+        $job = captureTask(function () {
+            background('tenant', static function () {
+                $GLOBALS['task_tenant'] = tenant()?->getTenantKey();
+            });
+        });
+
+        wHook()->clear();
+        tenancy()->end();
+
+        roundTrip($job)->handle();
+
+        expect($GLOBALS['task_tenant'])->toBe($this->bot->getKey())
+            ->and(tenancy()->initialized)->toBeFalse();
+    });
+
+    it('ends the tenancy it started even when the task fails', function () {
+        $job = captureTask(function () {
+            background('tenant fail', static function () {
+                throw new RuntimeException('boom');
+            });
+        });
+
+        wHook()->clear();
+        tenancy()->end();
+
+        expect(fn () => roundTrip($job)->handle())->toThrow(RuntimeException::class, 'boom')
+            ->and(tenancy()->initialized)->toBeFalse();
+    });
+
+    it('puts back the tenant of a caller that runs it on the spot', function () {
+        $job = captureTask(function () {
+            background('tenant sync', static function () {
+                $GLOBALS['task_tenant'] = tenant()?->getTenantKey();
+            });
+        });
+
+        $elsewhere = $this->makeBot();
+        wHook()->clear();
+        tenancy()->initialize($elsewhere);
+
+        try {
+            roundTrip($job)->handle();
+
+            expect($GLOBALS['task_tenant'])->toBe($this->bot->getKey())
+                ->and(tenant()?->getTenantKey())->toBe($elsewhere->getKey());
+        } finally {
+            tenancy()->end();
+        }
+    });
+
     it('stays in the chat it was asked from when no user is given', function () {
         $job = captureTask(function () {
             background('here', static function () {
